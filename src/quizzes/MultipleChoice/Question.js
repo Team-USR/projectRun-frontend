@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 
 class Question extends Component {
 render() {
- const { index, question } = this.props;
+ const { id, question } = this.props;
   return (
-      <h3>{index}. {question}</h3>
+      <h3>{id}. {question}</h3>
   );
 }
 }
