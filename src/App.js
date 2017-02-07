@@ -1,6 +1,7 @@
+import { Button } from 'react-bootstrap';
 import React, { Component } from 'react';
 import { QuestionWrapper } from './quizzes/MultipleChoice'
-import { Button } from 'react-bootstrap';
+
 import './App.css';
 
 class App extends Component {
@@ -13,7 +14,7 @@ class App extends Component {
           <QuestionWrapper />
         </div>
         <div className="submitPanel">
-        <Button>SUBMIT</Button>
+          <Button>SUBMIT</Button>
         </div>
       </div>
     );
