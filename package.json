@@ -23,7 +23,7 @@
     "webpack": "^2.2.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo 'No tests'; exit 0",
     "build": "NODE_ENV=development node_modules/.bin/webpack -p",
     "dev": "node_modules/.bin/webpack -d --watch",
     "start": "NODE_ENV=development node ./src/server.js && npm run build"
