@@ -1,20 +1,27 @@
 import React, { Component } from 'react';
 
 class Choice extends Component {
-  handleInputChange(event) {
-   const target = event.target;
-   const value = target.type === 'checkbox' ? target.checked : target.value;
-   const name = target.name;
-   this.setState({
-     [name]: value
-   });
- }
+  constructor({ initialChecked }) {
+   super();
+   this.state = { checked: initialChecked };
+}
+  onStateChanged() {
+    const newState = !this.state.checked;
+    const index = this.state.index;
+    this.setState({ checked: newState });
+    this.props.callbackParent(newState, index);
+  }
   render() {
     const { value, choiceText } = this.props;
       return (
           <div>
           <label htmlFor="0">
-          <input type="checkbox" value={value} />
+          <input
+              type="checkbox"
+              value={value}
+              checked={this.state.checked}
+              onChange={() => this.onStateChanged()}
+          />
           {choiceText}
           </label>
           <br />
