@@ -1,23 +1,13 @@
-import React, { Component } from 'react';
-import { QuestionWrapper } from './quizzes/MultipleChoice'
-import { Button } from 'react-bootstrap';
+import React from 'react';
+import { MatchQuiz } from './quizzes/Match';
 import './App.css';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="questionWrapper">
-        <div className="questionPanel">
-          <QuestionWrapper />
-          <QuestionWrapper />
-          <QuestionWrapper />
-        </div>
-        <div className="submitPanel">
-        <Button>SUBMIT</Button>
-        </div>
-      </div>
-    );
-  }
+function App() {
+  return (
+    <div>
+      <MatchQuiz />
+    </div>
+  );
 }
 
 export default App;
