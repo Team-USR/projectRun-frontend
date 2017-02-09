@@ -1,5 +1,5 @@
 import React from 'react';
-import { MatchQuiz } from './quizzes/Match';
+import MatchQuiz from './quizzes/Match/MatchQuiz';
 import './App.css';
 
 function App() {
