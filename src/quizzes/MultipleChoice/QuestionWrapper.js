@@ -1,46 +1,52 @@
 import React, { Component } from 'react';
 import { Question, Choice, Answer } from './index';
-import {Row,Col,Grid} from 'react-bootstrap';
+
 import '../../style/MultipleChoice.css';
 
 class QuestionWrapper extends Component {
   constructor() {
     super();
-    this.state = { results: [] }
+    this.state = { results: [] };
   }
   onChildChanged(newState, index) {
   const newArray = this.state.results.slice();
   newArray[index] = newState;
-  this.setState({ results: newArray })
+  this.setState({ results: newArray });
   this.props.callbackParent(newArray, index);
   }
-  renderChoices(index, choice, inReview) {
-
-
+  getMyAnswer(index, myAnswers, answerIndex) {
+      if (myAnswers[index] && myAnswers[index][answerIndex]) {
+        return true;
+      }
+      return false;
+  }
+  renderChoices(indexQ, choice, inReview) {
       return (
         <Choice
-          value={index} choiceText={choice.choiceText}
+          value={indexQ} choiceText={choice.choiceText}
           key={choice.id}
           initialChecked={this.state.checked}
           inReview={inReview}
-          callbackParent={(newState) => { this.onChildChanged(newState, index)}}
+          callbackParent={(newState) => { this.onChildChanged(newState, indexQ); }}
         />
         );
     }
-    renderAnswers(inResultsState, answer, index, myAnswers, answerIndex){
-      if(inResultsState) return(<Answer key={answerIndex} myAnswer={this.getMyAnswer(index, myAnswers, answerIndex)} correctAnswer={answer.correct} feedback={answer.choiceFeedback} />);
-    //  console.log(answer.correct)
-    }
-    getMyAnswer(index,myAnswers,answerIndex){
-        if (myAnswers[index] && myAnswers[index][answerIndex]){
-          return true;
-        }
-        else return false;
-//return false;  && answer.correct===myAnswers[index][answerIndex]
+    renderAnswers(inResultsState, answer, index, myAnswers, answerIndex) {
+      if (inResultsState) {
+      return (
+        <Answer
+        key={answerIndex}
+        myAnswer={this.getMyAnswer(index, myAnswers, answerIndex)}
+        correctAnswer={answer.correct}
+        feedback={answer.choiceFeedback}
+        />
+      );
+      }
     }
 
   render() {
-  const { objectQuestion, id, index, inReview, inResultsState, correctAnswers, myAnswers} = this.props;
+  const {
+     objectQuestion, id, index, inReview, inResultsState, correctAnswers, myAnswers } = this.props;
   return (
     <div className="questionWrapper">
       <div className="questionPanel">
@@ -50,12 +56,14 @@ class QuestionWrapper extends Component {
       <div style={styles.choiceContainer}>
       <div style={styles.choicePanel}>
         <form>
-          { objectQuestion.choice.map((choice, index) => this.renderChoices(index, choice, inReview))}
+          { objectQuestion.choice.map((choice, indexQ) =>
+            this.renderChoices(indexQ, choice, inReview))}
         </form>
       </div>
 
       <div style={styles.answersPanel}>
-      { correctAnswers.map((answer, answerIndex) => this.renderAnswers(inResultsState, answer, index, myAnswers, answerIndex))}
+      { correctAnswers.map((answer, answerIndex) =>
+        this.renderAnswers(inResultsState, answer, index, myAnswers, answerIndex))}
       </div>
       </div>
     </div>
