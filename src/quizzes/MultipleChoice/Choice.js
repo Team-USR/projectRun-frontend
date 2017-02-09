@@ -11,23 +11,39 @@ class Choice extends Component {
     this.setState({ checked: newState });
     this.props.callbackParent(newState, index);
   }
-  render() {
-    const { value, choiceText } = this.props;
+  renderLabel(value, choiceText, inReview) {
+    if (inReview) {
       return (
-          <div>
-          <label htmlFor="0">
           <input
-              type="checkbox"
+              type='checkbox'
+              value={value}
+              checked={this.state.checked}
+              disabled
+              onChange={() => this.onStateChanged()}
+          />
+        );
+    }
+      return (
+          <input
+              type='checkbox'
               value={value}
               checked={this.state.checked}
               onChange={() => this.onStateChanged()}
           />
-          {choiceText}
-          </label>
-          <br />
-          </div>
 
      );
+    }
+  render() {
+    const { value, choiceText, inReview } = this.props;
+    return (
+      <div>
+      <label htmlFor="0">
+      {this.renderLabel(value, choiceText, inReview)}
+      {choiceText}
+      </label>
+      <br />
+      </div>
+    );
   }
 }
 

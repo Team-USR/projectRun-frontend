@@ -1,6 +1,6 @@
 .questionWrapper {
-  width:300px;
-  text-align: center;
+  width:auto;
+
   padding: 30px;
   border-style: solid;
   border-color:  #888888;
@@ -8,23 +8,23 @@
   box-shadow: 5px 5px 5px #888888;
 }
 .questionsBlock{
-  text-align: center;
+
   padding:30px;
-  width:350px;
+  width:600px;
 }
 .submitPanel{
-  width:300px;
   text-align: center;
   padding:30px;
 }
-.choicePanel{
-
-  text-align: left;
+.questionPanel{
+  text-align: center;
 }
-.multiple
+
+
 
 
 .submitButton {
+margin:10px;
   width: 120px;
   height: 50px;
     background: #becbd6;
@@ -38,6 +38,7 @@
     text-shadow: 0 1px 0 #c4d0da; }
 
 .submitButton:hover {
+margin:10px;
     background: #97adbd;
     background: -webkit-gradient(linear, 0 0, 0 bottom, from(#97adbd), to(#a8bac8));
     background: -moz-linear-gradient(#97adbd, #a8bac8);
