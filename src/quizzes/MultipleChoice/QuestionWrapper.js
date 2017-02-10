@@ -20,11 +20,11 @@ class QuestionWrapper extends Component {
       }
       return false;
   }
-  renderChoices(indexQ, choice, inReview) {
+  renderChoices(indexQ, choices, inReview) {
       return (
         <Choice
-          value={indexQ} choiceText={choice.choiceText}
-          key={choice.id}
+          value={indexQ} choiceText={choices.answer}
+          key={choices.id}
           initialChecked={this.state.checked}
           inReview={inReview}
           callbackParent={(newState) => { this.onChildChanged(newState, indexQ); }}
@@ -56,7 +56,7 @@ class QuestionWrapper extends Component {
       <div style={styles.choiceContainer}>
       <div style={styles.choicePanel}>
         <form>
-          { objectQuestion.choice.map((choice, indexQ) =>
+          { objectQuestion.answers.map((choice, indexQ) =>
             this.renderChoices(indexQ, choice, inReview))}
         </form>
       </div>

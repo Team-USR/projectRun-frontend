@@ -7,8 +7,7 @@
   margin-bottom:10px;
   box-shadow: 5px 5px 5px #888888;
 }
-.questionsBlock{
-
+.questionBlock{
   padding:30px;
   width:600px;
 }
@@ -19,6 +18,7 @@
 .questionPanel{
   text-align: center;
 }
+
 
 
 
