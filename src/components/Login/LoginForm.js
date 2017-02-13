@@ -1,25 +1,32 @@
 import React from 'react';
-import { form, FieldGroup } from 'react-bootstrap';
-// import { ButtonWrapper } from './index';
+import { LoginWrapper, SignupWrapper } from './index';
+import '../../style/LoginForm.css';
 
 class LoginForm extends React.Component {
 
-  componentWillMount() {
-    console.log('success');
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      login: true,
+    };
+
+    this.changeToSignup = this.changeToSignup.bind(this);
+  }
+
+  changeToSignup() {
+    this.setState({
+      login: false,
+    });
   }
 
   render() {
     return (
-      <form>
-        <FieldGroup
-          id="formEmail"
-          type="email" label="Email address" placeholder="Enter email"
-        />
-        <FieldGroup
-          id="formPassword"
-          type="password" label="Password" placeholder="Enter password"
-        />
-      </form>
+      <div className="loginPage">
+        <h1 id="title">Welcome!</h1>
+        {this.state.login && <LoginWrapper changeToSignup={this.changeToSignup} />}
+        {!this.state.login && <SignupWrapper />}
+      </div>
     );
   }
 }

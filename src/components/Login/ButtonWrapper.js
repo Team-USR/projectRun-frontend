@@ -1,15 +1,21 @@
 import React from 'react';
-import { ButtonToolbar, Button } from 'react-bootstrap';
+import { ButtonGroup, Button } from 'react-bootstrap';
+import '../../style/ButtonWrapper.css';
 
 export class ButtonWrapper extends React.Component {
   render() {
     return (
       <div className="buttonWrapper">
-        <ButtonToolbar>
+        <ButtonGroup>
           <Button type="submit">Login</Button>
-          <Button type="submit">Sign up</Button>
-        </ButtonToolbar>
+          <Button type="submit" onClick={() => this.props.changeToSignup()}>Sign up</Button>
+        </ButtonGroup>
       </div>
     );
   }
+
 }
+
+ButtonWrapper.propTypes = {
+  changeToSignup: React.PropTypes.func.isRequired,
+};
