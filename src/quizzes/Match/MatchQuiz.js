@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import MatchLeftElement, { MatchRightElement, getAnswers } from './MatchElement';
-import '../../style/Match.css';
+import '../../style/Match/Match.css';
 
 export default class MatchQuiz extends Component {
 

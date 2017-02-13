@@ -9,7 +9,7 @@
   box-shadow: 5px 5px 5px #888888;
 }
 
-.rightColumn, .leftColumn {
+.matchQuizContainer .rightColumn, .matchQuizContainer .leftColumn {
   width: 50%;
   float: left;
   height: 350px;
