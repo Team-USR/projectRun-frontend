@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { QuestionWrapper } from './index';
 import '../../style/MultipleChoice.css';
@@ -8,28 +7,16 @@ class MultipleChoiceQuiz extends Component {
   constructor() {
     super();
     this.state = { quizInfo: [],
-      loading: true,
+      loadingQuiz: true,
+      loadingAnswers: false,
        answers: [],
        reviewState: false,
        resultsState: false,
-       //Test answer state
-       correctAnswers: [
-         { questionId: 7,
-           correctChoice: [{ correct: true, choiceFeedback: 'Because yes', id: '465234#1' },
-                           { correct: false, choiceFeedback: 'Because no', id: '465234#2' }] },
-        { questionId: 8,
-          correctChoice: [{ correct: false, choiceFeedback: 'Because no', id: '245324#1' },
-                          { correct: true, choiceFeedback: 'Because yes', id: '245324#2' }] }
-
-        ] };
+       correctAnswers: [],
+      };
        this.isReviewMode = this.isReviewMode.bind(this);
        this.isResultsMode = this.isResultsMode.bind(this);
 }
-componentWillMount() {
-    const { quizId } = this.props;
-    axios.get('https://project-run.herokuapp.com/quizzes/' + quizId)
-      .then(response => this.setState({ quizInfo: response.data, loading: false }));
-  }
 onChildChanged(newState, index) {
   const newArray = this.state.answers.slice();
   newArray[index] = newState;
@@ -43,30 +30,17 @@ isResultsMode() {
   const newState = !this.state.resultsState;
   this.setState({ resultsState: newState });
 }
-findCorrectChoice(id) {
-  let answer = null;
-  this.state.correctAnswers.map((question) => {
-        if (question.questionId === id) {
-          answer = question.correctChoice;
-        }
-        });
-        return answer;
-}
-renderQuestions(objectQuestion, index) {
+renderQuestion(question, index) {
   return (
     <QuestionWrapper
-     objectQuestion={objectQuestion}
+     question={question}
      index={index}
      key={index}
-     id={objectQuestion.id}
      inReview={this.state.reviewState}
      inResultsState={this.state.resultsState}
      myAnswers={this.state.answers}
-     //On finish press make the request to get the results then pass the results to the
-     correctAnswers={this.findCorrectChoice(objectQuestion.id)}
      callbackParent={(newState) => this.onChildChanged(newState, index)}
     />
-
   );
 }
 
@@ -91,27 +65,15 @@ renderSubmitPanel() {
 }
 
   render() {
-    if (this.state.loading) {
-      return (
-        <div className="questionBlock" style={styles.loading}>
-        <h1>Loading...</h1>
-        </div>
-      );
-    }
+    const { index, question } = this.props;
     return (
       <div className="questionBlock">
-      {this.state.quizInfo.questions.map(
-      (objectQuestion, index) => this.renderQuestions(objectQuestion, index))}
+      {this.renderQuestion(question, index)}
       {this.renderSubmitPanel()}
        </div>
 );
 }
 }
-const styles = {
-  loading: {
-    textAlign: 'center',
-    marginTop: 100,
-  }
-};
+
 
 export { MultipleChoiceQuiz };

@@ -46,24 +46,18 @@ class QuestionWrapper extends Component {
 
   render() {
   const {
-     objectQuestion, id, index, inReview, inResultsState, correctAnswers, myAnswers } = this.props;
+     question, index, inReview, inResultsState, myAnswers } = this.props;
   return (
     <div className="questionWrapper">
       <div className="questionPanel">
-        <Question question={objectQuestion.question} index={index} key={id} />
+        <Question question={question.question} index={index} key={question.id} />
       </div>
-
       <div style={styles.choiceContainer}>
       <div style={styles.choicePanel}>
         <form>
-          { objectQuestion.answers.map((choice, indexQ) =>
+          { question.answers.map((choice, indexQ) =>
             this.renderChoices(indexQ, choice, inReview))}
         </form>
-      </div>
-
-      <div style={styles.answersPanel}>
-      { correctAnswers.map((answer, answerIndex) =>
-        this.renderAnswers(inResultsState, answer, index, myAnswers, answerIndex))}
       </div>
       </div>
     </div>
