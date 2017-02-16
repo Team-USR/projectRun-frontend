@@ -1,29 +1,75 @@
 import React, { Component } from 'react';
-import { Question, Choice } from './index';
-import  { Button } from 'react-bootstrap';
+import { Question, Choice, Answer } from './index';
+
 import '../../style/MultipleChoice.css';
 
 class QuestionWrapper extends Component {
-
-render() {
-  return (
-    <div className="questionWrapper">
-      <div className="questionPanel">
-        <Question question="What's up?" index="1" />
+  constructor() {
+    super();
+    this.state = { results: [] };
+  }
+  onChildChanged(newState, index) {
+    const newArray = this.state.results.slice();
+    newArray[index] = newState;
+    this.setState({ results: newArray });
+    this.props.callbackParent(newArray, index);
+  }
+  getMyAnswer(index, myAnswers, answerIndex) {
+    if (myAnswers[index] && myAnswers[index][answerIndex]) {
+      return true;
+    }
+    return false;
+  }
+  renderChoices(indexQ, choices, inReview) {
+    return (
+      <Choice
+        value={indexQ} choiceText={choices.answer}
+        key={choices.id}
+        initialChecked={this.state.checked}
+        inReview={inReview}
+        callbackParent={(newState) => { this.onChildChanged(newState, indexQ); }}
+      />
+    );
+  }
+  renderAnswers(inResultsState, answer, index, myAnswers, answerIndex) {
+    if (inResultsState) {
+      return (
+        <Answer
+          key={answerIndex}
+          myAnswer={this.getMyAnswer(index, myAnswers, answerIndex)}
+          correctAnswer={answer.correct}
+          feedback={answer.choiceFeedback}
+        />
+      );
+    }
+  }
+  render() {
+    const { question, index, inReview, inResultsState, myAnswers } = this.props;
+    return (
+      <div className="questionWrapper">
+        <div className="questionPanel">
+          <Question question={question.question} index={index} key={question.id} />
+        </div>
+        <div style={styles.choiceContainer}>
+          <div style={styles.choicePanel}>
+            <form>
+              { question.answers.map((choice, indexQ) =>
+            this.renderChoices(indexQ, choice, inReview))}
+            </form>
+          </div>
+        </div>
       </div>
-      <div className="choicePanel">
-        <form>
-            <Choice value="1" choiceText=" Answer 1" />
-            <Choice value="2" choiceText=" Answer 2" />
-            <Choice value="3" choiceText=" Answer 3" />
-            <Choice value="4" choiceText=" Answer 4" />
-        </form>
-        
-      </div>
-    </div>
+    );
+  }
+}
+const styles = {
+  choicePanel: {
+    width: 150,
+  },
+  choiceContainer: {
+    padding: 10,
+  },
 
-  );
-}
-}
+};
 
 export { QuestionWrapper };
