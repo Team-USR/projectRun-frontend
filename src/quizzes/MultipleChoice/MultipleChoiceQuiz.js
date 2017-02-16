@@ -9,11 +9,11 @@ class MultipleChoiceQuiz extends Component {
     this.state = { quizInfo: [],
       loadingQuiz: true,
       loadingAnswers: false,
-       answers: [],
-       reviewState: false,
-       resultsState: false,
-       correctAnswers: [],
-      };
+      answers: [],
+      reviewState: false,
+      resultsState: false,
+      correctAnswers: [],
+    };
        this.isReviewMode = this.isReviewMode.bind(this);
        this.isResultsMode = this.isResultsMode.bind(this);
 }
@@ -76,4 +76,4 @@ renderSubmitPanel() {
 }
 
 
-export { MultipleChoiceQuiz };
+export  { MultipleChoiceQuiz } ;
