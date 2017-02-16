@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { MultipleChoiceQuiz } from './quizzes/MultipleChoice/';
+import { MatchQuiz } from './quizzes/Match/'
 import { QuizGeneratorWrapper } from './createQuizzes/MultipleChoice/';
 import './App.css';
 
@@ -10,7 +11,7 @@ class App extends Component {
     this.state = { loadingQuiz: true, quizInfo: [] };
   }
   componentWillMount() {
-    const quizId = '5';
+    const quizId = 4;
     axios.get('https://project-run.herokuapp.com/quizzes/' + quizId)
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
@@ -21,10 +22,16 @@ class App extends Component {
         question={question}
         index={index}
         key={question.id}
-        />);
-        if(question.type==='match'){
-          <MatchQuiz />
-      }
+        />
+  );
+    }
+
+
+    if (question.type === 'match') {
+      return (
+        <MatchQuiz
+        />
+  );
     }
   }
   render() {

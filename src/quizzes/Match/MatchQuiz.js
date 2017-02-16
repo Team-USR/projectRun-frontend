@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import MatchLeftElement, { MatchRightElement, getAnswers } from './MatchElement';
 import '../../style/Match.css';
 
-export default class MatchQuiz extends Component {
+class MatchQuiz extends Component {
 
   /** TODO: Move it somewhere else
  * Shuffles array in place. ES6 version
@@ -175,3 +175,5 @@ export default class MatchQuiz extends Component {
     return matchQuiz;
   }
 }
+
+export {MatchQuiz};
