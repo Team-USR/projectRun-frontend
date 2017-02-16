@@ -1,0 +1,30 @@
+.matchQuizContainer{
+  text-align: center;
+  width: 50%;
+  min-height: 400px;
+  margin: 5% auto;
+  padding: 30px;
+  border: 3px solid #000000;
+  margin-bottom: 10px;
+  box-shadow: 5px 5px 5px #888888;
+}
+
+.rightColumn, .leftColumn {
+  width: 50%;
+  float: left;
+  height: 350px;
+}
+
+.matchRightElement, .matchLeftElement {
+  height: 60px;
+  line-height: 60px;
+}
+
+.matchLeftElement .leftText {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.matchRightElement select {
+  width: 100%;
+}

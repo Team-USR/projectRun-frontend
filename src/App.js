@@ -22,6 +22,9 @@ class App extends Component {
         index={index}
         key={question.id}
         />);
+        if(question.type==='match'){
+          <MatchQuiz />
+      }
     }
   }
   render() {
@@ -38,7 +41,6 @@ class App extends Component {
     );
   //  return (<QuizGeneratorWrapper />);
   }
-
 }
 const styles = {
   quizTitle: {
