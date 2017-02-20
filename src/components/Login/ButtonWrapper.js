@@ -7,7 +7,7 @@ export class ButtonWrapper extends React.Component {
     return (
       <div className="buttonWrapper">
         <ButtonGroup>
-          <Button type="submit">Login</Button>
+          <Button type="submit" onClick={() => this.props.loginUser()}>Login</Button>
           <Button type="submit" onClick={() => this.props.changeToSignup()}>Sign up</Button>
         </ButtonGroup>
       </div>
@@ -18,4 +18,5 @@ export class ButtonWrapper extends React.Component {
 
 ButtonWrapper.propTypes = {
   changeToSignup: React.PropTypes.func.isRequired,
+  loginUser: React.PropTypes.func.isRequired,
 };
