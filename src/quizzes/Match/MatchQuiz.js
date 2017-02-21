@@ -176,4 +176,4 @@ class MatchQuiz extends Component {
   }
 }
 
-export {MatchQuiz};
+export default MatchQuiz;
