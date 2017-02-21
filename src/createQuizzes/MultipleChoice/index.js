@@ -1,3 +1,3 @@
 export * from './TextInput';
-export * from './ChoiceInput';
+export { ChoiceInput } from './ChoiceInput';
 export * from './QuizGeneratorWrapper';

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { LoginWrapper, SignupWrapper } from './index';
 import '../../style/LoginForm.css';
 
-class LoginForm extends React.Component {
+export default class LoginForm extends React.Component {
 
   constructor(props) {
     super(props);
@@ -13,6 +13,7 @@ class LoginForm extends React.Component {
       name: '',
       email: '',
       password: '',
+      failedAuth: false,
     };
 
     this.changeToSignup = this.changeToSignup.bind(this);
@@ -43,16 +44,11 @@ class LoginForm extends React.Component {
       },
     }).then((res) => {
       if (res.status.toString() === '201') {
-        document.cookie = `token=${res.data.jwt}`;
+        document.cookie = `token=${res.data.jwt};`;
+        this.setState({ failedAuth: false });
       }
-    })
-    .catch((err) => {
-      if (err.status.toString === '404') {
-        return (
-          <h2>Invalid email or password</h2>
-        );
-      }
-      return <h2>Login succesful</h2>;
+    }).catch(() => {
+      this.setState({ failedAuth: true });
     });
   }
 
@@ -63,13 +59,15 @@ class LoginForm extends React.Component {
         email: this.state.email,
         password: this.state.password,
       },
-    }).then(res => console.log(res.status))
-      .catch(err => console.log(err));
+    }).then(() => {
+      this.setState({ loginPage: true });
+    }).catch(err => console.log(err));
   }
 
   changeToSignup() {
     this.setState({
       loginPage: false,
+      failedAuth: false,
     });
   }
 
@@ -77,6 +75,8 @@ class LoginForm extends React.Component {
     return (
       <div className="loginPage">
         <h1 id="title">Welcome!</h1>
+        {this.state.failedAuth &&
+          <h3 className="invalidHeader">Invalid email or password</h3> }
         {this.state.loginPage && <LoginWrapper
           handleEmailChange={this.handleEmailChange}
           handlePasswordChange={this.handlePasswordChange}
@@ -93,5 +93,3 @@ class LoginForm extends React.Component {
     );
   }
 }
-
-export { LoginForm };

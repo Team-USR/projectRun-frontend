@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { MultipleChoiceQuiz } from './quizzes/MultipleChoice';
-import { MatchQuiz } from './quizzes/Match/';
+import { MatchQuiz } from './quizzes/Match';
 import './App.css';
 
 
