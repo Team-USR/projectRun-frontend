@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class MixQuiz extends Component {
+export default class MixQuiz extends Component {
   constructor(props) {
     super(props);
     this.state = { value: '', words: [] };
@@ -19,7 +19,7 @@ class MixQuiz extends Component {
     const xd = this.state.value;
     const dataArray = xd.split('\n');
     const finalDataArray = dataArray.map(element => element.trim());
-    for (let i = finalDataArray.length - 1; i >= 0; i--) {
+    for (let i = finalDataArray.length - 1; i >= 0; i -= 1) {
       if (finalDataArray[i] === '') {
         finalDataArray.splice(i, 1);
       }
@@ -44,5 +44,3 @@ class MixQuiz extends Component {
 MixQuiz.propTypes = {
   text: React.PropTypes.string.isRequired,
 };
-
-export { MixQuiz };

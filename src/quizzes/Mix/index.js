@@ -1,3 +1,3 @@
-export * from './MixQuiz';
-export * from './MixQuizGenerator';
-export * from './WordButton';
+export { default as MixQuiz } from './MixQuiz';
+export { default as MixQuizGenerator } from './MixQuizGenerator';
+export { default as WordButton } from './WordButton';
