@@ -27,7 +27,11 @@ function tokenManagement(state = { token: '' }, action) {
   }
 }
 
-const store = createStore(tokenManagement);
+function getExistingToken() {
+  return document.cookie.split(';').filter(s => s.includes('token='))[0].split('token=')[1] || '';
+}
+
+const store = createStore(tokenManagement, { token: getExistingToken() });
 
 
 ReactDOM.render(
