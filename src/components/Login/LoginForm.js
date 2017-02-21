@@ -20,8 +20,16 @@ export default class LoginForm extends React.Component {
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.loginUser = this.loginUser.bind(this);
     this.signupUser = this.signupUser.bind(this);
+    this.getLoginDetails = this.getLoginDetails.bind(this);
+  }
+
+  getLoginDetails() {
+    const user = {
+      email: this.state.email,
+      password: this.state.password,
+    };
+    return user;
   }
 
   handleNameChange(e) {
@@ -34,22 +42,6 @@ export default class LoginForm extends React.Component {
 
   handlePasswordChange(e) {
     this.setState({ password: e.target.value });
-  }
-
-  loginUser() {
-    axios.post('https://project-run.herokuapp.com/user_token', {
-      auth: {
-        email: this.state.email,
-        password: this.state.password,
-      },
-    }).then((res) => {
-      if (res.status.toString() === '201') {
-        document.cookie = `token=${res.data.jwt};`;
-        this.setState({ failedAuth: false });
-      }
-    }).catch(() => {
-      this.setState({ failedAuth: true });
-    });
   }
 
   signupUser() {
@@ -80,7 +72,7 @@ export default class LoginForm extends React.Component {
         {this.state.loginPage && <LoginWrapper
           handleEmailChange={this.handleEmailChange}
           handlePasswordChange={this.handlePasswordChange}
-          loginUser={this.loginUser}
+          getLoginDetails={this.getLoginDetails}
           changeToSignup={this.changeToSignup}
         />}
         {!this.state.loginPage && <SignupWrapper

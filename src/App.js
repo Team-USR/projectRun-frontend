@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from './quizzes/MultipleChoice';
 import { MatchQuiz } from './quizzes/Match';
+import { logoutUser } from './redux/modules/user';
 import './App.css';
 
 
@@ -52,6 +54,7 @@ class App extends Component {
     }
     return (
       <div className="questionBlock">
+        <Button onClick={logoutUser}>Logout</Button>
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         {this.state.quizInfo.questions.map((question, index) =>
             this.renderQuestions(question, index))}

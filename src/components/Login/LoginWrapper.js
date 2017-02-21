@@ -22,7 +22,7 @@ export default function LoginWrapper(props) {
       </form>
       <ButtonWrapper
         changeToSignup={props.changeToSignup}
-        loginUser={props.loginUser}
+        getLoginDetails={props.getLoginDetails}
       />
     </div>
   );
@@ -32,5 +32,5 @@ LoginWrapper.propTypes = {
   handleEmailChange: React.PropTypes.func.isRequired,
   handlePasswordChange: React.PropTypes.func.isRequired,
   changeToSignup: React.PropTypes.func.isRequired,
-  loginUser: React.PropTypes.func.isRequired,
+  getLoginDetails: React.PropTypes.func.isRequired,
 };

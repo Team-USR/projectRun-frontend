@@ -2,13 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import cookie from 'react-cookie';
 import { Router, Route, browserHistory } from 'react-router';
 import App from './App';
 import LoginContainer from './containers/LoginContainer';
+import reducer from './redux/modules/user';
 import './index.css';
 
 function isAuth(nextState, replace) {
-  if (!document.cookie.split(';').filter(s => s.includes('token=')).length > 0) {
+  if (!cookie.load('token')) {
     replace({
       pathname: '/login',
       state: { nextPathname: nextState.location.pathname },
@@ -16,22 +18,8 @@ function isAuth(nextState, replace) {
   }
 }
 
-function tokenManagement(state = { token: '' }, action) {
-  switch (action.type) {
-    case 'USER_LOGIN':
-      return Object.assign({}, state, {
-        token: action.token,
-      });
-    default:
-      return state;
-  }
-}
 
-function getExistingToken() {
-  return document.cookie.split(';').filter(s => s.includes('token='))[0].split('token=')[1] || '';
-}
-
-const store = createStore(tokenManagement, { token: getExistingToken() });
+const store = createStore(reducer, { token: cookie.load('token') || '' });
 
 
 ReactDOM.render(
