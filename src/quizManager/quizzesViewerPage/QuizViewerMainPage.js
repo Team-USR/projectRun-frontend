@@ -29,7 +29,7 @@ export default class QuizViewerMainPage extends Component {
     if (question.type === 'multiple_choice') {
       return (
         <MultipleChoiceQuiz
-          question={this.question}
+          question={question}
           index={index}
           key={question.id}
         />

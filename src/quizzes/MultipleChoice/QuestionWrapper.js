@@ -72,6 +72,7 @@ class QuestionWrapper extends Component {
   }
 }
 QuestionWrapper.propTypes = {
+  callbackParent: React.PropTypes.func.isRequired,
   index: React.PropTypes.number.isRequired,
   inReview: React.PropTypes.bool.isRequired,
 };

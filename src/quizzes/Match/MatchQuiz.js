@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
-import MatchLeftElement, { MatchRightElement, getAnswers } from './MatchElement';
+import { MatchLeftElement, MatchRightElement, getAnswers } from './index';
 import '../../style/Match.css';
 
-class MatchQuiz extends Component {
+export default class MatchQuiz extends Component {
 
   /** TODO: Move it somewhere else
  * Shuffles array in place. ES6 version
@@ -27,6 +27,7 @@ class MatchQuiz extends Component {
     this.state = {
       reviewState: false,
       resultState: false,
+      matchQuizTitle: 'Match the fruits on the left with the colors on the right:',
       matchQuizQuestions:
       {
         leftElements: [
@@ -150,9 +151,14 @@ class MatchQuiz extends Component {
   render() {
     const leftElements = this.leftColumnShuffled;
     const rightElements = this.rightColumnShuffled;
+    const matchQuizTitle = this.state.matchQuizTitle;
 
     const matchQuiz = (
       <div className="matchQuizContainer">
+
+        <div className="matchQuizTitle">
+          <h3> { matchQuizTitle } </h3>
+        </div>
 
         { /* Display Left Column */ }
         <div className="leftColumn">
@@ -175,5 +181,3 @@ class MatchQuiz extends Component {
     return matchQuiz;
   }
 }
-
-export default MatchQuiz;
