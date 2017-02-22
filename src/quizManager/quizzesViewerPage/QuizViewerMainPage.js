@@ -72,10 +72,18 @@ export default class QuizViewerMainPage extends Component {
       );
     }
     if (question.type === 'match') {
+      console.log(question);
       return (
-        <MatchQuiz />
+        <MatchQuiz
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          question={question}
+          index={index}
+          key={question.id}
+        />
       );
     }
+
     // if (question.type === 'mix_quiz'){
     //   return (
     //     <MixQuiz />
