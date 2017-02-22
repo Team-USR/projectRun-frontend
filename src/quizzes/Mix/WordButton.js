@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
+import { Button } from 'react-bootstrap';
 
 export default class WordButton extends Component {
   render() {
-    return (
-      <button onClick={() => this.props.onClick()}>{this.props.text}</button>
-    );
+    if (this.props.reviewState || this.props.resultsState) {
+      return (
+        <Button
+          onClick={() => this.props.onClick()}
+          disabled
+        >{this.props.text}</Button>
+      );
+    } else {
+      return (
+        <Button
+          onClick={() => this.props.onClick()}
+        >{this.props.text}</Button>
+      );
+    }
   }
 
 }

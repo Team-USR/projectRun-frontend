@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
 import { Question, Choice, Answer } from './index';
-
 import '../../style/MultipleChoice.css';
 
+const styles = {
+  choicePanel: {
+    width: 150,
+  },
+  choiceContainer: {
+    padding: 10,
+  },
+
+};
 class QuestionWrapper extends Component {
   constructor() {
     super();
@@ -15,7 +23,7 @@ class QuestionWrapper extends Component {
     this.props.callbackParent(newArray, index);
   }
   getMyAnswer(index, myAnswers, answerIndex) {
-    if (myAnswers[index] && myAnswers[index][answerIndex]) {
+    if (myAnswers[index] && myAnswers[this.index][answerIndex]) {
       return true;
     }
     return false;
@@ -42,9 +50,10 @@ class QuestionWrapper extends Component {
         />
       );
     }
+    return ('');
   }
   render() {
-    const { question, index, inReview, inResultsState, myAnswers } = this.props;
+    const { question, index, inReview } = this.props;
     return (
       <div className="questionWrapper">
         <div className="questionPanel">
@@ -62,14 +71,9 @@ class QuestionWrapper extends Component {
     );
   }
 }
-const styles = {
-  choicePanel: {
-    width: 150,
-  },
-  choiceContainer: {
-    padding: 10,
-  },
-
+QuestionWrapper.propTypes = {
+  callbackParent: React.PropTypes.func.isRequired,
+  index: React.PropTypes.number.isRequired,
+  inReview: React.PropTypes.bool.isRequired,
 };
-
-export { QuestionWrapper };
+export default QuestionWrapper;

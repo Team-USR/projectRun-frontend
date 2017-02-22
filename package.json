@@ -4,6 +4,7 @@
   "description": "USR team Project Run Frontend",
   "main": "index.js",
   "dependencies": {
+    "axios": "^0.15.3",
     "express": "^4.14.1",
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.7",

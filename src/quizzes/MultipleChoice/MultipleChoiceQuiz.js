@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import { QuestionWrapper } from './index';
 import '../../style/MultipleChoice.css';
@@ -10,70 +10,42 @@ class MultipleChoiceQuiz extends Component {
       loadingQuiz: true,
       loadingAnswers: false,
       answers: [],
-      reviewState: false,
-      resultsState: false,
       correctAnswers: [],
     };
-       this.isReviewMode = this.isReviewMode.bind(this);
-       this.isResultsMode = this.isResultsMode.bind(this);
-}
-onChildChanged(newState, index) {
-  const newArray = this.state.answers.slice();
-  newArray[index] = newState;
-  this.setState({ answers: newArray });
-}
-isReviewMode() {
-  const newState = !this.state.reviewState;
-  this.setState({ reviewState: newState });
-}
-isResultsMode() {
-  const newState = !this.state.resultsState;
-  this.setState({ resultsState: newState });
-}
-renderQuestion(question, index) {
-  return (
-    <QuestionWrapper
-     question={question}
-     index={index}
-     key={index}
-     inReview={this.state.reviewState}
-     inResultsState={this.state.resultsState}
-     myAnswers={this.state.answers}
-     callbackParent={(newState) => this.onChildChanged(newState, index)}
-    />
-  );
-}
-
-renderSubmitPanel() {
-      if (this.state.reviewState && !this.state.resultsState) {
-        return (
-        <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>BACK</Button>
-          <Button className="submitButton" onClick={this.isResultsMode}>SUBMIT</Button>
-        </div>);
-      }
-      if (!this.state.reviewState && !this.state.resultsState) {
-        return (
-        <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
-        </div>);
-      } if (this.state.resultsState) {
-        return (
-          <div className="submitPanel" />
-          );
-      }
-}
+  }
+  onChildChanged(newState, index) {
+    const newArray = this.state.answers.slice();
+    newArray[index] = newState;
+    this.setState({ answers: newArray });
+  }
+  renderQuestion(question, index, reviewState, resultsState) {
+    return (
+      <QuestionWrapper
+        question={question}
+        index={index}
+        key={index}
+        inReview={reviewState}
+        inResultsState={resultsState}
+        myAnswers={this.state.answers}
+        callbackParent={newState => this.onChildChanged(newState, index)}
+      />
+    );
+  }
 
   render() {
-    const { index, question } = this.props;
+    const { index, question, reviewState, resultsState } = this.props;
     return (
       <div className="questionBlock">
-      {this.renderQuestion(question, index)}
-      {this.renderSubmitPanel()}
-       </div>
-);
+        {this.renderQuestion(question, index, reviewState, resultsState)}
+      </div>
+    );
+  }
 }
-}
+MultipleChoiceQuiz.propTypes = {
+  index: PropTypes.number.isRequired,
+  reviewState: PropTypes.bool.isRequired,
+  resultsState: PropTypes.bool.isRequired,
 
+};
 
-export  { MultipleChoiceQuiz } ;
+export default MultipleChoiceQuiz;
