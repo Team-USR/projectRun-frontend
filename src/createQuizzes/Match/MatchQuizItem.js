@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import '../../style/Match/CreateMatchQuiz.css';
 
-export default class CreateMatchQuiz extends Component {
+export default class MatchQuizItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -10,12 +10,11 @@ export default class CreateMatchQuiz extends Component {
       reviewState: false,
       resultState: false,
     };
-    this.deleteMatchEl = this.deleteMatchEl.bind(this);
+    this.deleteCurrentItem = this.deleteCurrentItem.bind(this);
     this.updateReviewState = this.updateReviewState.bind(this);
   }
 
-  deleteMatchEl() {
-    // console.log('delete');
+  deleteCurrentItem() {
     this.setState({ render: false });
     this.props.deleteMatchElement(this.props.id);
   }
@@ -23,6 +22,10 @@ export default class CreateMatchQuiz extends Component {
   // TO DO: Disable the textareas when in review mode
   updateReviewState(isReview) {
     this.setState({ reviewState: isReview });
+  }
+
+  updateResutlState(isResult) {
+    this.setState({ reviewState: isResult });
   }
 
   render() {
@@ -34,22 +37,28 @@ export default class CreateMatchQuiz extends Component {
         </div>
         <textarea
           id={this.props.id}
-          disabled={this.state.reviewState}
-          name={this.props.leftTextareaName} className="itemTexarea leftTextarea"
+          disabled={this.props.reviewState}
+          name={this.props.leftTextareaName}
+          className="itemTexarea leftTextarea"
+          placeholder={this.props.leftTextareaPlaceholder}
           rows="3" cols="30"
           onChange={e => this.props.onChange(e)}
-          defaultValue={this.props.defaultValue}
         />
         <textarea
           id={this.props.id}
           disabled={this.props.reviewState}
-          name={this.props.rightTextareaName} className="itemTexarea rightTextarea"
+          name={this.props.rightTextareaName}
+          className="itemTexarea rightTextarea"
+          placeholder={this.props.rightTextareaPlaceHolder}
           rows="3" cols="30"
           onChange={e => this.props.onChange(e)}
-          defaultValue={this.props.defaultValue}
         />
-        <div className="">
-          <Button className="" id={this.props.id} onClick={this.deleteMatchEl}> X </Button>
+        <div className="deleteMatchItemBtnContainer">
+          <Button
+            className="deleteMatchItemBtn"
+            id={this.props.id}
+            onClick={this.deleteCurrentItem}
+          > X </Button>
         </div>
       </div>
     );
@@ -61,8 +70,13 @@ export default class CreateMatchQuiz extends Component {
   }
 }
 
-CreateMatchQuiz.propTypes = {
+MatchQuizItem.propTypes = {
   id: PropTypes.number.isRequired,
   leftTextareaName: PropTypes.string.isRequired,
   rightTextareaName: PropTypes.string.isRequired,
+  reviewState: PropTypes.bool.isRequired,
+  onChange: PropTypes.func.isRequired,
+  deleteMatchElement: PropTypes.func.isRequired,
+  leftTextareaPlaceholder: PropTypes.string.isRequired,
+  rightTextareaPlaceHolder: PropTypes.string.isRequired,
 };
