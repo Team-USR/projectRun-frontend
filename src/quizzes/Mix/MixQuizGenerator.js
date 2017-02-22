@@ -3,7 +3,11 @@ import React, { Component } from 'react';
 export default class MixQuizGenerator extends Component {
   constructor(props) {
     super(props);
-    this.state = { value: '', words: [] };
+    this.state = {
+      value: '',
+      words: [],
+      mainSolution: '',
+      alternateSolution: [] };
     this.handleChange = this.handleChange.bind(this);
     this.submitData = this.submitData.bind(this);
   }
