@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { MatchLeftElement, MatchRightElement } from './index';
+import { MatchLeftElement, MatchRightElement, getAnswersArray } from './index';
 import '../../style/Match.css';
 
 export default class MatchQuiz extends Component {
@@ -22,6 +22,7 @@ export default class MatchQuiz extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      matchQuizId: this.props.question.id,
       matchQuizTitle: this.props.question.question,
       matchQuizIndex: this.props.index,
       matchQuizQuestions: {
@@ -64,6 +65,12 @@ export default class MatchQuiz extends Component {
 
     this.leftColumnShuffled = MatchQuiz.shuffleArray(leftElements);
     this.rightColumnShuffled = MatchQuiz.shuffleArray(rightElements);
+  }
+
+  getMatchAnswersObject() {
+    this.ansArray = getAnswersArray();
+    const ansObject = { id: this.state.matchQuizId, pairs: this.ansArray };
+    return ansObject;
   }
 
   checkAnswers(answers) {

@@ -30,11 +30,11 @@ function onChange(e) {
   const leftMatchID = leftElements[indexOfElement].id;
 
   answers[indexOfElement] =
-    { leftID: leftMatchID, rightID: selectedOptionID };
+    { left_choice_ID: leftMatchID, right_choice_ID: selectedOptionID };
 }
 
 /* Function used in order to get the 'answers' array */
-export function getAnswers() {
+export function getAnswersArray() {
   return answers;
 }
 
