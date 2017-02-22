@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { Button } from 'react-bootstrap';
 import { QuestionWrapper } from './index';
 import '../../style/MultipleChoice.css';
 
@@ -13,10 +12,9 @@ class MultipleChoiceQuiz extends Component {
       correctAnswers: [],
     };
   }
-  onChildChanged(newState, index) {
-    const newArray = this.state.answers.slice();
-    newArray[index] = newState;
-    this.setState({ answers: newArray });
+  onChildChanged(newState) {
+    this.setState({ answers: newState });
+    this.props.callbackParent(this.props.question.id, newState);
   }
   renderQuestion(question, index, reviewState, resultsState) {
     return (
@@ -45,6 +43,7 @@ MultipleChoiceQuiz.propTypes = {
   index: PropTypes.number.isRequired,
   reviewState: PropTypes.bool.isRequired,
   resultsState: PropTypes.bool.isRequired,
+  callbackParent: PropTypes.func.isRequired,
 
 };
 

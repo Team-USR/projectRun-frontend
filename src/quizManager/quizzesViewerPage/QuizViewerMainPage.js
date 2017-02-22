@@ -23,7 +23,9 @@ export default class QuizViewerMainPage extends Component {
     this.state = { loadingQuiz: true,
       quizInfo: [],
       reviewState: false,
-      resultsState: false };
+      resultsState: false,
+      answers: { questions: [] },
+    };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
   }
@@ -38,6 +40,19 @@ export default class QuizViewerMainPage extends Component {
   isResultsMode() {
     const newState = !this.state.resultsState;
     this.setState({ resultsState: newState });
+  }
+  collectAnswers(id, answer_ids, type, index) {
+    if (type === 'multiple_choice') {
+      const mcqAnswer = { id, answer_ids };
+      const tempAnswers = this.state.answers;
+      const tempQuestions = this.state.answers.questions.slice();
+      tempQuestions[index - 1] = mcqAnswer;
+      tempAnswers.questions = tempQuestions;
+      this.setState({ answers: tempAnswers });
+    }
+    if (type === 'match') {
+
+    }
   }
   renderSubmitPanel() {
     if (this.state.reviewState && !this.state.resultsState) {
@@ -67,12 +82,13 @@ export default class QuizViewerMainPage extends Component {
           resultsState={this.state.resultsState}
           question={question}
           index={index}
+          callbackParent={(questionId, answers) =>
+          this.collectAnswers(questionId, answers, question.type, index)}
           key={question.id}
         />
       );
     }
     if (question.type === 'match') {
-      console.log(question);
       return (
         <MatchQuiz
           reviewState={this.state.reviewState}
@@ -83,7 +99,6 @@ export default class QuizViewerMainPage extends Component {
         />
       );
     }
-
     // if (question.type === 'mix_quiz'){
     //   return (
     //     <MixQuiz />
@@ -101,8 +116,8 @@ export default class QuizViewerMainPage extends Component {
       <div className="questionBlock">
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         {this.state.quizInfo.questions.map((question, index) =>
-          this.renderQuestions(question, index))}
-          {this.renderSubmitPanel()}
+        this.renderQuestions(question, index))}
+        {this.renderSubmitPanel()}
       </div>
     );
   }

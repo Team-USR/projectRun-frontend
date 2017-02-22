@@ -9,7 +9,7 @@ class Choice extends Component {
     const newState = !this.state.checked;
     const index = this.state.index;
     this.setState({ checked: newState });
-    this.props.callbackParent(newState, index);
+    this.props.callbackParent(newState, this.props.id, index);
   }
   renderLabel(value, choiceText, inReview) {
     if (inReview) {
@@ -50,6 +50,7 @@ Choice.propTypes = {
   value: React.PropTypes.number.isRequired,
   choiceText: React.PropTypes.string.isRequired,
   inReview: React.PropTypes.bool.isRequired,
+  id: React.PropTypes.number.isRequired,
 };
 
 export default Choice;
