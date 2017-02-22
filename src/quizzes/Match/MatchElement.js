@@ -18,7 +18,7 @@ export default function MatchLeftElement(props) {
 /* This function is called when the user slect an option from dropdown
 *  It updates the 'answer' array with the selected options
 */
-function onChange(e) {
+function onChange(e, props) {
   const target = e.nativeEvent.target;
 
   // nth Option inside a Select tag
@@ -31,6 +31,7 @@ function onChange(e) {
 
   answers[indexOfElement] =
     { left_choice_ID: leftMatchID, right_choice_ID: selectedOptionID };
+  props.onChange(answers);
 }
 
 /* Function used in order to get the 'answers' array */
@@ -46,7 +47,11 @@ export function MatchRightElement(props) {
   return (
     <div className="matchRightElementWrapper">
       <div className="matchRightElement">
-        <select id={props.index} disabled={props.inReview || props.inResult} onChange={onChange}>
+        <select
+          id={props.index}
+          disabled={props.inReview || props.inResult}
+          onChange={e => onChange(e, props)}
+        >
           <option
             id={props.defaultValue.id}
             value={props.defaultValue.answer}

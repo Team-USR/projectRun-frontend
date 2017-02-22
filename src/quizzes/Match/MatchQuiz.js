@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { MatchLeftElement, MatchRightElement, getAnswersArray } from './index';
+import { MatchLeftElement, MatchRightElement } from './index';
 import '../../style/Match.css';
 
 export default class MatchQuiz extends Component {
@@ -67,12 +67,6 @@ export default class MatchQuiz extends Component {
     this.rightColumnShuffled = MatchQuiz.shuffleArray(rightElements);
   }
 
-  getMatchAnswersObject() {
-    this.ansArray = getAnswersArray();
-    const ansObject = { id: this.state.matchQuizId, pairs: this.ansArray };
-    return ansObject;
-  }
-
   checkAnswers(answers) {
     let correct = 0;
     for (let i = 0; i < answers.length; i += 1) {
@@ -108,6 +102,9 @@ export default class MatchQuiz extends Component {
         defaultValue={this.state.matchQuizQuestions.defaultValue}
         inReview={this.props.reviewState}
         inResult={this.props.resultsState}
+        onChange={
+          answers =>
+          this.props.callbackParent(this.state.matchQuizId, answers)}
         index={index}
         key={obj.id}
       />
@@ -162,4 +159,5 @@ MatchQuiz.propTypes = {
     type: PropTypes.string.isRequired,
   }).isRequired,
   index: PropTypes.number.isRequired,
+  callbackParent: PropTypes.func.isRequired,
 };
