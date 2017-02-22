@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
-import { MatchQuiz } from '../../quizzes/Match/MatchQuiz';
+import { MatchQuiz } from '../../quizzes/Match/';
 import '../../App.css';
 
 const styles = {
@@ -19,16 +20,51 @@ const styles = {
 export default class QuizViewerMainPage extends Component {
   constructor() {
     super();
-    this.state = { loadingQuiz: true, quizInfo: [] };
+    this.state = { loadingQuiz: true,
+      quizInfo: [],
+      reviewState: false,
+      resultsState: false };
+    this.isReviewMode = this.isReviewMode.bind(this);
+    this.isResultsMode = this.isResultsMode.bind(this);
   }
   componentWillMount() {
-    axios.get('https://project-run.herokuapp.com/quizzes/5')
+    axios.get('https://project-run.herokuapp.com/quizzes/6')
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
+  }
+  isReviewMode() {
+    const newState = !this.state.reviewState;
+    this.setState({ reviewState: newState });
+  }
+  isResultsMode() {
+    const newState = !this.state.resultsState;
+    this.setState({ resultsState: newState });
+  }
+  renderSubmitPanel() {
+    if (this.state.reviewState && !this.state.resultsState) {
+      return (
+        <div className="submitPanel">
+          <Button className="submitButton" onClick={this.isReviewMode}>BACK</Button>
+          <Button className="submitButton" onClick={this.isResultsMode}>SUBMIT</Button>
+        </div>);
+    }
+    if (!this.state.reviewState && !this.state.resultsState) {
+      return (
+        <div className="submitPanel">
+          <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
+        </div>);
+    } if (this.state.resultsState) {
+      return (
+        <div className="submitPanel" />
+      );
+    }
+    return ('');
   }
   renderQuestions(question, index) {
     if (question.type === 'multiple_choice') {
       return (
         <MultipleChoiceQuiz
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
           question={question}
           index={index}
           key={question.id}
@@ -40,6 +76,11 @@ export default class QuizViewerMainPage extends Component {
         <MatchQuiz />
       );
     }
+    // if (question.type === 'mix_quiz'){
+    //   return (
+    //     <MixQuiz />
+    //   );
+    // }
     return ('');
   }
   render() {
@@ -53,6 +94,7 @@ export default class QuizViewerMainPage extends Component {
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         {this.state.quizInfo.questions.map((question, index) =>
           this.renderQuestions(question, index))}
+          {this.renderSubmitPanel()}
       </div>
     );
   }
