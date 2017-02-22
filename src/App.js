@@ -31,8 +31,8 @@ class App extends Component {
   render() {
     return (
       <div className="generalWrapper">
-        <MixQuiz text="Press enter after every word you want to jumble." />
-        <MixQuizGenerator />
+        <MixQuiz />
+        <MixQuizGenerator text="Press enter after every word you want to jumble." />
       </div>
     );
     // if (this.state.loadingQuiz) {

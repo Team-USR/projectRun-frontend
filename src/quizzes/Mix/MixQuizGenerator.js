@@ -1,64 +1,46 @@
 import React, { Component } from 'react';
-import { WordButton } from './WordButton';
 
 export default class MixQuizGenerator extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      wordsArray: [],
-      currentArray: [],
-      receivedArray: [
-        'Lets',
-        'test',
-        'this',
-        'code',
-        'xd'],
-    };
+    this.state = { value: '', words: [] };
+    this.handleChange = this.handleChange.bind(this);
+    this.submitData = this.submitData.bind(this);
   }
 
-
-  componentWillMount() {
-    const buttonArray = [];
-    for (let i = 0; i < this.state.receivedArray.length; i += 1) {
-      buttonArray.push(<WordButton
-        key={i} isInArray="false"
-        text={this.state.receivedArray[i]} onClick={() => this.handleClick(buttonArray[i])}
-      />);
+  handleChange(event) {
+    this.setState({ value: event.target.value });
+    const currentString = event.target.value;
+    if (currentString.endsWith('\n')) {
+      console.log('newline found');
     }
-    this.setState({ wordsArray: buttonArray,
-      currentArray: Array(this.state.receivedArray.length).fill(null) });
-
-    //  console.log(buttonArray);
   }
-
-  handleClick(button) {
-    const wordsCopy = this.state.wordsArray;
-    const currentCopy = this.state.currentArray;
-    if (wordsCopy.indexOf(button) !== -1 && wordsCopy[wordsCopy.indexOf(button)] !== null) {
-      //  console.log('button is in words at ' + wordsCopy.indexOf(button));
-      currentCopy.splice(currentCopy.indexOf(null), 0, button);
-      wordsCopy[wordsCopy.indexOf(button)] = null;
-    } else if (currentCopy.indexOf(button) !== -1) {
-      //  console.log('button is in words at ' + currentCopy.indexOf(button));
-      wordsCopy.splice(wordsCopy.indexOf(null), 0, button);
-      currentCopy[currentCopy.indexOf(button)] = null;
+  submitData() {
+    const xd = this.state.value;
+    const dataArray = xd.split('\n');
+    const finalDataArray = dataArray.map(element => element.trim());
+    for (let i = finalDataArray.length - 1; i >= 0; i -= 1) {
+      if (finalDataArray[i] === '') {
+        finalDataArray.splice(i, 1);
+      }
     }
-    this.setState({
-      wordsArray: wordsCopy,
-      currentArray: currentCopy,
-    });
+    console.log(finalDataArray);
   }
-
   render() {
     return (
-      <div className="generatorContainer">
-        <div className="solutionContainer" id="solutionContainer">
-          Your solution so far: {this.state.currentArray}
-        </div>
-        <div className="wordsContainer" id="wordsContainer">
-          {this.state.wordsArray}
+      <div className="mixQuizContainer">
+        <h1> MixQuiz title</h1>
+        <div className="mixQuizContainer">
+          <div className="mixQuizInput">
+            { this.props.text }
+            <textarea value={this.state.value} rows="10" cols="30" onChange={this.handleChange} />
+          </div>
+          <button type="button" onClick={this.submitData}>Create Quiz</button>
         </div>
       </div>
     );
   }
 }
+MixQuizGenerator.propTypes = {
+  text: React.PropTypes.string.isRequired,
+};
