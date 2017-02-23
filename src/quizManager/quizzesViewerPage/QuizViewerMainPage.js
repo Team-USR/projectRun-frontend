@@ -64,7 +64,6 @@ export default class QuizViewerMainPage extends Component {
     tempQuestions[index - 1] = newAnswer;
     tempAnswers.questions = tempQuestions;
     this.setState({ answers: tempAnswers });
-    console.log(this.state.answers);
   }
   renderSubmitPanel() {
     if (this.state.reviewState && !this.state.resultsState) {

@@ -20,7 +20,7 @@ export default class TextInput extends Component {
   }
 }
 TextInput.propTypes = {
-  //callbackParent: PropTypes.func.isRequired,
-//  value: PropTypes.string.isRequired,
+  callbackParent: PropTypes.func.isRequired,
+  value: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
 };

@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 class Choice extends Component {
-  constructor({ initialChecked }) {
+  constructor() {
     super();
-    this.state = { checked: initialChecked };
+    this.state = { checked: false };
   }
   onStateChanged() {
     const newState = !this.state.checked;
@@ -46,11 +46,11 @@ class Choice extends Component {
   }
 }
 Choice.propTypes = {
-  callbackParent: React.PropTypes.func.isRequired,
-  value: React.PropTypes.number.isRequired,
-  choiceText: React.PropTypes.string.isRequired,
-  inReview: React.PropTypes.bool.isRequired,
-  id: React.PropTypes.number.isRequired,
+  callbackParent: PropTypes.func.isRequired,
+  value: PropTypes.number.isRequired,
+  choiceText: PropTypes.string.isRequired,
+  inReview: PropTypes.bool.isRequired,
+  id: PropTypes.number.isRequired,
 };
 
 export default Choice;

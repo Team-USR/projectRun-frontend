@@ -58,4 +58,5 @@ export default class MultipleChoiceQuizGenerator extends Component {
   }
 MultipleChoiceQuizGenerator.propTypes = {
   handleInput: React.PropTypes.func.isRequired,
+  content: React.PropTypes.bool.isRequired,
 };

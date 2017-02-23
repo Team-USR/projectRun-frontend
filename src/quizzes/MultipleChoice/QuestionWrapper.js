@@ -35,7 +35,6 @@ class QuestionWrapper extends Component {
         value={indexQ} choiceText={choices.answer}
         id={choices.id}
         key={choices.id}
-        initialChecked={this.state.checked}
         inReview={inReview}
         callbackParent={(newState) => { this.onChildChanged(newState, choices.id, indexQ); }}
       />

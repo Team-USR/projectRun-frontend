@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 
 class Answer extends Component {
@@ -16,8 +16,8 @@ class Answer extends Component {
   }
 }
 Answer.propTypes = {
-  myAnswer: React.PropTypes.string.isRequired,
-  correctAnswer: React.PropTypes.string.isRequired,
-  feedback: React.PropTypes.string.isRequired,
+  myAnswer: PropTypes.string.isRequired,
+  correctAnswer: PropTypes.string.isRequired,
+  feedback: PropTypes.string.isRequired,
 };
 export default Answer ;
