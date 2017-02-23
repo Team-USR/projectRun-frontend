@@ -30,7 +30,7 @@ function onChange(e, props) {
   const leftMatchID = leftElements[indexOfElement].id;
 
   answers[indexOfElement] =
-    { left_choice_ID: leftMatchID, right_choice_ID: selectedOptionID };
+    { left_choice_id: leftMatchID, right_choice_id: selectedOptionID };
   props.onChange(answers);
 }
 

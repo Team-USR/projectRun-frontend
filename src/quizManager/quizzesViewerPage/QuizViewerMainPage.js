@@ -38,6 +38,8 @@ export default class QuizViewerMainPage extends Component {
     this.setState({ reviewState: newState });
   }
   isResultsMode() {
+    axios.post('https://project-run.herokuapp.com/quizzes/13/check', this.state.answers)
+    .then(response => console.log(response));
     const newState = !this.state.resultsState;
     this.setState({ resultsState: newState });
   }
@@ -54,12 +56,10 @@ export default class QuizViewerMainPage extends Component {
       const matchAnswer = { id, pairs: answers };
       newAnswer = matchAnswer;
     }
-
     // if (type === 'mix_quiz') {
     //   const mixQuizAnswer = { id, pairs: answers };
     //   newAnswer = mixQuizAnswer;
     // }
-
     tempQuestions[index - 1] = newAnswer;
     tempAnswers.questions = tempQuestions;
     this.setState({ answers: tempAnswers });
