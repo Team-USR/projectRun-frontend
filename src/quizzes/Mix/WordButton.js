@@ -1,22 +1,24 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 
-export default class WordButton extends Component {
-  render() {
-    if (this.props.reviewState || this.props.resultsState) {
-      return (
-        <Button
-          onClick={() => this.props.onClick()}
-          disabled
-        >{this.props.text}</Button>
-      );
-    } else {
-      return (
-        <Button
-          onClick={() => this.props.onClick()}
-        >{this.props.text}</Button>
-      );
-    }
+export default function WordButton(props) {
+  if (props.reviewState || props.resultsState) {
+    return (
+      <Button
+        onClick={() => props.onClick()}
+        disabled
+      >{props.text}</Button>
+    );
   }
-
+  return (
+    <Button
+      onClick={() => props.onClick()}
+    >{props.text}</Button>
+  );
 }
+WordButton.propTypes = {
+  reviewState: PropTypes.bool.isRequired,
+  resultsState: PropTypes.bool.isRequired,
+  text: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+};

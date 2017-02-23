@@ -14,10 +14,6 @@ export default class MixQuizGenerator extends Component {
 
   handleChange(event) {
     this.setState({ value: event.target.value });
-    const currentString = event.target.value;
-    if (currentString.endsWith('\n')) {
-      console.log('newline found');
-    }
   }
   submitData() {
     const xd = this.state.value;
@@ -28,7 +24,6 @@ export default class MixQuizGenerator extends Component {
         finalDataArray.splice(i, 1);
       }
     }
-    console.log(finalDataArray);
   }
   render() {
     return (
