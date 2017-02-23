@@ -44,7 +44,15 @@ MultipleChoiceQuiz.propTypes = {
   reviewState: PropTypes.bool.isRequired,
   resultsState: PropTypes.bool.isRequired,
   callbackParent: PropTypes.func.isRequired,
-
+  question: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    question: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    answers: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      answer: PropTypes.string.isRequired,
+    })).isRequired,
+  }).isRequired,
 };
 
 export default MultipleChoiceQuiz;

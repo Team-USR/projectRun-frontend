@@ -7,4 +7,5 @@ export default function Question(props) {
 }
 Question.propTypes = {
   index: PropTypes.number.isRequired,
+  question: PropTypes.string.isRequired,
 };

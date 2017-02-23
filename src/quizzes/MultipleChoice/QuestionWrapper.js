@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Question, Choice, Answer } from './index';
 import '../../style/MultipleChoice.css';
 
@@ -74,8 +74,17 @@ class QuestionWrapper extends Component {
   }
 }
 QuestionWrapper.propTypes = {
-  callbackParent: React.PropTypes.func.isRequired,
-  index: React.PropTypes.number.isRequired,
-  inReview: React.PropTypes.bool.isRequired,
+  callbackParent: PropTypes.func.isRequired,
+  index: PropTypes.number.isRequired,
+  inReview: PropTypes.bool.isRequired,
+  question: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    question: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    answers: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      answer: PropTypes.string.isRequired,
+    })).isRequired,
+  }).isRequired,
 };
 export default QuestionWrapper;

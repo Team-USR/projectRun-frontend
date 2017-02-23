@@ -48,7 +48,8 @@ export default class MultipleChoiceQuizGenerator extends Component {
           <TextInput text="Question: " />
           <Button onClick={this.addAnswers}>Add more answers</Button>
           <form>
-            {this.state.choices.map((element, index) => this.renderAnswers(index, this.props.content))}
+            {this.state.choices.map((element, index) =>
+            this.renderAnswers(index, this.props.content))}
           </form>
         </div>
       </div>
@@ -56,6 +57,5 @@ export default class MultipleChoiceQuizGenerator extends Component {
   }
   }
 MultipleChoiceQuizGenerator.propTypes = {
-  index: React.PropTypes.number.isRequired,
   handleInput: React.PropTypes.func.isRequired,
 };
