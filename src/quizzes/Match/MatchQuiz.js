@@ -118,8 +118,20 @@ export default class MatchQuiz extends Component {
     const matchQuizTitle = this.state.matchQuizTitle;
     const quizIndex = this.state.matchQuizIndex;
 
+    const ans = true;
+    let answerClass = '';
+
+    if (this.props.resultsState) {
+      if (ans) {
+        answerClass = 'correctAnswerWrapper';
+      } else {
+        answerClass = 'wrongAnswerWrapper';
+      }
+    }
+
+    const styleClasses = `matchQuizContainer ${answerClass}`;
     const matchQuiz = (
-      <div className="matchQuizContainer">
+      <div className={styleClasses}>
 
         <div className="matchQuizTitle">
           <h3> { quizIndex }. { matchQuizTitle } </h3>

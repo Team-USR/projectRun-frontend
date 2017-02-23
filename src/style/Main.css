@@ -1,4 +1,4 @@
-.matchQuizContainer, .mixQuizContainer, .multipleChoiceContainer{
+.matchQuizContainer, .mixQuizContainer, .multipleChoiceContainer {
   text-align: center;
   width: 40%;
   min-height: 250px;
@@ -9,6 +9,15 @@
   box-shadow: 5px 5px 5px #888888;
 }
 
+.correctAnswerWrapper {
+  border-color: #0e8c16;
+  box-shadow: 5px 5px 5px #0e8c16;
+}
+
+.wrongAnswerWrapper {
+  border-color: #b22121;
+  box-shadow: 5px 5px 5px #b22121;
+}
 
 @media (max-width: 900px) {
   .matchQuizContainer, .mixQuizContainer, .multipleChoiceContainer{
