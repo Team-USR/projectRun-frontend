@@ -17,9 +17,9 @@ const styles = {
     marginTop: 100,
   },
 };
-var config = {
-   headers: { 'Authorization': store.getState().token };
-};
+// var config = {
+//    headers: { 'Authorization': store.getState().token };
+// };
 export default class QuizViewerMainPage extends Component {
   constructor() {
     super();
