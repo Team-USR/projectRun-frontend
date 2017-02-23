@@ -57,7 +57,7 @@ class QuestionWrapper extends Component {
   render() {
     const { question, index, inReview } = this.props;
     return (
-      <div className="questionWrapper">
+      <div className="multipleChoiceContainer">
         <div className="questionPanel">
           <Question question={question.question} index={index} key={question.id} />
         </div>

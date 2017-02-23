@@ -96,7 +96,7 @@ export default class MixQuiz extends Component {
 
   render() {
     return (
-      <div className="generatorContainer">
+      <div className="mixQuizContainer">
         <h3>{this.props.index}. {this.props.question.question}</h3>
         <div className="solutionContainer" id="solutionContainer">
           Your solution so far: {this.renderButtons(this.state.topArray)}
