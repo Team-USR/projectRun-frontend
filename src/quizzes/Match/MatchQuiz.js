@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
-import { MatchLeftElement, MatchRightElement, getAnswers } from './index';
+import React, { Component, PropTypes } from 'react';
+import { MatchLeftElement, MatchRightElement } from './index';
 import '../../style/Match.css';
 
 export default class MatchQuiz extends Component {
@@ -20,31 +19,36 @@ export default class MatchQuiz extends Component {
     return shuffledArray;
   }
 
-  constructor() {
-    super();
-
-    // TEST Input state object for Match Quiz
+  constructor(props) {
+    super(props);
     this.state = {
-      reviewState: false,
-      resultState: false,
-      matchQuizTitle: 'Match the fruits on the left with the colors on the right:',
-      matchQuizQuestions:
+      matchQuizId: this.props.question.id,
+      matchQuizTitle: this.props.question.question,
+      matchQuizIndex: this.props.index,
+      matchQuizQuestions: {
+        leftElements: this.props.question.left,
+        rightElements: this.props.question.right,
+        defaultValue: { id: '000', answer: 'Choose a value!' },
+      },
+
+      // TEST Input state object for Match Quiz
+      matchQuizQuestionsTest:
       {
         leftElements: [
-          { id: '001', text: 'Apple' },
-          { id: '002', text: 'Plum' },
-          { id: '003', text: 'Peach' },
-          { id: '004', text: 'Cherry' },
-          { id: '005', text: 'Lemon' },
+          { id: '001', answer: 'Apple' },
+          { id: '002', answer: 'Plum' },
+          { id: '003', answer: 'Peach' },
+          { id: '004', answer: 'Cherry' },
+          { id: '005', answer: 'Lemon' },
         ],
         rightElements: [
-          { id: '101', text: 'Purple' },
-          { id: '202', text: 'Green' },
-          { id: '303', text: 'Red' },
-          { id: '404', text: 'Yellow' },
-          { id: '505', text: 'Orange' },
+          { id: '101', answer: 'Purple' },
+          { id: '202', answer: 'Green' },
+          { id: '303', answer: 'Red' },
+          { id: '404', answer: 'Yellow' },
+          { id: '505', answer: 'Orange' },
         ],
-        defaultValue: { id: '000', text: 'Choose a value!' },
+        defaultValue: { id: '000', answer: 'Choose a value!' },
       },
       matchQuizAnswers: {
         '001': '202',
@@ -61,9 +65,6 @@ export default class MatchQuiz extends Component {
 
     this.leftColumnShuffled = MatchQuiz.shuffleArray(leftElements);
     this.rightColumnShuffled = MatchQuiz.shuffleArray(rightElements);
-
-    this.isReviewMode = this.isReviewMode.bind(this);
-    this.isResultMode = this.isResultMode.bind(this);
   }
 
   checkAnswers(answers) {
@@ -80,53 +81,12 @@ export default class MatchQuiz extends Component {
     return percentage;
   }
 
-  isReviewMode() {
-    const newState = !this.state.reviewState;
-    this.setState({ reviewState: newState });
-  }
-
-  isResultMode() {
-    const newState = !this.state.resultState;
-    this.setState({ resultState: newState });
-
-    const answers = getAnswers();
-    this.score = this.checkAnswers(answers);
-  }
-
-  renderSubmitPanel() {
-    const reviewState = this.state.reviewState;
-    const resultState = this.state.resultState;
-
-    if (reviewState && !resultState) {
-      return (
-        <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>BACK</Button>
-          <Button className="submitButton" onClick={this.isResultMode}>SUBMIT</Button>
-        </div>
-      );
-    }
-    if (!reviewState && !resultState) {
-      return (
-        <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
-        </div>
-      );
-    }
-
-    return (
-      <div className="submitPanel">
-        <h3>Well Done!</h3>
-        <h3>Score: { this.score } % </h3>
-      </div>
-    );
-  }
-
   renderLeftElement(obj) {
     this.obj = obj;
     const leftElement = (
       <MatchLeftElement
         id={obj.id}
-        text={obj.text}
+        answer={obj.answer}
         key={obj.id}
       />
     );
@@ -140,7 +100,11 @@ export default class MatchQuiz extends Component {
         rightElements={this.rightColumnShuffled}
         leftElements={this.leftColumnShuffled}
         defaultValue={this.state.matchQuizQuestions.defaultValue}
-        inReview={this.state.reviewState}
+        inReview={this.props.reviewState}
+        inResult={this.props.resultsState}
+        onChange={
+          answers =>
+          this.props.callbackParent(this.state.matchQuizId, answers)}
         index={index}
         key={obj.id}
       />
@@ -152,12 +116,25 @@ export default class MatchQuiz extends Component {
     const leftElements = this.leftColumnShuffled;
     const rightElements = this.rightColumnShuffled;
     const matchQuizTitle = this.state.matchQuizTitle;
+    const quizIndex = this.state.matchQuizIndex;
 
+    const ans = true;
+    let answerClass = '';
+
+    if (this.props.resultsState) {
+      if (ans) {
+        answerClass = 'correctAnswerWrapper';
+      } else {
+        answerClass = 'wrongAnswerWrapper';
+      }
+    }
+
+    const styleClasses = `matchQuizContainer ${answerClass}`;
     const matchQuiz = (
-      <div className="matchQuizContainer">
+      <div className={styleClasses}>
 
         <div className="matchQuizTitle">
-          <h3> { matchQuizTitle } </h3>
+          <h3> { quizIndex }. { matchQuizTitle } </h3>
         </div>
 
         { /* Display Left Column */ }
@@ -171,13 +148,28 @@ export default class MatchQuiz extends Component {
               this.renderRightElement(obj, index))
           }
         </div>
-
-        { /* Display Buttons section */ }
-        { this.renderSubmitPanel() }
       </div>
-
     );
-
     return matchQuiz;
   }
 }
+
+MatchQuiz.propTypes = {
+  reviewState: PropTypes.bool.isRequired,
+  resultsState: PropTypes.bool.isRequired,
+  question: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    question: PropTypes.string.isRequired,
+    left: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      answer: PropTypes.string.isRequired,
+    })).isRequired,
+    right: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      answer: PropTypes.string.isRequired,
+    })).isRequired,
+    type: PropTypes.string.isRequired,
+  }).isRequired,
+  index: PropTypes.number.isRequired,
+  callbackParent: PropTypes.func.isRequired,
+};

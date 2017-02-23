@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
+import React, { PropTypes } from 'react';
 
-class Question extends Component {
-render() {
- const { index, question } = this.props;
+export default function Question(props) {
   return (
-      <h3>{index}. {question}</h3>
+    <h3>{props.index}. {props.question}</h3>
   );
 }
-}
-
-export { Question };
+Question.propTypes = {
+  index: PropTypes.number.isRequired,
+  question: PropTypes.string.isRequired,
+};

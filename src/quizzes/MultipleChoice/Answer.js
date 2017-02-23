@@ -1,19 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 
 class Answer extends Component {
 
-isCorrect(myAnswer, correctAnswer) {
-if (myAnswer === correctAnswer) {
-  return 'CORRECT';
-} return 'WRONG';
+  render() {
+    const { correctAnswer, feedback } = this.props;
+    return (
+      <h4>Answer: {correctAnswer}</h4>
+    );
+  }
 }
-render() {
-  const { myAnswer, correctAnswer, feedback } = this.props;
-  return (
-    <h4>{this.isCorrect(myAnswer, correctAnswer)},  Feedback: {feedback}</h4>
-  );
-}
-}
-
-export { Answer } ;
+Answer.propTypes = {
+  correctAnswer: PropTypes.string.isRequired,
+  feedback: PropTypes.string.isRequired,
+};
+export default Answer ;

@@ -1,3 +1,3 @@
-export * from './TextInput';
-export { ChoiceInput } from './ChoiceInput';
-export * from './QuizGeneratorWrapper';
+export { default as TextInput } from './TextInput';
+export { default as ChoiceInput } from './ChoiceInput';
+export { default as MultipleChoiceQuizGenerator } from './MultipleChoiceQuizGenerator';
