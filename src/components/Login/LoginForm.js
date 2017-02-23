@@ -68,6 +68,7 @@ export default class LoginForm extends React.Component {
       loginPage: false,
       failedAuth: false,
     });
+    console.log(this.props);
   }
 
   render() {
@@ -82,6 +83,7 @@ export default class LoginForm extends React.Component {
           getLoginDetails={this.getLoginDetails}
           changeToSignup={this.changeToSignup}
           handleLogin={this.handleLogin}
+          onLogin={this.props.onLogin}
         />}
         {!this.state.loginPage && <SignupWrapper
           handleNameChange={this.handleNameChange}
@@ -93,3 +95,7 @@ export default class LoginForm extends React.Component {
     );
   }
 }
+
+LoginForm.propTypes = {
+  onLogin: React.PropTypes.func.isRequired,
+};

@@ -16,7 +16,7 @@ export default function reducer(state = { token: cookie.load('token') || '' }, a
   }
 }
 
-export function loginUser(user, callback) {
+export function loginUser(user, callback, failedCallback) {
   axios.post('https://project-run.herokuapp.com/user_token', {
     auth: {
       email: user.email,
@@ -26,12 +26,20 @@ export function loginUser(user, callback) {
     if (res.status.toString() === '201') {
       cookie.save('token', res.data.jwt);
     }
-  }).catch((err) => { callback(err); });
+  }).then(() => callback())
+    .catch((err) => { failedCallback(err); });
 }
 
 export function logoutUser() {
   console.log('removing token');
   return {
     type: USER_LOGOUT,
+  };
+}
+
+export function loggedInUser(userToken) {
+  return {
+    type: USER_LOGIN,
+    token: userToken,
   };
 }
