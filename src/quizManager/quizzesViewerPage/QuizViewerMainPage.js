@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
+import { MixQuiz } from '../../quizzes/Mix/';
 import '../../App.css';
 
 const styles = {
@@ -112,11 +113,17 @@ export default class QuizViewerMainPage extends Component {
         />
       );
     }
-    // if (question.type === 'mix_quiz'){
-    //   return (
-    //     <MixQuiz />
-    //   );
-    // }
+    if (question.type === 'mix') {
+      return (
+        <MixQuiz
+          question={question}
+          index={index}
+          key={question.id}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+        />
+      );
+    }
     return ('');
   }
   render() {
