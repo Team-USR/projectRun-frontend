@@ -1,0 +1,17 @@
+.signupWrapper {
+  text-align: left;
+  width: 33.3%;
+  height: 25%;
+  position: absolute;
+  margin: auto;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+
+.signupLabel {
+  padding: 8px 4px 4px 4px;
+}
+
+.signupButtonWrapper {
+  text-align: center;
+  margin-top: 10px;
+}

@@ -3,6 +3,16 @@ import { Question, Choice, Answer } from './index';
 
 import '../../style/MultipleChoice.css';
 
+const styles = {
+  choicePanel: {
+    width: 150,
+  },
+  choiceContainer: {
+    padding: 10,
+  },
+
+};
+
 class QuestionWrapper extends Component {
   constructor() {
     super();
@@ -42,6 +52,7 @@ class QuestionWrapper extends Component {
         />
       );
     }
+    return true;
   }
   render() {
     const { question, index, inReview, inResultsState, myAnswers } = this.props;
@@ -62,14 +73,9 @@ class QuestionWrapper extends Component {
     );
   }
 }
-const styles = {
-  choicePanel: {
-    width: 150,
-  },
-  choiceContainer: {
-    padding: 10,
-  },
 
+QuestionWrapper.propTypes = {
+  callbackParent: React.PropTypes.func.isRequired,
 };
 
 export { QuestionWrapper };
