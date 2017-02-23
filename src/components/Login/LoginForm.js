@@ -22,6 +22,7 @@ export default class LoginForm extends React.Component {
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.signupUser = this.signupUser.bind(this);
     this.getLoginDetails = this.getLoginDetails.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
   }
 
   getLoginDetails() {
@@ -30,6 +31,12 @@ export default class LoginForm extends React.Component {
       password: this.state.password,
     };
     return user;
+  }
+
+  handleLogin(err) {
+    if (err) {
+      this.setState({ failedAuth: true });
+    }
   }
 
   handleNameChange(e) {
@@ -74,6 +81,7 @@ export default class LoginForm extends React.Component {
           handlePasswordChange={this.handlePasswordChange}
           getLoginDetails={this.getLoginDetails}
           changeToSignup={this.changeToSignup}
+          handleLogin={this.handleLogin}
         />}
         {!this.state.loginPage && <SignupWrapper
           handleNameChange={this.handleNameChange}

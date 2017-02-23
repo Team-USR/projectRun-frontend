@@ -9,7 +9,7 @@ export default function ButtonWrapper(props) {
       <ButtonGroup>
         <Button
           type="submit"
-          onClick={() => loginUser(props.getLoginDetails())}
+          onClick={() => loginUser(props.getLoginDetails(), props.handleLogin)}
         >
         Login
         </Button>

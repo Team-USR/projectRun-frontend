@@ -5,7 +5,7 @@ const USER_LOGIN = 'USER_LOGIN';
 const USER_LOGOUT = 'USER_LOGOUT';
 
 
-export default function reducer(state = { token: '' }, action) {
+export default function reducer(state = { token: cookie.load('token') || '' }, action) {
   switch (action.type) {
     case USER_LOGIN:
       return Object.assign({}, { token: action.token });
@@ -16,7 +16,7 @@ export default function reducer(state = { token: '' }, action) {
   }
 }
 
-export function loginUser(user) {
+export function loginUser(user, callback) {
   axios.post('https://project-run.herokuapp.com/user_token', {
     auth: {
       email: user.email,
@@ -26,8 +26,7 @@ export function loginUser(user) {
     if (res.status.toString() === '201') {
       cookie.save('token', res.data.jwt);
     }
-  }).catch(() => {
-  });
+  }).catch((err) => { callback(err); });
 }
 
 export function logoutUser() {
