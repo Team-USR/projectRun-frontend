@@ -4,7 +4,6 @@ import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
-import '../../App.css';
 
 const styles = {
   quizTitle: {
