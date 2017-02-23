@@ -17,7 +17,9 @@ const styles = {
     marginTop: 100,
   },
 };
-
+var config = {
+   headers: { 'Authorization': store.getState().token };
+};
 export default class QuizViewerMainPage extends Component {
   constructor() {
     super();
@@ -26,6 +28,7 @@ export default class QuizViewerMainPage extends Component {
       reviewState: false,
       resultsState: false,
       answers: { questions: [] },
+      retrievedAnswers: '',
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -34,15 +37,26 @@ export default class QuizViewerMainPage extends Component {
     axios.get('https://project-run.herokuapp.com/quizzes/13')
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
+  getCorrectAnswer(id) {
+    if (this.state.retrievedAnswers && this.state.resultsState === true) {
+      return this.state.retrievedAnswers.data.filter((object) => {
+        if (object.id === id) return object;
+        return ('');
+      });
+    }
+    return ('');
+  }
   isReviewMode() {
     const newState = !this.state.reviewState;
     this.setState({ reviewState: newState });
   }
   isResultsMode() {
     axios.post('https://project-run.herokuapp.com/quizzes/13/check', this.state.answers)
-    .then(response => console.log(response));
-    const newState = !this.state.resultsState;
-    this.setState({ resultsState: newState });
+    .then((response) => {
+      this.setState({ retrievedAnswers: response });
+      const newState = !this.state.resultsState;
+      this.setState({ resultsState: newState });
+    });
   }
   collectAnswers(id, answers, type, index) {
     const tempAnswers = this.state.answers;
@@ -93,6 +107,7 @@ export default class QuizViewerMainPage extends Component {
           resultsState={this.state.resultsState}
           question={question}
           index={index}
+          correctAnswer={this.getCorrectAnswer(question.id)}
           callbackParent={(questionId, answers) =>
           this.collectAnswers(questionId, answers, question.type, index)}
           key={question.id}

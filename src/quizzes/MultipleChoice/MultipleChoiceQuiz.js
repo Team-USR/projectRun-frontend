@@ -24,6 +24,7 @@ class MultipleChoiceQuiz extends Component {
         key={index}
         inReview={reviewState}
         inResultsState={resultsState}
+        correctAnswer={this.props.correctAnswer}
         myAnswers={this.state.answers}
         callbackParent={newState => this.onChildChanged(newState, index)}
       />

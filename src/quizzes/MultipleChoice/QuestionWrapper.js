@@ -23,12 +23,6 @@ class QuestionWrapper extends Component {
     this.setState({ results: newArray });
     this.props.callbackParent(newArray, index);
   }
-  getMyAnswer(index, myAnswers, answerIndex) {
-    if (myAnswers[index] && myAnswers[this.index][answerIndex]) {
-      return true;
-    }
-    return false;
-  }
   renderChoices(indexQ, choices, inReview) {
     return (
       <Choice
@@ -38,17 +32,26 @@ class QuestionWrapper extends Component {
         inReview={inReview}
         callbackParent={(newState) => { this.onChildChanged(newState, choices.id, indexQ); }}
       />
+      /*  this.renderAnswers(choices.id) */
     );
   }
-  renderAnswers(inResultsState, answer, index, myAnswers, answerIndex) {
-    if (inResultsState) {
+  renderAnswers(choiceID) {
+    if (this.props.inResultsState) {
+      const tempIndex = this.props.correctAnswer[0].correct_answers.indexOf(choiceID)
+        return (
+          <Answer
+            key={this.props.index}
+            correctAnswer={this.props.correctAnswer[0].correct_answers[tempIndex]}
+            feedback={'feedback'}
+          />
+        );
+    }
+    return ('');
+  }
+  renderFinalAnswer() {
+    if (this.props.inResultsState) {
       return (
-        <Answer
-          key={answerIndex}
-          myAnswer={this.getMyAnswer(index, myAnswers, answerIndex)}
-          correctAnswer={answer.correct}
-          feedback={answer.choiceFeedback}
-        />
+        <h3>Answer: {this.props.correctAnswer[0].correct.toString()}</h3>
       );
     }
     return ('');
@@ -64,7 +67,8 @@ class QuestionWrapper extends Component {
           <div style={styles.choicePanel}>
             <form>
               { question.answers.map((choice, indexQ) =>
-            this.renderChoices(indexQ, choice, inReview))}
+                this.renderChoices(indexQ, choice, inReview))}
+              {this.renderFinalAnswer()}
             </form>
           </div>
         </div>
