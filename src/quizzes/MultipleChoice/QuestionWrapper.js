@@ -16,9 +16,10 @@ class QuestionWrapper extends Component {
     super();
     this.state = { results: [] };
   }
-  onChildChanged(newState, index) {
+  onChildChanged(newState, id, index) {
     const newArray = this.state.results.slice();
-    newArray[index] = newState;
+    if (newState === true) newArray.push(id);
+    else newArray.splice(index, 1);
     this.setState({ results: newArray });
     this.props.callbackParent(newArray, index);
   }
@@ -32,10 +33,11 @@ class QuestionWrapper extends Component {
     return (
       <Choice
         value={indexQ} choiceText={choices.answer}
+        id={choices.id}
         key={choices.id}
         initialChecked={this.state.checked}
         inReview={inReview}
-        callbackParent={(newState) => { this.onChildChanged(newState, indexQ); }}
+        callbackParent={(newState) => { this.onChildChanged(newState, choices.id, indexQ); }}
       />
     );
   }

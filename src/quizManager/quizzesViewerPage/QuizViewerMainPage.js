@@ -24,7 +24,9 @@ export default class QuizViewerMainPage extends Component {
     this.state = { loadingQuiz: true,
       quizInfo: [],
       reviewState: false,
-      resultsState: false };
+      resultsState: false,
+      answers: { questions: [] },
+    };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
   }
@@ -39,6 +41,30 @@ export default class QuizViewerMainPage extends Component {
   isResultsMode() {
     const newState = !this.state.resultsState;
     this.setState({ resultsState: newState });
+  }
+  collectAnswers(id, answers, type, index) {
+    const tempAnswers = this.state.answers;
+    const tempQuestions = this.state.answers.questions.slice();
+    let newAnswer = {};
+
+    if (type === 'multiple_choice') {
+      const mcqAnswer = { id, answer_ids: answers };
+      newAnswer = mcqAnswer;
+    }
+    if (type === 'match') {
+      const matchAnswer = { id, pairs: answers };
+      newAnswer = matchAnswer;
+    }
+
+    // if (type === 'mix_quiz') {
+    //   const mixQuizAnswer = { id, pairs: answers };
+    //   newAnswer = mixQuizAnswer;
+    // }
+
+    tempQuestions[index - 1] = newAnswer;
+    tempAnswers.questions = tempQuestions;
+    this.setState({ answers: tempAnswers });
+    console.log(this.state.answers);
   }
   renderSubmitPanel() {
     if (this.state.reviewState && !this.state.resultsState) {
@@ -68,13 +94,23 @@ export default class QuizViewerMainPage extends Component {
           resultsState={this.state.resultsState}
           question={question}
           index={index}
+          callbackParent={(questionId, answers) =>
+          this.collectAnswers(questionId, answers, question.type, index)}
           key={question.id}
         />
       );
     }
     if (question.type === 'match') {
       return (
-        <MatchQuiz />
+        <MatchQuiz
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          question={question}
+          index={index}
+          callbackParent={(questionId, answers) =>
+          this.collectAnswers(questionId, answers, question.type, index)}
+          key={question.id}
+        />
       );
     }
     if (question.type === 'mix') {
@@ -92,16 +128,16 @@ export default class QuizViewerMainPage extends Component {
   }
   render() {
     if (this.state.loadingQuiz) {
-      return (<div className="questionBlock" style={styles.loading}>
+      return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Loading...</h1>
       </div>);
     }
     return (
-      <div className="questionBlock">
+      <div className="mainQuizViewerBlock">
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         {this.state.quizInfo.questions.map((question, index) =>
-          this.renderQuestions(question, index))}
-          {this.renderSubmitPanel()}
+        this.renderQuestions(question, index))}
+        {this.renderSubmitPanel()}
       </div>
     );
   }

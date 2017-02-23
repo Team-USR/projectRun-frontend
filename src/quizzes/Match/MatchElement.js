@@ -9,7 +9,7 @@ export default function MatchLeftElement(props) {
   return (
     <div className="matchLeftElementWrapper">
       <div className="matchLeftElement">
-        <div className="leftText"> {props.text} </div>
+        <div className="leftText"> {props.answer} </div>
       </div>
     </div>
   );
@@ -18,7 +18,7 @@ export default function MatchLeftElement(props) {
 /* This function is called when the user slect an option from dropdown
 *  It updates the 'answer' array with the selected options
 */
-function onChange(e) {
+function onChange(e, props) {
   const target = e.nativeEvent.target;
 
   // nth Option inside a Select tag
@@ -30,11 +30,12 @@ function onChange(e) {
   const leftMatchID = leftElements[indexOfElement].id;
 
   answers[indexOfElement] =
-    { leftID: leftMatchID, rightID: selectedOptionID };
+    { left_choice_ID: leftMatchID, right_choice_ID: selectedOptionID };
+  props.onChange(answers);
 }
 
 /* Function used in order to get the 'answers' array */
-export function getAnswers() {
+export function getAnswersArray() {
   return answers;
 }
 
@@ -46,14 +47,18 @@ export function MatchRightElement(props) {
   return (
     <div className="matchRightElementWrapper">
       <div className="matchRightElement">
-        <select id={props.index} disabled={props.inReview} onChange={onChange}>
+        <select
+          id={props.index}
+          disabled={props.inReview || props.inResult}
+          onChange={e => onChange(e, props)}
+        >
           <option
             id={props.defaultValue.id}
-            value={props.defaultValue.text}
+            value={props.defaultValue.answer}
             key={props.defaultValue.id}
-          >{props.defaultValue.text}</option>
+          >{props.defaultValue.answer}</option>
           {rightElements.map(obj =>
-            <option id={obj.id} value={obj.text} key={obj.id}> {obj.text} </option>)}
+            <option id={obj.id} value={obj.answer} key={obj.id}> {obj.answer} </option>)}
         </select>
 
       </div>
@@ -62,22 +67,23 @@ export function MatchRightElement(props) {
 }
 
 MatchLeftElement.propTypes = {
-  text: React.PropTypes.string.isRequired,
+  answer: React.PropTypes.string.isRequired,
 };
 
 MatchRightElement.propTypes = {
   index: PropTypes.number.isRequired,
   rightElements: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired,
+    answer: PropTypes.string.isRequired,
   })).isRequired,
   leftElements: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired,
+    answer: PropTypes.string.isRequired,
   })).isRequired,
   defaultValue: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired,
+    answer: PropTypes.string.isRequired,
   }).isRequired,
   inReview: PropTypes.bool.isRequired,
+  inResult: PropTypes.bool.isRequired,
 };
