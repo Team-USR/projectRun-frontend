@@ -49,7 +49,7 @@ class QuestionWrapper extends Component {
     return ('');
   }
   renderFinalAnswer() {
-    if (this.props.inResultsState) {
+    if (this.props.inResultsState && this.props.correctAnswer[0]) {
       return (
         <h3>Answer: {this.props.correctAnswer[0].correct.toString()}</h3>
       );
