@@ -37,14 +37,14 @@ class QuestionWrapper extends Component {
   }
   renderAnswers(choiceID) {
     if (this.props.inResultsState) {
-      const tempIndex = this.props.correctAnswer[0].correct_answers.indexOf(choiceID)
-        return (
-          <Answer
-            key={this.props.index}
-            correctAnswer={this.props.correctAnswer[0].correct_answers[tempIndex]}
-            feedback={'feedback'}
-          />
-        );
+      const tempIndex = this.props.correctAnswer[0].correct_answers.indexOf(choiceID);
+      return (
+        <Answer
+          key={this.props.index}
+          correctAnswer={this.props.correctAnswer[0].correct_answers[tempIndex]}
+          feedback={'feedback'}
+        />
+      );
     }
     return ('');
   }
@@ -58,8 +58,22 @@ class QuestionWrapper extends Component {
   }
   render() {
     const { question, index, inReview } = this.props;
+
+    this.answerClass = '';
+
+    if (this.props.inResultsState) {
+      const ans = this.props.correctAnswer[0];
+      if (ans && ans.correct) {
+        this.answerClass = 'correctAnswerWrapper';
+      } else {
+        this.answerClass = 'wrongAnswerWrapper';
+      }
+    }
+
+    const styleClasses = `multipleChoiceContainer ${this.answerClass}`;
+
     return (
-      <div className="multipleChoiceContainer">
+      <div className={styleClasses}>
         <div className="questionPanel">
           <Question question={question.question} index={index} key={question.id} />
         </div>
@@ -80,6 +94,7 @@ QuestionWrapper.propTypes = {
   callbackParent: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   inReview: PropTypes.bool.isRequired,
+  inResultsState: PropTypes.bool.isRequired,
   question: PropTypes.shape({
     id: PropTypes.number.isRequired,
     question: PropTypes.string.isRequired,
@@ -89,5 +104,9 @@ QuestionWrapper.propTypes = {
       answer: PropTypes.string.isRequired,
     })).isRequired,
   }).isRequired,
+  correctAnswer: PropTypes.arrayOf(PropTypes.shape({
+    correct: PropTypes.bool,
+    correct_answers: PropTypes.arrayOf(PropTypes.number),
+  })).isRequired,
 };
 export default QuestionWrapper;
