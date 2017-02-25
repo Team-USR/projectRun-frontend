@@ -118,18 +118,18 @@ export default class MatchQuiz extends Component {
     const matchQuizTitle = this.state.matchQuizTitle;
     const quizIndex = this.state.matchQuizIndex;
 
-    const ans = true;
-    let answerClass = '';
+    this.answerClass = '';
 
     if (this.props.resultsState) {
-      if (ans) {
-        answerClass = 'correctAnswerWrapper';
+      const ans = this.props.correctAnswer[0];
+      if (ans && ans.correct) {
+        this.answerClass = 'correctAnswerWrapper';
       } else {
-        answerClass = 'wrongAnswerWrapper';
+        this.answerClass = 'wrongAnswerWrapper';
       }
     }
 
-    const styleClasses = `matchQuizContainer ${answerClass}`;
+    const styleClasses = `matchQuizContainer ${this.answerClass}`;
     const matchQuiz = (
       <div className={styleClasses}>
 
@@ -171,5 +171,6 @@ MatchQuiz.propTypes = {
     type: PropTypes.string.isRequired,
   }).isRequired,
   index: PropTypes.number.isRequired,
+  correctAnswer: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   callbackParent: PropTypes.func.isRequired,
 };

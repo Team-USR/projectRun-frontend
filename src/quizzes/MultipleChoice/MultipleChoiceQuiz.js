@@ -54,6 +54,7 @@ MultipleChoiceQuiz.propTypes = {
       answer: PropTypes.string.isRequired,
     })).isRequired,
   }).isRequired,
+  correctAnswer: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 export default MultipleChoiceQuiz;

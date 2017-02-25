@@ -40,10 +40,10 @@ export default class QuizViewerMainPage extends Component {
     if (this.state.retrievedAnswers && this.state.resultsState === true) {
       return this.state.retrievedAnswers.data.filter((object) => {
         if (object.id === id) return object;
-        return ('');
+        return ([{ corect: false }]);
       });
     }
-    return ('');
+    return ([{ corect: false }]);
   }
   isReviewMode() {
     const newState = !this.state.reviewState;
@@ -120,6 +120,7 @@ export default class QuizViewerMainPage extends Component {
           resultsState={this.state.resultsState}
           question={question}
           index={index}
+          correctAnswer={this.getCorrectAnswer(question.id)}
           callbackParent={(questionId, answers) =>
           this.collectAnswers(questionId, answers, question.type, index)}
           key={question.id}
