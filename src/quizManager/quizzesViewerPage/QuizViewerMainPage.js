@@ -27,7 +27,8 @@ export default class QuizViewerMainPage extends Component {
       reviewState: false,
       resultsState: false,
       answers: { questions: [] },
-      retrievedAnswers: '',
+      getResponse: '',
+      data: {},
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -36,15 +37,6 @@ export default class QuizViewerMainPage extends Component {
     axios.get('https://project-run.herokuapp.com/quizzes/13')
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
-  getCorrectAnswer(id) {
-    if (this.state.retrievedAnswers && this.state.resultsState === true) {
-      return this.state.retrievedAnswers.data.filter((object) => {
-        if (object.id === id) return object;
-        return ([{ corect: false }]);
-      });
-    }
-    return ([{ corect: false }]);
-  }
   isReviewMode() {
     const newState = !this.state.reviewState;
     this.setState({ reviewState: newState });
@@ -52,9 +44,14 @@ export default class QuizViewerMainPage extends Component {
   isResultsMode() {
     axios.post('https://project-run.herokuapp.com/quizzes/13/check', this.state.answers)
     .then((response) => {
-      this.setState({ retrievedAnswers: response });
       const newState = !this.state.resultsState;
-      this.setState({ resultsState: newState });
+      const dataSet = response.data;
+      const newData = {};
+      dataSet.map((object) => {
+        newData[object.id] = object;
+        return 0;
+      });
+      this.setState({ resultsState: newState, getResponse: response, data: newData });
     });
   }
   collectAnswers(id, answers, type, index) {
@@ -102,28 +99,30 @@ export default class QuizViewerMainPage extends Component {
     if (question.type === 'multiple_choice') {
       return (
         <MultipleChoiceQuiz
+          id={question.id}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
           question={question}
           index={index}
-          correctAnswer={this.getCorrectAnswer(question.id)}
+          correctAnswer={this.state.data[question.id]}
           callbackParent={(questionId, answers) =>
           this.collectAnswers(questionId, answers, question.type, index)}
-          key={question.id}
+          key={`multiple_choice_quiz_${question.id}`}
         />
       );
     }
     if (question.type === 'match') {
       return (
         <MatchQuiz
+          id={question.id}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
           question={question}
           index={index}
-          correctAnswer={this.getCorrectAnswer(question.id)}
+          correctAnswer={this.state.data[question.id]}
           callbackParent={(questionId, answers) =>
           this.collectAnswers(questionId, answers, question.type, index)}
-          key={question.id}
+          key={`match_quiz_${question.id}`}
         />
       );
     }

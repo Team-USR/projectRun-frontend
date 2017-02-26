@@ -37,11 +37,11 @@ class QuestionWrapper extends Component {
   }
   renderAnswers(choiceID) {
     if (this.props.inResultsState) {
-      const tempIndex = this.props.correctAnswer[0].correct_answers.indexOf(choiceID);
+      const tempIndex = this.props.correctAnswer.correct_answers.indexOf(choiceID);
       return (
         <Answer
           key={this.props.index}
-          correctAnswer={this.props.correctAnswer[0].correct_answers[tempIndex]}
+          correctAnswer={this.props.correctAnswer.correct_answers[tempIndex]}
           feedback={'feedback'}
         />
       );
@@ -49,9 +49,9 @@ class QuestionWrapper extends Component {
     return ('');
   }
   renderFinalAnswer() {
-    if (this.props.inResultsState && this.props.correctAnswer[0]) {
+    if (this.props.inResultsState && this.props.correctAnswer) {
       return (
-        <h3>Answer: {this.props.correctAnswer[0].correct.toString()}</h3>
+        <h3>Answer: {this.props.correctAnswer.correct.toString()}</h3>
       );
     }
     return ('');
@@ -59,11 +59,9 @@ class QuestionWrapper extends Component {
   render() {
     const { question, index, inReview } = this.props;
 
-    this.answerClass = '';
-
     if (this.props.inResultsState) {
-      const ans = this.props.correctAnswer[0];
-      if (ans && ans.correct) {
+      const correctAnswer = this.props.correctAnswer;
+      if (correctAnswer && correctAnswer.correct) {
         this.answerClass = 'correctAnswerWrapper';
       } else {
         this.answerClass = 'wrongAnswerWrapper';
@@ -104,9 +102,17 @@ QuestionWrapper.propTypes = {
       answer: PropTypes.string.isRequired,
     })).isRequired,
   }).isRequired,
-  correctAnswer: PropTypes.arrayOf(PropTypes.shape({
+  correctAnswer: PropTypes.shape({
     correct: PropTypes.bool,
     correct_answers: PropTypes.arrayOf(PropTypes.number),
-  })).isRequired,
+  }),
 };
+
+QuestionWrapper.defaultProps = {
+  correctAnswer: {
+    correct: false,
+    correct_answers: [],
+  },
+};
+
 export default QuestionWrapper;
