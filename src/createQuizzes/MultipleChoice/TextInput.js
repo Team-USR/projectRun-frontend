@@ -21,6 +21,7 @@ export default class TextInput extends Component {
 }
 TextInput.propTypes = {
   text: PropTypes.string.isRequired,
+  value: PropTypes.string,
 };
 TextInput.defaultProps = {
   value: '',
