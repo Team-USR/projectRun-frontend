@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 import '../../style/components/UserAccount/NavBar.css';
 
-export default function NavBar() {
+export default function NavBar(props) {
   return (
     <div>
       <Navbar inverse collapseOnSelect>
@@ -35,7 +35,7 @@ export default function NavBar() {
               <MenuItem divider />
               <MenuItem eventKey={3.3}>Separated link</MenuItem>
             </NavDropdown>
-            <LinkContainer to="/logout">
+            <LinkContainer onClick={props.onLogout} to="/login">
               <NavItem eventKey={4}>
                 Logout
               </NavItem>
@@ -46,3 +46,7 @@ export default function NavBar() {
     </div>
   );
 }
+
+NavBar.propTypes = {
+  onLogout: React.PropTypes.func.isRequired,
+};
