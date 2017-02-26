@@ -38,5 +38,7 @@ ChoiceInput.propTypes = {
   callbackParent: React.PropTypes.func.isRequired,
   callbackParentInput: React.PropTypes.func.isRequired,
   ind: React.PropTypes.number.isRequired,
-  text: React.PropTypes.string.isRequired,
+};
+ChoiceInput.defaultProps = {
+  text: ' ',
 };
