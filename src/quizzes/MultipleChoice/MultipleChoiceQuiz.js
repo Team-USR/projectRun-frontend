@@ -41,10 +41,10 @@ class MultipleChoiceQuiz extends Component {
   }
 }
 MultipleChoiceQuiz.propTypes = {
+  callbackParent: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   reviewState: PropTypes.bool.isRequired,
   resultsState: PropTypes.bool.isRequired,
-  callbackParent: PropTypes.func.isRequired,
   question: PropTypes.shape({
     id: PropTypes.number.isRequired,
     question: PropTypes.string.isRequired,
