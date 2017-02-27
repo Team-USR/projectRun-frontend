@@ -20,5 +20,8 @@ export default function ButtonWrapper(props) {
 }
 
 ButtonWrapper.propTypes = {
+  getLoginDetails: React.PropTypes.func.isRequired,
   changeToSignup: React.PropTypes.func.isRequired,
+  onLogin: React.PropTypes.func.isRequired,
+  handleLogin: React.PropTypes.func.isRequired,
 };
