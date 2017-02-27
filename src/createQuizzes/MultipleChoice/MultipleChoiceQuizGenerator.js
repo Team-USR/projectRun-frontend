@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import { TextInput, ChoiceInput } from './index';
 import '../../style/MultipleChoice.css';
@@ -44,7 +44,7 @@ export default class MultipleChoiceQuizGenerator extends Component {
     return (
       <div className="questionBlock">
         <h3>Multiple choice question</h3>
-        <div className="questionWrapper">
+        <div className="">
           <TextInput text="Question: " />
           <Button onClick={this.addAnswers}>Add more answers</Button>
           <form>
@@ -57,6 +57,9 @@ export default class MultipleChoiceQuizGenerator extends Component {
   }
   }
 MultipleChoiceQuizGenerator.propTypes = {
-  handleInput: React.PropTypes.func.isRequired,
-  content: React.PropTypes.bool.isRequired,
+  handleInput: PropTypes.func.isRequired,
+  content: PropTypes.arrayOf(String),
+};
+MultipleChoiceQuizGenerator.defaultProps = {
+  content: [],
 };

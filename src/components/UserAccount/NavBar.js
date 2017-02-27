@@ -28,6 +28,11 @@ export default function NavBar(props) {
                 My Quiz
               </NavItem>
             </LinkContainer>
+            <LinkContainer to="/quizGenerator">
+              <NavItem eventKey={2}>
+                Create Quiz
+              </NavItem>
+            </LinkContainer>
             <NavDropdown eventKey={3} title="My Account" id="basic-nav-dropdown">
               <MenuItem eventKey={3.1}>Action</MenuItem>
               <MenuItem eventKey={3.2}>Another action</MenuItem>

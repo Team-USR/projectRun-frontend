@@ -42,7 +42,6 @@ class QuestionWrapper extends Component {
         <Answer
           key={this.props.index}
           correctAnswer={this.props.correctAnswer.correct_answers[tempIndex]}
-          feedback={'feedback'}
         />
       );
     }

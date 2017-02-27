@@ -8,7 +8,7 @@ export default class TextInput extends Component {
   }
   handleChange(event) {
     this.setState({ value: event.target.value });
-    this.props.callbackParent(event.target.value);
+  //  this.props.callbackParent(event.target.value);
   }
   render() {
     return (
@@ -20,7 +20,10 @@ export default class TextInput extends Component {
   }
 }
 TextInput.propTypes = {
-  callbackParent: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
+  value: PropTypes.string,
+};
+TextInput.defaultProps = {
+  value: '',
+  callbackParent: '',
 };
