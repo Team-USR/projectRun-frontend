@@ -31,7 +31,7 @@ ReactDOM.render(
     <Router history={history} >
       <Route path="/" component={App} onEnter={isAuth} />
       <Route path="/quiz" component={QuizViewerMainPage} onEnter={isAuth} />
-      <Route path="/quizGenerator" component={QuizCreatorMainPage} />
+      <Route path="/quizGenerator" component={QuizCreatorMainPage} onEnter={isAuth} />
       <Route path="/login" component={LoginContainer} />
 
     </Router>

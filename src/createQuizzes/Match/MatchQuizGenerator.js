@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import { MatchQuizItem } from './index';
+import '../../style/createQuizzes/Match/MatchQuizGenerator.css';
 
-import '../../style/Match/CreateMatchQuiz.css';
-
-export default class CreateMatchQuiz extends Component {
-  constructor() {
-    super();
+export default class MatchQuizGenerator extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
       reviewState: false,
       resultState: false,
@@ -105,8 +104,8 @@ export default class CreateMatchQuiz extends Component {
       <MatchQuizItem
         id={itemID}
         key={itemID}
-        reviewState={this.state.reviewState}
-        resultState={this.state.resultState}
+        reviewState={this.props.reviewState}
+        resultState={this.props.resultsState}
         leftTextareaName={this.state.leftTextareaName}
         rightTextareaName={this.state.rightTextareaName}
         leftTextareaPlaceholder={this.state.leftTextareaPlaceholder}
@@ -118,42 +117,15 @@ export default class CreateMatchQuiz extends Component {
     return this.item;
   }
 
-// TODO: This should be remove when creating the Big Quiz Generator
-  renderSubmitPanel() {
-    const reviewState = this.state.reviewState;
-    const resultState = this.state.resultState;
-
-    if (reviewState && !resultState) {
-      return (
-        <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>BACK</Button>
-          <Button className="submitButton" onClick={this.isResultMode}>SUBMIT</Button>
-        </div>
-      );
-    }
-    if (!reviewState && !resultState) {
-      return (
-        <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>FINISH</Button>
-        </div>
-      );
-    }
-
-    return (
-      <div className="submitPanel">
-        <h3>Test Submitted Sucessfully!</h3>
-      </div>
-    );
-  }
-
   render() {
     const items = this.createItems;
     // console.log('RENDER', items);
 
     const createMatchQuiz = (
-      <div className="createMatchQuizContainer">
+      <div className="matchQuizGenerator">
         <div className="createMatchQuizTitle">
-          <b>Title: </b>
+          <h3>Match question</h3>
+          <b>Question: </b>
           <input
             type="text"
             name="matchQuizTitle"
@@ -177,18 +149,18 @@ export default class CreateMatchQuiz extends Component {
         <br />
 
         <div className="quizItem" id="deafultValue" key="defaultValue">
-          <div className="leftColumn">
+          <div className="addMoreItemsBtn">
             <Button className="" onClick={this.addMatchElement}> Add Match Element</Button>
           </div>
 
-          <div className="rightColumn">
+          <div className="">
             <div className="defaultOption">
               <textarea
-                disabled={this.state.reviewState}
+                disabled={this.props.reviewState}
                 name={this.state.defaultTextareaName}
                 className="itemTexarea"
                 placeholder={this.state.defaultTextareaPlaceHolder}
-                rows="3" cols="30"
+                rows="2" cols="25"
                 defaultValue={this.createMatchQuiz.default}
                 onChange={e => this.handleTextareaChange(e)}
               />
@@ -196,13 +168,14 @@ export default class CreateMatchQuiz extends Component {
           </div>
         </div>
 
-        <br /><br /><br />
-        { /* Display Buttons section */ }
-        { this.renderSubmitPanel() }
-
       </div>
     );
 
     return createMatchQuiz;
   }
 }
+
+MatchQuizGenerator.propTypes = {
+  reviewState: PropTypes.bool.isRequired,
+  resultsState: PropTypes.bool.isRequired,
+};

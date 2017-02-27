@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
-import '../../style/Match/CreateMatchQuiz.css';
 
 export default class MatchQuizItem extends Component {
   constructor(props) {
@@ -41,7 +40,7 @@ export default class MatchQuizItem extends Component {
           name={this.props.leftTextareaName}
           className="itemTexarea leftTextarea"
           placeholder={this.props.leftTextareaPlaceholder}
-          rows="3" cols="30"
+          rows="3" cols="25"
           onChange={e => this.props.onChange(e)}
         />
         <textarea
@@ -50,7 +49,7 @@ export default class MatchQuizItem extends Component {
           name={this.props.rightTextareaName}
           className="itemTexarea rightTextarea"
           placeholder={this.props.rightTextareaPlaceHolder}
-          rows="3" cols="30"
+          rows="3" cols="25"
           onChange={e => this.props.onChange(e)}
         />
         <div className="deleteMatchItemBtnContainer">
