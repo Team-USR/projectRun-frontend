@@ -40,7 +40,6 @@
     "build": "react-scripts build",
     "test": "echo 'No tests'; exit 0",
     "eject": "react-scripts eject",
-    "test": "jest"
   },
   "author": "",
   "license": "ISC"
