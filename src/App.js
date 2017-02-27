@@ -1,15 +1,15 @@
 import React from 'react';
-import MatchQuiz from './quizzes/Match/MatchQuiz';
-import CreateMatchQuiz from './createQuizzes/Match/CreateMatchQuiz';
+// import { QuizViewerMainPage } from './quizManager/quizzesViewerPage';
+//  import { QuizCreatorMainPage } from './quizManager/quizzesCreatorPage';
+import { NavBar, HomePage } from './components/UserAccount/';
 import './App.css';
+import './style/Main.css';
 
-function App() {
+export default function App() {
   return (
-    <div>
-      <CreateMatchQuiz />
-      <MatchQuiz />
+    <div className="appWrapper">
+      <NavBar />
+      <HomePage />
     </div>
   );
 }
-
-export default App;
