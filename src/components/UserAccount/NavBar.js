@@ -28,7 +28,7 @@ export default function NavBar(props) {
                 My Quiz
               </NavItem>
             </LinkContainer>
-            <LinkContainer to="/quizGenerator">
+            <LinkContainer to="/quiz-generator">
               <NavItem eventKey={2}>
                 Create Quiz
               </NavItem>
