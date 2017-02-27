@@ -13,4 +13,5 @@ export default function ButtonWrapper(props) {
 ButtonWrapper.propTypes = {
   removeQuiz: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
+  addQuiz: PropTypes.func.isRequired,
 };

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
 import { ButtonWrapper } from './index';
+
 
 let id = 0;
 let displayIndex = 0;
@@ -39,12 +41,14 @@ export default class QuizCreatorMainPage extends Component {
           key={id + 100}
         />);
       const buttonGroup = (
-        <ButtonWrapper
-          index={id}
-          key={id}
-          addQuiz={quizTypes => this.addQuiz(quizTypes)}
-          removeQuiz={index => this.removeQuiz(index)}
-        />);
+        <div className="">
+          <ButtonWrapper
+            index={id}
+            key={id}
+            addQuiz={quizTypes => this.addQuiz(quizTypes)}
+            removeQuiz={index => this.removeQuiz(index)}
+          />
+        </div>);
       const questionObject = { id, question, buttonGroup };
       const ques = '';
       const answ = '';
@@ -66,8 +70,8 @@ export default class QuizCreatorMainPage extends Component {
     if (this.state.questions[index].question) {
       displayIndex += 1;
       return (
-        <div>
-          <h3>{displayIndex}</h3>
+        <div className="matchQuizContainer">
+          <h2>{displayIndex}</h2>
           {this.state.questions[index].question}
           {this.state.questions[index].buttonGroup}
         </div>
@@ -79,12 +83,8 @@ export default class QuizCreatorMainPage extends Component {
     return (
       <div>
         <h1> Quiz creator </h1>
-        <ButtonWrapper
-          key={0}
-          index={-1}
-          addQuiz={quizType => this.addQuiz(quizType)}
-          removeQuiz={index => this.removeQuiz(index)}
-        />
+        <Button onClick={() => this.addQuiz('multiple_choice')}> Multiple Choice</Button>
+        <Button>Match</Button>
         {this.renderQuestions()}
       </div>
     );

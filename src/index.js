@@ -6,6 +6,7 @@ import { Router, Route, browserHistory } from 'react-router';
 import { syncHistoryWithStore, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import App from './App';
 import { QuizViewerMainPage } from './quizManager/quizzesViewerPage';
+import { QuizCreatorMainPage } from './quizManager/quizzesCreatorPage';
 import LoginContainer from './containers/LoginContainer';
 import reducer from './redux/modules/user';
 import './index.css';
@@ -30,6 +31,7 @@ ReactDOM.render(
     <Router history={history} >
       <Route path="/" component={App} onEnter={isAuth} />
       <Route path="/quiz" component={QuizViewerMainPage} onEnter={isAuth} />
+      <Route path="/quizGenerator" component={QuizCreatorMainPage} />
       <Route path="/login" component={LoginContainer} />
 
     </Router>
