@@ -10,7 +10,7 @@ export default function reducer(state = { token: cookie.load('token') || '' }, a
     case USER_LOGIN:
       return Object.assign({}, { token: action.token });
     case USER_LOGOUT:
-      return Object.assign({}, { token: '' });
+      return Object.assign({});
     default:
       return state;
   }
@@ -31,7 +31,7 @@ export function loginUser(user, callback, failedCallback) {
 }
 
 export function logoutUser() {
-  console.log('removing token');
+  cookie.remove('token');
   return {
     type: USER_LOGOUT,
   };
