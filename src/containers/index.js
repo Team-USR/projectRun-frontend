@@ -1,1 +1,2 @@
-export default './LoginContainer';
+export { default as LoginContainer } from './LoginContainer';
+export { default as NavBarContainer } from './NavBarContainer';
