@@ -1,16 +1,17 @@
 import React from 'react';
-// import { QuizViewerMainPage } from './quizManager/quizzesViewerPage';
-//  import { QuizCreatorMainPage } from './quizManager/quizzesCreatorPage';
-import { HomePage } from './components/UserAccount/';
 import { NavBarContainer } from './containers';
 import './App.css';
 import './style/Main.css';
 
-export default function App() {
+export default function App(props) {
   return (
     <div className="appWrapper">
       <NavBarContainer />
-      <HomePage />
+      {props.children}
     </div>
   );
 }
+
+App.propTypes = {
+  children: React.PropTypes.element.isRequired,
+};
