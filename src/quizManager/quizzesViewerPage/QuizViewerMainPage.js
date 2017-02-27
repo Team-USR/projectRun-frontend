@@ -34,7 +34,7 @@ export default class QuizViewerMainPage extends Component {
     this.isResultsMode = this.isResultsMode.bind(this);
   }
   componentWillMount() {
-    axios.get('https://project-run.herokuapp.com/quizzes/13')
+    axios.get('https://project-run.herokuapp.com/quizzes/1')
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
   isReviewMode() {
@@ -42,7 +42,7 @@ export default class QuizViewerMainPage extends Component {
     this.setState({ reviewState: newState });
   }
   isResultsMode() {
-    axios.post('https://project-run.herokuapp.com/quizzes/13/check', this.state.answers)
+    axios.post('https://project-run.herokuapp.com/quizzes/1/check', this.state.answers)
     .then((response) => {
       const newState = !this.state.resultsState;
       const dataSet = response.data;
