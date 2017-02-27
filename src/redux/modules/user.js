@@ -16,21 +16,24 @@ export default function reducer(state = { token: cookie.load('token') || '' }, a
   }
 }
 
-export function loginUser(user, callback, failedCallback) {
-  axios.post('https://project-run.herokuapp.com/user_token', {
-    auth: {
-      email: user.email,
-      password: user.password,
-    },
-  }).then((res) => {
+export async function loginUser(user, callback, failedCallback) {
+  try {
+    const res = await axios.post('https://project-run.herokuapp.com/user_token', {
+      auth: {
+        email: user.email,
+        password: user.password,
+      },
+    });
     if (res.status.toString() === '201') {
-      cookie.save('token', res.data.jwt);
+      await cookie.save('token', res.data.jwt);
+      callback();
     }
-  }).then(() => callback())
-    .catch((err) => { failedCallback(err); });
+  } catch (err) {
+    failedCallback(err);
+  }
 }
 
-export function logoutUser() {
+export async function logoutUser() {
   cookie.remove('token');
   return {
     type: USER_LOGOUT,

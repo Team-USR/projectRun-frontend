@@ -68,7 +68,6 @@ export default class LoginForm extends React.Component {
       loginPage: false,
       failedAuth: false,
     });
-    console.log(this.props);
   }
 
   render() {
