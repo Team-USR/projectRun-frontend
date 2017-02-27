@@ -10,7 +10,7 @@ export default function NavBar(props) {
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to="/#" className="navbar-brand">
+            <Link to="/" className="navbar-brand">
               USR Interactive-Language
             </Link>
           </Navbar.Brand>
@@ -18,17 +18,12 @@ export default function NavBar(props) {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav pullRight>
-            <LinkContainer to="/">
-              <NavItem eventKey={1}>
-                Home
-              </NavItem>
-            </LinkContainer>
             <LinkContainer to="/quiz">
-              <NavItem eventKey={2}>
+              <NavItem eventKey={1}>
                 My Quiz
               </NavItem>
             </LinkContainer>
-            <LinkContainer to="/quizGenerator">
+            <LinkContainer to="/quiz-generator">
               <NavItem eventKey={2}>
                 Create Quiz
               </NavItem>
