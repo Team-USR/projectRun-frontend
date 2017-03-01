@@ -46,6 +46,10 @@ export default class MixQuiz extends Component {
       topArray: tArray,
       bottomArray: bArray,
     });
+    const solutionSoFar = [];
+    this.state.topArray.map(position =>
+    solutionSoFar.push(this.props.question.words[position]));
+    this.props.callbackParent(this.props.question.id, solutionSoFar);
   }
 
   renderButtons(iArray) {
@@ -62,11 +66,21 @@ export default class MixQuiz extends Component {
     }
     return returnedArray;
   }
+  // this.props.correctAnswer.correct_sentences gives the solution array;
 
 
   render() {
+    if (this.props.resultsState) {
+      const correctAnswer = this.props.correctAnswer;
+      if (correctAnswer && this.props.correctAnswer.correct) {
+        this.answerClass = 'correctAnswerWrapper';
+      } else {
+        this.answerClass = 'wrongAnswerWrapper';
+      }
+    }
+    const styleClasses = `mixQuizContainer ${this.answerClass}`;
     return (
-      <div className="mixQuizContainer">
+      <div className={styleClasses}>
         <h3>{this.props.index}. {this.props.question.question}</h3>
         <div className="solutionContainer" id="solutionContainer">
           Your solution so far: {this.renderButtons(this.state.topArray)}

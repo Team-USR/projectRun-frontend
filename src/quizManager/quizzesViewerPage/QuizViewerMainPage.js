@@ -34,7 +34,7 @@ export default class QuizViewerMainPage extends Component {
     this.isResultsMode = this.isResultsMode.bind(this);
   }
   componentWillMount() {
-    axios.get('https://project-run.herokuapp.com/quizzes/13')
+    axios.get('https://project-run.herokuapp.com/quizzes/1')
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
   isReviewMode() {
@@ -42,7 +42,7 @@ export default class QuizViewerMainPage extends Component {
     this.setState({ reviewState: newState });
   }
   isResultsMode() {
-    axios.post('https://project-run.herokuapp.com/quizzes/13/check', this.state.answers)
+    axios.post('https://project-run.herokuapp.com/quizzes/1/check', this.state.answers)
     .then((response) => {
       const newState = !this.state.resultsState;
       const dataSet = response.data;
@@ -67,10 +67,10 @@ export default class QuizViewerMainPage extends Component {
       const matchAnswer = { id, pairs: answers };
       newAnswer = matchAnswer;
     }
-    // if (type === 'mix_quiz') {
-    //   const mixQuizAnswer = { id, pairs: answers };
-    //   newAnswer = mixQuizAnswer;
-    // }
+    if (type === 'mix') {
+      const mixQuizAnswer = { id, answer: answers };
+      newAnswer = mixQuizAnswer;
+    }
     tempQuestions[index - 1] = newAnswer;
     tempAnswers.questions = tempQuestions;
     this.setState({ answers: tempAnswers });
@@ -131,9 +131,12 @@ export default class QuizViewerMainPage extends Component {
         <MixQuiz
           question={question}
           index={index}
-          key={question.id}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
+          correctAnswer={this.state.data[question.id]}
+          callbackParent={(questionId, answers) =>
+          this.collectAnswers(questionId, answers, question.type, index)}
+          key={`mix_quiz_${question.id}`}
         />
       );
     }
