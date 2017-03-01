@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { MatchLeftElement, MatchRightElement } from './index';
-import '../../style/Match.css';
 
 export default class MatchQuiz extends Component {
 

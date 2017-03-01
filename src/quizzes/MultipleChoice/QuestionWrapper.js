@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { Question, Choice, Answer } from './index';
-import '../../style/MultipleChoice.css';
 
 const styles = {
   choicePanel: {

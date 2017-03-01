@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 import { LoginWrapper, SignupWrapper } from './index';
-import '../../style/LoginForm.css';
 
 export default class LoginForm extends React.Component {
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../style/components/UserAccount/HomePage.css';
 
 export default function HomePage() {
   return (
