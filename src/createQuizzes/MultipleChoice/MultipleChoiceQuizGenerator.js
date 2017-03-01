@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import { TextInput, ChoiceInput } from './index';
-import '../../style/MultipleChoice.css';
 
 export default class MultipleChoiceQuizGenerator extends Component {
   constructor() {

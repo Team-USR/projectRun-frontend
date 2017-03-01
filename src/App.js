@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavBarContainer } from './containers';
 import './App.css';
-import './style/Main.css';
 
 export default function App(props) {
   return (

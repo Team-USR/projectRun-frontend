@@ -9,7 +9,6 @@ import { HomePage } from './components/UserAccount';
 import { QuizCreatorMainPage } from './quizManager/quizzesCreatorPage';
 import { QuizViewerContainer, LoginContainer } from './containers';
 import reducer from './redux/modules/user';
-import './index.css';
 
 const store = createStore(
   combineReducers({
