@@ -1,23 +1,13 @@
-#title {
-  text-align: center;
-  margin-top: 15%;
-  font-size: 4em;
-}
+.loginPage {
+  .welcomeTitle {
+    text-align: center;
+    margin-top: 15%;
+    font-size: 4em;
+  }
 
-.loginWrapper {
-  text-align: left;
-  width: 33.3%;
-  height: 25%;
-  position: absolute;
-  margin: auto;
-  top: 0; left: 0; bottom: 0; right: 0;
-}
-.loginLabel {
-  padding: 8px 4px 4px 4px;
-}
-
-.invalidHeader {
-  text-align: center;
-  font-size: 1.2em;
-  color: #E62020;
+  .invalidHeader {
+    text-align: center;
+    font-size: 1.2em;
+    color: #E62020;
+  }
 }

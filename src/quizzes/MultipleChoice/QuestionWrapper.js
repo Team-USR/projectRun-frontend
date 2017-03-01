@@ -56,6 +56,7 @@ class QuestionWrapper extends Component {
   }
   render() {
     const { question, index, inReview } = this.props;
+    this.answerClass = '';
 
     if (this.props.inResultsState) {
       const correctAnswer = this.props.correctAnswer;

@@ -1,29 +1,30 @@
+.matchQuizGenerator {
+  .leftColumn, .rightColumn {
+    width: 50%;
+    float: left;
+  }
 
-.matchQuizGenerator .leftColumn, .matchQuizGenerator .rightColumn {
-  width: 50%;
-  float: left;
-}
+  .quizItem {
+    display: inline-flex;
+    margin: 10px auto;
 
-.matchQuizGenerator .itemTexarea {
-  resize: none;
-  margin: 0 10px;
-}
+    .itemIndex {
+      width: 50px;
+      line-height: 50px;
+      margin-left: -50px;
+    }
 
-.matchQuizGenerator .quizItem {
-  display: inline-flex;
-  margin: 10px auto;
-}
+    .itemTexarea {
+      resize: none;
+      margin: 0 10px;
+    }
+  }
 
-.matchQuizGenerator .itemIndex {
-  width: 50px;
-  line-height: 50px;
-  margin-left: -50px;
-}
+  .quizTitleInput {
+    width: 80%;
+  }
 
-.matchQuizGenerator .quizTitleInput {
-  width: 80%;
-}
-
-.matchQuizGenerator .addMoreItemsBtn {
-  margin-right: 60px;
+  .addMoreItemsBtn {
+    margin-right: 60px;
+  }
 }

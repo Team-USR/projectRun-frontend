@@ -72,7 +72,7 @@ export default class LoginForm extends React.Component {
   render() {
     return (
       <div className="loginPage">
-        <h1 id="title">Welcome!</h1>
+        <h1 className="welcomeTitle" id="title">Welcome!</h1>
         {this.state.failedAuth &&
           <h3 className="invalidHeader">Invalid email or password</h3> }
         {this.state.loginPage && <LoginWrapper

@@ -116,6 +116,7 @@ export default class MatchQuiz extends Component {
     const rightElements = this.rightColumnShuffled;
     const matchQuizTitle = this.state.matchQuizTitle;
     const quizIndex = this.state.matchQuizIndex;
+    this.answerClass = '';
 
     if (this.props.resultsState) {
       const correctAnswer = this.props.correctAnswer;

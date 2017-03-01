@@ -4,7 +4,7 @@ import { loginUser } from '../../redux/modules/user';
 
 export default function ButtonWrapper(props) {
   return (
-    <div className="buttonWrapper">
+    <div className="loginButtonWrapper">
       <ButtonGroup>
         <Button
           type="submit"
