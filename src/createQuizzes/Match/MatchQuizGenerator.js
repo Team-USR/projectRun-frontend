@@ -99,6 +99,46 @@ export default class MatchQuizGenerator extends Component {
     // this.setState({ createItems: newItemsArray });
   }
 
+  addMatchElementOptim() {
+    const solCopy = this.state.createItems;
+    solCopy.push('');
+    this.setState({ createItems: solCopy });
+    // console.log(this.state.createItems);
+  }
+
+  handleTextareaChangeOptim(e, index) {
+    const solCopy = this.state.createItems;
+    solCopy[index] = e.target.value;
+    this.setState({ createItems: solCopy });
+    // console.log(this.state.createItems);
+  }
+
+  deleteMatchElementOptim(index) {
+    const solCopy = this.state.createItems;
+    solCopy.splice(index, 1);
+    this.setState({ createItems: solCopy });
+    // console.log(this.state.createItems);
+  }
+
+  renderItemsOptim() {
+    const renderedComponents = [];
+    this.state.createItems.map((value, index) => {
+      const ind = index;
+      renderedComponents.push(
+        <MatchQuizItem
+          key={`create_match_item_${ind}`}
+          index={index}
+          handleInputChange={(e, i) => this.handleInputChange(e, i)}
+          value={value}
+          removeSolution={i => this.removeSolution(i)}
+        />,
+      );
+      return ('');
+    },
+    );
+    return renderedComponents;
+  }
+
   renderItem(itemID) {
     this.item = (
       <MatchQuizItem
