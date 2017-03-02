@@ -85,32 +85,32 @@ export default class MixQuizGenerator extends Component {
       }
       return ('');
     });
-    const x = { sentence_attributes: sentenceAttributes };
-    console.log(finalDataArray);
-    console.log(finalDataArray);
-    console.log(finalDataCopy);
-    console.log(x);
+    // const x = { sentence_attributes: sentenceAttributes };
+    // console.log(finalDataArray);
+    // console.log(finalDataArray);
+    // console.log(finalDataCopy);
+    // console.log(x);
   }
 
   addSolution() {
     const solCopy = this.state.alternateSolutions;
     solCopy.push('');
     this.setState({ alternateSolutions: solCopy });
-    console.log(this.state.alternateSolutions);
+    // console.log(this.state.alternateSolutions);
   }
 
   handleInputChange(e, index) {
     const solCopy = this.state.alternateSolutions;
     solCopy[index] = e.target.value;
     this.setState({ alternateSolutions: solCopy });
-    console.log(this.state.alternateSolutions);
+    // console.log(this.state.alternateSolutions);
   }
 
   removeSolution(index) {
     const solCopy = this.state.alternateSolutions;
     solCopy.splice(index, 1);
     this.setState({ alternateSolutions: solCopy });
-    console.log(this.state.alternateSolutions);
+    // console.log(this.state.alternateSolutions);
   }
 
   renderAlternateSolution() {
