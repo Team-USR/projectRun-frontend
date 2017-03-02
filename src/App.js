@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavBarContainer } from './containers';
-import { FillQuestion } from './quizzes/Fill';
+import { ClozeQuestion } from './quizzes/Cloze';
 import './App.css';
 
 export default function App(props) {
@@ -16,7 +16,7 @@ export default function App(props) {
     <div className="appWrapper">
       <NavBarContainer />
       {props.children}
-      <FillQuestion index={1} req="Fill in the gaps:" questions={questions} />
+      <ClozeQuestion index={1} req="Fill in the gaps:" questions={questions} />
     </div>
   );
 }

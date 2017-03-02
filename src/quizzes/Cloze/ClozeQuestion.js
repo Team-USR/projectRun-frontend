@@ -1,19 +1,19 @@
 import React from 'react';
-import { FillSentence } from './index';
+import { ClozeSentence } from './index';
 
 
-export default function FillQuestion(props) {
+export default function ClozeQuestion(props) {
   return (
     <div>
       <p>{props.index}. {props.req}</p>
       {props.questions.map(q =>
-        <FillSentence key={q.no} index={q.no} question={q.question} hint={q.hint || ''} />)
+        <ClozeSentence key={q.no} index={q.no} question={q.question} hint={q.hint || ''} />)
       }
     </div>
   );
 }
 
-FillQuestion.propTypes = {
+ClozeQuestion.propTypes = {
   index: React.PropTypes.number.isRequired,
   req: React.PropTypes.string.isRequired,
   questions: React.PropTypes.arrayOf(React.PropTypes.shape({
