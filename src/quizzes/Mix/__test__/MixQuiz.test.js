@@ -17,6 +17,7 @@ describe('<MixQuiz />', () => {
     resultsState={false}
     reviewState={false}
     index={2}
+    callbackParent={() => true}
   />);
   const mixQuizComponent = ReactTestUtils.renderIntoDocument(tag);
   it('should render 3 WordButtons', () => {
