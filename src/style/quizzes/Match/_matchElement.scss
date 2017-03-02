@@ -1,0 +1,19 @@
+.matchQuizContainer {
+  .matchRightElement, .matchLeftElement {
+    height: 60px;
+    line-height: 60px;
+  }
+
+  .matchLeftElement {
+    .leftText {
+      font-weight: bold;
+      font-size: 20px;
+    }
+  }
+
+  .matchRightElement {
+    select {
+      width: 100%;
+    }
+  }
+}

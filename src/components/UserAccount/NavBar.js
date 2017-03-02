@@ -2,7 +2,6 @@ import React from 'react';
 import { Navbar, Nav, NavDropdown, MenuItem, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
-import '../../style/components/UserAccount/NavBar.css';
 
 export default function NavBar(props) {
   return (
@@ -10,7 +9,7 @@ export default function NavBar(props) {
       <Navbar inverse collapseOnSelect>
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to="/#" className="navbar-brand">
+            <Link to="/" className="navbar-brand">
               USR Interactive-Language
             </Link>
           </Navbar.Brand>
@@ -18,14 +17,14 @@ export default function NavBar(props) {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav pullRight>
-            <LinkContainer to="/">
+            <LinkContainer to="/quiz">
               <NavItem eventKey={1}>
-                Home
+                My Quiz
               </NavItem>
             </LinkContainer>
-            <LinkContainer to="/quiz">
+            <LinkContainer to="/quiz-generator">
               <NavItem eventKey={2}>
-                My Quiz
+                Create Quiz
               </NavItem>
             </LinkContainer>
             <NavDropdown eventKey={3} title="My Account" id="basic-nav-dropdown">

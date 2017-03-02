@@ -158,3 +158,7 @@ export default class QuizViewerMainPage extends Component {
     );
   }
 }
+
+QuizViewerMainPage.propTypes = {
+  userToken: React.PropTypes.string.isRequired,
+};

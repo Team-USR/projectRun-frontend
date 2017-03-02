@@ -4,19 +4,6 @@ import { push } from 'react-router-redux';
 import { LoginForm } from '../components/Login';
 import { loggedInUser } from '../redux/modules/user';
 
-const registerUserSession = (currentToken, newToken) => {
-  switch (newToken) {
-    case currentToken:
-      return currentToken;
-    default:
-      return newToken;
-  }
-};
-
-const mapStateToProps = state => ({
-  token: registerUserSession(state.token, state.newToken),
-});
-
 const mapDispatchToProps = dispatch => ({
   onLogin: () => {
     const token = cookie.load('token');
@@ -28,7 +15,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const LoginContainer = connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 )(LoginForm);
 

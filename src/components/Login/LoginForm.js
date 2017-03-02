@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 import { LoginWrapper, SignupWrapper } from './index';
-import '../../style/LoginForm.css';
 
 export default class LoginForm extends React.Component {
 
@@ -68,13 +67,12 @@ export default class LoginForm extends React.Component {
       loginPage: false,
       failedAuth: false,
     });
-    console.log(this.props);
   }
 
   render() {
     return (
       <div className="loginPage">
-        <h1 id="title">Welcome!</h1>
+        <h1 className="welcomeTitle" id="title">Welcome!</h1>
         {this.state.failedAuth &&
           <h3 className="invalidHeader">Invalid email or password</h3> }
         {this.state.loginPage && <LoginWrapper
