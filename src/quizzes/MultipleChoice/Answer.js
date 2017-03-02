@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 
 export default function Answer(props) {
-  const { correctAnswer, feedback } = props;
+  const { correctAnswer } = props;
   return (
     <h4>Answer: {correctAnswer}</h4>
   );
@@ -10,5 +10,4 @@ export default function Answer(props) {
 
 Answer.propTypes = {
   correctAnswer: PropTypes.string.isRequired,
-  feedback: PropTypes.string.isRequired,
 };
