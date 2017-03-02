@@ -66,7 +66,7 @@ export default class MixQuiz extends Component {
     }
     return returnedArray;
   }
-  // this.props.correctAnswer.correct_sentences gives the solution array;
+  // this.props.correctAnswer.correct_sentences gives the solutions array;
 
 
   render() {
@@ -94,6 +94,7 @@ export default class MixQuiz extends Component {
 }
 
 MixQuiz.propTypes = {
+  callbackParent: PropTypes.func.isRequired,
   question: PropTypes.shape({
     id: PropTypes.number.isRequired,
     question: PropTypes.string.isRequired,
@@ -102,4 +103,15 @@ MixQuiz.propTypes = {
   reviewState: PropTypes.bool.isRequired,
   resultsState: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
+  correctAnswer: PropTypes.shape({
+    correct: PropTypes.bool,
+    correct_sentences: PropTypes.arrayOf(PropTypes.number),
+  }),
+};
+
+MixQuiz.defaultProps = {
+  correctAnswer: {
+    correct: false,
+    correct_sentences: [],
+  },
 };
