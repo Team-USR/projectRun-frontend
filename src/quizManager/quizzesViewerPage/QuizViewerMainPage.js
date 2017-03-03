@@ -32,7 +32,7 @@ export default class QuizViewerMainPage extends Component {
   }
   componentWillMount() {
     axios.defaults.headers.common.Authorization = this.props.userToken;
-    const quizID = 90;
+    const quizID = 1;
     axios.get(`https://project-run.herokuapp.com/quizzes/${quizID}`)
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
@@ -41,8 +41,8 @@ export default class QuizViewerMainPage extends Component {
     this.setState({ reviewState: newState });
   }
   isResultsMode() {
-    const quizID = 90;
-    console.log(this.state.answers);
+    const quizID = 1;
+//    console.log(this.state.answers);
     axios.post(`https://project-run.herokuapp.com/quizzes/${quizID}/check`, this.state.answers)
     .then((response) => {
       const newState = !this.state.resultsState;
@@ -53,11 +53,11 @@ export default class QuizViewerMainPage extends Component {
         return 0;
       });
       this.setState({ resultsState: newState, getResponse: response, data: newData });
-      console.log(dataSet);
+  //    console.log(dataSet);
     });
   }
   collectAnswers(id, answers, type, index) {
-    console.log(index);
+//    console.log(index);
     const tempAnswers = this.state.answers;
     const tempQuestions = this.state.answers.questions.slice();
     let newAnswer = {};
@@ -99,7 +99,7 @@ export default class QuizViewerMainPage extends Component {
     return ('');
   }
   renderQuestions(question, index) {
-    console.log(this.state.data[question.id]);
+//    console.log(this.state.data[question.id]);
     if (question.type === 'multiple_choice') {
       return (
         <MultipleChoiceQuiz

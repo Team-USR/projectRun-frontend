@@ -22,7 +22,7 @@ export default class MultipleChoiceQuizGenerator extends Component {
     },
   );
     this.setState({ answers_choices: newArray, answers_attributes: filteredArray });
-    this.props.updateParent(filteredArray, this.state.question);
+    this.props.updateParent(filteredArray, this.state.question, this.props.index);
   }
   onChildChangedText(index, answer, isCorrect) {
     const newAnswer = { answer, is_correct: isCorrect };
@@ -36,11 +36,11 @@ export default class MultipleChoiceQuizGenerator extends Component {
     },
   );
     this.setState({ answers_choices: newArray, answers_attributes: filteredArray });
-    this.props.updateParent(filteredArray, this.state.question);
+    this.props.updateParent(filteredArray, this.state.question, this.props.index);
   }
   setQuestion(event) {
     this.setState({ question: event.target.value });
-    this.props.updateParent(this.state.answers_attributes, event.target.value);
+    this.props.updateParent(this.state.answers_attributes, event.target.value, this.props.index);
   }
   addAnswers() {
     const choicesTemp = this.state.answers_choices;
@@ -91,6 +91,7 @@ export default class MultipleChoiceQuizGenerator extends Component {
 MultipleChoiceQuizGenerator.propTypes = {
   handleInput: PropTypes.func.isRequired,
   updateParent: PropTypes.func.isRequired,
+  index: PropTypes.number.isRequired,
   content: PropTypes.arrayOf(String),
 };
 MultipleChoiceQuizGenerator.defaultProps = {

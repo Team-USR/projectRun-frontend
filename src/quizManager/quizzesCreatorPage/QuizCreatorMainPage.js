@@ -50,16 +50,16 @@ export default class QuizCreatorMainPage extends Component {
   }
   isReviewMode() {
     const sQuestions = this.state.submitedQuestions;
-    console.log("submitedQuestions ", sQuestions,"finishsubmited");
-    const filteredQuestions =  sQuestions.quiz.questions_attributes.filter(element =>
+//    console.log("submitedQuestions ", sQuestions,"finishsubmited");
+    const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
      element !== null);
     const newState = !this.state.reviewState;
     const loadingTrue = true;
-    console.log("filtered ",filteredQuestions," finishfiltered");
+//    console.log("filtered ",filteredQuestions," finishfiltered");
     this.setState({ loading: loadingTrue, submitedQuestions: filteredQuestions });
-    console.log("----------");
-    console.log(this.state.submitedQuestions);
-    console.log("----------");
+  //  console.log("----------");
+  //  console.log(this.state.submitedQuestions);
+//  console.log("----------");
     const auth = 'Authorization';
     axios.defaults.headers.common[auth] = this.props.userToken;
     axios.post('https://project-run.herokuapp.com/quizzes', this.state.submitedQuestions)
@@ -76,11 +76,11 @@ export default class QuizCreatorMainPage extends Component {
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
     const quiz = { question, type, answers_attributes: answersAttributes };
-    console.log("questionID"+questionID);
+    // console.log("questionID"+questionID);
     // if (inputQ.quiz.questions_attributes[questionID] === null) {
     //   inputQ.quiz.questions_attributes.push(quiz);
     // } else {
-      inputQ.quiz.questions_attributes[questionID] = quiz;
+    inputQ.quiz.questions_attributes[questionID] = quiz;
   //  }
     this.setState({ submitedQuestions: inputQ });
   }
@@ -115,8 +115,8 @@ export default class QuizCreatorMainPage extends Component {
           content={cont}
           index={id}
           key={id + 100}
-          updateParent={(answersAttributes, qObject) =>
-            this.collectObject(answersAttributes, qObject, 'multiple_choice', id-1)}
+          updateParent={(answersAttributes, qObject, ind) =>
+            this.collectObject(answersAttributes, qObject, 'multiple_choice', ind)}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -167,8 +167,7 @@ export default class QuizCreatorMainPage extends Component {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>BACK</Button>
-          <Button className="submitButton" onClick={this.isResultsMode}>SUBMIT</Button>
+          <Button className="submitButton" onClick={this.isReviewMode}>EDIT QUIZ</Button>
         </div>);
     }
     if (!this.state.reviewState && !this.state.resultsState) {
@@ -185,11 +184,11 @@ export default class QuizCreatorMainPage extends Component {
     return ('');
   }
   render() {
-    console.log("start rendering");
-    console.log(this.state.submitedQuestions);
+  //  console.log("start rendering");
+  //  console.log(this.state.submitedQuestions);
     const submit = this.state.submitedQuestions;
-    console.log(this.state.questions);
-    console.log("end rendering");
+  //  console.log(this.state.questions);
+  //  console.log("end rendering");
     if (!this.state.reviewState && this.state.loading === false) {
       return (
         <div className="mainQuizGeneratorBlock">
@@ -212,10 +211,10 @@ export default class QuizCreatorMainPage extends Component {
       );
     } else
     if (this.state.reviewState && this.state.loading === false) {
-      console.log("test quiz reviwer");
-      console.log(submit);
-      console.log(submit);
-      console.log("end quiz reviwer");
+    //  console.log("test quiz reviwer");
+    //  console.log(submit);
+    //  console.log(submit);
+    //  console.log("end quiz reviwer");
       return (
         <div>
           <QuizCreatorReviewer

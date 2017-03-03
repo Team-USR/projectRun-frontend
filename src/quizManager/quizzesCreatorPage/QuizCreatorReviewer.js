@@ -41,9 +41,9 @@ export default class QuizCreatorReviewer extends Component {
   }
   renderQuestions(question, index) {
     const answers = this.props.questionsWithAnswers;
-    console.log(answers);
+  //  console.log(answers);
     const type = answers[index].type;
-     console.log(type);
+  //  console.log(type);
     let answersAttributes = [];
     if (question.type === 'multiple_choice') {
       if (type === 'multiple_choice') {
