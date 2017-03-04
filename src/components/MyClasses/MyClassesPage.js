@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { SideBarWrapper } from '../SideBar/index';
+import { GroupStudents } from './GroupStudents/index';
+import { StudentsPanel } from './panels/index';
 
 export default class MyClassesPage extends Component {
 
@@ -25,6 +27,8 @@ export default class MyClassesPage extends Component {
         <div className="contentWrapper">
           <h1><b> My Classes</b></h1>
         </div>
+        <GroupStudents />
+        <StudentsPanel groupName={'USR'} />
       </div>
     );
   }
