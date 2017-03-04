@@ -12,12 +12,15 @@ class Choice extends Component {
     this.props.callbackParent(newState, this.props.id, index);
   }
   renderLabel(value, choiceText, inReview) {
+    let checkedValue = this.props.defaultValue;
+  //  console.log(checkedValue);
+    if (checkedValue === null) checkedValue = this.state.checked;
     if (inReview) {
       return (
         <input
           type="checkbox"
           value={value}
-          checked={this.state.checked}
+          checked={checkedValue}
           disabled
           onChange={() => this.onStateChanged()}
         />
@@ -51,6 +54,10 @@ Choice.propTypes = {
   choiceText: PropTypes.string.isRequired,
   inReview: PropTypes.bool.isRequired,
   id: PropTypes.number.isRequired,
+  defaultValue: PropTypes.bool,
+};
+Choice.defaultProps = {
+  defaultValue: null,
 };
 
 export default Choice;
