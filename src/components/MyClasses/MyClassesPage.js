@@ -100,6 +100,8 @@ export default class MyClassesPage extends Component {
         <div className="contentWrapper">
           { this.renderClassContent() }
         </div>
+        <GroupStudents />
+        <StudentsPanel groupName={'USR'} />
       </div>
     );
   }
