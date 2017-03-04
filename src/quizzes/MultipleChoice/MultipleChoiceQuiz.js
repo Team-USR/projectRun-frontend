@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { QuestionWrapper } from './index';
-import '../../style/MultipleChoice.css';
 
 class MultipleChoiceQuiz extends Component {
   constructor() {

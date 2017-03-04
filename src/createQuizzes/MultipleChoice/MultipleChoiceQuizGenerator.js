@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import { ChoiceInput } from './index';
-import '../../style/MultipleChoice.css';
 
 let displayIndex = 0;
 export default class MultipleChoiceQuizGenerator extends Component {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { form, ControlLabel, FormControl, Button } from 'react-bootstrap';
-import '../../style/SignupWrapper.css';
 
 export default function SignupWrapper(props) {
   return (

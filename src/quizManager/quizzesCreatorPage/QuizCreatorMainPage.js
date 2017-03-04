@@ -5,8 +5,6 @@ import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice'
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { ButtonWrapper, QuizCreatorReviewer } from './index';
 
-import '../../style/Main.css';
-
 const styles = {
   loading: {
     textAlign: 'center',

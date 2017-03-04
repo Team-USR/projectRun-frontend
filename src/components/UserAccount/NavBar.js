@@ -2,7 +2,6 @@ import React from 'react';
 import { Navbar, Nav, NavDropdown, MenuItem, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
-import '../../style/components/UserAccount/NavBar.css';
 
 export default function NavBar(props) {
   return (

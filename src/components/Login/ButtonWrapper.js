@@ -1,11 +1,10 @@
 import React from 'react';
 import { ButtonGroup, Button } from 'react-bootstrap';
 import { loginUser } from '../../redux/modules/user';
-import '../../style/ButtonWrapper.css';
 
 export default function ButtonWrapper(props) {
   return (
-    <div className="buttonWrapper">
+    <div className="loginButtonWrapper">
       <ButtonGroup>
         <Button
           type="submit"

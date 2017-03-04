@@ -1,0 +1,20 @@
+/* Main Style File */
+@import './style/_main';
+
+/* components */
+@import './style/components/Login/_all';
+@import './style/components/UserAccount/_all';
+
+/* createQuizzes */
+@import './style/createQuizzes/Match/_all';
+@import './style/createQuizzes/Mix/_all';
+@import './style/createQuizzes/MultipleChoice/_all';
+
+/* quizzes */
+@import './style/quizzes/Match/_all';
+@import './style/quizzes/Mix/_all';
+@import './style/quizzes/MultipleChoice/_all';
+
+/* quizManager */
+@import './style/quizManager/quizzesCreatorPage/_all';
+@import './style/quizManager/quizzesViewerPage/_all';

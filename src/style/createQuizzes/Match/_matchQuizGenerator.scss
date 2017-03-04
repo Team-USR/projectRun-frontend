@@ -1,0 +1,30 @@
+.matchQuizGenerator {
+  .leftColumn, .rightColumn {
+    width: 50%;
+    float: left;
+  }
+
+  .quizItem {
+    display: inline-flex;
+    margin: 10px auto;
+
+    .itemIndex {
+      width: 50px;
+      line-height: 50px;
+      margin-left: -50px;
+    }
+
+    .itemTexarea {
+      resize: none;
+      margin: 0 10px;
+    }
+  }
+
+  .quizTitleInput {
+    width: 80%;
+  }
+
+  .addMoreItemsBtn {
+    margin-right: 60px;
+  }
+}
