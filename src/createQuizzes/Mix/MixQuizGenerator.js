@@ -36,6 +36,7 @@ export default class MixQuizGenerator extends Component {
         }
       }
     }
+    // console.log(finalDataCopy);
     return finalDataCopy;
   }
 
@@ -57,6 +58,7 @@ export default class MixQuizGenerator extends Component {
   }
 
   submitData() {
+    this.setState({ errorMessage: '' });
     const xd = this.state.mainSolution;
     const finalDataArray = MixQuizGenerator.splitSentence(xd);
     let finalDataCopy = MixQuizGenerator.createWordsArray(finalDataArray);
