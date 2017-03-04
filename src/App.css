@@ -1,0 +1,179 @@
+/* Main Style File */
+.matchQuizContainer,
+.mixQuizContainer,
+.multipleChoiceContainer {
+  text-align: center;
+  width: 40%;
+  min-height: 250px;
+  margin: 5% auto;
+  padding: 30px;
+  border: 3px solid #000000;
+  margin-bottom: 10px;
+  box-shadow: 5px 5px 5px #888888; }
+
+.correctAnswerWrapper {
+  border-color: #0e8c16;
+  box-shadow: 5px 5px 5px #0e8c16; }
+
+.wrongAnswerWrapper {
+  border-color: #b22121;
+  box-shadow: 5px 5px 5px #b22121; }
+
+.submitButton {
+  margin: 10px;
+  width: 120px;
+  height: 50px;
+  background: #becbd6;
+  background: -webkit-gradient(linear, 0 0, 0 bottom, from(#becbd6), to(#8da5b7));
+  background: -moz-linear-gradient(#becbd6, #8da5b7);
+  background: linear-gradient(#becbd6, #8da5b7);
+  border: solid 1px #a1aeb7;
+  border-bottom: solid 3px #62727e;
+  box-shadow: inset 0 0 0 1px #d8e0e6;
+  color: #515f6a;
+  text-shadow: 0 1px 0 #c4d0da; }
+
+.submitButton:hover {
+  margin: 10px;
+  background: #97adbd;
+  background: -webkit-gradient(linear, 0 0, 0 bottom, from(#97adbd), to(#a8bac8));
+  background: -moz-linear-gradient(#97adbd, #a8bac8);
+  background: linear-gradient(#97adbd, #a8bac8);
+  border: solid 1px #96a2ab;
+  border-bottom: solid 3px #62727e;
+  box-shadow: inset 0 0 0 1px #c0ced7; }
+
+.submitButton:active {
+  background: #8fa6b6;
+  background: -webkit-gradient(linear, 0 0, 0 bottom, from(#8fa6b6), to(#8aa0b0));
+  background: -moz-linear-gradient(#8fa6b6, #8aa0b0);
+  background: linear-gradient(#8fa6b6, #8aa0b0);
+  border: solid 1px #606f7a;
+  box-shadow: inset 0 10px 15px 0 #7e92a1; }
+
+@media (max-width: 900px) {
+  .matchQuizContainer, .mixQuizContainer, .multipleChoiceContainer {
+    width: 60%; } }
+
+/* components */
+/* Login Component */
+.loginPage .loginWrapper .loginButtonWrapper {
+  margin-top: 10px;
+  text-align: center; }
+
+.loginPage .welcomeTitle {
+  text-align: center;
+  margin-top: 15%;
+  font-size: 4em; }
+
+.loginPage .invalidHeader {
+  text-align: center;
+  font-size: 1.2em;
+  color: #E62020; }
+
+.loginPage .loginWrapper {
+  text-align: left;
+  width: 33.3%;
+  height: 25%;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0; }
+  .loginPage .loginWrapper .loginLabel {
+    padding: 8px 4px 4px 4px; }
+
+.loginPage .signupWrapper {
+  text-align: left;
+  width: 33.3%;
+  height: 25%;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0; }
+  .loginPage .signupWrapper .signupLabel {
+    padding: 8px 4px 4px 4px; }
+  .loginPage .signupWrapper .signupButtonWrapper {
+    text-align: center;
+    margin-top: 10px; }
+
+/* User Account component */
+.homePageWrapper {
+  text-align: center; }
+
+.navbar {
+  border-radius: 0; }
+
+/* createQuizzes */
+/* Match Quiz Generator */
+.matchQuizGenerator .leftColumn, .matchQuizGenerator .rightColumn {
+  width: 50%;
+  float: left; }
+
+.matchQuizGenerator .quizItem {
+  display: inline-flex;
+  margin: 10px auto; }
+  .matchQuizGenerator .quizItem .itemIndex {
+    width: 50px;
+    line-height: 50px;
+    margin-left: -50px; }
+  .matchQuizGenerator .quizItem .itemTexarea {
+    resize: none;
+    margin: 0 10px; }
+
+.matchQuizGenerator .quizTitleInput {
+  width: 80%; }
+
+.matchQuizGenerator .addMoreItemsBtn {
+  margin-right: 60px; }
+
+/* Mix Quiz Generator */
+/* Multiple Choice Quiz Generator */
+/* quizzes */
+/* Match Quiz Viewer */
+.matchQuizContainer .rightColumn, .matchQuizContainer .leftColumn {
+  width: 50%;
+  float: left; }
+
+.matchQuizContainer .matchRightElement, .matchQuizContainer .matchLeftElement {
+  height: 60px;
+  line-height: 60px; }
+
+.matchQuizContainer .matchLeftElement .leftText {
+  font-weight: bold;
+  font-size: 20px; }
+
+.matchQuizContainer .matchRightElement select {
+  width: 100%; }
+
+/* Mix Quiz Viewer */
+/* Multiple Choice Quiz Viewer */
+.questionBlock {
+  text-align: center; }
+  .questionBlock .questionPanel {
+    text-align: center; }
+
+/* quizManager */
+/* Quiz Creator Page */
+.mainQuizGeneratorBlock {
+  text-align: center; }
+  .mainQuizGeneratorBlock .generatorQuizContainer {
+    text-align: center;
+    width: 60%;
+    min-height: 250px;
+    margin: 5% auto;
+    padding: 30px;
+    border: 3px solid #000000;
+    margin-bottom: 10px;
+    box-shadow: 5px 5px 5px #888888; }
+  .mainQuizGeneratorBlock .submitPanel {
+    text-align: center;
+    padding: 30px; }
+
+/* Quiz Viewer Page */
+.mainQuizViewerBlock .submitPanel {
+  text-align: center;
+  padding: 30px; }
