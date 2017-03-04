@@ -1,3 +1,11 @@
-.navbar {
+.topNabBarWrapper  {
   border-radius: 0;
+  margin-bottom: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+
+  @media (max-width: 767px) {
+    position: relative;
+  }
 }

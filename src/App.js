@@ -6,7 +6,9 @@ export default function App(props) {
   return (
     <div className="appWrapper">
       <NavBarContainer />
-      {props.children}
+      <div className="appContent">
+        {props.children}
+      </div>
     </div>
   );
 }

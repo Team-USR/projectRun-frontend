@@ -6,36 +6,42 @@ import { LinkContainer } from 'react-router-bootstrap';
 export default function NavBar(props) {
   return (
     <div>
-      <Navbar inverse collapseOnSelect>
+      <Navbar inverse collapseOnSelect className="topNabBarWrapper">
         <Navbar.Header>
           <Navbar.Brand>
             <Link to="/" className="navbar-brand">
-              USR Interactive-Language
+              Interactive Language
             </Link>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav pullRight>
-            <LinkContainer to="/quiz">
-              <NavItem eventKey={1}>
-                My Quiz
+            <LinkContainer to="/my-quizzes">
+              <NavItem>
+                My Quizzes
               </NavItem>
             </LinkContainer>
+
+            <LinkContainer to="/my-classes">
+              <NavItem>
+                My Classes
+              </NavItem>
+            </LinkContainer>
+
             <LinkContainer to="/quiz-generator">
-              <NavItem eventKey={2}>
+              <NavItem >
                 Create Quiz
               </NavItem>
             </LinkContainer>
-            <NavDropdown eventKey={3} title="My Account" id="basic-nav-dropdown">
-              <MenuItem eventKey={3.1}>Action</MenuItem>
-              <MenuItem eventKey={3.2}>Another action</MenuItem>
-              <MenuItem eventKey={3.3}>Something else here</MenuItem>
+            <NavDropdown title="My Account" id="basic-nav-dropdown">
+              <MenuItem >Profile</MenuItem>
+              <MenuItem >Settings</MenuItem>
               <MenuItem divider />
-              <MenuItem eventKey={3.3}>Separated link</MenuItem>
+              <MenuItem >Help</MenuItem>
             </NavDropdown>
             <LinkContainer onClick={props.onLogout} to="/login">
-              <NavItem eventKey={4}>
+              <NavItem >
                 Logout
               </NavItem>
             </LinkContainer>

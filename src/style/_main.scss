@@ -1,3 +1,11 @@
+.appContent {
+  padding-top: 51px;
+
+  @media (max-width: 767px) {
+    padding-top: 0;
+  }
+}
+
 .matchQuizContainer,
 .mixQuizContainer,
 .multipleChoiceContainer {
