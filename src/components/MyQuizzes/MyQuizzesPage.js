@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { QuizViewerMainPage } from './../../quizManager/quizzesViewerPage/index';
+import React, { PropTypes, Component } from 'react';
+import { QuizCreatorMainPage, QuizCreatorReviewer } from './../../quizManager/quizzesCreatorPage';
 import { SideBarWrapper } from '../SideBar/index';
 
 export default class MyQuizzesPage extends Component {
@@ -7,18 +7,22 @@ export default class MyQuizzesPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentQuiz: '',
+      currentQuiz: false,
+      generateQuiz: false,
     };
   }
 
-  updateCurrentQuiz(newState) {
-    this.setState({ currentQuiz: newState });
+  updateCurrentQuiz(quizViewer, quizGenerator) {
+    this.setState({ currentQuiz: quizViewer, generateQuiz: quizGenerator });
   }
 
-  renderQuizViewer() {
+  renderQuizContent() {
     let element = <h1><b> My Quizzes</b></h1>;
-    if (this.state.currentQuiz !== '') {
-      element = <QuizViewerMainPage />;
+    if (this.state.currentQuiz) {
+      element = <QuizCreatorReviewer userToken={this.props.userToken} />;
+    }
+    if (this.state.generateQuiz) {
+      element = <QuizCreatorMainPage userToken={this.props.userToken} />;
     }
     return element;
   }
@@ -27,14 +31,18 @@ export default class MyQuizzesPage extends Component {
     return (
       <div className="myQuizzesPageWrapper">
         <SideBarWrapper
-          onSideBarItemClick={quiz => this.updateCurrentQuiz(quiz)}
+          onSideBarItemClick={(review, create) => this.updateCurrentQuiz(review, create)}
           title={'My Quizzes'}
           type={'SideBarQuizzes'}
         />
         <div className="contentWrapper">
-          {this.renderQuizViewer()}
+          {this.renderQuizContent()}
         </div>
       </div>
     );
   }
 }
+
+MyQuizzesPage.propTypes = {
+  userToken: PropTypes.string.isRequired,
+};

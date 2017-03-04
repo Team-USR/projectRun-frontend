@@ -5,13 +5,13 @@ import { SideBarQuizzes, SideBarClasses } from './index';
 export default class SideBarWrapper extends Component {
 
   renderSideBarContent() {
-    const quizzes = ['BAC 2017', 'Math Quiz', 'Anathomy Quiz', 'Phisics Quiz', 'Philosophy Quiz'];
+    const quizzes = ['Quiz REVIEWER'];
     const classes = ['Class IX A', 'Class IX B', 'Class X D', 'Class XI C', 'Class XII D'];
     let sideBarContent = (<Nav />);
     if (this.props.type === 'SideBarQuizzes') {
       sideBarContent = (
         <SideBarQuizzes
-          onQuizClick={quiz => this.props.onSideBarItemClick(quiz)}
+          onQuizClick={(review, create) => this.props.onSideBarItemClick(review, create)}
           content={quizzes}
         />
       );

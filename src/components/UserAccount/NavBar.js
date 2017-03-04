@@ -28,12 +28,6 @@ export default function NavBar(props) {
                 My Classes
               </NavItem>
             </LinkContainer>
-
-            <LinkContainer to="/quiz-generator">
-              <NavItem >
-                Create Quiz
-              </NavItem>
-            </LinkContainer>
             <NavDropdown title="My Account" id="basic-nav-dropdown">
               <MenuItem >Profile</MenuItem>
               <MenuItem >Settings</MenuItem>
