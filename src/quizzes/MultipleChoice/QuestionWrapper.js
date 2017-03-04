@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { Question, Choice, Answer } from './index';
-import '../../style/MultipleChoice.css';
 
 const styles = {
   choicePanel: {
@@ -62,6 +61,7 @@ class QuestionWrapper extends Component {
   }
   render() {
     const { question, index, inReview } = this.props;
+    this.answerClass = '';
 
     if (this.props.inResultsState) {
       const correctAnswer = this.props.correctAnswer;

@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { MatchLeftElement, MatchRightElement } from './index';
-import '../../style/quizzes/Match/MatchQuiz.css';
 
 export default class MatchQuiz extends Component {
 
@@ -117,6 +116,7 @@ export default class MatchQuiz extends Component {
     const rightElements = this.rightColumnShuffled;
     const matchQuizTitle = this.state.matchQuizTitle;
     const quizIndex = this.state.matchQuizIndex;
+    this.answerClass = '';
 
     if (this.props.resultsState) {
       const correctAnswer = this.props.correctAnswer;

@@ -70,10 +70,10 @@ export default class QuizViewerMainPage extends Component {
       const matchAnswer = { id, pairs: answers };
       newAnswer = matchAnswer;
     }
-    // if (type === 'mix_quiz') {
-    //   const mixQuizAnswer = { id, pairs: answers };
-    //   newAnswer = mixQuizAnswer;
-    // }
+    if (type === 'mix') {
+      const mixQuizAnswer = { id, answer: answers };
+      newAnswer = mixQuizAnswer;
+    }
     tempQuestions[index] = newAnswer;
     tempAnswers.questions = tempQuestions;
     this.setState({ answers: tempAnswers });
@@ -135,9 +135,12 @@ export default class QuizViewerMainPage extends Component {
         <MixQuiz
           question={question}
           index={index}
-          key={question.id}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
+          correctAnswer={this.state.data[question.id]}
+          callbackParent={(questionId, answers) =>
+          this.collectAnswers(questionId, answers, question.type, index)}
+          key={`mix_quiz_${question.id}`}
         />
       );
     }
