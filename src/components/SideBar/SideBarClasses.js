@@ -1,27 +1,25 @@
 import React, { PropTypes } from 'react';
-import { Nav, NavItem } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Nav, NavItem, Button } from 'react-bootstrap';
 
 export default function SideBarClasses(props) {
   const content = props.content;
   return (
     <Nav>
       {
-        content.map((item) => {
-          const link = `/${item}`;
-          return (
-            <LinkContainer to={link} key={item} >
-              <NavItem>
-                {item}
-              </NavItem>
-            </LinkContainer>
-          );
-        })
+        content.map(obj =>
+          (
+            <NavItem key={obj.classId}>
+              <Button onClick={() => props.onClassClick(true, obj.classId)}>
+                {obj.className}
+              </Button>
+            </NavItem>
+          ),
+        )
       }
     </Nav>
   );
 }
 
 SideBarClasses.propTypes = {
-  content: PropTypes.arrayOf(PropTypes.string).isRequired,
+  content: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
