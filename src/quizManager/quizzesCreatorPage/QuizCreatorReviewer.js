@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
+
 
 const styles = {
   quizTitle: {
@@ -30,26 +32,21 @@ export default class QuizCreatorReviewer extends Component {
   }
   componentWillMount() {
     const auth = 'Authorization';
-    axios.defaults.headers.common[auth] = this.props.token;
-    console.log(this.props.quizID);
-    axios.get(`https://project-run.herokuapp.com/quizzes/${this.props.quizID}`)
-    .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
+    axios.defaults.headers.common[auth] = this.props.userToken;
+    axios.get(`https://project-run.herokuapp.com/quizzes/${this.props.quizID}/edit`)
+    .then(response =>
+       this.setState({ quizInfo: response.data, loadingQuiz: false }),
+    );
   }
   isReviewMode() {
     const newState = !this.state.reviewState;
     this.setState({ reviewState: newState });
   }
   renderQuestions(question, index) {
-    const answers = this.props.questionsWithAnswers;
   //  console.log(answers);
-    const type = answers[index].type;
   //  console.log(type);
-    let answersAttributes = [];
+    const answersAttributes = question.answers;
     if (question.type === 'multiple_choice') {
-      if (type === 'multiple_choice') {
-        answersAttributes = answers[index].answers_attributes;
-        // console.log(answersAttributes);
-      }
       return (
         <MultipleChoiceQuiz
           id={question.id}
@@ -94,7 +91,7 @@ export default class QuizCreatorReviewer extends Component {
   render() {
     if (this.state.loadingQuiz) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Loading quiz draft...</h1>
+        <h1>Loading draft...</h1>
       </div>);
     }
     return (
@@ -102,6 +99,12 @@ export default class QuizCreatorReviewer extends Component {
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         {this.state.quizInfo.questions.map((question, index) =>
         this.renderQuestions(question, index))}
+        <div className="submitPanel">
+          <Button
+            className="submitButton"
+            onClick={() => this.props.handleSubmitButton(false, false, true)}
+          >EDIT QUIZ</Button>
+        </div>
       </div>
     );
   }
@@ -109,6 +112,6 @@ export default class QuizCreatorReviewer extends Component {
 
 QuizCreatorReviewer.propTypes = {
   quizID: React.PropTypes.number.isRequired,
-  token: React.PropTypes.string.isRequired,
-  questionsWithAnswers: React.PropTypes.arrayOf(React.PropTypes.shape({})).isRequired,
+  userToken: React.PropTypes.string.isRequired,
+  handleSubmitButton: React.PropTypes.func.isRequired,
 };

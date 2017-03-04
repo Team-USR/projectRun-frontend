@@ -32,7 +32,7 @@ export default class QuizViewerMainPage extends Component {
   }
   componentWillMount() {
     axios.defaults.headers.common.Authorization = this.props.userToken;
-    const quizID = 1;
+    const quizID = 127;
     axios.get(`https://project-run.herokuapp.com/quizzes/${quizID}`)
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
@@ -41,7 +41,7 @@ export default class QuizViewerMainPage extends Component {
     this.setState({ reviewState: newState });
   }
   isResultsMode() {
-    const quizID = 1;
+    const quizID = 127;
 //    console.log(this.state.answers);
     axios.post(`https://project-run.herokuapp.com/quizzes/${quizID}/check`, this.state.answers)
     .then((response) => {
