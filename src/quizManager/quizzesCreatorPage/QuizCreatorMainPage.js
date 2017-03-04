@@ -108,7 +108,7 @@ export default class QuizCreatorMainPage extends Component {
       cont = this.state.inputQuestions[id].answers;
     }
     if (quizType === 'multiple_choice') {
-      console.log(id);
+    //  console.log(id);
       const question = (
         <MultipleChoiceQuizGenerator
           handleInput={(questionI, answers) => this.handleInput(questionI, answers, id)}
@@ -173,7 +173,7 @@ export default class QuizCreatorMainPage extends Component {
     if (!this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
+          <Button className="submitButton" onClick={this.isReviewMode}> Save</Button>
         </div>);
     } if (this.state.resultsState) {
       return (
