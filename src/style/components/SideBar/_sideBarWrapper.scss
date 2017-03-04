@@ -11,6 +11,13 @@
       width: 100%;
     }
 
+    .container {
+      width: 200px;
+      @media (max-width: 767px) {
+        width: 100%;
+      }
+    }
+
     .sideBarLeft {
       width: 200px;
       @media (max-width: 767px) {
