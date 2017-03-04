@@ -6,9 +6,11 @@ export default function ClozeQuestion(props) {
   return (
     <div>
       <p>{props.index}. {props.req}</p>
-      {props.questions.map(q =>
-        <ClozeSentence key={q.no} index={q.no} question={q.question} hint={q.hint || ''} />)
-      }
+      <ol>
+        {props.questions.map(q =>
+          <ClozeSentence key={q.no} index={q.no} question={q.question} hint={q.hint || ''} />)
+        }
+      </ol>
     </div>
   );
 }

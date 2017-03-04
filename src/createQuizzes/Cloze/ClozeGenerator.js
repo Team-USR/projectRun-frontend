@@ -1,6 +1,5 @@
 import React from 'react';
-import { ClozeForm } from './ClozeForm';
-import { ClozeList } from './ClozeList';
+import { ClozeForm, ClozeList } from './index';
 
 export default class ClozeGenerator extends React.Component {
 
@@ -12,6 +11,7 @@ export default class ClozeGenerator extends React.Component {
     };
 
     this.addQuestion = this.addQuestion.bind(this);
+    this.removeQuestion = this.removeQuestion.bind(this);
   }
 
   addQuestion(s) {
@@ -19,15 +19,19 @@ export default class ClozeGenerator extends React.Component {
       no: this.state.current,
       question: s,
     };
-    this.state.current += 1;
-    this.state.questions.push(question);
+    this.setState({ current: this.state.current + 1 });
+    this.setState({ questions: this.state.questions.concat(question) });
+  }
+
+  removeQuestion(delQ) {
+    this.setState({ questions: this.state.questions.filter(q => q !== delQ) });
   }
 
   render() {
     return (
       <div>
         <ClozeForm addQuestion={this.addQuestion} />
-        <ClozeList questions={this.state.questions} />
+        <ClozeList questions={this.state.questions} removeQuestion={this.removeQuestion} />
       </div>
     );
   }
