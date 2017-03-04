@@ -23,15 +23,20 @@ class QuestionWrapper extends Component {
     this.props.callbackParent(newArray, index);
   }
   renderChoices(indexQ, choices, inReview) {
+    let defaultAnswer = null;
+    if (this.props.creatorAnswers !== null && this.props.creatorAnswers[indexQ] != null) {
+    //  console.log("true");
+      defaultAnswer = this.props.creatorAnswers[indexQ].is_correct;
+    }
     return (
       <Choice
         value={indexQ} choiceText={choices.answer}
         id={choices.id}
         key={choices.id}
         inReview={inReview}
+        defaultValue={defaultAnswer}
         callbackParent={(newState) => { this.onChildChanged(newState, choices.id, indexQ); }}
       />
-      /*  this.renderAnswers(choices.id) */
     );
   }
   renderAnswers(choiceID) {
@@ -79,7 +84,6 @@ class QuestionWrapper extends Component {
             <form>
               { question.answers.map((choice, indexQ) =>
                 this.renderChoices(indexQ, choice, inReview))}
-              {this.renderFinalAnswer()}
             </form>
           </div>
         </div>
@@ -105,6 +109,9 @@ QuestionWrapper.propTypes = {
     correct: PropTypes.bool,
     correct_answers: PropTypes.arrayOf(PropTypes.number),
   }),
+  creatorAnswers: PropTypes.arrayOf(PropTypes.shape({
+    is_correct: PropTypes.bool,
+  })),
 };
 
 QuestionWrapper.defaultProps = {
@@ -112,6 +119,8 @@ QuestionWrapper.defaultProps = {
     correct: false,
     correct_answers: [],
   },
+  creatorAnswers: [],
+  is_correct: false,
 };
 
 export default QuestionWrapper;

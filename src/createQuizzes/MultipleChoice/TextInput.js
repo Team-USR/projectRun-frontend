@@ -14,7 +14,7 @@ export default class TextInput extends Component {
     return (
       <label htmlFor="textInput">
         { this.props.text }
-        <input id="textInput" type="text" value={this.props.value} onChange={this.handleChange} />
+        <input id="textInput" type="text"  onChange={this.handleChange} />
       </label>
     );
   }

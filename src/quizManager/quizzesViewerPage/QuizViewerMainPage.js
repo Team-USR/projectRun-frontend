@@ -16,9 +16,6 @@ const styles = {
     marginTop: 100,
   },
 };
-// var config = {
-//    headers: { 'Authorization': store.getState().token };
-// };
 export default class QuizViewerMainPage extends Component {
   constructor() {
     super();
@@ -34,7 +31,9 @@ export default class QuizViewerMainPage extends Component {
     this.isResultsMode = this.isResultsMode.bind(this);
   }
   componentWillMount() {
-    axios.get('https://project-run.herokuapp.com/quizzes/1')
+    axios.defaults.headers.common.Authorization = this.props.userToken;
+    const quizID = 1;
+    axios.get(`https://project-run.herokuapp.com/quizzes/${quizID}`)
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
   isReviewMode() {
@@ -42,7 +41,9 @@ export default class QuizViewerMainPage extends Component {
     this.setState({ reviewState: newState });
   }
   isResultsMode() {
-    axios.post('https://project-run.herokuapp.com/quizzes/1/check', this.state.answers)
+    const quizID = 1;
+//    console.log(this.state.answers);
+    axios.post(`https://project-run.herokuapp.com/quizzes/${quizID}/check`, this.state.answers)
     .then((response) => {
       const newState = !this.state.resultsState;
       const dataSet = response.data;
@@ -52,9 +53,11 @@ export default class QuizViewerMainPage extends Component {
         return 0;
       });
       this.setState({ resultsState: newState, getResponse: response, data: newData });
+  //    console.log(dataSet);
     });
   }
   collectAnswers(id, answers, type, index) {
+//    console.log(index);
     const tempAnswers = this.state.answers;
     const tempQuestions = this.state.answers.questions.slice();
     let newAnswer = {};
@@ -71,7 +74,7 @@ export default class QuizViewerMainPage extends Component {
       const mixQuizAnswer = { id, answer: answers };
       newAnswer = mixQuizAnswer;
     }
-    tempQuestions[index - 1] = newAnswer;
+    tempQuestions[index] = newAnswer;
     tempAnswers.questions = tempQuestions;
     this.setState({ answers: tempAnswers });
   }
@@ -96,6 +99,7 @@ export default class QuizViewerMainPage extends Component {
     return ('');
   }
   renderQuestions(question, index) {
+//    console.log(this.state.data[question.id]);
     if (question.type === 'multiple_choice') {
       return (
         <MultipleChoiceQuiz
