@@ -6,11 +6,11 @@ import { LinkContainer } from 'react-router-bootstrap';
 export default function NavBar(props) {
   return (
     <div>
-      <Navbar inverse collapseOnSelect>
+      <Navbar inverse collapseOnSelect className="topNabBarWrapper">
         <Navbar.Header>
           <Navbar.Brand>
             <Link to="/" className="navbar-brand">
-              USR Interactive-Language
+              Interactive Language
             </Link>
           </Navbar.Brand>
           <Navbar.Toggle />
@@ -26,12 +26,6 @@ export default function NavBar(props) {
             <LinkContainer to="/my-classes">
               <NavItem>
                 My Classes
-              </NavItem>
-            </LinkContainer>
-
-            <LinkContainer to="/quiz">
-              <NavItem >
-                View Quiz
               </NavItem>
             </LinkContainer>
 

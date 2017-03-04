@@ -1,3 +1,17 @@
 .myClassesPageWrapper {
   text-align: center;
+  display: inline-block;
+  width: 100%;
+
+  .contentWrapper {
+    margin-left: 200px;
+
+    @media (max-width: 767px) {
+      margin-left: 0;
+    }
+  }
+
+  @media (max-width: 767px) {
+    display: initial;
+  }
 }
