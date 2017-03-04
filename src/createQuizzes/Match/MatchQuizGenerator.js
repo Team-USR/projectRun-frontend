@@ -7,8 +7,6 @@ export default class MatchQuizGenerator extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      reviewState: false,
-      resultState: false,
       leftTextareaName: 'leftItems',
       rightTextareaName: 'rightItems',
       defaultTextareaName: 'defaultOptionText',
@@ -16,15 +14,22 @@ export default class MatchQuizGenerator extends Component {
       leftTextareaPlaceholder: 'Write a LEFT item',
       rightTextareaPlaceHolder: 'Write its corresponding RIGHT answer',
       defaultTextareaPlaceHolder: 'Write a default option for dropdowns',
-      currentID: 2,
+      defaultSelectValue: 'Choose an option!',
+      matchQuizQuestion: '',
+      createItems: [
+        {
+          left_choice: 'left 1',
+          right_choice: 'right 1',
+        },
+        {
+          left_choice: 'left 2',
+          right_choice: 'right 2',
+        },
+      ],
     };
 
-    this.matchQuizTitle = '';
-    this.createMatchQuiz = { left: ['', ''], right: ['', ''], default: 'Choose an option!' };
-    this.createItems = [this.renderItem(0), this.renderItem(1)];
-
     this.isReviewMode = this.isReviewMode.bind(this);
-    this.isResultMode = this.isResultMode.bind(this);
+    this.isResultsMode = this.isResultsMode.bind(this);
     this.addMatchElement = this.addMatchElement.bind(this);
     this.deleteMatchElement = this.deleteMatchElement.bind(this);
   }
@@ -34,92 +39,111 @@ export default class MatchQuizGenerator extends Component {
     this.setState({ reviewState: newState });
   }
 
-  isResultMode() {
-    const newState = !this.state.resultState;
-    this.setState({ resultState: newState });
+  isResultsMode() {
+    const newState = !this.state.resultsState;
+    this.setState({ resultsState: newState });
   }
 
   /* Function called everytime when user types in Quiz Title Input */
-  handleTitleInputChange(e) {
+  handleQuestionInputChange(e) {
     const target = e.target;
     const value = target.value;
-    this.matchQuizTitle = value;
+    this.setState({ matchQuizQuestion: value });
+
+    /* TODO:
+    * callBackParent
+      {
+        question: matchQuizQuestion,
+        type: 'match',
+        pairs_attribute: newCreateItemsArray
+      }
+    */
   }
 
-  /* Function called everytime when user types in textarea */
-  handleTextareaChange(e) {
+  /* Function called everytime when user types in DEFAULT VALUE textarea */
+  handleDefaultValueTextareaChange(e) {
     const target = e.target;
     const name = target.name;
-    const id = target.id;
     const value = target.value;
 
+    if (name === this.state.defaultTextareaName) {
+      this.setState({ defaultSelectValue: value });
+    }
+  }
+
+  /* Function called everytime when user types
+  * in a LEFT or RIGHT element textarea
+  */
+  handleItemTextareaChange(e, index) {
+    const target = e.target;
+    const name = target.name;
+    const value = target.value;
+    const editedItem = this.state.createItems[index];
     // Update the LEFT item with value of textarea
     if (name === this.state.leftTextareaName) {
-      this.createMatchQuiz.left[id] = value;
-      // console.log(this.createMatchQuiz.left);
+      editedItem.left_choice = value;
     }
 
     // Update the RIGHT item with value of textarea
     if (name === this.state.rightTextareaName) {
-      this.createMatchQuiz.right[id] = value;
-      // console.log(this.createMatchQuiz.right);
+      editedItem.right_choice = value;
     }
-
-    if (name === this.state.defaultTextareaName) {
-      this.createMatchQuiz.default = value;
-      // console.log(this.createMatchQuiz.default);
-    }
-
-    // Testing purposes
-    // console.log(this.createMatchQuiz);
+    const newCreateItemsArray = this.state.createItems;
+    newCreateItemsArray[index] = editedItem;
+    this.setState({ createItems: newCreateItemsArray });
   }
 
+  /* Function called everytime when user clicks *Add Match Element* Button */
   addMatchElement() {
-    const newItemsArray = this.createItems;
-    const id = this.state.currentID;
-    const newItem = this.renderItem(id);
-    const newID = id + 1;
-    newItemsArray.push(newItem);
-    this.createItems = newItemsArray;
-    this.setState({ currentID: newID });
+    const templateItemObj = { left_choice: '', right_choice: '' };
+    const newCreateItemsArray = this.state.createItems;
+    newCreateItemsArray.push(templateItemObj);
+    this.setState({ createItems: newCreateItemsArray });
   }
 
   deleteMatchElement(index) {
-    const newItemsArray = this.createItems;
-    const ind = parseInt(index, 10);
-    // console.log(newItemsArray);
-
-    if (newItemsArray[ind]) {
-      newItemsArray[ind] = null;
-      // newItemsArray.splice(ind, 1);
-    }
-    // console.log(newItemsArray);
-    this.createItems = newItemsArray;
-
-    // this.setState({ createItems: newItemsArray });
+    const newCreateItemsArray = this.state.createItems;
+    newCreateItemsArray.splice(index, 1);
+    this.setState({ createItems: newCreateItemsArray });
   }
 
-  renderItem(itemID) {
-    this.item = (
-      <MatchQuizItem
-        id={itemID}
-        key={itemID}
-        reviewState={this.props.reviewState}
-        resultState={this.props.resultsState}
-        leftTextareaName={this.state.leftTextareaName}
-        rightTextareaName={this.state.rightTextareaName}
-        leftTextareaPlaceholder={this.state.leftTextareaPlaceholder}
-        rightTextareaPlaceHolder={this.state.rightTextareaPlaceHolder}
-        deleteMatchElement={index => this.deleteMatchElement(index)}
-        onChange={e => this.handleTextareaChange(e)}
-      />
-    );
-    return this.item;
+  renderMatchItems() {
+    const renderedComponents = [];
+    this.state.createItems.map((obj, index) => {
+      const ind = index;
+      renderedComponents.push(
+        <MatchQuizItem
+          index={index}
+          id={`create_match_item_${ind}`}
+          key={`create_match_item_${ind}`}
+          reviewState={this.props.reviewState}
+          resultsState={this.props.resultsState}
+          leftValue={obj.left_choice}
+          rightValue={obj.right_choice}
+          leftTextareaName={this.state.leftTextareaName}
+          rightTextareaName={this.state.rightTextareaName}
+          leftTextareaPlaceholder={this.state.leftTextareaPlaceholder}
+          rightTextareaPlaceHolder={this.state.rightTextareaPlaceHolder}
+          deleteMatchElement={deleteIndex => this.deleteMatchElement(deleteIndex)}
+          onChange={(e, textareaIndex) => this.handleItemTextareaChange(e, textareaIndex)}
+        />,
+      );
+      return ('');
+    });
+    return renderedComponents;
   }
 
   render() {
-    const items = this.createItems;
-    // console.log('RENDER', items);
+    // Testing Pupropses
+    /*
+    const result = {
+      question: this.state.matchQuizQuestion,
+      type: 'match',
+      defaultValue: this.state.defaultSelectValue,
+      pairs_attribute: this.state.createItems,
+    };
+    console.log('RENDER', result);
+    */
 
     const createMatchQuiz = (
       <div className="matchQuizGenerator">
@@ -130,8 +154,9 @@ export default class MatchQuizGenerator extends Component {
             type="text"
             name="matchQuizTitle"
             className="quizTitleInput"
+            value={this.state.matchQuizQuestion}
             placeholder={this.state.quizTitlePlaceHolder}
-            onChange={e => this.handleTitleInputChange(e)}
+            onChange={e => this.handleQuestionInputChange(e)}
           />
         </div>
         <div className="leftColumn">
@@ -143,7 +168,7 @@ export default class MatchQuizGenerator extends Component {
         </div>
 
         <div className="createMatchItems">
-          { items }
+          { this.renderMatchItems() }
         </div>
 
         <br />
@@ -161,8 +186,8 @@ export default class MatchQuizGenerator extends Component {
                 className="itemTexarea"
                 placeholder={this.state.defaultTextareaPlaceHolder}
                 rows="2" cols="25"
-                defaultValue={this.createMatchQuiz.default}
-                onChange={e => this.handleTextareaChange(e)}
+                defaultValue={this.state.defaultSelectValue}
+                onChange={e => this.handleDefaultValueTextareaChange(e)}
               />
             </div>
           </div>
