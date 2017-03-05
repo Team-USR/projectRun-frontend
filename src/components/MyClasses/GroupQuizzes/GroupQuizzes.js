@@ -1,28 +1,37 @@
-import React, { Component } from 'react';
+import React, { PropTypes, Component } from 'react';
+import { Button } from 'react-bootstrap';
 import { QuizManager } from './index';
 
-export default class MyClassesPage extends Component {
+export default class GroupQuizzes extends Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-    };
-  }
-
-  renderQuizManager(value) {
-    console.log(value);
-    return <QuizManager value={value} />;
+  renderQuizzes() {
+    return this.props.quizzes.map(obj =>
+      <li key={`group_quiz_${obj.quizId}`}>
+        <QuizManager
+          quizId={obj.quizId}
+          value={obj.quizTitle}
+          removeQuiz={id => this.props.handleRemoveQuizClick(id)}
+        />
+      </li>,
+    );
   }
 
   render() {
-    console.log(this.props.quizzes);
     return (
       <div className="groupQuizzesWrapper">
+        <br />
+        <h1>Quizzes</h1>
         <ul>
-          { this.props.quizzes.map(obj => this.renderQuizManager(obj.quizTitle)) }
+          { this.renderQuizzes() }
         </ul>
+        <Button onClick={this.props.handleAddQuizClick}> Add Quiz </Button>
       </div>
     );
   }
 }
+
+GroupQuizzes.propTypes = {
+  quizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  handleAddQuizClick: PropTypes.func.isRequired,
+  handleRemoveQuizClick: PropTypes.func.isRequired,
+};

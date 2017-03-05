@@ -5,29 +5,32 @@ import { StudentManager } from './index';
 export default class GroupStudents extends Component {
 
   renderStudents() {
-    const populatedArray = [];
-    this.state.studentsArray.map(item =>
-      populatedArray.push(<li key={`student_manager_${item.userId}`}><StudentManager
-        name={item.name}
-        studentId={item.userId}
-        removeStudent={userId => this.props.removeStudent(userId)}
-      /></li>),
+    return this.props.students.map(item =>
+      <li key={`student_manager_${item.studentID}`}>
+        <StudentManager
+          name={item.studentName}
+          studentId={item.studentID}
+          removeStudent={id => this.props.handleRemoveStudentClick(id)}
+        />
+      </li>,
     );
-    return populatedArray;
   }
 
   render() {
-    return (<div className="groupStudentsContainer">
-      <h1>Enrolled Students</h1>
-      <ul>
-        {this.renderStudents()}
-      </ul>
-      <Button onClick={this.props.addStudent}> Add Student </Button>
-    </div>);
+    return (
+      <div className="groupStudentsWrapper">
+        <h1>Enrolled Students</h1>
+        <ul>
+          {this.renderStudents()}
+        </ul>
+        <Button onClick={this.props.handleAddStudentClick}> Add Student </Button>
+      </div>
+    );
   }
 }
 
 GroupStudents.propTypes = {
-  addStudent: PropTypes.func.isRequired,
-  removeStudent: PropTypes.func.isRequired,
+  students: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  handleAddStudentClick: PropTypes.func.isRequired,
+  handleRemoveStudentClick: PropTypes.func.isRequired,
 };

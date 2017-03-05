@@ -9,12 +9,14 @@ export default class MyClassesPage extends Component {
 
     this.state = {
       showClassPanel: false,
+      showAddQuizPanel: false,
+      showAddStudentPanel: false,
       content: {},
       901: {
         classTitle: 'Class IX A ',
         quizzes: [
-          { quizID: 1, quizTitle: 'Math Quiz' },
-          { quizID: 2, quizTitle: 'Philosophy Quiz' },
+          { quizId: 1, quizTitle: 'Math Quiz' },
+          { quizId: 2, quizTitle: 'Philosophy Quiz' },
         ],
         students: [
           { studentID: 101, studentName: 'Gigel' },
@@ -26,7 +28,7 @@ export default class MyClassesPage extends Component {
       902: {
         classTitle: 'Class IX B ',
         quizzes: [
-          { quizID: 1, quizTitle: 'Math Quiz' },
+          { quizId: 1, quizTitle: 'Math Quiz' },
         ],
         students: [
           { studentID: 101, studentName: 'Gigel' },
@@ -37,7 +39,7 @@ export default class MyClassesPage extends Component {
       903: {
         classTitle: 'Class X D ',
         quizzes: [
-          { quizID: 2, quizTitle: 'Philosophy Quiz' },
+          { quizId: 2, quizTitle: 'Philosophy Quiz' },
         ],
         students: [
           { studentID: 101, studentName: 'Gigel' },
@@ -47,17 +49,17 @@ export default class MyClassesPage extends Component {
       904: {
         classTitle: 'Class XI C ',
         quizzes: [
-          { quizID: 2, quizTitle: 'Math Quiz' },
+          { quizId: 2, quizTitle: 'Math Quiz' },
         ],
         students: [
+          { studentID: 104, studentName: 'Geon' },
           { studentID: 101, studentName: 'Gigel' },
-          { studentID: 104, studentName: 'Blercu' },
         ],
       },
       905: {
         classTitle: 'Class XII A ',
         quizzes: [
-          { quizID: 2, quizTitle: 'Math Quiz' },
+          { quizId: 2, quizTitle: 'Math Quiz' },
         ],
         students: [
           { studentID: 104, studentName: 'Blercu' },
@@ -67,23 +69,54 @@ export default class MyClassesPage extends Component {
   }
 
   getClassContent(currentClass) {
-    // console.log(currentClass);
     return this.state[currentClass];
+  }
+
+  handleRemoveStudentClick(id) {
+    this.id = id;
+    // const studentsCopy = this.state.studentsArray;
+    // const tempPos = studentsCopy.map(item => item.userId).indexOf(id);
+    // if (tempPos !== -1) {
+    //   studentsCopy.splice(tempPos, 1);
+    // }
+    // this.setState({ studentsArray: studentsCopy });
+  }
+
+  handleAddStudentClick() {
+    this.setState({ showAddStudentPanel: true, showAddQuizPanel: false });
+  }
+
+  handleRemoveQuizClick(id) {
+    this.id = id;
+  }
+
+  handleAddQuizClick() {
+    this.setState({ showAddStudentPanel: false, showAddQuizPanel: true });
   }
 
   showClassPanel(show, currentClass) {
     const newContent = this.getClassContent(currentClass);
-    // console.log('show');
-    this.setState({ showClassPanel: show, content: newContent });
+    this.setState({
+      showClassPanel: show,
+      showAddQuizPanel: false,
+      showAddStudentPanel: false,
+      content: newContent });
   }
 
   renderClassContent() {
     let element = <h1><b> My Classes</b></h1>;
     if (this.state.showClassPanel) {
-      element = (<MyClassesPanel
-        userToken={this.props.userToken}
-        content={this.state.content}
-      />);
+      element = (
+        <MyClassesPanel
+          showAddQuizPanel={this.state.showAddQuizPanel}
+          showAddStudentPanel={this.state.showAddStudentPanel}
+          userToken={this.props.userToken}
+          content={this.state.content}
+          handleRemoveStudentClick={id => this.handleRemoveStudentClick(id)}
+          handleAddStudentClick={() => this.handleAddStudentClick()}
+          handleRemoveQuizClick={id => this.handleRemoveQuizClick(id)}
+          handleAddQuizClick={() => this.handleAddQuizClick()}
+        />);
     }
     return element;
   }
@@ -100,8 +133,6 @@ export default class MyClassesPage extends Component {
         <div className="contentWrapper">
           { this.renderClassContent() }
         </div>
-        <GroupStudents />
-        <StudentsPanel groupName={'USR'} />
       </div>
     );
   }
