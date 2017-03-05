@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { MyQuizzesPage } from '../components/MyQuizzes';
 
 const mapStateToProps = state => ({
-  userToken: state.reducer.token,
+  userToken: state.auth.token,
 });
 
 const MyQuizzesContainer = connect(
