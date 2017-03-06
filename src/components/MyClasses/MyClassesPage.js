@@ -139,5 +139,5 @@ export default class MyClassesPage extends Component {
 }
 
 MyClassesPage.propTypes = {
-  userToken: PropTypes.string.isRequired,
+  userToken: PropTypes.shape({}).isRequired,
 };
