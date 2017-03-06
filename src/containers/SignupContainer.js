@@ -35,7 +35,7 @@ class SignupContainer extends React.Component {
     this.props.signupUser({
       email: this.state.email,
       name: this.state.name,
-      password: this.state.password
+      password: this.state.password,
     });
   }
 
@@ -65,10 +65,10 @@ class SignupContainer extends React.Component {
 SignupContainer.propTypes = {
   signupUser: React.PropTypes.func.isRequired,
   auth: React.PropTypes.shape({
-    isLoggingUser: React.PropTypes.boolean,
+    signupInProgress: React.PropTypes.boolean,
     error: React.PropTypes.string,
   }).isRequired,
-}
+};
 
 export default connect(
   state => ({ auth: state.auth }),
