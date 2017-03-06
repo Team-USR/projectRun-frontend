@@ -1,20 +1,26 @@
 import { connect } from 'react-redux';
 import React from 'react';
-import LoginForm from '../components/LoginForm';
+import SignupForm from '../components/SignupForm';
 import * as userActions from '../redux/modules/user';
 
-class LoginContainer extends React.Component {
+class SignupContainer extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      name: '',
       email: '',
       password: '',
     };
 
+    this.handleNameChange = this.handleNameChange.bind(this);
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
+  }
+
+  handleNameChange(e) {
+    this.setState({ name: e.target.value });
   }
 
   handleEmailChange(e) {
@@ -26,21 +32,24 @@ class LoginContainer extends React.Component {
   }
 
   handleLogin() {
-    this.props.loginUser({
+    this.props.signupUser({
       email: this.state.email,
-      password: this.state.password,
+      name: this.state.name,
+      password: this.state.password
     });
   }
 
   render() {
-    if (!this.props.auth.loginInProgress) {
+    if (!this.props.auth.signupInProgress) {
       return (
         <div>
-          <LoginForm
+          <SignupForm
             handleEmailChange={this.handleEmailChange}
+            handleNameChange={this.handleNameChange}
             handlePasswordChange={this.handlePasswordChange}
-            loginError={this.props.auth.error}
-            submitLogin={this.handleLogin}
+            signupError={this.props.auth.error}
+            submitSignup={this.handleLogin}
+            name={this.state.name}
             email={this.state.email}
             password={this.state.password}
           />
@@ -48,20 +57,20 @@ class LoginContainer extends React.Component {
       );
     }
     return (
-      <div>Logging in...</div>
+      <div>Signup in...</div>
     );
   }
 }
 
-LoginContainer.propTypes = {
-  loginUser: React.PropTypes.func.isRequired,
+SignupContainer.propTypes = {
+  signupUser: React.PropTypes.func.isRequired,
   auth: React.PropTypes.shape({
     isLoggingUser: React.PropTypes.boolean,
     error: React.PropTypes.string,
   }).isRequired,
-};
+}
 
 export default connect(
   state => ({ auth: state.auth }),
   userActions,
-)(LoginContainer);
+)(SignupContainer);

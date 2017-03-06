@@ -44,5 +44,5 @@ export default class MyQuizzesPage extends Component {
 }
 
 MyQuizzesPage.propTypes = {
-  userToken: PropTypes.string.isRequired,
+  userToken: PropTypes.shape({}),
 };

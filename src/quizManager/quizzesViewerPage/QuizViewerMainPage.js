@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
+import { API_URL } from '../../constants';
 
 const styles = {
   quizTitle: {
@@ -31,9 +32,11 @@ export default class QuizViewerMainPage extends Component {
     this.isResultsMode = this.isResultsMode.bind(this);
   }
   componentWillMount() {
-    axios.defaults.headers.common.Authorization = this.props.userToken;
     const quizID = 1;
-    axios.get(`https://project-run.herokuapp.com/quizzes/${quizID}`)
+    axios({
+      url: `${API_URL}/quizzes/${quizID}`,
+      headers: this.props.token,
+    })
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
   isReviewMode() {
@@ -43,7 +46,11 @@ export default class QuizViewerMainPage extends Component {
   isResultsMode() {
     const quizID = 1;
 //    console.log(this.state.answers);
-    axios.post(`https://project-run.herokuapp.com/quizzes/${quizID}/check`, this.state.answers)
+    axios({
+      url: `${API_URL}/quizzes/${quizID}/check`,
+      data: this.state.answers,
+      method: 'post'
+    })
     .then((response) => {
       const newState = !this.state.resultsState;
       const dataSet = response.data;
@@ -164,5 +171,5 @@ export default class QuizViewerMainPage extends Component {
 }
 
 QuizViewerMainPage.propTypes = {
-  userToken: React.PropTypes.string.isRequired,
+  userToken: React.PropTypes.shape({}).isRequired,
 };
