@@ -4,6 +4,7 @@ import axios from 'axios';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { ButtonWrapper, QuizCreatorReviewer } from './index';
+import { API_URL } from '../../constants';
 
 const styles = {
   loading: {
@@ -58,9 +59,12 @@ export default class QuizCreatorMainPage extends Component {
   //  console.log("----------");
   //  console.log(this.state.submitedQuestions);
 //  console.log("----------");
-    const auth = 'Authorization';
-    axios.defaults.headers.common[auth] = this.props.userToken;
-    axios.post('https://project-run.herokuapp.com/quizzes', this.state.submitedQuestions)
+    axios({
+      url: `${API_URL}/quizzes`,
+      method: 'post',
+      data: this.state.submitedQuestions,
+      headers: this.props.userToken
+    })
     .then((response) => {
       const resultID = response.data.id;
       const loadingFalse = false;
@@ -234,5 +238,5 @@ export default class QuizCreatorMainPage extends Component {
   }
 }
 QuizCreatorMainPage.propTypes = {
-  userToken: PropTypes.string.isRequired,
+  userToken: PropTypes.shape({}).isRequired,
 };

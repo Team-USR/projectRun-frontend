@@ -3,6 +3,7 @@ import axios from 'axios';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
+import { API_URL } from '../../constants';
 
 const styles = {
   quizTitle: {
@@ -29,10 +30,11 @@ export default class QuizCreatorReviewer extends Component {
     this.isReviewMode = this.isReviewMode.bind(this);
   }
   componentWillMount() {
-    const auth = 'Authorization';
-    axios.defaults.headers.common[auth] = this.props.token;
     console.log(this.props.quizID);
-    axios.get(`https://project-run.herokuapp.com/quizzes/${this.props.quizID}`)
+    axios({
+      url: `${API_URL}/quizzes/${this.props.quizID}`,
+      headers: this.props.token
+    })
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
   isReviewMode() {
@@ -109,6 +111,6 @@ export default class QuizCreatorReviewer extends Component {
 
 QuizCreatorReviewer.propTypes = {
   quizID: React.PropTypes.number.isRequired,
-  token: React.PropTypes.string.isRequired,
+  token: React.PropTypes.shape({}).isRequired,
   questionsWithAnswers: React.PropTypes.arrayOf(React.PropTypes.shape({})).isRequired,
 };
