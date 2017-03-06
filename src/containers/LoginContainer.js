@@ -33,7 +33,7 @@ class LoginContainer extends React.Component {
   }
 
   render() {
-    if (!this.props.auth.isLoggingUser) {
+    if (!this.props.auth.loginInProgress) {
       return (
         <div>
           <LoginForm

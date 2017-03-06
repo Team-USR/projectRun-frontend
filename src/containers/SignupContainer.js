@@ -40,7 +40,7 @@ class SignupContainer extends React.Component {
   }
 
   render() {
-    if (!this.props.auth.isLoggingUser) {
+    if (!this.props.auth.signupInProgress) {
       return (
         <div>
           <SignupForm

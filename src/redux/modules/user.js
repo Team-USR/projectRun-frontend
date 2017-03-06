@@ -36,7 +36,7 @@ export default function reducer(state = initialState, action) {
     case USER_LOGOUT:
       return Object.assign({});
     case USER_SIGNUP_IN_PROGRESS:
-      return Object.assign({}, { loginInProgress: true });
+      return Object.assign({}, { signupInProgress: true });
     case USER_SIGNUP_FAILED:
       return Object.assign({}, { error: action.error });
     case USER_SIGNUP_SUCCESFUL:
@@ -135,7 +135,6 @@ export function signupUser(user) {
         dispatch(push('/login'));
       }
     } catch (err) {
-      console.log(err.response.data.errors)
       dispatch(userSignupFailed(err.response.data.errors.full_messages.join(', ')));
     }
   };
