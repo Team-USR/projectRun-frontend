@@ -56,7 +56,7 @@ class LoginContainer extends React.Component {
 LoginContainer.propTypes = {
   loginUser: React.PropTypes.func.isRequired,
   auth: React.PropTypes.shape({
-    isLoggingUser: React.PropTypes.boolean,
+    loginInProgress: React.PropTypes.boolean,
     error: React.PropTypes.string,
   }).isRequired,
 };

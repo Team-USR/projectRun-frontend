@@ -60,3 +60,7 @@ SignupForm.propTypes = {
   name: React.PropTypes.string.isRequired,
   password: React.PropTypes.string.isRequired,
 };
+
+SignupForm.defaultProps = {
+  signupError: null,
+};

@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { MyClassesPage } from '../components/MyClasses';
 
 const mapStateToProps = state => ({
-  userToken: state.reducer.token,
+  userToken: state.auth.token,
 });
 
 const MyClassesContainer = connect(
