@@ -6,7 +6,13 @@ export default class SideBarWrapper extends Component {
 
   renderSideBarContent() {
     const quizzes = ['Quiz REVIEWER'];
-    const classes = ['Class IX A', 'Class IX B', 'Class X D', 'Class XI C', 'Class XII D'];
+    const classes = [
+      { className: 'Class IX A', classId: '901' },
+      { className: 'Class IX B', classId: '902' },
+      { className: 'Class X D', classId: '903' },
+      { className: 'Class XI A', classId: '904' },
+      { className: 'Class XII A', classId: '905' },
+    ];
     let sideBarContent = (<Nav />);
     if (this.props.type === 'SideBarQuizzes') {
       sideBarContent = (
@@ -20,6 +26,8 @@ export default class SideBarWrapper extends Component {
     if (this.props.type === 'SideBarClasses') {
       sideBarContent = (
         <SideBarClasses
+          onClassClick={(showClass, currentClass) =>
+            this.props.onSideBarItemClick(showClass, currentClass)}
           content={classes}
         />
       );
