@@ -11,12 +11,20 @@ export default class MyClassesPage extends Component {
       showClassPanel: false,
       showAddQuizPanel: false,
       showAddStudentPanel: false,
+      allQuizzes: [
+        { quizId: 1, quizTitle: 'Math Quiz' },
+        { quizId: 2, quizTitle: 'Philosophy Quiz' },
+        { quizId: 3, quizTitle: 'Advanced Quiz' },
+        { quizId: 4, quizTitle: 'Physics Quiz' },
+        { quizId: 5, quizTitle: 'Anatomy Quiz' },
+      ],
       content: {},
       901: {
         classTitle: 'Class IX A ',
         quizzes: [
           { quizId: 1, quizTitle: 'Math Quiz' },
           { quizId: 2, quizTitle: 'Philosophy Quiz' },
+          { quizId: 4, quizTitle: 'Physics Quiz' },
         ],
         students: [
           { studentID: 101, studentName: 'Gigel' },
@@ -29,6 +37,7 @@ export default class MyClassesPage extends Component {
         classTitle: 'Class IX B ',
         quizzes: [
           { quizId: 1, quizTitle: 'Math Quiz' },
+          { quizId: 3, quizTitle: 'Advanced Quiz' },
         ],
         students: [
           { studentID: 101, studentName: 'Gigel' },
@@ -39,7 +48,11 @@ export default class MyClassesPage extends Component {
       903: {
         classTitle: 'Class X D ',
         quizzes: [
+          { quizId: 1, quizTitle: 'Math Quiz' },
           { quizId: 2, quizTitle: 'Philosophy Quiz' },
+          { quizId: 3, quizTitle: 'Advanced Quiz' },
+          { quizId: 4, quizTitle: 'Physics Quiz' },
+          { quizId: 5, quizTitle: 'Anatomy Quiz' },
         ],
         students: [
           { studentID: 101, studentName: 'Gigel' },
@@ -47,9 +60,10 @@ export default class MyClassesPage extends Component {
         ],
       },
       904: {
-        classTitle: 'Class XI C ',
+        classTitle: 'Class XI A ',
         quizzes: [
-          { quizId: 2, quizTitle: 'Math Quiz' },
+          { quizId: 1, quizTitle: 'Math Quiz' },
+          { quizId: 3, quizTitle: 'Advanced Quiz' },
         ],
         students: [
           { studentID: 104, studentName: 'Geon' },
@@ -59,7 +73,8 @@ export default class MyClassesPage extends Component {
       905: {
         classTitle: 'Class XII A ',
         quizzes: [
-          { quizId: 2, quizTitle: 'Math Quiz' },
+          { quizId: 1, quizTitle: 'Math Quiz' },
+          { quizId: 5, quizTitle: 'Anatomy Quiz' },
         ],
         students: [
           { studentID: 104, studentName: 'Blercu' },
@@ -90,7 +105,7 @@ export default class MyClassesPage extends Component {
     this.id = id;
   }
 
-  handleAddQuizClick() {
+  handleManageQuizzesFromClass() {
     this.setState({ showAddStudentPanel: false, showAddQuizPanel: true });
   }
 
@@ -112,10 +127,11 @@ export default class MyClassesPage extends Component {
           showAddStudentPanel={this.state.showAddStudentPanel}
           userToken={this.props.userToken}
           content={this.state.content}
+          allQuizzes={this.state.allQuizzes}
           handleRemoveStudentClick={id => this.handleRemoveStudentClick(id)}
           handleAddStudentClick={() => this.handleAddStudentClick()}
           handleRemoveQuizClick={id => this.handleRemoveQuizClick(id)}
-          handleAddQuizClick={() => this.handleAddQuizClick()}
+          handleManageQuizzesFromClass={() => this.handleManageQuizzesFromClass()}
         />);
     }
     return element;

@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { GroupQuizzes } from './GroupQuizzes';
 import { GroupStudents } from './GroupStudents';
-import { StudentsPanel } from './panels';
+import { StudentsPanel, QuizzesPanel } from './panels';
 
 export default class MyClassesPanel extends Component {
 
@@ -13,7 +13,10 @@ export default class MyClassesPanel extends Component {
   renderPanel() {
     let element = <h3>Basic Panel</h3>;
     if (this.props.showAddQuizPanel) {
-      element = <div><h3>Add Quiz Panel</h3></div>;
+      element = (<QuizzesPanel
+        quizzes={this.props.content.quizzes}
+        allQuizzes={this.props.allQuizzes}
+      />);
     } else if (this.props.showAddStudentPanel) {
       element = <StudentsPanel />;
     } else {
@@ -21,7 +24,7 @@ export default class MyClassesPanel extends Component {
         <GroupQuizzes
           quizzes={this.props.content.quizzes}
           handleRemoveQuizClick={id => this.props.handleRemoveQuizClick(id)}
-          handleAddQuizClick={() => this.props.handleAddQuizClick()}
+          handleManageQuizzesFromClass={() => this.props.handleManageQuizzesFromClass()}
         />
         <GroupStudents
           students={this.props.content.students}
@@ -51,8 +54,9 @@ MyClassesPanel.propTypes = {
     quizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     students: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   }).isRequired,
+  allQuizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   handleRemoveQuizClick: PropTypes.func.isRequired,
-  handleAddQuizClick: PropTypes.func.isRequired,
+  handleManageQuizzesFromClass: PropTypes.func.isRequired,
   handleRemoveStudentClick: PropTypes.func.isRequired,
   handleAddStudentClick: PropTypes.func.isRequired,
 };
