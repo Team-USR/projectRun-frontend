@@ -4,6 +4,7 @@ import axios from 'axios';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { ButtonWrapper } from './index';
+import { API_URL } from '../../constants';
 
 const styles = {
   loading: {
@@ -34,18 +35,18 @@ export default class QuizEditorMainPage extends Component {
     this.changeTitle = this.changeTitle.bind(this);
   }
   componentWillMount() {
-    const auth = 'Authorization';
-    axios.defaults.headers.common[auth] = this.props.userToken;
-    axios.get(`https://project-run.herokuapp.com/quizzes/${this.props.quizID}/edit`)
-    .then((response) => {
-      const generatedQuiz = this.state.submitedQuestions;
-      generatedQuiz.quiz.title = response.data.title;
-    //  console.log("LOADING FINISHED");
-      this.setState({
-        quizInfo: response.data, loadingQuiz: false, submitedQuestions: generatedQuiz });
-      response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
-    },
-     );
+    axios({
+      url: `${API_URL}/quizzes/${this.props.quizID}/edit`,
+      headers: this.props.userToken,
+    })
+     .then((response) => {
+       const generatedQuiz = this.state.submitedQuestions;
+       generatedQuiz.quiz.title = response.data.title;
+     //  console.log("LOADING FINISHED");
+       this.setState({
+         quizInfo: response.data, loadingQuiz: false, submitedQuestions: generatedQuiz });
+       response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
+     });
   }
   removeQuiz(index) {
     displayIndex = 0;
@@ -73,14 +74,15 @@ export default class QuizEditorMainPage extends Component {
   //  console.log("----------");
   //  console.log(this.state.submitedQuestions);
 //  console.log("----------");
-    const auth = 'Authorization';
-    axios.defaults.headers.common[auth] = this.props.userToken;
-    axios.patch(`https://project-run.herokuapp.com/quizzes/${this.props.quizID}`, this.state.submitedQuestions)
-    .then(() => {
-  //    console.log(resultID);
-      this.props.handleSubmitButton(true, false, false);
-  //    this.setState({ loading: false });
-    });
+    axios({
+      url: `${API_URL}/quizzes/${this.props.quizID}`,
+      data: this.state.submitedQuestions,
+      headers: this.props.userToken,
+      method: 'patch',
+    })
+     .then(() => {
+       this.props.handleSubmitButton(true, false, false);
+     });
   }
   isResultsMode() {
     const newState = !this.state.resultsState;
@@ -237,7 +239,7 @@ export default class QuizEditorMainPage extends Component {
   }
 }
 QuizEditorMainPage.propTypes = {
-  userToken: PropTypes.string.isRequired,
+  userToken: React.PropTypes.shape({}).isRequired,
   quizID: PropTypes.number.isRequired,
   handleSubmitButton: PropTypes.func.isRequired,
 };

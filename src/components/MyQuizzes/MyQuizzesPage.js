@@ -13,22 +13,31 @@ export default class MyQuizzesPage extends Component {
     };
   }
 
+  componentWillMount() {
+    const getSideBar = {
+      quizzes: [{ id: 1, title: 'Quiz REVIEWER' }],
+    };
+    this.setState({ sideBarContent: getSideBar });
+  }
   updateCurrentQuiz(quizViewer, quizGenerator, quizEditor) {
     this.setState({ currentQuiz: quizViewer, generateQuiz: quizGenerator, editQuiz: quizEditor });
   }
-
+  handleSideBarTitleClick() {
+    this.todo = 'TO DO';
+    // this.setState({ panelType: 'my_classes_default_panel' });
+  }
   renderQuizContent() {
     let element = <h1><b> My Quizzes</b></h1>;
     if (this.state.currentQuiz) {
       element = (<QuizCreatorReviewer
         userToken={this.props.userToken}
-        quizID={134}
+        quizID={5}
         handleSubmitButton={(review, create, edit) => this.updateCurrentQuiz(review, create, edit)}
       />);
     }
     if (this.state.editQuiz) {
       element = (<QuizEditorMainPage
-        quizID={134}
+        quizID={5}
         userToken={this.props.userToken}
         handleSubmitButton={(review, create, edit) => this.updateCurrentQuiz(review, create, edit)}
       />);
@@ -47,6 +56,8 @@ export default class MyQuizzesPage extends Component {
       <div className="myQuizzesPageWrapper">
         <SideBarWrapper
           onSideBarItemClick={(review, create) => this.updateCurrentQuiz(review, create, false)}
+          onSideBarTitleClick={() => this.handleSideBarTitleClick()}
+          sideBarContent={this.state.sideBarContent}
           title={'My Quizzes'}
           type={'SideBarQuizzes'}
         />
@@ -59,5 +70,5 @@ export default class MyQuizzesPage extends Component {
 }
 
 MyQuizzesPage.propTypes = {
-  userToken: PropTypes.string.isRequired,
+  userToken: PropTypes.shape({}).isRequired,
 };

@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
+import { API_URL } from '../../constants';
 
 
 const styles = {
@@ -31,12 +32,12 @@ export default class QuizCreatorReviewer extends Component {
     this.isReviewMode = this.isReviewMode.bind(this);
   }
   componentWillMount() {
-    const auth = 'Authorization';
-    axios.defaults.headers.common[auth] = this.props.userToken;
-    axios.get(`https://project-run.herokuapp.com/quizzes/${this.props.quizID}/edit`)
-    .then(response =>
-       this.setState({ quizInfo: response.data, loadingQuiz: false }),
-    );
+//    console.log(this.props.quizID);
+    axios({
+      url: `${API_URL}/quizzes/${this.props.quizID}`,
+      headers: this.props.userToken,
+    })
+    .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
   isReviewMode() {
     const newState = !this.state.reviewState;
@@ -112,6 +113,7 @@ export default class QuizCreatorReviewer extends Component {
 
 QuizCreatorReviewer.propTypes = {
   quizID: React.PropTypes.number.isRequired,
-  userToken: React.PropTypes.string.isRequired,
+  userToken: React.PropTypes.shape({}).isRequired,
   handleSubmitButton: React.PropTypes.func.isRequired,
+
 };

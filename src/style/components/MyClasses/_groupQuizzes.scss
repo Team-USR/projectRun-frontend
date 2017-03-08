@@ -1,0 +1,26 @@
+.groupQuizzesWrapper {
+  .quizPanelWrapper {
+    .quizzesList {
+      min-height: 50vh;
+
+      .quizManagerWrapper {
+        .classQuizBtn {
+          width: 180px;
+          margin: 5px 0;
+
+          .glyphicon {
+            float: right;
+          }
+
+          .glyphicon-remove {
+            color: $brand-red-color;
+          }
+
+          .glyphicon-plus {
+            color: $brand-green-color;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 import { syncHistoryWithStore, routerReducer, routerMiddleware, push } from 'react-router-redux';
@@ -12,20 +13,21 @@ import {
   LoginContainer,
   MyQuizzesContainer,
   MyClassesContainer,
+  SignupContainer,
 } from './containers';
-import reducer from './redux/modules/user';
+import authReducer from './redux/modules/user';
 
 const store = createStore(
   combineReducers({
-    reducer,
+    auth: authReducer,
     routing: routerReducer,
-  }), applyMiddleware(routerMiddleware(browserHistory)));
+  }), applyMiddleware(routerMiddleware(browserHistory), thunk));
 
 const history = syncHistoryWithStore(browserHistory, store);
 
 
 function isAuth() {
-  if (store.getState().reducer.token === '') {
+  if (store.getState().auth.token === null) {
     store.dispatch(push('/login'));
   }
 }
@@ -41,6 +43,7 @@ ReactDOM.render(
         <Route path="/my-classes" component={MyClassesContainer} />
       </Route>
       <Route path="/login" component={LoginContainer} />
+      <Route path="/signup" component={SignupContainer} />
     </Router>
   </Provider>,
   document.getElementById('root'),
