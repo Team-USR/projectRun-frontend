@@ -14,7 +14,7 @@ const styles = {
 };
 let id = 0;
 let displayIndex = 0;
-export default class QuizCreatorMainPage extends Component {
+export default class QuizEditorMainPage extends Component {
   constructor() {
     super();
     this.state = {
@@ -27,10 +27,26 @@ export default class QuizCreatorMainPage extends Component {
       reviewState: false,
       resultsState: false,
       loading: false,
+      quizInfo: [],
+      loadingQuiz: true,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
     this.changeTitle = this.changeTitle.bind(this);
+  }
+  componentWillMount() {
+    axios({
+      url: `${API_URL}/quizzes/${this.props.quizID}/edit`,
+      headers: this.props.userToken,
+    })
+     .then((response) => {
+       const generatedQuiz = this.state.submitedQuestions;
+       generatedQuiz.quiz.title = response.data.title;
+     //  console.log("LOADING FINISHED");
+       this.setState({
+         quizInfo: response.data, loadingQuiz: false, submitedQuestions: generatedQuiz });
+       response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
+     });
   }
   removeQuiz(index) {
     displayIndex = 0;
@@ -59,17 +75,14 @@ export default class QuizCreatorMainPage extends Component {
   //  console.log(this.state.submitedQuestions);
 //  console.log("----------");
     axios({
-      url: `${API_URL}/quizzes`,
-      method: 'post',
+      url: `${API_URL}/quizzes/${this.props.quizID}`,
       data: this.state.submitedQuestions,
       headers: this.props.userToken,
+      method: 'patch',
     })
-    .then(() => {
-    //  const resultID = response.data.id;
-    //  console.log("Result id", resultID);
-      this.props.handleSubmitButton(true, false, false);
-  //    this.setState({ generatedQuizID: resultID, loading: loadingFalse });
-    });
+     .then(() => {
+       this.props.handleSubmitButton(true, false, false);
+     });
   }
   isResultsMode() {
     const newState = !this.state.resultsState;
@@ -86,7 +99,7 @@ export default class QuizCreatorMainPage extends Component {
   //  }
     this.setState({ submitedQuestions: inputQ });
   }
-  addQuiz(quizType) {
+  addQuiz(quizType, questionObj) {
   //  console.log(id);
     displayIndex = 0;
 
@@ -110,7 +123,7 @@ export default class QuizCreatorMainPage extends Component {
       const question = (
         <MultipleChoiceQuizGenerator
           handleInput={(questionI, answers) => this.handleInput(questionI, answers, id)}
-          content={null}
+          content={questionObj}
           index={id}
           key={`multiple_choice${id}`}
           updateParent={(answersAttributes, qObject, ind) =>
@@ -151,7 +164,7 @@ export default class QuizCreatorMainPage extends Component {
     if (this.state.questions[index]) {
       displayIndex += 1;
       return (
-        <div className="generatorQuizContainer" key={`generatorQuizContainer${displayIndex}`}>
+        <div className="generatorQuizContainer" key={`generator${displayIndex}`}>
           <h2>{displayIndex}</h2>
           {this.state.questions[index].question}
           {this.state.questions[index].buttonGroup}
@@ -183,7 +196,8 @@ export default class QuizCreatorMainPage extends Component {
   }
   render() {
   //  console.log("start rendering");
-  //  console.log(this.state.submitedQuestions);
+//  console.log("submiteed",this.state.submitedQuestions);
+    const submit = this.state.submitedQuestions;
   //  console.log(this.state.questions);
   //  console.log("end rendering");
     if (!this.state.reviewState && this.state.loading === false) {
@@ -193,14 +207,18 @@ export default class QuizCreatorMainPage extends Component {
           <label htmlFor="titleInput">
           Title:
            <input
-             id="titleInput" type="text" placeholder="title" onChange={this.changeTitle}
+             id="titleInput"
+             type="text"
+             placeholder="title"
+             onChange={this.changeTitle}
+             value={submit.quiz.title}
            />
           </label>
           <br /><br />
          Select a quiz to be added:
          <br />
-          <Button onClick={() => this.addQuiz('multiple_choice')}> Multiple Choice</Button>
-          <Button onClick={() => this.addQuiz('match')}>Match</Button>
+          <Button onClick={() => this.addQuiz('multiple_choice', null)}> Multiple Choice</Button>
+          <Button onClick={() => this.addQuiz('match', null)}>Match</Button>
           {this.renderQuestions()}
           <br /><br /><br />
           { this.renderSubmitPanel() }
@@ -211,11 +229,17 @@ export default class QuizCreatorMainPage extends Component {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Saving draft...</h1>
       </div>);
+    } else
+    if (this.state.loadingQuiz === true) {
+      return (<div className="mainQuizViewerBlock" style={styles.loading}>
+        <h1>Loading draft...</h1>
+      </div>);
     }
     return ('');
   }
 }
-QuizCreatorMainPage.propTypes = {
+QuizEditorMainPage.propTypes = {
+  userToken: React.PropTypes.shape({}).isRequired,
+  quizID: PropTypes.number.isRequired,
   handleSubmitButton: PropTypes.func.isRequired,
-  userToken: PropTypes.shape({}).isRequired,
 };

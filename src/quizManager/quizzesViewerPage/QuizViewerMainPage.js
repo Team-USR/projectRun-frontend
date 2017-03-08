@@ -35,7 +35,7 @@ export default class QuizViewerMainPage extends Component {
     const quizID = 1;
     axios({
       url: `${API_URL}/quizzes/${quizID}`,
-      headers: this.props.token,
+      headers: this.props.userToken,
     })
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
@@ -44,12 +44,12 @@ export default class QuizViewerMainPage extends Component {
     this.setState({ reviewState: newState });
   }
   isResultsMode() {
-    const quizID = 1;
+    const quizID = 127;
 //    console.log(this.state.answers);
     axios({
       url: `${API_URL}/quizzes/${quizID}/check`,
       data: this.state.answers,
-      method: 'post'
+      method: 'post',
     })
     .then((response) => {
       const newState = !this.state.resultsState;

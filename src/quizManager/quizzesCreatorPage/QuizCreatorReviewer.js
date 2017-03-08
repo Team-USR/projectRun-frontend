@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
+
 
 const styles = {
   quizTitle: {
@@ -30,10 +32,10 @@ export default class QuizCreatorReviewer extends Component {
     this.isReviewMode = this.isReviewMode.bind(this);
   }
   componentWillMount() {
-    console.log(this.props.quizID);
+//    console.log(this.props.quizID);
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}`,
-      headers: this.props.token
+      headers: this.props.userToken,
     })
     .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
   }
@@ -42,16 +44,10 @@ export default class QuizCreatorReviewer extends Component {
     this.setState({ reviewState: newState });
   }
   renderQuestions(question, index) {
-    const answers = this.props.questionsWithAnswers;
   //  console.log(answers);
-    const type = answers[index].type;
   //  console.log(type);
-    let answersAttributes = [];
+    const answersAttributes = question.answers;
     if (question.type === 'multiple_choice') {
-      if (type === 'multiple_choice') {
-        answersAttributes = answers[index].answers_attributes;
-        // console.log(answersAttributes);
-      }
       return (
         <MultipleChoiceQuiz
           id={question.id}
@@ -96,7 +92,7 @@ export default class QuizCreatorReviewer extends Component {
   render() {
     if (this.state.loadingQuiz) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Loading quiz draft...</h1>
+        <h1>Loading draft...</h1>
       </div>);
     }
     return (
@@ -104,6 +100,12 @@ export default class QuizCreatorReviewer extends Component {
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         {this.state.quizInfo.questions.map((question, index) =>
         this.renderQuestions(question, index))}
+        <div className="submitPanel">
+          <Button
+            className="submitButton"
+            onClick={() => this.props.handleSubmitButton(false, false, true)}
+          >EDIT QUIZ</Button>
+        </div>
       </div>
     );
   }
@@ -111,6 +113,7 @@ export default class QuizCreatorReviewer extends Component {
 
 QuizCreatorReviewer.propTypes = {
   quizID: React.PropTypes.number.isRequired,
-  token: React.PropTypes.shape({}).isRequired,
-  questionsWithAnswers: React.PropTypes.arrayOf(React.PropTypes.shape({})).isRequired,
+  userToken: React.PropTypes.shape({}).isRequired,
+  handleSubmitButton: React.PropTypes.func.isRequired,
+
 };
