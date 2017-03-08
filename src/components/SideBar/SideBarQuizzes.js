@@ -9,7 +9,7 @@ export default function SideBarQuizzes(props) {
         content.map(item =>
           (
             <NavItem key={item.id}>
-              <Button onClick={() => props.onQuizClick(true, false)}>
+              <Button onClick={() => props.onQuizClick(item.id)}>
                 {item.title}
               </Button>
             </NavItem>
@@ -17,7 +17,7 @@ export default function SideBarQuizzes(props) {
         )
       }
       <NavItem key={0}>
-        <Button onClick={() => props.onQuizClick(false, true)}>
+        <Button onClick={() => props.onQuizCreatorClick()}>
           Quiz CREATOR
         </Button>
       </NavItem>
@@ -30,5 +30,5 @@ SideBarQuizzes.propTypes = {
     id: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
   })).isRequired,
-  onQuizClick: PropTypes.func.isRequired,
+  onQuizCreatorClick: PropTypes.func.isRequired,
 };

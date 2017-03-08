@@ -6,6 +6,7 @@ import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 
+
 const styles = {
   loading: {
     textAlign: 'center',
@@ -29,6 +30,7 @@ export default class QuizEditorMainPage extends Component {
       loading: false,
       quizInfo: [],
       loadingQuiz: true,
+      errorState: false,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -40,6 +42,9 @@ export default class QuizEditorMainPage extends Component {
       headers: this.props.userToken,
     })
      .then((response) => {
+       if (!response || (response && response.status !== 200)) {
+         this.setState({ errorState: true });
+       }
        const generatedQuiz = this.state.submitedQuestions;
        generatedQuiz.quiz.title = response.data.title;
      //  console.log("LOADING FINISHED");
@@ -80,8 +85,11 @@ export default class QuizEditorMainPage extends Component {
       headers: this.props.userToken,
       method: 'patch',
     })
-     .then(() => {
-       this.props.handleSubmitButton(true, false, false);
+     .then((response) => {
+       if (!response || (response && response.status !== 201)) {
+         this.setState({ errorState: true });
+       }
+       this.props.handleSubmitButton();
      });
   }
   isResultsMode() {
@@ -200,6 +208,11 @@ export default class QuizEditorMainPage extends Component {
     const submit = this.state.submitedQuestions;
   //  console.log(this.state.questions);
   //  console.log("end rendering");
+    if (this.state.errorState === true) {
+      return (<div className="mainQuizViewerBlock" style={styles.loading}>
+        <h1>Connection error...</h1>
+      </div>);
+    } else
     if (!this.state.reviewState && this.state.loading === false) {
       return (
         <div className="mainQuizGeneratorBlock">
@@ -240,6 +253,6 @@ export default class QuizEditorMainPage extends Component {
 }
 QuizEditorMainPage.propTypes = {
   userToken: React.PropTypes.shape({}).isRequired,
-  quizID: PropTypes.number.isRequired,
   handleSubmitButton: PropTypes.func.isRequired,
+  quizID: PropTypes.string.isRequired,
 };

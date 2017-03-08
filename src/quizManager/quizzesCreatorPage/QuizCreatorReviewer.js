@@ -28,16 +28,21 @@ export default class QuizCreatorReviewer extends Component {
       answers: { questions: [] },
       getResponse: '',
       data: {},
+      errorState: false,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
   }
   componentWillMount() {
-//    console.log(this.props.quizID);
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}`,
       headers: this.props.userToken,
     })
-    .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
+    .then((response) => {
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+      this.setState({ quizInfo: response.data, loadingQuiz: false });
+    });
   }
   isReviewMode() {
     const newState = !this.state.reviewState;
@@ -90,6 +95,11 @@ export default class QuizCreatorReviewer extends Component {
     return ('');
   }
   render() {
+    if (this.state.errorState === true) {
+      return (<div className="mainQuizViewerBlock" style={styles.loading}>
+        <h1>Connection error...</h1>
+      </div>);
+    } else
     if (this.state.loadingQuiz) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Loading draft...</h1>
@@ -103,7 +113,7 @@ export default class QuizCreatorReviewer extends Component {
         <div className="submitPanel">
           <Button
             className="submitButton"
-            onClick={() => this.props.handleSubmitButton(false, false, true)}
+            onClick={() => this.props.handleSubmitButton()}
           >EDIT QUIZ</Button>
         </div>
       </div>
@@ -112,8 +122,8 @@ export default class QuizCreatorReviewer extends Component {
 }
 
 QuizCreatorReviewer.propTypes = {
-  quizID: React.PropTypes.number.isRequired,
   userToken: React.PropTypes.shape({}).isRequired,
   handleSubmitButton: React.PropTypes.func.isRequired,
+  quizID: React.PropTypes.string.isRequired,
 
 };

@@ -27,6 +27,7 @@ export default class QuizCreatorMainPage extends Component {
       reviewState: false,
       resultsState: false,
       loading: false,
+      errorState: false,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -64,10 +65,13 @@ export default class QuizCreatorMainPage extends Component {
       data: this.state.submitedQuestions,
       headers: this.props.userToken,
     })
-    .then(() => {
+    .then((response) => {
     //  const resultID = response.data.id;
     //  console.log("Result id", resultID);
-      this.props.handleSubmitButton(true, false, false);
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+      this.props.handleSubmitButton();
   //    this.setState({ generatedQuizID: resultID, loading: loadingFalse });
     });
   }
@@ -186,6 +190,11 @@ export default class QuizCreatorMainPage extends Component {
   //  console.log(this.state.submitedQuestions);
   //  console.log(this.state.questions);
   //  console.log("end rendering");
+    if (this.state.errorState === true) {
+      return (<div className="mainQuizViewerBlock" style={styles.loading}>
+        <h1>Connection error...</h1>
+      </div>);
+    } else
     if (!this.state.reviewState && this.state.loading === false) {
       return (
         <div className="mainQuizGeneratorBlock">
