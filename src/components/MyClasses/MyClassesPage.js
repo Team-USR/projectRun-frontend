@@ -11,6 +11,7 @@ export default class MyClassesPage extends Component {
       showClassPanel: false,
       showAddQuizPanel: false,
       showAddStudentPanel: false,
+      panelType: 'my_classes_default_panel',
       allQuizzes: [
         { quizId: 1, quizTitle: 'Math Quiz' },
         { quizId: 2, quizTitle: 'Philosophy Quiz' },
@@ -18,6 +19,7 @@ export default class MyClassesPage extends Component {
         { quizId: 4, quizTitle: 'Physics Quiz' },
         { quizId: 5, quizTitle: 'Anatomy Quiz' },
       ],
+      sideBarContent: {},
       content: {},
       901: {
         classTitle: 'Class IX A ',
@@ -80,11 +82,39 @@ export default class MyClassesPage extends Component {
           { studentID: 104, studentName: 'Blercu' },
         ],
       },
+      test: {
+        classTitle: 'Class Test',
+        quizzes: [
+          { quizId: 1, quizTitle: 'Math Quiz' },
+          { quizId: 5, quizTitle: 'Anatomy Quiz' },
+        ],
+        students: [
+          { studentID: 104, studentName: 'Geon' },
+        ],
+      },
     };
   }
 
+  componentWillMount() {
+    const getSideBar = {
+      classes: [
+        { className: 'Class IX A', classId: '901' },
+        { className: 'Class IX B', classId: '902' },
+        { className: 'Class X D', classId: '903' },
+        { className: 'Class XI A', classId: '904' },
+        { className: 'Class XII A', classId: '905' },
+      ],
+    };
+    this.setState({ sideBarContent: getSideBar });
+  }
+
+
   getClassContent(currentClass) {
     return this.state[currentClass];
+  }
+
+  handleSideBarTitleClick() {
+    this.setState({ panelType: 'my_classes_default_panel' });
   }
 
   handleRemoveStudentClick(id) {
@@ -98,56 +128,69 @@ export default class MyClassesPage extends Component {
   }
 
   handleAddStudentClick() {
-    this.setState({ showAddStudentPanel: true, showAddQuizPanel: false });
-  }
-
-  handleRemoveQuizClick(id) {
-    this.id = id;
+    this.setState({ panelType: 'manage_studens_panel' });
   }
 
   handleManageQuizzesFromClass() {
-    this.setState({ showAddStudentPanel: false, showAddQuizPanel: true });
+    this.setState({ panelType: 'manage_quizzes_panel' });
   }
 
-  showClassPanel(show, currentClass) {
+  handleSideBarClassClick(currentClass) {
     const newContent = this.getClassContent(currentClass);
     this.setState({
-      showClassPanel: show,
-      showAddQuizPanel: false,
-      showAddStudentPanel: false,
+      panelType: 'show_selected_class',
       content: newContent });
   }
 
-  renderClassContent() {
-    let element = <h1><b> My Classes</b></h1>;
-    if (this.state.showClassPanel) {
-      element = (
-        <MyClassesPanel
-          showAddQuizPanel={this.state.showAddQuizPanel}
-          showAddStudentPanel={this.state.showAddStudentPanel}
-          userToken={this.props.userToken}
-          content={this.state.content}
-          allQuizzes={this.state.allQuizzes}
-          handleRemoveStudentClick={id => this.handleRemoveStudentClick(id)}
-          handleAddStudentClick={() => this.handleAddStudentClick()}
-          handleRemoveQuizClick={id => this.handleRemoveQuizClick(id)}
-          handleManageQuizzesFromClass={() => this.handleManageQuizzesFromClass()}
-        />);
-    }
+  handleCreateClassClick() {
+    this.setState({ panelType: 'create_new_class' });
+  }
+
+  handleSaveNewClassClick(newClassTitle) {
+    const newSideBarContent = this.state.sideBarContent;
+    newSideBarContent.classes.push({ className: newClassTitle, classId: newClassTitle });
+    this.setState({ sideBarContent: newSideBarContent });
+  }
+
+  renderClassesPanel() {
+    const element = (
+      <MyClassesPanel
+        panelType={this.state.panelType}
+        userToken={this.props.userToken}
+        content={this.state.content}
+        allQuizzes={this.state.allQuizzes}
+        numberOfClasses={this.state.sideBarContent.classes.length}
+        handleSaveNewClassClick={newClassTitle => this.handleSaveNewClassClick(newClassTitle)}
+        handleRemoveStudentClick={id => this.handleRemoveStudentClick(id)}
+        handleAddStudentClick={() => this.handleAddStudentClick()}
+        handleManageQuizzesFromClass={() => this.handleManageQuizzesFromClass()}
+      />);
     return element;
+  }
+
+
+  renderSideBar() {
+    const sidebar = (
+      <SideBarWrapper
+        onSideBarTitleClick={() => this.handleSideBarTitleClick()}
+        onCreateClassClick={() => this.handleCreateClassClick()}
+        sideBarContent={this.state.sideBarContent}
+        onSideBarItemClick={currentClass =>
+          this.handleSideBarClassClick(currentClass)}
+        title={'My Classes'}
+        type={'SideBarClasses'}
+      />
+    );
+
+    return sidebar;
   }
 
   render() {
     return (
       <div className="myClassesPageWrapper">
-        <SideBarWrapper
-          onSideBarItemClick={(showClass, currentClass) =>
-            this.showClassPanel(showClass, currentClass)}
-          title={'My Classes'}
-          type={'SideBarClasses'}
-        />
+        { this.renderSideBar() }
         <div className="contentWrapper">
-          { this.renderClassContent() }
+          { this.renderClassesPanel() }
         </div>
       </div>
     );

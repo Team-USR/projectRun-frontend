@@ -5,11 +5,16 @@ export default function SideBarClasses(props) {
   const content = props.content;
   return (
     <Nav>
+      <NavItem>
+        <Button onClick={() => props.onCreateClassClick()}>
+          Create Class
+        </Button>
+      </NavItem>
       {
         content.map(obj =>
           (
-            <NavItem key={obj.classId}>
-              <Button onClick={() => props.onClassClick(true, obj.classId)}>
+            <NavItem key={`class_${obj.classId}`}>
+              <Button onClick={() => props.onClassClick(obj.classId)}>
                 {obj.className}
               </Button>
             </NavItem>
@@ -21,5 +26,6 @@ export default function SideBarClasses(props) {
 }
 
 SideBarClasses.propTypes = {
+  onCreateClassClick: PropTypes.func.isRequired,
   content: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
