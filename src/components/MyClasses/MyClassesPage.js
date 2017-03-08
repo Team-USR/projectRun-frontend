@@ -1,6 +1,8 @@
 import React, { PropTypes, Component } from 'react';
+import axios from 'axios';
 import { SideBarWrapper } from '../SideBar/index';
 import { MyClassesPanel } from './index';
+import { API_URL } from '../../constants';
 
 export default class MyClassesPage extends Component {
 
@@ -8,9 +10,6 @@ export default class MyClassesPage extends Component {
     super(props);
 
     this.state = {
-      showClassPanel: false,
-      showAddQuizPanel: false,
-      showAddStudentPanel: false,
       panelType: 'my_classes_default_panel',
       allQuizzes: [
         { quizId: 1, quizTitle: 'Math Quiz' },
@@ -147,9 +146,19 @@ export default class MyClassesPage extends Component {
   }
 
   handleSaveNewClassClick(newClassTitle) {
-    const newSideBarContent = this.state.sideBarContent;
-    newSideBarContent.classes.push({ className: newClassTitle, classId: newClassTitle });
-    this.setState({ sideBarContent: newSideBarContent });
+    const newClassObj = { name: newClassTitle };
+    axios({
+      url: `${API_URL}/groups`,
+      method: 'post',
+      data: newClassObj,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      const data = response.data;
+      const newSideBarContent = this.state.sideBarContent;
+      newSideBarContent.classes.push({ className: newClassTitle, classId: data.id });
+      this.setState({ sideBarContent: newSideBarContent });
+    });
   }
 
   renderClassesPanel() {
