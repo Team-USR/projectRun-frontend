@@ -1,29 +1,48 @@
 import React, { PropTypes, Component } from 'react';
 import { GroupQuizzes } from './GroupQuizzes';
 import { GroupStudents } from './GroupStudents';
-import { StudentsPanel, QuizzesPanel } from './panels';
+import {
+  StudentsPanel,
+  QuizzesPanel,
+  DefaultClassesPanel,
+  CreateClassPanel,
+} from './panels';
 
 export default class MyClassesPanel extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   renderPanel() {
-    let element = <h3>Basic Panel</h3>;
-    if (this.props.showAddQuizPanel) {
-      element = (<QuizzesPanel
-        quizzes={this.props.content.quizzes}
-        allQuizzes={this.props.allQuizzes}
-      />);
-    } else if (this.props.showAddStudentPanel) {
-      element = <StudentsPanel />;
-    } else {
+    let element = <DefaultClassesPanel numberOfClasses={this.props.numberOfClasses} />;
+    const classTitle = (
+      <div>
+        <h2><b>{this.props.content.classTitle}</b></h2>
+        <hr />
+      </div>
+    );
+    if (this.props.panelType === 'manage_quizzes_panel') {
+      element = (
+        <div className="manageQuizzesWrapper">
+          { classTitle }
+          <QuizzesPanel
+            quizzes={this.props.content.quizzes}
+            allQuizzes={this.props.allQuizzes}
+          />
+        </div>);
+    }
+
+    if (this.props.panelType === 'manage_studens_panel') {
+      element = (
+        <div className="manageQuizzesWrapper">
+          { classTitle }
+          <StudentsPanel />
+        </div>
+      );
+    }
+
+    if (this.props.panelType === 'show_selected_class') {
       element = (<div>
+        { classTitle }
         <GroupQuizzes
           quizzes={this.props.content.quizzes}
-          handleRemoveQuizClick={id => this.props.handleRemoveQuizClick(id)}
           handleManageQuizzesFromClass={() => this.props.handleManageQuizzesFromClass()}
         />
         <GroupStudents
@@ -33,13 +52,21 @@ export default class MyClassesPanel extends Component {
         /></div>
       );
     }
+
+    if (this.props.panelType === 'create_new_class') {
+      element = (
+        <CreateClassPanel
+          handleSaveNewClassClick={newClassTitle =>
+            this.props.handleSaveNewClassClick(newClassTitle)}
+        />
+      );
+    }
     return element;
   }
 
   render() {
     return (
       <div className="groupQuizzesWrapper">
-        <h2>{this.props.content.classTitle}</h2>
         { this.renderPanel() }
       </div>
     );
@@ -47,15 +74,15 @@ export default class MyClassesPanel extends Component {
 }
 
 MyClassesPanel.propTypes = {
-  showAddQuizPanel: PropTypes.bool.isRequired,
-  showAddStudentPanel: PropTypes.bool.isRequired,
+  panelType: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    classTitle: PropTypes.string.isRequired,
-    quizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-    students: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    classTitle: PropTypes.string,
+    quizzes: PropTypes.arrayOf(PropTypes.shape({})),
+    students: PropTypes.arrayOf(PropTypes.shape({})),
   }).isRequired,
   allQuizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  handleRemoveQuizClick: PropTypes.func.isRequired,
+  numberOfClasses: PropTypes.number.isRequired,
+  handleSaveNewClassClick: PropTypes.func.isRequired,
   handleManageQuizzesFromClass: PropTypes.func.isRequired,
   handleRemoveStudentClick: PropTypes.func.isRequired,
   handleAddStudentClick: PropTypes.func.isRequired,

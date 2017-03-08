@@ -12,8 +12,20 @@ export default class MyQuizzesPage extends Component {
     };
   }
 
+  componentWillMount() {
+    const getSideBar = {
+      quizzes: [{ id: 1, title: 'Quiz REVIEWER' }],
+    };
+    this.setState({ sideBarContent: getSideBar });
+  }
+
   updateCurrentQuiz(quizViewer, quizGenerator) {
     this.setState({ currentQuiz: quizViewer, generateQuiz: quizGenerator });
+  }
+
+  handleSideBarTitleClick() {
+    this.todo = 'TO DO';
+    // this.setState({ panelType: 'my_classes_default_panel' });
   }
 
   renderQuizContent() {
@@ -31,6 +43,8 @@ export default class MyQuizzesPage extends Component {
     return (
       <div className="myQuizzesPageWrapper">
         <SideBarWrapper
+          onSideBarTitleClick={() => this.handleSideBarTitleClick()}
+          sideBarContent={this.state.sideBarContent}
           onSideBarItemClick={(review, create) => this.updateCurrentQuiz(review, create)}
           title={'My Quizzes'}
           type={'SideBarQuizzes'}

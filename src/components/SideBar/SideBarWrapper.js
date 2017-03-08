@@ -1,24 +1,17 @@
 import React, { PropTypes, Component } from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav, Button } from 'react-bootstrap';
 import { SideBarQuizzes, SideBarClasses } from './index';
 
 export default class SideBarWrapper extends Component {
 
   renderSideBarContent() {
-    const quizzes = ['Quiz REVIEWER'];
-    const classes = [
-      { className: 'Class IX A', classId: '901' },
-      { className: 'Class IX B', classId: '902' },
-      { className: 'Class X D', classId: '903' },
-      { className: 'Class XI A', classId: '904' },
-      { className: 'Class XII A', classId: '905' },
-    ];
     let sideBarContent = (<Nav />);
     if (this.props.type === 'SideBarQuizzes') {
       sideBarContent = (
         <SideBarQuizzes
-          onQuizClick={(review, create) => this.props.onSideBarItemClick(review, create)}
-          content={quizzes}
+          onQuizClick={(review, create) =>
+            this.props.onSideBarItemClick(review, create)}
+          content={this.props.sideBarContent.quizzes}
         />
       );
     }
@@ -26,9 +19,10 @@ export default class SideBarWrapper extends Component {
     if (this.props.type === 'SideBarClasses') {
       sideBarContent = (
         <SideBarClasses
-          onClassClick={(showClass, currentClass) =>
-            this.props.onSideBarItemClick(showClass, currentClass)}
-          content={classes}
+          onCreateClassClick={() => this.props.onCreateClassClick()}
+          onClassClick={currentClass =>
+            this.props.onSideBarItemClick(currentClass)}
+          content={this.props.sideBarContent.classes}
         />
       );
     }
@@ -42,7 +36,7 @@ export default class SideBarWrapper extends Component {
         <Navbar inverse collapseOnSelect className="mainNavContainer">
           <Navbar.Header>
             <Navbar.Brand>
-              <b>{this.props.title}</b>
+              <Button onClick={() => this.props.onSideBarTitleClick()}>{this.props.title}</Button>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
@@ -56,7 +50,17 @@ export default class SideBarWrapper extends Component {
 }
 
 SideBarWrapper.propTypes = {
+  onSideBarTitleClick: PropTypes.func.isRequired,
+  onCreateClassClick: PropTypes.func,
   onSideBarItemClick: PropTypes.func.isRequired,
+  sideBarContent: PropTypes.shape({
+    classes: PropTypes.arrayOf(PropTypes.shape({})),
+    quizzes: PropTypes.arrayOf(PropTypes.shape({})),
+  }).isRequired,
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+};
+
+SideBarWrapper.defaultProps = {
+  onCreateClassClick: null,
 };
