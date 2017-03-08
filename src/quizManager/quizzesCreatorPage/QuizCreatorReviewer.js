@@ -44,6 +44,21 @@ export default class QuizCreatorReviewer extends Component {
       this.setState({ quizInfo: response.data, loadingQuiz: false });
     });
   }
+  componentWillReceiveProps(nextProps) {
+    this.setState({ loadingQuiz: true });
+//    console.log("SDADS", nextProps.quizID);
+    axios({
+      url: `${API_URL}/quizzes/${nextProps.quizID}`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+  //    console.log(response);
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+      this.setState({ quizInfo: response.data, loadingQuiz: false });
+    });
+  }
   isReviewMode() {
     const newState = !this.state.reviewState;
     this.setState({ reviewState: newState });
@@ -95,6 +110,7 @@ export default class QuizCreatorReviewer extends Component {
     return ('');
   }
   render() {
+  //    console.log("RENDER QUIZ "+ this.props.quizID, this.state.quizInfo.title);
     if (this.state.errorState === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>

@@ -5,22 +5,26 @@ export default function SideBarQuizzes(props) {
   const content = props.content;
   return (
     <Nav>
-      {
-        content.map(item =>
-          (
-            <NavItem key={item.id}>
-              <Button onClick={() => props.onQuizClick(item.id)}>
-                {item.title}
-              </Button>
-            </NavItem>
-          ),
-        )
-      }
       <NavItem key={0}>
         <Button onClick={() => props.onQuizCreatorClick()}>
           Quiz CREATOR
-        </Button>
+          </Button>
       </NavItem>
+      {
+        content.map((item, index) => {
+          if (index < 10) {
+            return (
+              <NavItem key={item.id}>
+                <Button onClick={() => props.onQuizClick(item.id)}>
+                  {item.title}
+                </Button>
+              </NavItem>
+            );
+          }
+          return (null);
+        },
+        )
+      }
     </Nav>
   );
 }

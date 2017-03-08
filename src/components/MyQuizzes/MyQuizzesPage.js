@@ -1,20 +1,39 @@
 import React, { PropTypes, Component } from 'react';
 import cookie from 'react-cookie';
+import axios from 'axios';
 import { QuizCreatorMainPage, QuizCreatorReviewer, QuizEditorMainPage } from './../../quizManager/quizzesCreatorPage';
 import { SideBarWrapper } from '../SideBar/index';
+import { API_URL } from '../../constants';
 
-
+const styles = {
+  loading: {
+    textAlign: 'center',
+    marginTop: 100,
+  },
+};
 export default class MyQuizzesPage extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       panelType: 'my_quizzes_default_panel',
       currentID: -1,
+      sideBarContent: {},
+      loadingSideBar: true,
     };
   }
-
   componentWillMount() {
+    axios({
+      url: `${API_URL}/quizzes/mine`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+    //  console.log("My quizzes", response.data);
+      const newSideBarContent = { quizzes: response.data };
+      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+    });
     let pType = 'default';
     let quizID = -1;
     if (cookie.load('current-session-type') != null) {
@@ -25,10 +44,10 @@ export default class MyQuizzesPage extends Component {
       quizID = cookie.load('current-session-id');
       this.setState({ currentID: quizID });
     }
-    const getSideBar = {
-      quizzes: [{ id: 3, title: 'Quiz REVIEWER' }],
-    };
-    this.setState({ sideBarContent: getSideBar });
+    // const getSideBar = {
+    //   quizzes: [{ id: 3, title: 'Quiz REVIEWER' }],
+    // };
+    // this.setState({ sideBarContent: getSideBar });
   }
   updateCurrentQuiz(panelT) {
     this.setState({ panelType: panelT });
@@ -37,6 +56,8 @@ export default class MyQuizzesPage extends Component {
   }
   saveCurrentQuiz(id) {
     this.id = id;
+//    console.log(id);
+    this.setState({ currentID: id.toString() });
     cookie.save('current-session-id', id);
   }
   handleSideBarTitleClick() {
@@ -44,6 +65,7 @@ export default class MyQuizzesPage extends Component {
     // this.setState({ panelType: 'my_classes_default_panel' });
   }
   renderQuizContent() {
+//    console.log("rendering",this.state.currentID);
     let element = <h1><b> My Quizzes</b></h1>;
     if (this.state.panelType === 'reviewer') {
       element = (<QuizCreatorReviewer
@@ -69,6 +91,11 @@ export default class MyQuizzesPage extends Component {
   }
 
   render() {
+    if (this.state.loadingSideBar === true) {
+      return (<div className="mainQuizViewerBlock" style={styles.loading}>
+        <h1>Loading quizzes...</h1>
+      </div>);
+    }
     return (
       <div className="myQuizzesPageWrapper">
         <SideBarWrapper
