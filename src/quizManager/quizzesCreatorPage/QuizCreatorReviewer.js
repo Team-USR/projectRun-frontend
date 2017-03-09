@@ -165,6 +165,15 @@ export default class QuizCreatorReviewer extends Component {
           </div>
         </div>
       );
+    } else
+    if (this.state.published) {
+      return (
+        <div className="mainQuizViewerBlock">
+          <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
+          {this.state.quizInfo.questions.map((question, index) =>
+          this.renderQuestions(question, index))}
+        </div>
+      );
     }
     return (
       <div className="mainQuizViewerBlock">

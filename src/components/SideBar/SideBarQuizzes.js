@@ -3,13 +3,13 @@ import { Nav, NavItem, Button } from 'react-bootstrap';
 
 export default function SideBarQuizzes(props) {
   const content = props.content;
-  const publishedContent = content.filter((item) => {
+  const publishedContent = content.reverse().filter((item) => {
     if (item.published) {
       return (item);
     }
     return (null);
   });
-  const unpublishedContent = content.filter((item) => {
+  const unpublishedContent = content.reverse().filter((item) => {
     if (!item.published) {
       return (item);
     }
