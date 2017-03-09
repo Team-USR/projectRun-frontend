@@ -22,14 +22,12 @@ export default function NavBar(props) {
                 My Quizzes
               </NavItem>
             </LinkContainer>
-
             <LinkContainer to="/my-classes">
               <NavItem>
                 My Classes
               </NavItem>
             </LinkContainer>
             <NavDropdown title="My Account" id="basic-nav-dropdown">
-              <MenuItem >Profile</MenuItem>
               <MenuItem >Settings</MenuItem>
               <MenuItem divider />
               <MenuItem >Help</MenuItem>
