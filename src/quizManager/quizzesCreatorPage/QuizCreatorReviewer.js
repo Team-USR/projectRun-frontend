@@ -29,6 +29,8 @@ export default class QuizCreatorReviewer extends Component {
       getResponse: '',
       data: {},
       errorState: false,
+      published: false,
+      loadingPublishing: false,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
   }
@@ -41,7 +43,8 @@ export default class QuizCreatorReviewer extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
-      this.setState({ quizInfo: response.data, loadingQuiz: false });
+      this.setState({
+        quizInfo: response.data, loadingQuiz: false, published: response.data.published });
     });
   }
   componentWillReceiveProps(nextProps) {
@@ -56,7 +59,24 @@ export default class QuizCreatorReviewer extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
-      this.setState({ quizInfo: response.data, loadingQuiz: false });
+      this.setState({
+        quizInfo: response.data, loadingQuiz: false, published: response.data.published });
+    });
+  }
+  publishQuiz() {
+    this.setState({ loadingPublishing: true });
+    axios({
+      url: `${API_URL}/quizzes/${this.props.quizID}/publish`,
+      headers: this.props.userToken,
+      method: 'post',
+    })
+    .then((response) => {
+//      console.log(response);
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+      this.props.handlePublish();
+      this.setState({ published: true, loadingPublishing: false });
     });
   }
   isReviewMode() {
@@ -110,6 +130,7 @@ export default class QuizCreatorReviewer extends Component {
     return ('');
   }
   render() {
+  //  console.log(this.state.quizInfo);
   //    console.log("RENDER QUIZ "+ this.props.quizID, this.state.quizInfo.title);
     if (this.state.errorState === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
@@ -120,6 +141,30 @@ export default class QuizCreatorReviewer extends Component {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Loading draft...</h1>
       </div>);
+    } else
+    if (this.state.loadingPublishing) {
+      return (<div className="mainQuizViewerBlock" style={styles.loading}>
+        <h1>Publishing...</h1>
+      </div>);
+    }
+    if (!this.state.published) {
+      return (
+        <div className="mainQuizViewerBlock">
+          <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
+          {this.state.quizInfo.questions.map((question, index) =>
+          this.renderQuestions(question, index))}
+          <div className="submitPanel">
+            <Button
+              className="submitButton"
+              onClick={() => this.props.handleSubmitButton()}
+            >EDIT QUIZ</Button>
+            <Button
+              className="submitButton"
+              onClick={() => this.publishQuiz()}
+            >Publish quiz</Button>
+          </div>
+        </div>
+      );
     }
     return (
       <div className="mainQuizViewerBlock">
@@ -140,6 +185,9 @@ export default class QuizCreatorReviewer extends Component {
 QuizCreatorReviewer.propTypes = {
   userToken: React.PropTypes.shape({}).isRequired,
   handleSubmitButton: React.PropTypes.func.isRequired,
+  handlePublish: React.PropTypes.func,
   quizID: React.PropTypes.string.isRequired,
-
+};
+QuizCreatorReviewer.defaultProps = {
+  handlePublish: null,
 };

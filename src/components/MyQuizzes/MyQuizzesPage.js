@@ -49,6 +49,20 @@ export default class MyQuizzesPage extends Component {
     // };
     // this.setState({ sideBarContent: getSideBar });
   }
+  reloadBar() {
+    axios({
+      url: `${API_URL}/quizzes/mine`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+    //  console.log("My quizzes", response.data);
+      const newSideBarContent = { quizzes: response.data };
+      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+    });
+  }
   updateCurrentQuiz(panelT) {
     this.setState({ panelType: panelT });
   //  console.log(panelT);
@@ -71,6 +85,7 @@ export default class MyQuizzesPage extends Component {
       element = (<QuizCreatorReviewer
         quizID={this.state.currentID}
         userToken={this.props.userToken}
+        handlePublish={() => this.reloadBar()}
         handleSubmitButton={() => this.updateCurrentQuiz('editor')}
       />);
     }
@@ -84,6 +99,7 @@ export default class MyQuizzesPage extends Component {
     if (this.state.panelType === 'creator') {
       element = (<QuizCreatorMainPage
         userToken={this.props.userToken}
+        handlePublish={(id) => { this.reloadBar(); this.saveCurrentQuiz(id); }}
         handleSubmitButton={() => this.updateCurrentQuiz('reviewer')}
       />);
     }

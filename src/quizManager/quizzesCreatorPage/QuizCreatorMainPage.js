@@ -61,9 +61,9 @@ export default class QuizCreatorMainPage extends Component {
 //  console.log("----------");
     axios({
       url: `${API_URL}/quizzes`,
+      headers: this.props.userToken,
       method: 'post',
       data: this.state.submitedQuestions,
-      headers: this.props.userToken,
     })
     .then((response) => {
     //  const resultID = response.data.id;
@@ -71,6 +71,7 @@ export default class QuizCreatorMainPage extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
+      this.props.handlePublish(response.data.id.toString());
       this.props.handleSubmitButton();
   //    this.setState({ generatedQuizID: resultID, loading: loadingFalse });
     });
@@ -175,7 +176,7 @@ export default class QuizCreatorMainPage extends Component {
     if (!this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}> Save</Button>
+          <Button className="submitButton" onClick={this.isReviewMode}>Save</Button>
         </div>);
     } if (this.state.resultsState) {
       return (

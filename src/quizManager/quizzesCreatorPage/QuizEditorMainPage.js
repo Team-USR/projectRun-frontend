@@ -65,7 +65,6 @@ export default class QuizEditorMainPage extends Component {
        }
        const generatedQuiz = this.state.submitedQuestions;
        generatedQuiz.quiz.title = response.data.title;
-     //  console.log("LOADING FINISHED");
        this.setState({
          quizInfo: response.data, loadingQuiz: false, submitedQuestions: generatedQuiz });
        response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
@@ -95,7 +94,7 @@ export default class QuizEditorMainPage extends Component {
 //    console.log("filtered ",filteredQuestions," finishfiltered");
     this.setState({ loading: loadingTrue, submitedQuestions: filteredQuestions });
   //  console.log("----------");
-  //  console.log(this.state.submitedQuestions);
+//    console.log(filteredQuestions);
 //  console.log("----------");
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}`,
@@ -107,6 +106,7 @@ export default class QuizEditorMainPage extends Component {
        if (!response || (response && response.status !== 201)) {
          this.setState({ errorState: true });
        }
+
        this.props.handleSubmitButton();
      });
   }
