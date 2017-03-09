@@ -9,9 +9,10 @@ export default class SideBarWrapper extends Component {
     if (this.props.type === 'SideBarQuizzes') {
       sideBarContent = (
         <SideBarQuizzes
-          onQuizClick={(review, create) =>
-            this.props.onSideBarItemClick(review, create)}
+          onQuizClick={id =>
+            this.props.onSideBarItemClick(id)}
           content={this.props.sideBarContent.quizzes}
+          onQuizCreatorClick={() => this.props.createQuiz()}
         />
       );
     }
@@ -53,6 +54,7 @@ SideBarWrapper.propTypes = {
   onSideBarTitleClick: PropTypes.func.isRequired,
   onCreateClassClick: PropTypes.func,
   onSideBarItemClick: PropTypes.func.isRequired,
+  createQuiz: PropTypes.func,
   sideBarContent: PropTypes.shape({
     classes: PropTypes.arrayOf(PropTypes.shape({})),
     quizzes: PropTypes.arrayOf(PropTypes.shape({})),
@@ -63,4 +65,5 @@ SideBarWrapper.propTypes = {
 
 SideBarWrapper.defaultProps = {
   onCreateClassClick: null,
+  createQuiz: null,
 };
