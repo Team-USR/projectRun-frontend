@@ -127,7 +127,6 @@ export default class StudentsPanel extends Component {
         </Col>
         <Col md={12}>
           <hr />
-          <Button>Save</Button>
         </Col>
       </div>
     );

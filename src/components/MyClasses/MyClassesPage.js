@@ -74,7 +74,7 @@ export default class MyClassesPage extends Component {
           { quizId: 3, quizTitle: 'Advanced Quiz' },
         ],
         students: [
-          { studentId: 104, studentName: 'Geon' },
+          { studentId: 103, studentName: 'Geon' },
           { studentId: 101, studentName: 'Gigel' },
         ],
       },
