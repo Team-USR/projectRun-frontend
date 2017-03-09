@@ -25,7 +25,7 @@ export default class CreateClassPanel extends Component {
         />
         <Button
           onClick={() => this.props.handleSaveNewClassClick(this.state.newClassTitle)}
-        > Create Class </Button>
+        > Create</Button>
       </div>
     );
   }

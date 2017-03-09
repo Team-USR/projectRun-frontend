@@ -4,6 +4,9 @@ import { Button } from 'react-bootstrap';
 export default class GroupQuizzes extends Component {
 
   renderQuizzes() {
+    if (this.props.quizzes.length === 0) {
+      return <h4>There are no quizzes assigned to this class!</h4>;
+    }
     return this.props.quizzes.map(obj =>
       <li key={`group_quiz_${obj.quizId}`}>
         <span><b> {obj.quizTitle} </b></span>
@@ -14,7 +17,6 @@ export default class GroupQuizzes extends Component {
   render() {
     return (
       <div className="groupQuizzesWrapper">
-        <br />
         <h1>Quizzes</h1>
         <ul>
           { this.renderQuizzes() }

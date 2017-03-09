@@ -6,7 +6,7 @@ export default function SideBarClasses(props) {
   return (
     <Nav>
       <NavItem>
-        <Button onClick={() => props.onCreateClassClick()}>
+        <Button className="createClassBtn" onClick={() => props.onCreateClassClick()}>
           Create Class
         </Button>
       </NavItem>
