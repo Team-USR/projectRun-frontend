@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react';
+import cookie from 'react-cookie';
 import axios from 'axios';
 import { SideBarWrapper } from '../SideBar/index';
 import { MyClassesPanel } from './index';
@@ -95,6 +96,18 @@ export default class MyClassesPage extends Component {
   }
 
   componentWillMount() {
+    if (cookie.load('current-class-id') != null) {
+      const classId = cookie.load('current-class-id');
+      const newContent = this.getClassContent(classId);
+      if (newContent) {
+        this.setState({
+          panelType: 'show_selected_class',
+          content: newContent,
+        });
+      } else {
+        this.setState({ panelType: 'my_classes_default_panel' });
+      }
+    }
     const getSideBar = {
       classes: [
         { className: 'Class IX A', classId: '901' },
@@ -109,10 +122,17 @@ export default class MyClassesPage extends Component {
 
 
   getClassContent(currentClass) {
+    // TODO: Make GET Request for a specific class;
     return this.state[currentClass];
   }
 
+  saveCurrentQuiz(id) {
+    this.id = id;
+    cookie.save('current-class-id', id.toString());
+  }
+
   handleSideBarTitleClick() {
+    cookie.remove('current-class-id');
     this.setState({ panelType: 'my_classes_default_panel' });
   }
 
@@ -134,14 +154,16 @@ export default class MyClassesPage extends Component {
     this.setState({ panelType: 'manage_quizzes_panel' });
   }
 
-  handleSideBarClassClick(currentClass) {
-    const newContent = this.getClassContent(currentClass);
+  handleSideBarClassClick(currentClassId) {
+    const newContent = this.getClassContent(currentClassId);
+    this.saveCurrentQuiz(currentClassId);
     this.setState({
       panelType: 'show_selected_class',
       content: newContent });
   }
 
   handleCreateClassClick() {
+    cookie.remove('current-class-id');
     this.setState({ panelType: 'create_new_class' });
   }
 
@@ -176,7 +198,6 @@ export default class MyClassesPage extends Component {
       />);
     return element;
   }
-
 
   renderSideBar() {
     const sidebar = (
