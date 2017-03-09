@@ -1,9 +1,10 @@
 import React, { PropTypes, Component } from 'react';
 import cookie from 'react-cookie';
 import axios from 'axios';
-import { SideBarWrapper } from '../SideBar/index';
-import { MyClassesPanel } from './index';
 import { API_URL } from '../../constants';
+import { SideBarWrapper } from '../SideBar';
+import { MyClassesPanel } from './index';
+import { BrandSpinner } from '../utils';
 
 export default class MyClassesPage extends Component {
 
@@ -109,7 +110,10 @@ export default class MyClassesPage extends Component {
     })
     .then((response) => {
       const newSideBarContent = { classes: response.data };
-      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+
+      setTimeout(() => {
+        this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+      }, 1200);
     });
 
     if (cookie.load('current-class-id') != null) {
@@ -138,7 +142,9 @@ export default class MyClassesPage extends Component {
     })
     .then((response) => {
       const newSideBarContent = { classes: response.data };
-      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+      setTimeout(() => {
+        this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+      }, 1200);
     });
   }
 
@@ -233,9 +239,7 @@ export default class MyClassesPage extends Component {
 
   render() {
     if (this.state.loadingSideBar) {
-      return (<div className="mainQuizViewerBlock">
-        <h1>Loading classes...</h1>
-      </div>);
+      return <BrandSpinner />;
     }
     return (
       <div className="myClassesPageWrapper">

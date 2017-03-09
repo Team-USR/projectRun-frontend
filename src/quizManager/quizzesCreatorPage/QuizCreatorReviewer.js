@@ -5,6 +5,7 @@ import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
+import { BrandSpinner } from '../../components/utils';
 
 
 const styles = {
@@ -138,14 +139,10 @@ export default class QuizCreatorReviewer extends Component {
       </div>);
     } else
     if (this.state.loadingQuiz) {
-      return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Loading draft...</h1>
-      </div>);
+      return <BrandSpinner />;
     } else
     if (this.state.loadingPublishing) {
-      return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Publishing...</h1>
-      </div>);
+      return <BrandSpinner />;
     }
     if (!this.state.published) {
       return (

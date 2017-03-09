@@ -5,6 +5,7 @@ import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice'
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
+import { BrandSpinner } from '../../components/utils';
 
 const styles = {
   loading: {
@@ -218,9 +219,7 @@ export default class QuizCreatorMainPage extends Component {
       );
     } else
     if (this.state.loading === true) {
-      return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Saving draft...</h1>
-      </div>);
+      return <BrandSpinner />;
     }
     return ('');
   }

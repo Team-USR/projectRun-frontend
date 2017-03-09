@@ -5,6 +5,7 @@ import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
+import { BrandSpinner } from '../../components/utils';
 
 const styles = {
   quizTitle: {
@@ -155,9 +156,7 @@ export default class QuizViewerMainPage extends Component {
   }
   render() {
     if (this.state.loadingQuiz) {
-      return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Loading...</h1>
-      </div>);
+      return <BrandSpinner />;
     }
     return (
       <div className="mainQuizViewerBlock">
