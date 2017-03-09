@@ -19,6 +19,12 @@ export default class MyClassesPage extends Component {
         { quizId: 4, quizTitle: 'Physics Quiz' },
         { quizId: 5, quizTitle: 'Anatomy Quiz' },
       ],
+      allStudents: [
+        { studentId: 101, studentName: 'Gigel' },
+        { studentId: 102, studentName: 'Jlaba' },
+        { studentId: 103, studentName: 'Geon' },
+        { studentId: 104, studentName: 'Blercu' },
+      ],
       sideBarContent: {},
       content: {},
       901: {
@@ -29,10 +35,10 @@ export default class MyClassesPage extends Component {
           { quizId: 4, quizTitle: 'Physics Quiz' },
         ],
         students: [
-          { studentID: 101, studentName: 'Gigel' },
-          { studentID: 102, studentName: 'Jlaba' },
-          { studentID: 103, studentName: 'Geon' },
-          { studentID: 104, studentName: 'Blercu' },
+          { studentId: 101, studentName: 'Gigel' },
+          { studentId: 102, studentName: 'Jlaba' },
+          { studentId: 103, studentName: 'Geon' },
+          { studentId: 104, studentName: 'Blercu' },
         ],
       },
       902: {
@@ -42,9 +48,9 @@ export default class MyClassesPage extends Component {
           { quizId: 3, quizTitle: 'Advanced Quiz' },
         ],
         students: [
-          { studentID: 101, studentName: 'Gigel' },
-          { studentID: 103, studentName: 'Geon' },
-          { studentID: 104, studentName: 'Blercu' },
+          { studentId: 101, studentName: 'Gigel' },
+          { studentId: 103, studentName: 'Geon' },
+          { studentId: 104, studentName: 'Blercu' },
         ],
       },
       903: {
@@ -57,8 +63,8 @@ export default class MyClassesPage extends Component {
           { quizId: 5, quizTitle: 'Anatomy Quiz' },
         ],
         students: [
-          { studentID: 101, studentName: 'Gigel' },
-          { studentID: 104, studentName: 'Blercu' },
+          { studentId: 101, studentName: 'Gigel' },
+          { studentId: 104, studentName: 'Blercu' },
         ],
       },
       904: {
@@ -68,8 +74,8 @@ export default class MyClassesPage extends Component {
           { quizId: 3, quizTitle: 'Advanced Quiz' },
         ],
         students: [
-          { studentID: 104, studentName: 'Geon' },
-          { studentID: 101, studentName: 'Gigel' },
+          { studentId: 104, studentName: 'Geon' },
+          { studentId: 101, studentName: 'Gigel' },
         ],
       },
       905: {
@@ -79,7 +85,7 @@ export default class MyClassesPage extends Component {
           { quizId: 5, quizTitle: 'Anatomy Quiz' },
         ],
         students: [
-          { studentID: 104, studentName: 'Blercu' },
+          { studentId: 104, studentName: 'Blercu' },
         ],
       },
       test: {
@@ -89,7 +95,7 @@ export default class MyClassesPage extends Component {
           { quizId: 5, quizTitle: 'Anatomy Quiz' },
         ],
         students: [
-          { studentID: 104, studentName: 'Geon' },
+          { studentId: 104, studentName: 'Geon' },
         ],
       },
     };
@@ -146,7 +152,11 @@ export default class MyClassesPage extends Component {
     // this.setState({ studentsArray: studentsCopy });
   }
 
-  handleAddStudentClick() {
+  handleAddStudentClick(id) {
+    this.id = id;
+  }
+
+  handleManageStudentsFromClass() {
     this.setState({ panelType: 'manage_studens_panel' });
   }
 
@@ -190,10 +200,11 @@ export default class MyClassesPage extends Component {
         userToken={this.props.userToken}
         content={this.state.content}
         allQuizzes={this.state.allQuizzes}
+        allStudents={this.state.allStudents}
         numberOfClasses={this.state.sideBarContent.classes.length}
         handleSaveNewClassClick={newClassTitle => this.handleSaveNewClassClick(newClassTitle)}
         handleRemoveStudentClick={id => this.handleRemoveStudentClick(id)}
-        handleAddStudentClick={() => this.handleAddStudentClick()}
+        handleManageStudentsFromClass={() => this.handleManageStudentsFromClass()}
         handleManageQuizzesFromClass={() => this.handleManageQuizzesFromClass()}
       />);
     return element;
