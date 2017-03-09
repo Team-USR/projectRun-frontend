@@ -36,7 +36,7 @@ export default class QuizCreatorReviewer extends Component {
   }
   componentWillMount() {
     axios({
-      url: `${API_URL}/quizzes/${this.props.quizID}`,
+      url: `${API_URL}/quizzes/${this.props.quizID}/edit`,
       headers: this.props.userToken,
     })
     .then((response) => {
@@ -51,7 +51,7 @@ export default class QuizCreatorReviewer extends Component {
     this.setState({ loadingQuiz: true });
 //    console.log("SDADS", nextProps.quizID);
     axios({
-      url: `${API_URL}/quizzes/${nextProps.quizID}`,
+      url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
       headers: this.props.userToken,
     })
     .then((response) => {
