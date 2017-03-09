@@ -13,9 +13,9 @@ export default function SideBarClasses(props) {
       {
         content.map(obj =>
           (
-            <NavItem key={`class_${obj.classId}`}>
-              <Button onClick={() => props.onClassClick(obj.classId)}>
-                {obj.className}
+            <NavItem key={`class_${obj.id}`}>
+              <Button onClick={() => props.onClassClick(obj.id)}>
+                {obj.name}
               </Button>
             </NavItem>
           ),

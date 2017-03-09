@@ -12,6 +12,7 @@ export default class MyClassesPage extends Component {
 
     this.state = {
       panelType: 'my_classes_default_panel',
+      loadingSideBar: true,
       allQuizzes: [
         { quizId: 1, quizTitle: 'Math Quiz' },
         { quizId: 2, quizTitle: 'Philosophy Quiz' },
@@ -25,7 +26,7 @@ export default class MyClassesPage extends Component {
         { studentId: 103, studentName: 'Geon' },
         { studentId: 104, studentName: 'Blercu' },
       ],
-      sideBarContent: {},
+      sideBarContent: { classes: [] },
       content: {},
       901: {
         classTitle: 'Class IX A ',
@@ -102,6 +103,15 @@ export default class MyClassesPage extends Component {
   }
 
   componentWillMount() {
+    axios({
+      url: `${API_URL}/users/mine/groups`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      const newSideBarContent = { classes: response.data };
+      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+    });
+
     if (cookie.load('current-class-id') != null) {
       const classId = cookie.load('current-class-id');
       const newContent = this.getClassContent(classId);
@@ -114,22 +124,22 @@ export default class MyClassesPage extends Component {
         this.setState({ panelType: 'my_classes_default_panel' });
       }
     }
-    const getSideBar = {
-      classes: [
-        { className: 'Class IX A', classId: '901' },
-        { className: 'Class IX B', classId: '902' },
-        { className: 'Class X D', classId: '903' },
-        { className: 'Class XI A', classId: '904' },
-        { className: 'Class XII A', classId: '905' },
-      ],
-    };
-    this.setState({ sideBarContent: getSideBar });
   }
-
 
   getClassContent(currentClass) {
     // TODO: Make GET Request for a specific class;
     return this.state[currentClass];
+  }
+
+  reloadBar() {
+    axios({
+      url: `${API_URL}/users/mine/groups`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      const newSideBarContent = { classes: response.data };
+      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+    });
   }
 
   saveCurrentQuiz(id) {
@@ -185,12 +195,7 @@ export default class MyClassesPage extends Component {
       data: newClassObj,
       headers: this.props.userToken,
     })
-    .then((response) => {
-      const data = response.data;
-      const newSideBarContent = this.state.sideBarContent;
-      newSideBarContent.classes.push({ className: newClassTitle, classId: data.id });
-      this.setState({ sideBarContent: newSideBarContent });
-    });
+    .then(() => this.reloadBar());
   }
 
   renderClassesPanel() {
@@ -227,6 +232,11 @@ export default class MyClassesPage extends Component {
   }
 
   render() {
+    if (this.state.loadingSideBar) {
+      return (<div className="mainQuizViewerBlock">
+        <h1>Loading classes...</h1>
+      </div>);
+    }
     return (
       <div className="myClassesPageWrapper">
         { this.renderSideBar() }
