@@ -1,22 +1,67 @@
 import { connect } from 'react-redux';
-import cookie from 'react-cookie';
-import { push } from 'react-router-redux';
-import { LoginForm } from '../components/Login';
-import { loggedInUser } from '../redux/modules/user';
+import React from 'react';
+import LoginForm from '../components/LoginForm';
+import * as userActions from '../redux/modules/user';
 
-const mapDispatchToProps = dispatch => ({
-  onLogin: () => {
-    const token = cookie.load('token');
-    if (token) {
-      dispatch(loggedInUser(token));
+class LoginContainer extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      email: '',
+      password: '',
+    };
+
+    this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
+  }
+
+  handleEmailChange(e) {
+    this.setState({ email: e.target.value });
+  }
+
+  handlePasswordChange(e) {
+    this.setState({ password: e.target.value });
+  }
+
+  handleLogin() {
+    this.props.loginUser({
+      email: this.state.email,
+      password: this.state.password,
+    });
+  }
+
+  render() {
+    if (!this.props.auth.loginInProgress) {
+      return (
+        <div>
+          <LoginForm
+            handleEmailChange={this.handleEmailChange}
+            handlePasswordChange={this.handlePasswordChange}
+            loginError={this.props.auth.error}
+            submitLogin={this.handleLogin}
+            email={this.state.email}
+            password={this.state.password}
+          />
+        </div>
+      );
     }
-    dispatch(push('/'));
-  },
-});
+    return (
+      <div>Logging in...</div>
+    );
+  }
+}
 
-const LoginContainer = connect(
-  null,
-  mapDispatchToProps,
-)(LoginForm);
+LoginContainer.propTypes = {
+  loginUser: React.PropTypes.func.isRequired,
+  auth: React.PropTypes.shape({
+    loginInProgress: React.PropTypes.boolean,
+    error: React.PropTypes.string,
+  }).isRequired,
+};
 
-export default LoginContainer;
+export default connect(
+  state => ({ auth: state.auth }),
+  userActions,
+)(LoginContainer);

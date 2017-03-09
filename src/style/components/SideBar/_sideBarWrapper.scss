@@ -1,0 +1,28 @@
+.sideBarWrapper {
+  background-color: blue;
+
+  .mainNavContainer {
+    border-radius: 0;
+    position: fixed;
+    width: 200px;
+    height: 100%;
+    @media (max-width: 767px) {
+      position: relative;
+      width: 100%;
+    }
+
+    .container {
+      width: 200px;
+      @media (max-width: 767px) {
+        width: 100%;
+      }
+    }
+
+    .sideBarLeft {
+      width: 200px;
+      @media (max-width: 767px) {
+        width: 100%;
+      }
+    }
+  }
+}

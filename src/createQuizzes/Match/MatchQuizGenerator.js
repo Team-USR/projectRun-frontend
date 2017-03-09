@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import { MatchQuizItem } from './index';
-import '../../style/createQuizzes/Match/MatchQuizGenerator.css';
 
 export default class MatchQuizGenerator extends Component {
   constructor(props) {

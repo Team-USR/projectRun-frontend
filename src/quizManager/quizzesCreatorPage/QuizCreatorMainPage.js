@@ -3,7 +3,8 @@ import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
-import { ButtonWrapper, QuizCreatorReviewer } from './index';
+import { ButtonWrapper } from './index';
+import { API_URL } from '../../constants';
 
 const styles = {
   loading: {
@@ -26,6 +27,7 @@ export default class QuizCreatorMainPage extends Component {
       reviewState: false,
       resultsState: false,
       loading: false,
+      errorState: false,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -51,20 +53,27 @@ export default class QuizCreatorMainPage extends Component {
 //    console.log("submitedQuestions ", sQuestions,"finishsubmited");
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
      element !== null);
-    const newState = !this.state.reviewState;
     const loadingTrue = true;
 //    console.log("filtered ",filteredQuestions," finishfiltered");
     this.setState({ loading: loadingTrue, submitedQuestions: filteredQuestions });
   //  console.log("----------");
   //  console.log(this.state.submitedQuestions);
 //  console.log("----------");
-    const auth = 'Authorization';
-    axios.defaults.headers.common[auth] = this.props.userToken;
-    axios.post('https://project-run.herokuapp.com/quizzes', this.state.submitedQuestions)
+    axios({
+      url: `${API_URL}/quizzes`,
+      headers: this.props.userToken,
+      method: 'post',
+      data: this.state.submitedQuestions,
+    })
     .then((response) => {
-      const resultID = response.data.id;
-      const loadingFalse = false;
-      this.setState({ generatedQuizID: resultID, reviewState: newState, loading: loadingFalse });
+    //  const resultID = response.data.id;
+    //  console.log("Result id", resultID);
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+      this.props.handlePublish(response.data.id.toString());
+      this.props.handleSubmitButton();
+  //    this.setState({ generatedQuizID: resultID, loading: loadingFalse });
     });
   }
   isResultsMode() {
@@ -84,7 +93,6 @@ export default class QuizCreatorMainPage extends Component {
   }
   addQuiz(quizType) {
   //  console.log(id);
-    let cont;
     displayIndex = 0;
 
     const buttonGroup = (
@@ -102,17 +110,14 @@ export default class QuizCreatorMainPage extends Component {
     const ques = '';
     const answ = '';
     const inputQuestion = { id, ques, answ };
-    if (this.state.inputQuestions[id].answers) {
-      cont = this.state.inputQuestions[id].answers;
-    }
     if (quizType === 'multiple_choice') {
     //  console.log(id);
       const question = (
         <MultipleChoiceQuizGenerator
           handleInput={(questionI, answers) => this.handleInput(questionI, answers, id)}
-          content={cont}
+          content={null}
           index={id}
-          key={id + 100}
+          key={`multiple_choice${id}`}
           updateParent={(answersAttributes, qObject, ind) =>
             this.collectObject(answersAttributes, qObject, 'multiple_choice', ind)}
         />);
@@ -125,7 +130,7 @@ export default class QuizCreatorMainPage extends Component {
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
           index={id}
-          key={id + 101}
+          key={`match${id}`}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -151,7 +156,7 @@ export default class QuizCreatorMainPage extends Component {
     if (this.state.questions[index]) {
       displayIndex += 1;
       return (
-        <div className="generatorQuizContainer">
+        <div className="generatorQuizContainer" key={`generatorQuizContainer${displayIndex}`}>
           <h2>{displayIndex}</h2>
           {this.state.questions[index].question}
           {this.state.questions[index].buttonGroup}
@@ -171,7 +176,7 @@ export default class QuizCreatorMainPage extends Component {
     if (!this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}> Save</Button>
+          <Button className="submitButton" onClick={this.isReviewMode}>Save</Button>
         </div>);
     } if (this.state.resultsState) {
       return (
@@ -184,9 +189,13 @@ export default class QuizCreatorMainPage extends Component {
   render() {
   //  console.log("start rendering");
   //  console.log(this.state.submitedQuestions);
-    const submit = this.state.submitedQuestions;
   //  console.log(this.state.questions);
   //  console.log("end rendering");
+    if (this.state.errorState === true) {
+      return (<div className="mainQuizViewerBlock" style={styles.loading}>
+        <h1>Connection error...</h1>
+      </div>);
+    } else
     if (!this.state.reviewState && this.state.loading === false) {
       return (
         <div className="mainQuizGeneratorBlock">
@@ -208,31 +217,15 @@ export default class QuizCreatorMainPage extends Component {
         </div>
       );
     } else
-    if (this.state.reviewState && this.state.loading === false) {
-    //  console.log("test quiz reviwer");
-    //  console.log(submit);
-    //  console.log(submit);
-    //  console.log("end quiz reviwer");
-      return (
-        <div>
-          <QuizCreatorReviewer
-            quizID={this.state.generatedQuizID}
-            token={this.props.userToken}
-            questionsWithAnswers={submit}
-          />
-          <br /><br /><br />
-          { this.renderSubmitPanel() }
-        </div>
-      );
-    } else
     if (this.state.loading === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Saving quiz draft...</h1>
+        <h1>Saving draft...</h1>
       </div>);
     }
     return ('');
   }
 }
 QuizCreatorMainPage.propTypes = {
-  userToken: PropTypes.string.isRequired,
+  handleSubmitButton: PropTypes.func.isRequired,
+  userToken: PropTypes.shape({}).isRequired,
 };

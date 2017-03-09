@@ -1,4 +1,17 @@
 /* Main Style File */
+html {
+  font: normal 16px/1.2 "Open Sans", sans-serif !important;
+  color: #646666; }
+
+.appContent {
+  padding-top: 51px; }
+  @media (max-width: 767px) {
+    .appContent {
+      padding-top: 0; } }
+
+ul {
+  list-style: none; }
+
 .matchQuizContainer,
 .mixQuizContainer,
 .multipleChoiceContainer {
@@ -63,7 +76,6 @@
 
 .loginPage .welcomeTitle {
   text-align: center;
-  margin-top: 15%;
   font-size: 4em; }
 
 .loginPage .invalidHeader {
@@ -104,8 +116,95 @@
 .homePageWrapper {
   text-align: center; }
 
-.navbar {
-  border-radius: 0; }
+.topNabBarWrapper {
+  border-radius: 0;
+  margin-bottom: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10; }
+  @media (max-width: 767px) {
+    .topNabBarWrapper {
+      position: relative; } }
+
+/* My Quizzes */
+.myQuizzesPageWrapper {
+  text-align: center;
+  display: inline-block;
+  width: 100%; }
+  .myQuizzesPageWrapper .contentWrapper {
+    margin-left: 200px; }
+    @media (max-width: 767px) {
+      .myQuizzesPageWrapper .contentWrapper {
+        margin-left: 0; } }
+  @media (max-width: 767px) {
+    .myQuizzesPageWrapper {
+      display: initial; } }
+
+.groupPanelWrapper .studentsPanelWrapper .studentsList {
+  min-height: 30vh; }
+  .groupPanelWrapper .studentsPanelWrapper .studentsList .studentManagerWrapper .classStudentBtn {
+    width: 180px;
+    margin: 5px 0; }
+    .groupPanelWrapper .studentsPanelWrapper .studentsList .studentManagerWrapper .classStudentBtn .glyphicon {
+      float: right; }
+    .groupPanelWrapper .studentsPanelWrapper .studentsList .studentManagerWrapper .classStudentBtn .glyphicon-remove {
+      color: #b22121; }
+    .groupPanelWrapper .studentsPanelWrapper .studentsList .studentManagerWrapper .classStudentBtn .glyphicon-plus {
+      color: #0e8c16; }
+
+/* My Classes */
+.myClassesPageWrapper {
+  text-align: center;
+  display: inline-block;
+  width: 100%; }
+  .myClassesPageWrapper .contentWrapper {
+    margin-left: 200px; }
+    @media (max-width: 767px) {
+      .myClassesPageWrapper .contentWrapper {
+        margin-left: 0; } }
+  @media (max-width: 767px) {
+    .myClassesPageWrapper {
+      display: initial; } }
+
+.groupPanelWrapper .quizPanelWrapper .quizzesList {
+  min-height: 50vh; }
+  .groupPanelWrapper .quizPanelWrapper .quizzesList .quizManagerWrapper .classQuizBtn {
+    width: 180px;
+    margin: 5px 0; }
+    .groupPanelWrapper .quizPanelWrapper .quizzesList .quizManagerWrapper .classQuizBtn .glyphicon {
+      float: right; }
+    .groupPanelWrapper .quizPanelWrapper .quizzesList .quizManagerWrapper .classQuizBtn .glyphicon-remove {
+      color: #b22121; }
+    .groupPanelWrapper .quizPanelWrapper .quizzesList .quizManagerWrapper .classQuizBtn .glyphicon-plus {
+      color: #0e8c16; }
+
+/* My Quizzes */
+.sideBarWrapper {
+  background-color: blue; }
+  .sideBarWrapper .mainNavContainer {
+    border-radius: 0;
+    position: fixed;
+    width: 200px;
+    height: 100%; }
+    @media (max-width: 767px) {
+      .sideBarWrapper .mainNavContainer {
+        position: relative;
+        width: 100%; } }
+    .sideBarWrapper .mainNavContainer .container {
+      width: 200px; }
+      @media (max-width: 767px) {
+        .sideBarWrapper .mainNavContainer .container {
+          width: 100%; } }
+    .sideBarWrapper .mainNavContainer .sideBarLeft {
+      width: 200px; }
+      @media (max-width: 767px) {
+        .sideBarWrapper .mainNavContainer .sideBarLeft {
+          width: 100%; } }
+
+.sideBarWrapper .mainNavContainer .createClassBtn {
+  background-color: #0e8c16;
+  color: white; }
 
 /* createQuizzes */
 /* Match Quiz Generator */

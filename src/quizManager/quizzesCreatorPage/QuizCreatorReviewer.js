@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
+import { API_URL } from '../../constants';
+
 
 const styles = {
   quizTitle: {
@@ -25,31 +28,66 @@ export default class QuizCreatorReviewer extends Component {
       answers: { questions: [] },
       getResponse: '',
       data: {},
+      errorState: false,
+      published: false,
+      loadingPublishing: false,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
   }
   componentWillMount() {
-    const auth = 'Authorization';
-    axios.defaults.headers.common[auth] = this.props.token;
-    console.log(this.props.quizID);
-    axios.get(`https://project-run.herokuapp.com/quizzes/${this.props.quizID}`)
-    .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
+    axios({
+      url: `${API_URL}/quizzes/${this.props.quizID}`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+      this.setState({
+        quizInfo: response.data, loadingQuiz: false, published: response.data.published });
+    });
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setState({ loadingQuiz: true });
+//    console.log("SDADS", nextProps.quizID);
+    axios({
+      url: `${API_URL}/quizzes/${nextProps.quizID}`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+  //    console.log(response);
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+      this.setState({
+        quizInfo: response.data, loadingQuiz: false, published: response.data.published });
+    });
+  }
+  publishQuiz() {
+    this.setState({ loadingPublishing: true });
+    axios({
+      url: `${API_URL}/quizzes/${this.props.quizID}/publish`,
+      headers: this.props.userToken,
+      method: 'post',
+    })
+    .then((response) => {
+//      console.log(response);
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+      this.props.handlePublish();
+      this.setState({ published: true, loadingPublishing: false });
+    });
   }
   isReviewMode() {
     const newState = !this.state.reviewState;
     this.setState({ reviewState: newState });
   }
   renderQuestions(question, index) {
-    const answers = this.props.questionsWithAnswers;
   //  console.log(answers);
-    const type = answers[index].type;
   //  console.log(type);
-    let answersAttributes = [];
+    const answersAttributes = question.answers;
     if (question.type === 'multiple_choice') {
-      if (type === 'multiple_choice') {
-        answersAttributes = answers[index].answers_attributes;
-        // console.log(answersAttributes);
-      }
       return (
         <MultipleChoiceQuiz
           id={question.id}
@@ -92,23 +130,73 @@ export default class QuizCreatorReviewer extends Component {
     return ('');
   }
   render() {
+  //  console.log(this.state.quizInfo);
+  //    console.log("RENDER QUIZ "+ this.props.quizID, this.state.quizInfo.title);
+    if (this.state.errorState === true) {
+      return (<div className="mainQuizViewerBlock" style={styles.loading}>
+        <h1>Connection error...</h1>
+      </div>);
+    } else
     if (this.state.loadingQuiz) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Loading quiz draft...</h1>
+        <h1>Loading draft...</h1>
       </div>);
+    } else
+    if (this.state.loadingPublishing) {
+      return (<div className="mainQuizViewerBlock" style={styles.loading}>
+        <h1>Publishing...</h1>
+      </div>);
+    }
+    if (!this.state.published) {
+      return (
+        <div className="mainQuizViewerBlock">
+          <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
+          {this.state.quizInfo.questions.map((question, index) =>
+          this.renderQuestions(question, index))}
+          <div className="submitPanel">
+            <Button
+              className="submitButton"
+              onClick={() => this.props.handleSubmitButton()}
+            >EDIT QUIZ</Button>
+            <Button
+              className="submitButton"
+              onClick={() => this.publishQuiz()}
+            >Publish quiz</Button>
+          </div>
+        </div>
+      );
+    } else
+    if (this.state.published) {
+      return (
+        <div className="mainQuizViewerBlock">
+          <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
+          {this.state.quizInfo.questions.map((question, index) =>
+          this.renderQuestions(question, index))}
+        </div>
+      );
     }
     return (
       <div className="mainQuizViewerBlock">
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         {this.state.quizInfo.questions.map((question, index) =>
         this.renderQuestions(question, index))}
+        <div className="submitPanel">
+          <Button
+            className="submitButton"
+            onClick={() => this.props.handleSubmitButton()}
+          >EDIT QUIZ</Button>
+        </div>
       </div>
     );
   }
 }
 
 QuizCreatorReviewer.propTypes = {
-  quizID: React.PropTypes.number.isRequired,
-  token: React.PropTypes.string.isRequired,
-  questionsWithAnswers: React.PropTypes.arrayOf(React.PropTypes.shape({})).isRequired,
+  userToken: React.PropTypes.shape({}).isRequired,
+  handleSubmitButton: React.PropTypes.func.isRequired,
+  handlePublish: React.PropTypes.func,
+  quizID: React.PropTypes.string.isRequired,
+};
+QuizCreatorReviewer.defaultProps = {
+  handlePublish: null,
 };

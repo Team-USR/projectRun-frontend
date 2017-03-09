@@ -10,6 +10,12 @@ export default class MultipleChoiceQuizGenerator extends Component {
     this.addAnswers = this.addAnswers.bind(this);
     this.setQuestion = this.setQuestion.bind(this);
   }
+  componentWillMount() {
+    if (this.props.content) {
+      this.initializeAnswers(this.props.content);
+      this.setState({ question: this.props.content.question });
+    }
+  }
   onChildChanged(indexs) {
     const newArray = this.state.answers_choices;
     newArray[indexs] = '';
@@ -46,9 +52,19 @@ export default class MultipleChoiceQuizGenerator extends Component {
     choicesTemp.push(0);
     this.setState({ answers_choices: choicesTemp });
   }
-  renderAnswers(index, content) {
+  initializeAnswers(content) {
+    const choicesTemp = this.state.answers_choices;
+    content.answers.map(() => choicesTemp.push(0));
+    this.setState({ answers_choices: choicesTemp });
+  }
+  renderAnswers(index, answersToComplete) {
+    // console.log("multiple",answersToComplete);
     if (this.state.answers_choices[index] === null) {
       displayIndex -= 1;
+    }
+    let sendCompletedAnswer;
+    if (answersToComplete !== undefined) {
+      sendCompletedAnswer = answersToComplete[index];
     }
     if (this.state.answers_choices[index] !== '') {
       displayIndex += 1;
@@ -58,7 +74,7 @@ export default class MultipleChoiceQuizGenerator extends Component {
           displayedIndex={displayIndex}
           key={index}
           onChange={this.props.handleInput(this.state.answers_choices)}
-          value={content}
+          answersToComplete={sendCompletedAnswer}
           callbackParent={indexs => this.onChildChanged(indexs)}
           callbackParentInput={(indexs, choice, answer) =>
              this.onChildChangedText(indexs, choice, answer)}
@@ -68,6 +84,13 @@ export default class MultipleChoiceQuizGenerator extends Component {
     return ('');
   }
   render() {
+    let questionText;
+    let answersToComplete;
+    if (this.props.content) {
+      questionText = this.props.content.question;
+      answersToComplete = this.props.content.answers;
+    } else questionText = '';
+
     displayIndex = 0;
     return (
       <div className="questionBlock">
@@ -75,12 +98,14 @@ export default class MultipleChoiceQuizGenerator extends Component {
         <div className="">
           <label htmlFor="textInput">
             Question
-            <input id="textInput" type="text" onChange={this.setQuestion} />
+            <input
+              id="textInput" type="text" onChange={this.setQuestion} defaultValue={questionText}
+            />
           </label>
           <Button onClick={this.addAnswers}>Add more answers</Button>
           <form>
             {this.state.answers_choices.map((element, index) =>
-            this.renderAnswers(index, this.props.content))}
+            this.renderAnswers(index, answersToComplete))}
           </form>
         </div>
       </div>
@@ -91,8 +116,11 @@ MultipleChoiceQuizGenerator.propTypes = {
   handleInput: PropTypes.func.isRequired,
   updateParent: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
-  content: PropTypes.arrayOf(String),
+  content: PropTypes.shape({
+    question: PropTypes.string,
+    answers: PropTypes.arrayOf(PropTypes.shape({})),
+  }),
 };
 MultipleChoiceQuizGenerator.defaultProps = {
-  content: [],
+  content: {},
 };

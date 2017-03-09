@@ -4,7 +4,7 @@ import { QuizViewerMainPage } from '../';
 
 describe('<QuizViwerMainPage />', () => {
   it('Component should contain loading screen', () => {
-    expect(shallow(<QuizViewerMainPage userToken={'testuserToken'} />)
+    expect(shallow(<QuizViewerMainPage userToken={{}} />)
     .containsMatchingElement([<h1>Loading...</h1>])).toEqual(true);
   });
   // const quizViewerTag = (<QuizViewerMainPage />);
