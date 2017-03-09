@@ -15,6 +15,8 @@ export default class ChoiceInput extends Component {
     if (this.props.answersToComplete !== undefined) {
       answer = this.props.answersToComplete.answer;
       isCorrect = this.props.answersToComplete.is_correct;
+      if (isCorrect === undefined) isCorrect = false;
+  //    console.log(isCorrect);
     //  console.log("answers",answer);
       this.setState({ choice: answer, answer: isCorrect });
     }
