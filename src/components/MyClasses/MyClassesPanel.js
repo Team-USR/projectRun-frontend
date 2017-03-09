@@ -31,9 +31,12 @@ export default class MyClassesPanel extends Component {
 
     if (this.props.panelType === 'manage_studens_panel') {
       element = (
-        <div className="manageQuizzesWrapper">
+        <div className="manageStudentsWrapper">
           { classTitle }
-          <StudentsPanel />
+          <StudentsPanel
+            students={this.props.content.students}
+            allStudents={this.props.allStudents}
+          />
         </div>
       );
     }
@@ -45,10 +48,11 @@ export default class MyClassesPanel extends Component {
           quizzes={this.props.content.quizzes}
           handleManageQuizzesFromClass={() => this.props.handleManageQuizzesFromClass()}
         />
+        <hr />
         <GroupStudents
           students={this.props.content.students}
           handleRemoveStudentClick={id => this.props.handleRemoveStudentClick(id)}
-          handleAddStudentClick={() => this.props.handleAddStudentClick()}
+          handleManageStudentsFromClass={() => this.props.handleManageStudentsFromClass()}
         /></div>
       );
     }
@@ -66,7 +70,7 @@ export default class MyClassesPanel extends Component {
 
   render() {
     return (
-      <div className="groupQuizzesWrapper">
+      <div className="groupPanelWrapper">
         { this.renderPanel() }
       </div>
     );
@@ -81,9 +85,10 @@ MyClassesPanel.propTypes = {
     students: PropTypes.arrayOf(PropTypes.shape({})),
   }).isRequired,
   allQuizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  allStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   numberOfClasses: PropTypes.number.isRequired,
   handleSaveNewClassClick: PropTypes.func.isRequired,
   handleManageQuizzesFromClass: PropTypes.func.isRequired,
   handleRemoveStudentClick: PropTypes.func.isRequired,
-  handleAddStudentClick: PropTypes.func.isRequired,
+  handleManageStudentsFromClass: PropTypes.func.isRequired,
 };

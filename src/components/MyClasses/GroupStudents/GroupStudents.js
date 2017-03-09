@@ -1,17 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
-import { StudentManager } from './index';
 
 export default class GroupStudents extends Component {
 
   renderStudents() {
-    return this.props.students.map(item =>
-      <li key={`student_manager_${item.studentID}`}>
-        <StudentManager
-          name={item.studentName}
-          studentId={item.studentID}
-          removeStudent={id => this.props.handleRemoveStudentClick(id)}
-        />
+    if (this.props.students.length === 0) {
+      return <h4>There are no students enrolled in this class!</h4>;
+    }
+    return this.props.students.map(obj =>
+      <li key={`group_student_${obj.studentId}`}>
+        <span><b> {obj.studentName} </b></span>
       </li>,
     );
   }
@@ -21,9 +19,9 @@ export default class GroupStudents extends Component {
       <div className="groupStudentsWrapper">
         <h1>Enrolled Students</h1>
         <ul>
-          {this.renderStudents()}
+          { this.renderStudents() }
         </ul>
-        <Button onClick={this.props.handleAddStudentClick}> Add Student </Button>
+        <Button onClick={this.props.handleManageStudentsFromClass}> Manage Section </Button>
       </div>
     );
   }
@@ -31,6 +29,5 @@ export default class GroupStudents extends Component {
 
 GroupStudents.propTypes = {
   students: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  handleAddStudentClick: PropTypes.func.isRequired,
-  handleRemoveStudentClick: PropTypes.func.isRequired,
+  handleManageStudentsFromClass: PropTypes.func.isRequired,
 };
