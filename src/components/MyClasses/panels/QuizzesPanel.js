@@ -114,7 +114,10 @@ export default class QuizzesPanel extends Component {
         </Col>
         <Col md={12}>
           <hr />
-          <Button>Save</Button>
+          <Button
+            onClick={() =>
+              this.props.handleSaveAssignedQuizzes(this.state.selectedQuizzes)}
+          > Save </Button>
         </Col>
       </div>
     );
@@ -124,4 +127,5 @@ export default class QuizzesPanel extends Component {
 QuizzesPanel.propTypes = {
   quizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   allQuizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  handleSaveAssignedQuizzes: PropTypes.func.isRequired,
 };
