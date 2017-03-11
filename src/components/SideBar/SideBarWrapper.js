@@ -7,14 +7,27 @@ export default class SideBarWrapper extends Component {
   renderSideBarContent() {
     let sideBarContent = (<Nav />);
     if (this.props.type === 'SideBarQuizzes') {
-      sideBarContent = (
-        <SideBarQuizzes
-          onQuizClick={id =>
-            this.props.onSideBarItemClick(id)}
-          content={this.props.sideBarContent.quizzes}
-          onQuizCreatorClick={() => this.props.createQuiz()}
-        />
-      );
+      if (this.props.userType === 'student') {
+        sideBarContent = (
+          <SideBarQuizzes
+            userType={this.props.userType}
+            onQuizClick={id =>
+            this.props.onSideBarItemClick(id, 'viewer')}
+            content={this.props.sideBarContent.session}
+          />
+        );
+      } else
+      if (this.props.userType === 'teacher') {
+        sideBarContent = (
+          <SideBarQuizzes
+            userType={this.props.userType}
+            onQuizClick={id =>
+            this.props.onSideBarItemClick(id, 'reviewer')}
+            content={this.props.sideBarContent.quizzes}
+            onQuizCreatorClick={() => this.props.createQuiz()}
+          />
+        );
+      }
     }
 
     if (this.props.type === 'SideBarClasses') {
@@ -58,9 +71,11 @@ SideBarWrapper.propTypes = {
   sideBarContent: PropTypes.shape({
     classes: PropTypes.arrayOf(PropTypes.shape({})),
     quizzes: PropTypes.arrayOf(PropTypes.shape({})),
+    session: PropTypes.arrayOf(PropTypes.shape({})),
   }).isRequired,
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+  userType: PropTypes.string.isRequired,
 };
 
 SideBarWrapper.defaultProps = {
