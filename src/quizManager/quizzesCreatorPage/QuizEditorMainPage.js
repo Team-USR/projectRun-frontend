@@ -54,21 +54,23 @@ export default class QuizEditorMainPage extends Component {
      });
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ loadingQuiz: true });
-    axios({
-      url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
-      headers: this.props.userToken,
-    })
-     .then((response) => {
-       if (!response || (response && response.status !== 200)) {
-         this.setState({ errorState: true });
-       }
-       const generatedQuiz = this.state.submitedQuestions;
-       generatedQuiz.quiz.title = response.data.title;
-       this.setState({
-         quizInfo: response.data, loadingQuiz: false, submitedQuestions: generatedQuiz });
-       response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
-     });
+    if (this.props.quizID !== nextProps.quizID) {
+      this.setState({ loadingQuiz: true });
+      axios({
+        url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
+        headers: this.props.userToken,
+      })
+      .then((response) => {
+        if (!response || (response && response.status !== 200)) {
+          this.setState({ errorState: true });
+        }
+        const generatedQuiz = this.state.submitedQuestions;
+        generatedQuiz.quiz.title = response.data.title;
+        this.setState({
+          quizInfo: response.data, loadingQuiz: false, submitedQuestions: generatedQuiz });
+        response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
+      });
+    }
   }
   removeQuiz(index) {
     displayIndex = 0;
