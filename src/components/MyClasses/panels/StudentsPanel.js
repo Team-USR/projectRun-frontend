@@ -51,21 +51,21 @@ export default class StudentsPanel extends Component {
       this.setState({ csvData: [] });
     }
     this.setState({ file: fileToParse, errorMessage: '' });
-    console.log(fileToParse);
+    // console.log(fileToParse);
   }
 
   parseFile() {
     if (Object.keys(this.state.file).length === 0 && this.state.file.constructor === Object) {
       this.setState({ errorMessage: 'File input cannot be empty!' });
-      console.log('empty object');
+      // console.log('empty object');
       return;
     }
-    console.log('not empty');
+    // console.log('not empty');
     Papa.parse(this.state.file, {
       header: true,
       dynamicTyping: true,
       complete: (results) => {
-        console.log(results.data[0].email);
+        // console.log(results.data[0].email);
         const emptyArray = [];
         results.data.map(object =>
           emptyArray.push(object.email),
@@ -86,7 +86,23 @@ export default class StudentsPanel extends Component {
       );
       return ('');
     });
-    return emptyArray;
+    const arrayToRet = [];
+    if (emptyArray.length > 12) {
+      for (let i = 0; i < 10; i += 1) {
+        arrayToRet.push(emptyArray[i]);
+      }
+      arrayToRet.push(<li>And {emptyArray.length - 11} more</li>);
+    } else {
+      return emptyArray;
+    }
+    return arrayToRet;
+  }
+
+  showLabel() {
+    if (this.state.csvData.length !== 0) {
+      return (<h4> Retrieved students from file:</h4>);
+    }
+    return ('');
   }
 
   showAddButton() {
@@ -159,15 +175,34 @@ export default class StudentsPanel extends Component {
   render() {
     return (
       <div className="studentsPanelWrapper">
-        <Col md={12}>
-          <form>
-            <input value={this.state.value} onChange={this.changeInput} />
-            <input type="file" style={{ marginLeft: '500px' }} ref={(csvfile) => { this.csv = csvfile; }} accept=".csv" onChange={this.importCSV} />
-            <p style={{ color: 'red' }}>{this.state.errorMessage}</p>
-            <Button onClick={this.parseFile}>Ghici ciuperca</Button>
-            <ul>{this.showCsvData()}</ul>
-            {this.showAddButton()}
-          </form>
+        <Col md={12} >
+          <div className="form_container">
+            <div className="form_section">
+              <h2> Invite student </h2>
+              <div className="inside">
+                <p>Enter email to invite student to class:</p>
+                <input
+                  className="student_input"
+                  value={this.state.value} placeholder="Student email"onChange={this.changeInput}
+                />
+                <Button >Invite student</Button>
+              </div>
+            </div>
+            <div className="form_section">
+              <h2> Import students </h2>
+              <div className="inside">
+                <p>Select a .csv file to retrieve the emails.</p><input
+                  type="file"
+                  ref={(csvfile) => { this.csv = csvfile; }} accept=".csv" onChange={this.importCSV}
+                />
+                <p style={{ color: 'red' }}>{this.state.errorMessage}</p>
+                <Button onClick={this.parseFile}>Read file</Button>
+                {this.showLabel()}
+                <ul>{this.showCsvData()}</ul>
+                {this.showAddButton()}
+              </div>
+            </div>
+          </div>
         </Col>
         <Col md={12}>
           <h3>Manage enrolled Students</h3>
