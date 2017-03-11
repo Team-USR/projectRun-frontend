@@ -54,9 +54,8 @@ export default class QuizCreatorMainPage extends Component {
 //    console.log("submitedQuestions ", sQuestions,"finishsubmited");
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
      element !== null);
-    const loadingTrue = true;
 //    console.log("filtered ",filteredQuestions," finishfiltered");
-    this.setState({ loading: loadingTrue, submitedQuestions: filteredQuestions });
+    this.setState({ submitedQuestions: filteredQuestions });
   //  console.log("----------");
   //  console.log(this.state.submitedQuestions);
 //  console.log("----------");
@@ -197,6 +196,9 @@ export default class QuizCreatorMainPage extends Component {
         <h1>Connection error...</h1>
       </div>);
     } else
+    if (this.state.loading === true) {
+      return (<BrandSpinner />);
+    }
     if (!this.state.reviewState && this.state.loading === false) {
       return (
         <div className="mainQuizGeneratorBlock">
@@ -227,4 +229,8 @@ export default class QuizCreatorMainPage extends Component {
 QuizCreatorMainPage.propTypes = {
   handleSubmitButton: PropTypes.func.isRequired,
   userToken: PropTypes.shape({}).isRequired,
+  handlePublish: PropTypes.func,
+};
+QuizCreatorMainPage.defaultProps = {
+  handlePublish: null,
 };

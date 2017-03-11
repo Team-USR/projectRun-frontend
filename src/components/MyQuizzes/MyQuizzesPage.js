@@ -14,6 +14,7 @@ export default class MyQuizzesPage extends Component {
       currentID: -1,
       sideBarContent: {},
       loadingSideBar: true,
+      contentLoading: true,
     };
   }
   componentWillMount() {
@@ -27,7 +28,13 @@ export default class MyQuizzesPage extends Component {
       }
     //  console.log("My quizzes", response.data);
       const newSideBarContent = { quizzes: response.data };
-      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+    //  this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+      setTimeout(() => {
+        this.setState({
+          sideBarContent: newSideBarContent,
+          loadingSideBar: false,
+        });
+      }, 1200);
     });
     let pType = 'default';
     let quizID = -1;
@@ -86,6 +93,7 @@ export default class MyQuizzesPage extends Component {
   }
   renderQuizContent() {
 //    console.log("rendering",this.state.currentID);
+
     let element = <h1><b> My Quizzes</b></h1>;
     if (this.state.panelType === 'reviewer') {
       element = (<QuizCreatorReviewer
@@ -115,7 +123,7 @@ export default class MyQuizzesPage extends Component {
 
   render() {
     if (this.state.loadingSideBar === true) {
-      return <BrandSpinner />;
+      return (<BrandSpinner />);
     }
     return (
       <div className="myQuizzesPageWrapper">

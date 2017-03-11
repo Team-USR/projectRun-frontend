@@ -44,8 +44,13 @@ export default class QuizCreatorReviewer extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
+      setTimeout(() => {
+        this.setState({
+          loadingQuiz: false,
+        });
+      }, 510);
       this.setState({
-        quizInfo: response.data, loadingQuiz: false, published: response.data.published });
+        quizInfo: response.data, published: response.data.published });
     });
   }
   componentWillReceiveProps(nextProps) {
@@ -62,7 +67,12 @@ export default class QuizCreatorReviewer extends Component {
           this.setState({ errorState: true });
         }
         this.setState({
-          quizInfo: response.data, loadingQuiz: false, published: response.data.published });
+          quizInfo: response.data, published: response.data.published });
+        setTimeout(() => {
+          this.setState({
+            loadingQuiz: false,
+          });
+        }, 510);
       });
     }
   }
@@ -78,8 +88,13 @@ export default class QuizCreatorReviewer extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
+      setTimeout(() => {
+        this.setState({
+          loadingPublishing: false,
+        });
+      }, 510);
       this.props.handlePublish();
-      this.setState({ published: true, loadingPublishing: false });
+      this.setState({ published: true });
     });
   }
   isReviewMode() {
@@ -141,7 +156,7 @@ export default class QuizCreatorReviewer extends Component {
       </div>);
     } else
     if (this.state.loadingQuiz) {
-      return <BrandSpinner />;
+      return (<BrandSpinner />);
     } else
     if (this.state.loadingPublishing) {
       return <BrandSpinner />;
