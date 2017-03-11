@@ -69,6 +69,8 @@ export default class MyQuizzesPage extends Component {
       console.log('deleted');
       cookie.remove('current-session-id');
       cookie.remove('current-session-type');
+      this.updateCurrentQuiz('default');
+      this.reloadBar();
     //  this.setState({ loadingSideBar: false });
     });
   }
