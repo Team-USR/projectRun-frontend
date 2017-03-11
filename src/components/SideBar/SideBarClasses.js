@@ -11,14 +11,18 @@ export default function SideBarClasses(props) {
         </Button>
       </NavItem>
       {
-        content.map(obj =>
-          (
-            <NavItem key={`class_${obj.classId}`}>
-              <Button onClick={() => props.onClassClick(obj.classId)}>
-                {obj.className}
-              </Button>
-            </NavItem>
-          ),
+        content.map((obj, index) => {
+          if (index < 8) {
+            return (
+              <NavItem key={`class_${obj.id}`}>
+                <Button onClick={() => props.onClassClick(obj.id, obj.name)}>
+                  {obj.name}
+                </Button>
+              </NavItem>
+            );
+          }
+          return (null);
+        },
         )
       }
     </Nav>

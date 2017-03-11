@@ -21,8 +21,8 @@ export default class SideBarWrapper extends Component {
       sideBarContent = (
         <SideBarClasses
           onCreateClassClick={() => this.props.onCreateClassClick()}
-          onClassClick={currentClass =>
-            this.props.onSideBarItemClick(currentClass)}
+          onClassClick={(currentClassId, classTitle) =>
+            this.props.onSideBarItemClick(currentClassId, classTitle)}
           content={this.props.sideBarContent.classes}
         />
       );

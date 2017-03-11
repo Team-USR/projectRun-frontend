@@ -14,7 +14,7 @@ export default class MyClassesPanel extends Component {
     let element = <DefaultClassesPanel numberOfClasses={this.props.numberOfClasses} />;
     const classTitle = (
       <div>
-        <h2><b>{this.props.content.classTitle}</b></h2>
+        <h2><b>{this.props.classTitle}</b></h2>
         <hr />
       </div>
     );
@@ -23,6 +23,8 @@ export default class MyClassesPanel extends Component {
         <div className="manageQuizzesWrapper">
           { classTitle }
           <QuizzesPanel
+            handleSaveAssignedQuizzes={newQuizzesArray =>
+              this.props.handleSaveAssignedQuizzes(newQuizzesArray)}
             quizzes={this.props.content.quizzes}
             allQuizzes={this.props.allQuizzes}
           />
@@ -78,9 +80,9 @@ export default class MyClassesPanel extends Component {
 }
 
 MyClassesPanel.propTypes = {
+  classTitle: PropTypes.string.isRequired,
   panelType: PropTypes.string.isRequired,
   content: PropTypes.shape({
-    classTitle: PropTypes.string,
     quizzes: PropTypes.arrayOf(PropTypes.shape({})),
     students: PropTypes.arrayOf(PropTypes.shape({})),
   }).isRequired,
@@ -88,6 +90,7 @@ MyClassesPanel.propTypes = {
   allStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   numberOfClasses: PropTypes.number.isRequired,
   handleSaveNewClassClick: PropTypes.func.isRequired,
+  handleSaveAssignedQuizzes: PropTypes.func.isRequired,
   handleManageQuizzesFromClass: PropTypes.func.isRequired,
   handleRemoveStudentClick: PropTypes.func.isRequired,
   handleManageStudentsFromClass: PropTypes.func.isRequired,

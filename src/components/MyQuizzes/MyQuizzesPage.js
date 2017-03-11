@@ -4,13 +4,8 @@ import axios from 'axios';
 import { QuizCreatorMainPage, QuizCreatorReviewer, QuizEditorMainPage } from './../../quizManager/quizzesCreatorPage';
 import { SideBarWrapper } from '../SideBar/index';
 import { API_URL } from '../../constants';
+import { BrandSpinner } from '../utils';
 
-const styles = {
-  loading: {
-    textAlign: 'center',
-    marginTop: 100,
-  },
-};
 export default class MyQuizzesPage extends Component {
   constructor(props) {
     super(props);
@@ -108,9 +103,7 @@ export default class MyQuizzesPage extends Component {
 
   render() {
     if (this.state.loadingSideBar === true) {
-      return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Loading quizzes...</h1>
-      </div>);
+      return <BrandSpinner />;
     }
     return (
       <div className="myQuizzesPageWrapper">
