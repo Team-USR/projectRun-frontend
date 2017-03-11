@@ -1,9 +1,9 @@
 .myQuizzesPageWrapper {
   text-align: center;
-  display: inline-block;
   width: 100%;
 
   .contentWrapper {
+    overflow: hidden;
     margin-left: 200px;
 
     @media (max-width: 767px) {
