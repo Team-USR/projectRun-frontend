@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react';
+import { Button } from 'react-bootstrap';
 import { GroupQuizzes } from './GroupQuizzes';
 import { GroupStudents } from './GroupStudents';
 import {
@@ -36,6 +37,8 @@ export default class MyClassesPanel extends Component {
         <div className="manageStudentsWrapper">
           { classTitle }
           <StudentsPanel
+            handleSaveEnrolledStudents={newStudentsArray =>
+              this.props.handleSaveEnrolledStudents(newStudentsArray)}
             students={this.props.content.students}
             allStudents={this.props.allStudents}
           />
@@ -44,18 +47,24 @@ export default class MyClassesPanel extends Component {
     }
 
     if (this.props.panelType === 'show_selected_class') {
-      element = (<div>
-        { classTitle }
-        <GroupQuizzes
-          quizzes={this.props.content.quizzes}
-          handleManageQuizzesFromClass={() => this.props.handleManageQuizzesFromClass()}
-        />
-        <hr />
-        <GroupStudents
-          students={this.props.content.students}
-          handleRemoveStudentClick={id => this.props.handleRemoveStudentClick(id)}
-          handleManageStudentsFromClass={() => this.props.handleManageStudentsFromClass()}
-        /></div>
+      element = (
+        <div>
+          { classTitle }
+          <GroupQuizzes
+            quizzes={this.props.content.quizzes}
+            handleManageQuizzesFromClass={() => this.props.handleManageQuizzesFromClass()}
+          />
+          <hr />
+          <GroupStudents
+            students={this.props.content.students}
+            handleManageStudentsFromClass={() => this.props.handleManageStudentsFromClass()}
+          />
+          <hr />
+          <Button
+            onClick={() =>
+            this.props.handleDeleteClass(this.props.classId)}
+          >Delete Class</Button>
+        </div>
       );
     }
 
@@ -80,6 +89,7 @@ export default class MyClassesPanel extends Component {
 }
 
 MyClassesPanel.propTypes = {
+  classId: PropTypes.string.isRequired,
   classTitle: PropTypes.string.isRequired,
   panelType: PropTypes.string.isRequired,
   content: PropTypes.shape({
@@ -91,7 +101,8 @@ MyClassesPanel.propTypes = {
   numberOfClasses: PropTypes.number.isRequired,
   handleSaveNewClassClick: PropTypes.func.isRequired,
   handleSaveAssignedQuizzes: PropTypes.func.isRequired,
+  handleSaveEnrolledStudents: PropTypes.func.isRequired,
   handleManageQuizzesFromClass: PropTypes.func.isRequired,
-  handleRemoveStudentClick: PropTypes.func.isRequired,
   handleManageStudentsFromClass: PropTypes.func.isRequired,
+  handleDeleteClass: PropTypes.func.isRequired,
 };
