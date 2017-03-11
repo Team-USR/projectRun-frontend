@@ -38,6 +38,7 @@ export default class QuizEditorMainPage extends Component {
     this.changeTitle = this.changeTitle.bind(this);
   }
   componentWillMount() {
+    this.setState({ loadingQuiz: true });
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}/edit`,
       headers: this.props.userToken,
@@ -49,27 +50,39 @@ export default class QuizEditorMainPage extends Component {
        const generatedQuiz = this.state.submitedQuestions;
        generatedQuiz.quiz.title = response.data.title;
      //  console.log("LOADING FINISHED");
+       setTimeout(() => {
+         this.setState({
+           loadingQuiz: false,
+         });
+       }, 510);
        this.setState({
-         quizInfo: response.data, loadingQuiz: false, submitedQuestions: generatedQuiz });
+         quizInfo: response.data, submitedQuestions: generatedQuiz });
        response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
      });
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ loadingQuiz: true });
-    axios({
-      url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
-      headers: this.props.userToken,
-    })
-     .then((response) => {
-       if (!response || (response && response.status !== 200)) {
-         this.setState({ errorState: true });
-       }
-       const generatedQuiz = this.state.submitedQuestions;
-       generatedQuiz.quiz.title = response.data.title;
-       this.setState({
-         quizInfo: response.data, loadingQuiz: false, submitedQuestions: generatedQuiz });
-       response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
-     });
+    if (this.props.quizID !== nextProps.quizID) {
+      this.setState({ loadingQuiz: true });
+      axios({
+        url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
+        headers: this.props.userToken,
+      })
+      .then((response) => {
+        if (!response || (response && response.status !== 200)) {
+          this.setState({ errorState: true });
+        }
+        const generatedQuiz = this.state.submitedQuestions;
+        generatedQuiz.quiz.title = response.data.title;
+        setTimeout(() => {
+          this.setState({
+            loadingQuiz: false,
+          });
+        }, 510);
+        this.setState({
+          quizInfo: response.data, submitedQuestions: generatedQuiz });
+        response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
+      });
+    }
   }
   removeQuiz(index) {
     displayIndex = 0;
@@ -232,6 +245,9 @@ export default class QuizEditorMainPage extends Component {
         <h1>Connection error...</h1>
       </div>);
     } else
+    if (this.state.loadingQuiz === true) {
+      return <BrandSpinner />;
+    } else
     if (!this.state.reviewState && this.state.loading === false) {
       return (
         <div className="mainQuizGeneratorBlock">
@@ -258,9 +274,6 @@ export default class QuizEditorMainPage extends Component {
       );
     } else
     if (this.state.loading === true) {
-      return <BrandSpinner />;
-    } else
-    if (this.state.loadingQuiz === true) {
       return <BrandSpinner />;
     }
     return ('');

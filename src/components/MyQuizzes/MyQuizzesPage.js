@@ -14,6 +14,7 @@ export default class MyQuizzesPage extends Component {
       currentID: -1,
       sideBarContent: {},
       loadingSideBar: true,
+      contentLoading: true,
     };
   }
   componentWillMount() {
@@ -27,22 +28,21 @@ export default class MyQuizzesPage extends Component {
       }
     //  console.log("My quizzes", response.data);
       const newSideBarContent = { quizzes: response.data };
-      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+    //  this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+      setTimeout(() => {
+        this.setState({
+          sideBarContent: newSideBarContent,
+          loadingSideBar: false,
+        });
+      }, 1200);
     });
     let pType = 'default';
     let quizID = -1;
-    if (cookie.load('current-session-type') != null) {
+    if (cookie.load('current-session-type') != null && cookie.load('current-session-id') != null) {
       pType = cookie.load('current-session-type');
-      this.setState({ panelType: pType });
-    }
-    if (cookie.load('current-session-id') != null) {
       quizID = cookie.load('current-session-id');
-      this.setState({ currentID: quizID });
+      this.setState({ panelType: pType, currentID: quizID });
     }
-    // const getSideBar = {
-    //   quizzes: [{ id: 3, title: 'Quiz REVIEWER' }],
-    // };
-    // this.setState({ sideBarContent: getSideBar });
   }
   reloadBar() {
     axios({
@@ -63,6 +63,24 @@ export default class MyQuizzesPage extends Component {
   //  console.log(panelT);
     cookie.save('current-session-type', panelT);
   }
+  deleteThisQUiz(id) {
+    axios({
+      url: `${API_URL}/quizzes/${id}`,
+      method: 'delete',
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+      console.log('deleted');
+      cookie.remove('current-session-id');
+      cookie.remove('current-session-type');
+      this.updateCurrentQuiz('default');
+      this.reloadBar();
+    //  this.setState({ loadingSideBar: false });
+    });
+  }
   saveCurrentQuiz(id) {
     this.id = id;
 //    console.log(id);
@@ -75,6 +93,7 @@ export default class MyQuizzesPage extends Component {
   }
   renderQuizContent() {
 //    console.log("rendering",this.state.currentID);
+
     let element = <h1><b> My Quizzes</b></h1>;
     if (this.state.panelType === 'reviewer') {
       element = (<QuizCreatorReviewer
@@ -82,6 +101,7 @@ export default class MyQuizzesPage extends Component {
         userToken={this.props.userToken}
         handlePublish={() => this.reloadBar()}
         handleSubmitButton={() => this.updateCurrentQuiz('editor')}
+        deleteQuiz={deletedID => this.deleteThisQUiz(deletedID)}
       />);
     }
     if (this.state.panelType === 'editor') {
@@ -103,7 +123,7 @@ export default class MyQuizzesPage extends Component {
 
   render() {
     if (this.state.loadingSideBar === true) {
-      return <BrandSpinner />;
+      return (<BrandSpinner />);
     }
     return (
       <div className="myQuizzesPageWrapper">
