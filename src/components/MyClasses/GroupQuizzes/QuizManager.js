@@ -10,7 +10,7 @@ export default class QuizManager extends Component {
           className="classQuizBtn"
           onClick={() => this.props.addQuiz(this.props.index)}
         >
-          {this.props.value}
+          {this.props.title}
           <span className="glyphicon glyphicon-plus" />
         </Button>
       );
@@ -21,7 +21,7 @@ export default class QuizManager extends Component {
         className="classQuizBtn"
         onClick={() => this.props.removeQuiz(this.props.index)}
       >
-        {this.props.value}
+        {this.props.title}
         <span className="glyphicon glyphicon-remove" />
       </Button>
     );
@@ -38,7 +38,7 @@ export default class QuizManager extends Component {
 
 QuizManager.propTypes = {
   index: PropTypes.number.isRequired,
-  value: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   addQuiz: PropTypes.func,
   removeQuiz: PropTypes.func,

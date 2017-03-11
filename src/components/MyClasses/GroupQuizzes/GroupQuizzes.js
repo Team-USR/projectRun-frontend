@@ -8,8 +8,8 @@ export default class GroupQuizzes extends Component {
       return <h4>There are no quizzes assigned to this class!</h4>;
     }
     return this.props.quizzes.map(obj =>
-      <li key={`group_quiz_${obj.quizId}`}>
-        <span><b> {obj.quizTitle} </b></span>
+      <li key={`group_quiz_${obj.id}`}>
+        <span><b> {obj.title} </b></span>
       </li>,
     );
   }

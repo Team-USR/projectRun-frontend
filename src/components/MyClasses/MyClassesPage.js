@@ -16,13 +16,7 @@ export default class MyClassesPage extends Component {
       loadingSideBar: true,
       currentClassTitle: '',
       currentClassId: 0,
-      allQuizzes: [
-        { quizId: 1, quizTitle: 'Math Quiz' },
-        { quizId: 2, quizTitle: 'Philosophy Quiz' },
-        { quizId: 3, quizTitle: 'Advanced Quiz' },
-        { quizId: 4, quizTitle: 'Physics Quiz' },
-        { quizId: 5, quizTitle: 'Anatomy Quiz' },
-      ],
+      allQuizzes: [],
       allStudents: [
         { studentId: 101, studentName: 'Gigel' },
         { studentId: 102, studentName: 'Jlaba' },
@@ -30,7 +24,7 @@ export default class MyClassesPage extends Component {
         { studentId: 104, studentName: 'Blercu' },
       ],
       sideBarContent: { classes: [] },
-      content: { classes: [], students: [] },
+      content: { quizzes: [], students: [] },
     };
   }
 
@@ -40,9 +34,20 @@ export default class MyClassesPage extends Component {
       headers: this.props.userToken,
     })
     .then((response) => {
-      const newSideBarContent = { classes: response.data.reverse() };
+      axios({
+        url: `${API_URL}/quizzes/mine`,
+        headers: this.props.userToken,
+      })
+      .then((quizzesResponse) => {
+        // console.log(quizzesResponse);
+        this.setState({ allQuizzes: quizzesResponse.data });
+      });
 
-      if (cookie.load('current-class-id') != null) {
+      const newSideBarContent = { classes: response.data.reverse() };
+      const cookieClassId = cookie.load('current-class-id');
+      const cookieClassTitle = cookie.load('current-class-title');
+
+      if (cookieClassId != null && cookieClassTitle != null) {
         const classId = cookie.load('current-class-id');
         const classTitle = cookie.load('current-class-title');
         this.getClassContent(classId);
@@ -169,20 +174,17 @@ export default class MyClassesPage extends Component {
 
   handleSaveAssignedQuizzes(newQuizzesArray) {
     this.newQuizzesArray = [];
-    const quizzesIdArray = newQuizzesArray.map(obj => obj.quizId);
+    const quizzesIdArray = newQuizzesArray.map(obj => obj.id);
+    const postObject = { quizzes: quizzesIdArray };
     const groupId = this.state.currentClassId.toString();
-    // console.log(this.props.userToken);
-    // console.log(quizzesIdArray);
-    // console.log(this.state.currentClassId);
-
-   // https://project-run.herokuapp.com/groups/[group_id]/quizzes_update
+    // console.log(postObject);
     axios({
       url: `${API_URL}/groups/${groupId}/quizzes_update`,
       method: 'post',
-      data: quizzesIdArray,
+      data: postObject,
       headers: this.props.userToken,
     })
-    .then(() => this.setState({ loadingSideBar: false }));
+    .then(() => this.setState({ panelType: 'show_selected_class' }));
   }
 
   renderClassesPanel() {
