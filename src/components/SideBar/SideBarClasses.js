@@ -15,7 +15,7 @@ export default function SideBarClasses(props) {
           if (index < 8) {
             return (
               <NavItem key={`class_${obj.id}`}>
-                <Button onClick={() => props.onClassClick(obj.id, obj.name)}>
+                <Button onClick={() => props.onClassClick(obj.id.toString(), obj.name)}>
                   {obj.name}
                 </Button>
               </NavItem>

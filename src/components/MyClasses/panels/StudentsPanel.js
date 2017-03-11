@@ -28,12 +28,12 @@ export default class StudentsPanel extends Component {
   getUnenrolledStudents() {
     const newStudentsObj = {};
     this.props.students.map((obj) => {
-      newStudentsObj[obj.studentId] = obj.studentName;
+      newStudentsObj[obj.id] = obj.name;
       return 0;
     });
 
     return this.props.allStudents.filter((obj) => {
-      if (!newStudentsObj[obj.studentId]) {
+      if (!newStudentsObj[obj.id]) {
         return true;
       }
       return false;
@@ -51,21 +51,21 @@ export default class StudentsPanel extends Component {
       this.setState({ csvData: [] });
     }
     this.setState({ file: fileToParse, errorMessage: '' });
-    console.log(fileToParse);
+    // console.log(fileToParse);
   }
 
   parseFile() {
     if (Object.keys(this.state.file).length === 0 && this.state.file.constructor === Object) {
       this.setState({ errorMessage: 'File input cannot be empty!' });
-      console.log('empty object');
+      // console.log('empty object');
       return;
     }
-    console.log('not empty');
+    // console.log('not empty');
     Papa.parse(this.state.file, {
       header: true,
       dynamicTyping: true,
       complete: (results) => {
-        console.log(results.data[0].email);
+        // console.log(results.data[0].email);
         const emptyArray = [];
         results.data.map(object =>
           emptyArray.push(object.email),
@@ -127,13 +127,13 @@ export default class StudentsPanel extends Component {
       return <h4>There are no students enrolled in this class!</h4>;
     }
     return this.state.enrolledStudents.map((obj, index) =>
-      <li key={`enrolled_student_${obj.studentId}`}>
+      <li key={`enrolled_student_${obj.id}`}>
         <StudentManager
           type={'remove'}
-          id={obj.studentId}
+          id={obj.id}
           index={index}
-          name={obj.studentName}
-          removeStudent={id => this.removeStudent(id)}
+          name={obj.name}
+          removeStudent={studentIndex => this.removeStudent(studentIndex)}
         />
       </li>,
     );
@@ -144,13 +144,13 @@ export default class StudentsPanel extends Component {
       return <h4>All students have been enrolled!</h4>;
     }
     return this.state.unenrolledStudents.map((obj, index) =>
-      <li key={`unenrolled_student_${obj.studentId}`}>
+      <li key={`unenrolled_student_${obj.id}`}>
         <StudentManager
           type={'add'}
-          id={obj.studentId}
+          id={obj.id}
           index={index}
-          name={obj.studentName}
-          addStudent={id => this.addStudent(id)}
+          name={obj.name}
+          addStudent={studentIndex => this.addStudent(studentIndex)}
         />
       </li>,
     );
@@ -187,6 +187,10 @@ export default class StudentsPanel extends Component {
         </Col>
         <Col md={12}>
           <hr />
+          <Button
+            onClick={() =>
+              this.props.handleSaveEnrolledStudents(this.state.enrolledStudents)}
+          > Save </Button>
         </Col>
       </div>
     );
@@ -196,4 +200,5 @@ export default class StudentsPanel extends Component {
 StudentsPanel.propTypes = {
   students: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   allStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  handleSaveEnrolledStudents: PropTypes.func.isRequired,
 };
