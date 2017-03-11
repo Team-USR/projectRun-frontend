@@ -15,7 +15,7 @@ export default class MyClassesPage extends Component {
       panelType: 'my_classes_default_panel',
       loadingSideBar: true,
       currentClassTitle: '',
-      currentClassId: 0,
+      currentClassId: '',
       allQuizzes: [],
       allStudents: [
         { id: 101, name: 'Gigel' },
@@ -107,7 +107,7 @@ export default class MyClassesPage extends Component {
 
   saveCurrentClass(id, title) {
     this.id = id;
-    cookie.save('current-class-id', id.toString());
+    cookie.save('current-class-id', id);
     cookie.save('current-class-title', title);
   }
 
@@ -147,6 +147,20 @@ export default class MyClassesPage extends Component {
     })
     .then(() => {
       this.reloadBar();
+    });
+  }
+
+  handleDeleteClass(classId) {
+    axios({
+      url: `${API_URL}/groups/${classId}`,
+      method: 'delete',
+      headers: this.props.userToken,
+    })
+    .then(() => {
+      this.reloadBar();
+      cookie.remove('current-class-id');
+      cookie.remove('current-class-title');
+      this.setState({ panelType: 'my_classes_default_panel' });
     });
   }
 
