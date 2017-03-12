@@ -18,13 +18,14 @@ export default class MyClassesPage extends Component {
       currentClassId: '',
       allQuizzes: [],
       allStudents: [
-        { id: 101, name: 'Gigel' },
-        { id: 102, name: 'Jlaba' },
-        { id: 103, name: 'Geon' },
-        { id: 104, name: 'Blercu' },
+        { id: 9, name: 'Geon' },
+        { id: 10, name: 'Gigel' },
+        { id: 11, name: 'Jlaba' },
+        { id: 12, name: 'Blercu' },
       ],
       sideBarContent: { classes: [] },
       content: { quizzes: [], students: [] },
+      userT: 'teacher',
     };
   }
 
@@ -85,10 +86,9 @@ export default class MyClassesPage extends Component {
         headers: this.props.userToken,
       })
       .then((studentsResponse) => {
-        // console.log(studentsResponse.data);
         newContent.students = studentsResponse.data;
+        this.setState({ panelType: 'show_selected_class', content: newContent });
       });
-      this.setState({ panelType: 'show_selected_class', content: newContent });
     });
   }
 
@@ -180,18 +180,17 @@ export default class MyClassesPage extends Component {
 
   handleSaveEnrolledStudents(newStundentsArray) {
     this.newStundentsArray = newStundentsArray;
-    // const studentsIdArray = newStundentsArray.map(obj => obj.id);
-    // const postObject = { students: studentsIdArray };
-    // const groupId = this.state.currentClassId.toString();
+    const studentsIdArray = newStundentsArray.map(obj => obj.id);
+    const postObject = { users: studentsIdArray };
+    const groupId = this.state.currentClassId.toString();
 
-    // console.log(studentsIdArray);
-    // axios({
-    //   url: `${API_URL}/groups/${groupId}/quizzes_update`,
-    //   method: 'post',
-    //   data: postObject,
-    //   headers: this.props.userToken,
-    // })
-    // .then(() => this.setState({ panelType: 'show_selected_class' }));
+    axios({
+      url: `${API_URL}/groups/${groupId}/users_update`,
+      method: 'post',
+      data: postObject,
+      headers: this.props.userToken,
+    })
+    .then(() => this.setState({ panelType: 'show_selected_class' }));
   }
 
   renderClassesPanel() {
@@ -228,6 +227,7 @@ export default class MyClassesPage extends Component {
           this.handleSideBarClassClick(currentClassId, classTitle)}
         title={'My Classes'}
         type={'SideBarClasses'}
+        userType={this.state.userT}
       />
     );
 
