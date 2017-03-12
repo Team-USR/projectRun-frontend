@@ -28,17 +28,37 @@ export default class QuizViewerMainPage extends Component {
       answers: { questions: [] },
       getResponse: '',
       data: {},
+      session: {},
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
   }
   componentWillMount() {
-    const quizID = 1;
     axios({
-      url: `${API_URL}/quizzes/${quizID}`,
+      url: `${API_URL}/quizzes/${this.props.quizID}`,
       headers: this.props.userToken,
     })
-    .then(response => this.setState({ quizInfo: response.data, loadingQuiz: false }));
+    .then(response => setTimeout(() => {
+      this.setState({
+        loadingQuiz: false,
+        quizInfo: response.data.quiz,
+      });
+    }, 510));
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.quizID !== nextProps.quizID) {
+      this.setState({ loadingQuiz: true });
+      axios({
+        url: `${API_URL}/quizzes/${nextProps.quizID}`,
+        headers: this.props.userToken,
+      })
+      .then(response => setTimeout(() => {
+        this.setState({
+          loadingQuiz: false,
+          quizInfo: response.data.quiz,
+        });
+      }, 510));
+    }
   }
   isReviewMode() {
     const newState = !this.state.reviewState;
@@ -155,6 +175,7 @@ export default class QuizViewerMainPage extends Component {
     return ('');
   }
   render() {
+//    console.log(this.state.loadingQuiz);
     if (this.state.loadingQuiz) {
       return <BrandSpinner />;
     }
@@ -171,4 +192,5 @@ export default class QuizViewerMainPage extends Component {
 
 QuizViewerMainPage.propTypes = {
   userToken: React.PropTypes.shape({}).isRequired,
+  quizID: React.PropTypes.string.isRequired,
 };
