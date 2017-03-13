@@ -162,6 +162,7 @@ export default class MyQuizzesPage extends Component {
           userToken={this.props.userToken}
           quizID={this.state.currentID} // this.state.currentID
           handleSubmitButton={() => this.updateCurrentQuiz('viewer')}
+          reloadSideBar={() => this.reloadBar()}
         />);
       }
     }

@@ -24,7 +24,7 @@ export default function SideBarQuizzes(props) {
           </Button>
         </NavItem>
         <NavItem key={'unpub'}>
-          <h4>Unpublished</h4>
+          <h4>Unpublished ({unpublishedContent.length})</h4>
         </NavItem>
         {
         unpublishedContent.map((item, index) => {
@@ -42,7 +42,7 @@ export default function SideBarQuizzes(props) {
         )
       }
         <NavItem key={'publh'}>
-          <h4>Published</h4>
+          <h4>Published ({publishedContent.length})</h4>
         </NavItem>
         {
         publishedContent.map((item, index) => {
@@ -86,7 +86,7 @@ export default function SideBarQuizzes(props) {
     return (
       <Nav key={'student'}>
         <NavItem key={'notstd'}>
-          <h4>Not started</h4>
+          <h4>Not started ({notStartedContent.length})</h4>
         </NavItem>
         {
             notStartedContent.map((item, index) => {
@@ -104,7 +104,7 @@ export default function SideBarQuizzes(props) {
         )
       }
         <NavItem key={'prg'}>
-          <h4>In progress</h4>
+          <h4>In progress ({inprogressContent.length})</h4>
         </NavItem>
         {
           inprogressContent.map((item, index) => {
@@ -122,7 +122,7 @@ export default function SideBarQuizzes(props) {
         )
       }
         <NavItem key={'subt'}>
-          <h4>Submitted</h4>
+          <h4>Submitted ({submittedContent.length})</h4>
         </NavItem>
         {
             submittedContent.map((item, index) => {
