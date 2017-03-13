@@ -2,10 +2,14 @@ import React, { PropTypes, Component } from 'react';
 
 export default class DefaultClassesPanel extends Component {
 
-  constructor() {
-    super();
-    this.state = {
-    };
+  renderHeader() {
+    if (this.props.userType === 'teacher') {
+      return <h3>You currently have {this.props.numberOfClasses} classes</h3>;
+    }
+    if (this.props.userType === 'student') {
+      return <h3>You are currently enrolled in {this.props.numberOfClasses} classes</h3>;
+    }
+    return (null);
   }
 
   render() {
@@ -13,12 +17,13 @@ export default class DefaultClassesPanel extends Component {
       <div>
         <h1><b>My Classes</b></h1>
         <hr />
-        <h3>You currently have {this.props.numberOfClasses} classes</h3>
+        { this.renderHeader() }
       </div>
     );
   }
 }
 
 DefaultClassesPanel.propTypes = {
+  userType: PropTypes.string.isRequired,
   numberOfClasses: PropTypes.number.isRequired,
 };

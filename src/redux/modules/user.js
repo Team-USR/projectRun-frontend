@@ -78,6 +78,7 @@ export function loginUser(user) {
       );
 
       if (res.status.toString() === '200') {
+        console.log(res.headers);
         await cookie.save('access-token', res.headers['access-token']);
         await cookie.save('client', res.headers.client);
         await cookie.save('token-type', res.headers['token-type']);
