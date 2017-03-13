@@ -30,6 +30,7 @@ export default class QuizViewerMainPage extends Component {
       data: {},
       session: {},
       savedSession: true,
+      score: null,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -87,14 +88,16 @@ export default class QuizViewerMainPage extends Component {
     }, 510));
   }
   isResultsMode() {
-    const quizID = 127;
 //    console.log(this.state.answers);
+//console.log(this.state.quizInfo);
     axios({
-      url: `${API_URL}/quizzes/${quizID}/check`,
+      url: `${API_URL}/quizzes/${this.state.quizInfo.id}/submit`,
       data: this.state.answers,
+      headers: this.props.userToken,
       method: 'post',
     })
     .then((response) => {
+      console.log(response);
       const newState = !this.state.resultsState;
       const dataSet = response.data;
       const newData = {};
@@ -102,8 +105,12 @@ export default class QuizViewerMainPage extends Component {
         newData[object.id] = object;
         return 0;
       });
-      this.setState({ resultsState: newState, getResponse: response, data: newData });
-  //    console.log(dataSet);
+      this.setState({
+        resultsState: newState,
+        getResponse: response,
+        data: newData,
+        score: response.data.points });
+      console.log(this.state.score);
     });
   }
   collectAnswers(id, answers, type, index) {
@@ -159,7 +166,9 @@ export default class QuizViewerMainPage extends Component {
         </div>);
     } if (this.state.resultsState) {
       return (
-        <div className="submitPanel" />
+        <div className="submitPanel">
+          <h3> MARK : {this.state.score} </h3>
+        </div>
       );
     }
     return ('');
