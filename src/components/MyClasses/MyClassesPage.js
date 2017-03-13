@@ -25,12 +25,12 @@ export default class MyClassesPage extends Component {
       ],
       sideBarContent: { classes: [] },
       content: { quizzes: [], students: [] },
-      userT: 'student',
+      userT: 'teacher',
     };
   }
 
   componentWillMount() {
-    if (this.state.userT === 'teacher') { // CHANGE TO TEACHER
+    if (this.state.userT === 'teacher') {
       this.requestTeacherData();
     }
     if (this.state.userT === 'student') {
@@ -47,14 +47,18 @@ export default class MyClassesPage extends Component {
       const newContent = this.state.content;
       newContent.quizzes = response.data;
 
-      axios({
-        url: `${API_URL}/groups/${currentClassId}/students`,
-        headers: this.props.userToken,
-      })
-      .then((studentsResponse) => {
-        newContent.students = studentsResponse.data;
+      if (this.state.userT === 'teacher') {
+        axios({
+          url: `${API_URL}/groups/${currentClassId}/students`,
+          headers: this.props.userToken,
+        })
+        .then((studentsResponse) => {
+          newContent.students = studentsResponse.data;
+          this.setState({ panelType: 'show_selected_class', content: newContent });
+        });
+      } else if (this.state.userT === 'student') {
         this.setState({ panelType: 'show_selected_class', content: newContent });
-      });
+      }
     });
   }
 
@@ -142,9 +146,19 @@ export default class MyClassesPage extends Component {
       headers: this.props.userToken,
     })
     .then((response) => {
-      const newSideBarContent = { classes: response.data.reverse() };
+      let responseClasses = response.data.reverse();
+      if (this.state.userT === 'teacher') {
+        responseClasses = responseClasses.filter(obj => obj.role === 'admin');
+      } else if (this.state.userT === 'student') {
+        responseClasses = responseClasses.filter(obj => obj.role === 'student');
+      }
+
+      const newSideBarContent = { classes: responseClasses };
       setTimeout(() => {
-        this.setState({ sideBarContent: newSideBarContent });
+        this.setState({
+          sideBarContent: newSideBarContent,
+          panelType: 'my_classes_default_panel',
+        });
       }, 1200);
     });
   }
