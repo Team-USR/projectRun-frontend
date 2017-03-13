@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Button } from 'react-bootstrap';
+import { TEACHER } from '../../../constants';
 
 export default class GroupQuizzes extends Component {
 
@@ -15,7 +16,7 @@ export default class GroupQuizzes extends Component {
   }
 
   renderManageButton() {
-    if (this.props.userType === 'teacher') {
+    if (this.props.userType === TEACHER) {
       return <Button onClick={this.props.handleManageQuizzesFromClass}> Manage Section </Button>;
     }
     return (null);

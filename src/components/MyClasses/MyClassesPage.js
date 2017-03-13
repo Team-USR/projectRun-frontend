@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import cookie from 'react-cookie';
 import axios from 'axios';
-import { API_URL } from '../../constants';
+import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { SideBarWrapper } from '../SideBar';
 import { MyClassesPanel } from './index';
 import { BrandSpinner } from '../utils';
@@ -25,15 +25,15 @@ export default class MyClassesPage extends Component {
       ],
       sideBarContent: { classes: [] },
       content: { quizzes: [], students: [] },
-      userT: 'teacher',
+      userT: TEACHER,
     };
   }
 
   componentWillMount() {
-    if (this.state.userT === 'teacher') {
+    if (this.state.userT === TEACHER) {
       this.requestTeacherData();
     }
-    if (this.state.userT === 'student') {
+    if (this.state.userT === STUDENT) {
       this.requestStudentData();
     }
   }
@@ -47,7 +47,7 @@ export default class MyClassesPage extends Component {
       const newContent = this.state.content;
       newContent.quizzes = response.data;
 
-      if (this.state.userT === 'teacher') {
+      if (this.state.userT === TEACHER) {
         axios({
           url: `${API_URL}/groups/${currentClassId}/students`,
           headers: this.props.userToken,
@@ -56,7 +56,7 @@ export default class MyClassesPage extends Component {
           newContent.students = studentsResponse.data;
           this.setState({ panelType: 'show_selected_class', content: newContent });
         });
-      } else if (this.state.userT === 'student') {
+      } else if (this.state.userT === STUDENT) {
         this.setState({ panelType: 'show_selected_class', content: newContent });
       }
     });
@@ -81,14 +81,12 @@ export default class MyClassesPage extends Component {
       const cookieClassTitle = cookie.load('current-class-title');
 
       if (cookieClassId != null && cookieClassTitle != null) {
-        const classId = cookie.load('current-class-id');
-        const classTitle = cookie.load('current-class-title');
-        this.getClassContent(classId);
+        this.getClassContent(cookieClassId);
 
         setTimeout(() => {
           this.setState({
-            currentClassId: classId,
-            currentClassTitle: classTitle,
+            currentClassId: cookieClassId,
+            currentClassTitle: cookieClassTitle,
             sideBarContent: newSideBarContent,
             loadingSideBar: false,
           });
@@ -147,9 +145,9 @@ export default class MyClassesPage extends Component {
     })
     .then((response) => {
       let responseClasses = response.data.reverse();
-      if (this.state.userT === 'teacher') {
+      if (this.state.userT === TEACHER) {
         responseClasses = responseClasses.filter(obj => obj.role === 'admin');
-      } else if (this.state.userT === 'student') {
+      } else if (this.state.userT === STUDENT) {
         responseClasses = responseClasses.filter(obj => obj.role === 'student');
       }
 
