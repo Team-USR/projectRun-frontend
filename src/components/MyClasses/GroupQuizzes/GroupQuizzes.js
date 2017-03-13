@@ -27,6 +27,7 @@ export default class GroupQuizzes extends Component {
         <h1>Quizzes</h1>
         <ul>
           { this.renderQuizzes() }
+          { this.renderManageButton() }
         </ul>
       </div>
     );

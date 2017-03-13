@@ -72,7 +72,7 @@ export default class MyClassesPage extends Component {
         this.setState({ allQuizzes: quizzesResponse.data });
       });
 
-      const newSideBarContent = { classes: response.data.reverse() };
+      const newSideBarContent = { classes: response.data.filter(obj => obj.role === 'admin').reverse() };
       const cookieClassId = cookie.load('current-class-id');
       const cookieClassTitle = cookie.load('current-class-title');
 
@@ -102,49 +102,38 @@ export default class MyClassesPage extends Component {
   }
 
   requestStudentData() {
-    // axios({
-    //   url: `${API_URL}/users/mine/groups_in`,
-    //   headers: this.props.userToken,
-    // })
-    // .then((response) => {
-    //   console.log(response);
+    axios({
+      url: `${API_URL}/users/mine/groups`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      const newSideBarContent = { classes: response.data.filter(obj => obj.role === 'student').reverse() };
+      const cookieClassId = cookie.load('current-class-id');
+      const cookieClassTitle = cookie.load('current-class-title');
 
-      // const newSideBarContent = { classes: response.data.reverse() };
+      if (cookieClassId != null && cookieClassTitle != null) {
+        const classId = cookie.load('current-class-id');
+        const classTitle = cookie.load('current-class-title');
+        this.getClassContent(classId);
 
-    const newSideBarContent = {
-      classes: [
-        { id: 27, name: 'Math Class' },
-        { id: 29, name: 'Politics Class' },
-        { id: 31, name: 'Law Class' },
-      ],
-    };
-    const cookieClassId = cookie.load('current-class-id');
-    const cookieClassTitle = cookie.load('current-class-title');
-
-    if (cookieClassId != null && cookieClassTitle != null) {
-      const classId = cookie.load('current-class-id');
-      const classTitle = cookie.load('current-class-title');
-      this.getClassContent(classId);
-
-      setTimeout(() => {
-        this.setState({
-          currentClassId: classId,
-          currentClassTitle: classTitle,
-          sideBarContent: newSideBarContent,
-          loadingSideBar: false,
-        });
-      }, 1200);
-    } else {
-      setTimeout(() => {
-        this.setState({
-          panelType: 'my_classes_default_panel',
-          sideBarContent: newSideBarContent,
-          loadingSideBar: false,
-        });
-      }, 1200);
-    }
-
-    // });
+        setTimeout(() => {
+          this.setState({
+            currentClassId: classId,
+            currentClassTitle: classTitle,
+            sideBarContent: newSideBarContent,
+            loadingSideBar: false,
+          });
+        }, 1200);
+      } else {
+        setTimeout(() => {
+          this.setState({
+            panelType: 'my_classes_default_panel',
+            sideBarContent: newSideBarContent,
+            loadingSideBar: false,
+          });
+        }, 1200);
+      }
+    });
   }
 
   reloadBar() {
