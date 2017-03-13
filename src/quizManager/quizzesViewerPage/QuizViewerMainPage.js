@@ -29,12 +29,14 @@ export default class QuizViewerMainPage extends Component {
       getResponse: '',
       data: {},
       session: {},
+      savedSession: true,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
     this.saveSession = this.saveSession.bind(this);
   }
   componentWillMount() {
+//    console.log("mount");
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}`,
       headers: this.props.userToken,
@@ -44,10 +46,12 @@ export default class QuizViewerMainPage extends Component {
       this.setState({
         loadingQuiz: false,
         quizInfo: response.data.quiz,
+        session: response.data.quiz_session,
       });
     }, 510));
   }
   componentWillReceiveProps(nextProps) {
+  //  console.log("HOLA");
     if (this.props.quizID !== nextProps.quizID) {
       this.setState({ loadingQuiz: true });
       axios({
@@ -58,6 +62,7 @@ export default class QuizViewerMainPage extends Component {
         this.setState({
           loadingQuiz: false,
           quizInfo: response.data.quiz,
+          session: response.data.quiz_session,
         });
       }, 510));
     }
@@ -67,7 +72,8 @@ export default class QuizViewerMainPage extends Component {
     this.setState({ reviewState: newState });
   }
   saveSession() {
-    this.setState({ loadingQuiz: true });
+  //  this.setState({ loadingQuiz: true });
+    this.setState({ savedSession: true });
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}/save`,
       headers: this.props.userToken,
@@ -75,7 +81,6 @@ export default class QuizViewerMainPage extends Component {
       data: this.state.answers,
     })
     .then(() => setTimeout(() => {
-//      console.log(response);
       this.setState({
         loadingQuiz: false,
       });
@@ -103,6 +108,7 @@ export default class QuizViewerMainPage extends Component {
   }
   collectAnswers(id, answers, type, index) {
 //    console.log(index);
+    this.setState({ savedSession: false });
     const tempAnswers = this.state.answers;
     const tempQuestions = this.state.answers.questions.slice();
     let newAnswer = {};
@@ -131,10 +137,24 @@ export default class QuizViewerMainPage extends Component {
           <Button className="submitButton" onClick={this.isResultsMode}>SUBMIT</Button>
         </div>);
     }
-    if (!this.state.reviewState && !this.state.resultsState) {
+    if (this.state.savedSession && !this.state.reviewState && !this.state.resultsState) {
+      const date = new Date();
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.saveSession}> SAVE</Button>
+          <h5>
+          Saved on: {
+            date.toString()
+          }
+          </h5>
+          <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
+        </div>);
+    }
+    if (!this.state.reviewState && !this.state.resultsState && !this.state.savedSession) {
+      return (
+        <div className="submitPanel">
+          <Button className="submitButton" onClick={this.saveSession}>
+            SAVE
+          </Button>
           <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
         </div>);
     } if (this.state.resultsState) {
@@ -147,6 +167,11 @@ export default class QuizViewerMainPage extends Component {
   renderQuestions(question, index) {
 //    console.log(this.state.data[question.id]);
 //    console.log(this.state.answers);
+  // console.log(this.state.session);
+    let sessionAns = null;
+    if (this.state.session.metadata !== null && this.state.session.metadata[question.id] !== null) {
+      sessionAns = this.state.session.metadata[question.id];
+    }
     if (question.type === 'multiple_choice') {
       return (
         <MultipleChoiceQuiz
@@ -155,6 +180,7 @@ export default class QuizViewerMainPage extends Component {
           resultsState={this.state.resultsState}
           question={question}
           index={index}
+          sessionAnswers={sessionAns}
           correctAnswer={this.state.data[question.id]}
           callbackParent={(questionId, answers) =>
           this.collectAnswers(questionId, answers, question.type, index)}

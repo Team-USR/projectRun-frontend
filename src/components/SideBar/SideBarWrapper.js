@@ -10,6 +10,7 @@ export default class SideBarWrapper extends Component {
       if (this.props.userType === 'student') {
         sideBarContent = (
           <SideBarQuizzes
+            key={'stud'}
             userType={this.props.userType}
             onQuizClick={id =>
             this.props.onSideBarItemClick(id, 'viewer')}
@@ -20,6 +21,7 @@ export default class SideBarWrapper extends Component {
       if (this.props.userType === 'teacher') {
         sideBarContent = (
           <SideBarQuizzes
+            key={'teach'}
             userType={this.props.userType}
             onQuizClick={id =>
             this.props.onSideBarItemClick(id, 'reviewer')}

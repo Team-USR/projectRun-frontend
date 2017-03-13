@@ -25,6 +25,7 @@ class MultipleChoiceQuiz extends Component {
         inResultsState={resultsState}
         correctAnswer={this.props.correctAnswer}
         creatorAnswers={this.props.creatorAnswers}
+        sessionAnswers={this.props.sessionAnswers}
         myAnswers={this.state.answers}
         callbackParent={newState => this.onChildChanged(newState, index)}
       />
@@ -59,6 +60,7 @@ MultipleChoiceQuiz.propTypes = {
     correct_answers: PropTypes.arrayOf(PropTypes.number),
   }),
   creatorAnswers: PropTypes.arrayOf(PropTypes.shape({})),
+  sessionAnswers: PropTypes.shape({}),
 };
 
 MultipleChoiceQuiz.defaultProps = {
@@ -67,6 +69,7 @@ MultipleChoiceQuiz.defaultProps = {
     correct_answers: [],
   },
   creatorAnswers: [],
+  sessionAnswers: {},
 };
 
 export default MultipleChoiceQuiz;
