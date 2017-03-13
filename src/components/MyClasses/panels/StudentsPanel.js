@@ -175,6 +175,29 @@ export default class StudentsPanel extends Component {
   render() {
     return (
       <div className="studentsPanelWrapper">
+        <Col md={12}>
+          <h3>Manage enrolled Students</h3>
+        </Col>
+        <Col md={12} className="studentsList">
+          <Col md={6}>
+            <ul>
+              { this.renderEnrolledStudents() }
+            </ul>
+          </Col>
+          <Col md={6}>
+            <ul>
+              { this.renderUnenrolledStudents() }
+            </ul>
+          </Col>
+        </Col>
+        <Col md={12}>
+          <Button
+            onClick={() =>
+              this.props.handleSaveEnrolledStudents(this.state.enrolledStudents)}
+          > Save </Button>
+          <hr />
+        </Col>
+
         <Col md={12} >
           <div className="form_container">
             <div className="form_section">
@@ -204,29 +227,7 @@ export default class StudentsPanel extends Component {
             </div>
           </div>
         </Col>
-        <Col md={12}>
-          <h3>Manage enrolled Students</h3>
-          <hr />
-        </Col>
-        <Col md={12} className="studentsList">
-          <Col md={6}>
-            <ul>
-              { this.renderEnrolledStudents() }
-            </ul>
-          </Col>
-          <Col md={6}>
-            <ul>
-              { this.renderUnenrolledStudents() }
-            </ul>
-          </Col>
-        </Col>
-        <Col md={12}>
-          <hr />
-          <Button
-            onClick={() =>
-              this.props.handleSaveEnrolledStudents(this.state.enrolledStudents)}
-          > Save </Button>
-        </Col>
+
       </div>
     );
   }

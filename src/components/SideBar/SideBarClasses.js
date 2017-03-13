@@ -3,13 +3,22 @@ import { Nav, NavItem, Button } from 'react-bootstrap';
 
 export default function SideBarClasses(props) {
   const content = props.content;
-  return (
-    <Nav>
+  let createClassButton = (null);
+
+  if (props.userType === 'teacher') {
+    createClassButton =
+    (
       <NavItem>
         <Button className="createClassBtn" onClick={() => props.onCreateClassClick()}>
           Create Class
         </Button>
       </NavItem>
+    );
+  }
+
+  return (
+    <Nav>
+      { createClassButton }
       {
         content.map((obj, index) => {
           if (index < 8) {
@@ -30,6 +39,11 @@ export default function SideBarClasses(props) {
 }
 
 SideBarClasses.propTypes = {
-  onCreateClassClick: PropTypes.func.isRequired,
+  userType: PropTypes.string.isRequired,
+  onCreateClassClick: PropTypes.func,
   content: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+};
+
+SideBarClasses.defaultProps = {
+  onCreateClassClick: null,
 };

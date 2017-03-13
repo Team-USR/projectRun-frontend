@@ -18,17 +18,47 @@ export default class MyClassesPage extends Component {
       currentClassId: '',
       allQuizzes: [],
       allStudents: [
-        { id: 101, name: 'Gigel' },
-        { id: 102, name: 'Jlaba' },
-        { id: 103, name: 'Geon' },
-        { id: 104, name: 'Blercu' },
+        { id: 9, name: 'Geon' },
+        { id: 10, name: 'Gigel' },
+        { id: 11, name: 'Jlaba' },
+        { id: 12, name: 'Blercu' },
       ],
       sideBarContent: { classes: [] },
       content: { quizzes: [], students: [] },
+      userT: 'student',
     };
   }
 
   componentWillMount() {
+    if (this.state.userT === 'teacher') { // CHANGE TO TEACHER
+      this.requestTeacherData();
+    }
+    if (this.state.userT === 'student') {
+      this.requestStudentData();
+    }
+  }
+
+  getClassContent(currentClassId) {
+    axios({
+      url: `${API_URL}/groups/${currentClassId}/quizzes`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      const newContent = this.state.content;
+      newContent.quizzes = response.data;
+
+      axios({
+        url: `${API_URL}/groups/${currentClassId}/students`,
+        headers: this.props.userToken,
+      })
+      .then((studentsResponse) => {
+        newContent.students = studentsResponse.data;
+        this.setState({ panelType: 'show_selected_class', content: newContent });
+      });
+    });
+  }
+
+  requestTeacherData() {
     axios({
       url: `${API_URL}/users/mine/groups`,
       headers: this.props.userToken,
@@ -42,7 +72,7 @@ export default class MyClassesPage extends Component {
         this.setState({ allQuizzes: quizzesResponse.data });
       });
 
-      const newSideBarContent = { classes: response.data.reverse() };
+      const newSideBarContent = { classes: response.data.filter(obj => obj.role === 'admin').reverse() };
       const cookieClassId = cookie.load('current-class-id');
       const cookieClassTitle = cookie.load('current-class-title');
 
@@ -71,24 +101,38 @@ export default class MyClassesPage extends Component {
     });
   }
 
-  getClassContent(currentClassId) {
+  requestStudentData() {
     axios({
-      url: `${API_URL}/groups/${currentClassId}/quizzes`,
+      url: `${API_URL}/users/mine/groups`,
       headers: this.props.userToken,
     })
     .then((response) => {
-      const newContent = this.state.content;
-      newContent.quizzes = response.data;
+      const newSideBarContent = { classes: response.data.filter(obj => obj.role === 'student').reverse() };
+      const cookieClassId = cookie.load('current-class-id');
+      const cookieClassTitle = cookie.load('current-class-title');
 
-      axios({
-        url: `${API_URL}/groups/${currentClassId}/students`,
-        headers: this.props.userToken,
-      })
-      .then((studentsResponse) => {
-        // console.log(studentsResponse.data);
-        newContent.students = studentsResponse.data;
-      });
-      this.setState({ panelType: 'show_selected_class', content: newContent });
+      if (cookieClassId != null && cookieClassTitle != null) {
+        const classId = cookie.load('current-class-id');
+        const classTitle = cookie.load('current-class-title');
+        this.getClassContent(classId);
+
+        setTimeout(() => {
+          this.setState({
+            currentClassId: classId,
+            currentClassTitle: classTitle,
+            sideBarContent: newSideBarContent,
+            loadingSideBar: false,
+          });
+        }, 1200);
+      } else {
+        setTimeout(() => {
+          this.setState({
+            panelType: 'my_classes_default_panel',
+            sideBarContent: newSideBarContent,
+            loadingSideBar: false,
+          });
+        }, 1200);
+      }
     });
   }
 
@@ -180,27 +224,27 @@ export default class MyClassesPage extends Component {
 
   handleSaveEnrolledStudents(newStundentsArray) {
     this.newStundentsArray = newStundentsArray;
-    // const studentsIdArray = newStundentsArray.map(obj => obj.id);
-    // const postObject = { students: studentsIdArray };
-    // const groupId = this.state.currentClassId.toString();
+    const studentsIdArray = newStundentsArray.map(obj => obj.id);
+    const postObject = { users: studentsIdArray };
+    const groupId = this.state.currentClassId.toString();
 
-    // console.log(studentsIdArray);
-    // axios({
-    //   url: `${API_URL}/groups/${groupId}/quizzes_update`,
-    //   method: 'post',
-    //   data: postObject,
-    //   headers: this.props.userToken,
-    // })
-    // .then(() => this.setState({ panelType: 'show_selected_class' }));
+    axios({
+      url: `${API_URL}/groups/${groupId}/users_update`,
+      method: 'post',
+      data: postObject,
+      headers: this.props.userToken,
+    })
+    .then(() => this.setState({ panelType: 'show_selected_class' }));
   }
 
   renderClassesPanel() {
     const element = (
       <MyClassesPanel
-        classId={this.state.currentClassId}
-        panelType={this.state.panelType}
         userToken={this.props.userToken}
+        userType={this.state.userT}
+        classId={this.state.currentClassId}
         classTitle={this.state.currentClassTitle}
+        panelType={this.state.panelType}
         content={this.state.content}
         allQuizzes={this.state.allQuizzes}
         allStudents={this.state.allStudents}
@@ -228,6 +272,7 @@ export default class MyClassesPage extends Component {
           this.handleSideBarClassClick(currentClassId, classTitle)}
         title={'My Classes'}
         type={'SideBarClasses'}
+        userType={this.state.userT}
       />
     );
 

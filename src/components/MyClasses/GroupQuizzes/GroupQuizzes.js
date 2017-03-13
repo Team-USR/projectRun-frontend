@@ -14,20 +14,32 @@ export default class GroupQuizzes extends Component {
     );
   }
 
+  renderManageButton() {
+    if (this.props.userType === 'teacher') {
+      return <Button onClick={this.props.handleManageQuizzesFromClass}> Manage Section </Button>;
+    }
+    return (null);
+  }
+
   render() {
     return (
       <div className="groupQuizzesWrapper">
         <h1>Quizzes</h1>
         <ul>
           { this.renderQuizzes() }
+          { this.renderManageButton() }
         </ul>
-        <Button onClick={this.props.handleManageQuizzesFromClass}> Manage Section </Button>
       </div>
     );
   }
 }
 
 GroupQuizzes.propTypes = {
+  userType: PropTypes.string.isRequired,
   quizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  handleManageQuizzesFromClass: PropTypes.func.isRequired,
+  handleManageQuizzesFromClass: PropTypes.func,
+};
+
+GroupQuizzes.defaultProps = {
+  handleManageQuizzesFromClass: null,
 };
