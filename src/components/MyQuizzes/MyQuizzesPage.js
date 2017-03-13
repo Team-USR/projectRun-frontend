@@ -83,18 +83,12 @@ export default class MyQuizzesPage extends Component {
     }
   }
   reloadBar() {
-    axios({
-      url: `${API_URL}/quizzes/mine`,
-      headers: this.props.userToken,
-    })
-    .then((response) => {
-      if (!response || (response && response.status !== 200)) {
-        this.setState({ errorState: true });
-      }
-    //  console.log("My quizzes", response.data);
-      const newSideBarContent = { quizzes: response.data };
-      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
-    });
+    if (this.state.userT === 'teacher') { // CHANGE TO TEACHER
+      this.requestTeacherData();
+    }
+    if (this.state.userT === 'student') {
+      this.requestStudentData();
+    }
   }
   updateCurrentQuiz(panelT) {
   //  console.log(panelT);
@@ -161,7 +155,7 @@ export default class MyQuizzesPage extends Component {
         element = (<QuizViewerMainPage
           userToken={this.props.userToken}
           quizID={this.state.currentID} // this.state.currentID
-          handleSubmitButton={() => this.updateCurrentQuiz('viewer')}
+          handleSubmitButton={() => { this.reloadBar(); this.updateCurrentQuiz('viewer'); }}
           reloadSideBar={() => this.reloadBar()}
         />);
       }
