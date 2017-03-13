@@ -32,6 +32,7 @@ export default class QuizViewerMainPage extends Component {
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
+    this.saveSession = this.saveSession.bind(this);
   }
   componentWillMount() {
     axios({
@@ -39,6 +40,7 @@ export default class QuizViewerMainPage extends Component {
       headers: this.props.userToken,
     })
     .then(response => setTimeout(() => {
+  //    console.log(response);
       this.setState({
         loadingQuiz: false,
         quizInfo: response.data.quiz,
@@ -63,6 +65,21 @@ export default class QuizViewerMainPage extends Component {
   isReviewMode() {
     const newState = !this.state.reviewState;
     this.setState({ reviewState: newState });
+  }
+  saveSession() {
+    this.setState({ loadingQuiz: true });
+    axios({
+      url: `${API_URL}/quizzes/${this.props.quizID}/save`,
+      headers: this.props.userToken,
+      method: 'post',
+      data: this.state.answers,
+    })
+    .then(() => setTimeout(() => {
+//      console.log(response);
+      this.setState({
+        loadingQuiz: false,
+      });
+    }, 510));
   }
   isResultsMode() {
     const quizID = 127;
@@ -117,6 +134,7 @@ export default class QuizViewerMainPage extends Component {
     if (!this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
+          <Button className="submitButton" onClick={this.saveSession}> SAVE</Button>
           <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
         </div>);
     } if (this.state.resultsState) {
@@ -128,6 +146,7 @@ export default class QuizViewerMainPage extends Component {
   }
   renderQuestions(question, index) {
 //    console.log(this.state.data[question.id]);
+//    console.log(this.state.answers);
     if (question.type === 'multiple_choice') {
       return (
         <MultipleChoiceQuiz
