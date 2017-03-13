@@ -57,11 +57,13 @@ export default class MyClassesPanel extends Component {
           <div>
             { classTitle }
             <GroupQuizzes
+              userType={this.props.userType}
               quizzes={this.props.content.quizzes}
               handleManageQuizzesFromClass={() => this.props.handleManageQuizzesFromClass()}
             />
             <hr />
             <GroupStudents
+              userType={this.props.userType}
               students={this.props.content.students}
               handleManageStudentsFromClass={() => this.props.handleManageStudentsFromClass()}
             />
