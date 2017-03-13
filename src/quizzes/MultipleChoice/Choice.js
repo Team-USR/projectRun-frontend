@@ -5,27 +5,32 @@ class Choice extends Component {
     super();
     this.state = { checked: false };
   }
+  componentWillMount() {
+    if (this.props.defaultValue !== null) {
+    //  console.log("wtf",this.props.defaultValue);
+      this.setState({ checked: this.props.defaultValue });
+    }
+  }
   onStateChanged() {
+  //  console.log('changed',this.state.checked);
     const newState = !this.state.checked;
     const index = this.state.index;
     this.setState({ checked: newState });
     this.props.callbackParent(newState, this.props.id, index);
   }
   renderLabel(value, choiceText, inReview) {
-    let checkedValue = this.props.defaultValue;
-  //  console.log(checkedValue);
-    if (checkedValue === null) checkedValue = this.state.checked;
     if (inReview) {
       return (
         <input
           type="checkbox"
           value={value}
-          checked={checkedValue}
+          checked={this.state.checked}
           disabled
           onChange={() => this.onStateChanged()}
         />
       );
     }
+//    console.log(this.state.checked);
     return (
       <input
         type="checkbox"

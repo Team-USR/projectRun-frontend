@@ -17,20 +17,20 @@ export default function SideBarQuizzes(props) {
       return (null);
     });
     return (
-      <Nav>
+      <Nav key={'teacher'} >
         <NavItem key={0}>
           <Button onClick={() => props.onQuizCreatorClick()}>
           Quiz CREATOR
           </Button>
         </NavItem>
-        <NavItem>
-          <h4>Unpublished</h4>
+        <NavItem key={'unpub'}>
+          <h4>Unpublished ({unpublishedContent.length})</h4>
         </NavItem>
         {
         unpublishedContent.map((item, index) => {
           if (index < 5) {
             return (
-              <NavItem key={item.id}>
+              <NavItem key={`unpublished${index + 1}`}>
                 <Button onClick={() => props.onQuizClick(item.id)}>
                   {item.title}
                 </Button>
@@ -41,14 +41,14 @@ export default function SideBarQuizzes(props) {
         },
         )
       }
-        <NavItem>
-          <h4>Published</h4>
+        <NavItem key={'publh'}>
+          <h4>Published ({publishedContent.length})</h4>
         </NavItem>
         {
         publishedContent.map((item, index) => {
           if (index < 5) {
             return (
-              <NavItem key={item.id}>
+              <NavItem key={`published${index + 1}`}>
                 <Button onClick={() => props.onQuizClick(item.id)}>
                   {item.title}
                 </Button>
@@ -84,15 +84,15 @@ export default function SideBarQuizzes(props) {
       return (null);
     });
     return (
-      <Nav>
-        <NavItem key={0}>
-          <h4>Not started</h4>
+      <Nav key={'student'}>
+        <NavItem key={'notstd'}>
+          <h4>Not started ({notStartedContent.length})</h4>
         </NavItem>
         {
             notStartedContent.map((item, index) => {
               if (index < 5) {
                 return (
-                  <NavItem key={item.id}>
+                  <NavItem key={`notstarted${index + 1}`}>
                     <Button onClick={() => props.onQuizClick(item.id)}>
                       {item.title}
                     </Button>
@@ -103,14 +103,14 @@ export default function SideBarQuizzes(props) {
             },
         )
       }
-        <NavItem >
-          <h4>In progress</h4>
+        <NavItem key={'prg'}>
+          <h4>In progress ({inprogressContent.length})</h4>
         </NavItem>
         {
           inprogressContent.map((item, index) => {
             if (index < 5) {
               return (
-                <NavItem key={item.id}>
+                <NavItem key={`inprogrs${index + 1}`}>
                   <Button onClick={() => props.onQuizClick(item.id)}>
                     {item.title}
                   </Button>
@@ -121,14 +121,14 @@ export default function SideBarQuizzes(props) {
           },
         )
       }
-        <NavItem>
-          <h4>Submitted</h4>
+        <NavItem key={'subt'}>
+          <h4>Submitted ({submittedContent.length})</h4>
         </NavItem>
         {
             submittedContent.map((item, index) => {
               if (index < 5) {
                 return (
-                  <NavItem key={item.id}>
+                  <NavItem key={`submitted${index + 1}`}>
                     <Button onClick={() => props.onQuizClick(item.id)}>
                       {item.title}
                     </Button>
