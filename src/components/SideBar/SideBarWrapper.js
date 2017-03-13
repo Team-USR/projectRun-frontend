@@ -16,8 +16,7 @@ export default class SideBarWrapper extends Component {
             content={this.props.sideBarContent.session}
           />
         );
-      } else
-      if (this.props.userType === 'teacher') {
+      } else if (this.props.userType === 'teacher') {
         sideBarContent = (
           <SideBarQuizzes
             userType={this.props.userType}
@@ -31,14 +30,26 @@ export default class SideBarWrapper extends Component {
     }
 
     if (this.props.type === 'SideBarClasses') {
-      sideBarContent = (
-        <SideBarClasses
-          onCreateClassClick={() => this.props.onCreateClassClick()}
-          onClassClick={(currentClassId, classTitle) =>
-            this.props.onSideBarItemClick(currentClassId, classTitle)}
-          content={this.props.sideBarContent.classes}
-        />
-      );
+      if (this.props.userType === 'teacher') {
+        sideBarContent = (
+          <SideBarClasses
+            userType={this.props.userType}
+            onCreateClassClick={() => this.props.onCreateClassClick()}
+            onClassClick={(currentClassId, classTitle) =>
+              this.props.onSideBarItemClick(currentClassId, classTitle)}
+            content={this.props.sideBarContent.classes}
+          />
+        );
+      } else if (this.props.userType === 'student') {
+        sideBarContent = (
+          <SideBarClasses
+            userType={this.props.userType}
+            onClassClick={(currentClassId, classTitle) =>
+              this.props.onSideBarItemClick(currentClassId, classTitle)}
+            content={this.props.sideBarContent.classes}
+          />
+        );
+      }
     }
 
     return sideBarContent;
