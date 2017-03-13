@@ -14,17 +14,18 @@ export default class StudentManager extends Component {
           <span className="glyphicon glyphicon-plus" />
         </Button>
       );
+    } else if (this.props.type === 'remove') {
+      return (
+        <Button
+          className="classStudentBtn"
+          onClick={() => this.props.removeStudent(this.props.index)}
+        >
+          {this.props.name}
+          <span className="glyphicon glyphicon-remove" />
+        </Button>
+      );
     }
-
-    return (
-      <Button
-        className="classStudentBtn"
-        onClick={() => this.props.removeStudent(this.props.index)}
-      >
-        {this.props.name}
-        <span className="glyphicon glyphicon-remove" />
-      </Button>
-    );
+    return (null);
   }
 
   render() {

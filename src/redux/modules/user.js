@@ -78,7 +78,6 @@ export function loginUser(user) {
       );
 
       if (res.status.toString() === '200') {
-        console.log(res.headers);
         await cookie.save('access-token', res.headers['access-token']);
         await cookie.save('client', res.headers.client);
         await cookie.save('token-type', res.headers['token-type']);
@@ -142,7 +141,14 @@ export function signupUser(user) {
 }
 
 export async function logoutUser() {
-  cookie.remove('token');
+  cookie.remove('access-token');
+  cookie.remove('client');
+  cookie.remove('token-type');
+  cookie.remove('uid');
+  cookie.remove('current-class-id');
+  cookie.remove('current-class-title');
+  cookie.remove('current-session-type');
+  cookie.remove('current-session-id');
   return {
     type: USER_LOGOUT,
   };

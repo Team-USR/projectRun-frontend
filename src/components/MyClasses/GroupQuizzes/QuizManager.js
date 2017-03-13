@@ -14,17 +14,18 @@ export default class QuizManager extends Component {
           <span className="glyphicon glyphicon-plus" />
         </Button>
       );
+    } else if (this.props.type === 'remove') {
+      return (
+        <Button
+          className="classQuizBtn"
+          onClick={() => this.props.removeQuiz(this.props.index)}
+        >
+          {this.props.title}
+          <span className="glyphicon glyphicon-remove" />
+        </Button>
+      );
     }
-
-    return (
-      <Button
-        className="classQuizBtn"
-        onClick={() => this.props.removeQuiz(this.props.index)}
-      >
-        {this.props.title}
-        <span className="glyphicon glyphicon-remove" />
-      </Button>
-    );
+    return (null);
   }
 
   render() {

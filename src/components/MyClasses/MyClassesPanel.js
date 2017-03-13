@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { Button } from 'react-bootstrap';
 import { GroupQuizzes } from './GroupQuizzes';
 import { GroupStudents } from './GroupStudents';
+import { STUDENT, TEACHER } from '../../constants';
 import {
   StudentsPanel,
   QuizzesPanel,
@@ -24,7 +25,7 @@ export default class MyClassesPanel extends Component {
         <hr />
       </div>
     );
-    if (this.props.userType === 'teacher') {
+    if (this.props.userType === TEACHER) {
       if (this.props.panelType === 'manage_quizzes_panel') {
         element = (
           <div className="manageQuizzesWrapper">
@@ -84,7 +85,7 @@ export default class MyClassesPanel extends Component {
           />
         );
       }
-    } else if (this.props.userType === 'student') {
+    } else if (this.props.userType === STUDENT) {
       if (this.props.panelType === 'show_selected_class') {
         element = (
           <div>

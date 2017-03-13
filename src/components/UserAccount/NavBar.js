@@ -27,7 +27,9 @@ export default function NavBar(props) {
             </NavItem>
           </LinkContainer>
           <NavDropdown title="My Account" id="basic-nav-dropdown">
-            <MenuItem >Settings</MenuItem>
+            <LinkContainer to="/settings">
+              <MenuItem>Settings</MenuItem>
+            </LinkContainer>
             <MenuItem divider />
             <MenuItem >Help</MenuItem>
           </NavDropdown>
