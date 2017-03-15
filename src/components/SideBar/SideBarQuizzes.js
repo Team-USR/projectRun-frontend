@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { Nav, NavItem, Button } from 'react-bootstrap';
+import { STUDENT, TEACHER } from '../../constants';
 
 export default function SideBarQuizzes(props) {
-  if (props.userType === 'teacher') {
+  if (props.userType === TEACHER) {
     const content = props.content;
     const publishedContent = content.filter((item) => {
       if (item.published) {
@@ -62,9 +63,8 @@ export default function SideBarQuizzes(props) {
       </Nav>
     );
   }
-  if (props.userType === 'student') {
+  if (props.userType === STUDENT) {
     const content = props.content;
-//    console.log(content);
     const notStartedContent = content.filter((item) => {
       if (item.status === 'not_started') {
         return (item);
@@ -146,12 +146,16 @@ export default function SideBarQuizzes(props) {
 
 SideBarQuizzes.propTypes = {
   content: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-  })).isRequired,
+    id: PropTypes.number,
+    title: PropTypes.string,
+  })),
   onQuizCreatorClick: PropTypes.func,
   userType: PropTypes.string.isRequired,
 };
 SideBarQuizzes.defaultProps = {
   onQuizCreatorClick: null,
+  content: PropTypes.arrayOf(PropTypes.shape({
+    id: 0,
+    title: '',
+  })),
 };

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { QuizCreatorMainPage, QuizCreatorReviewer, QuizEditorMainPage } from './../../quizManager/quizzesCreatorPage';
 import { QuizViewerMainPage } from './../../quizManager/quizzesViewerPage';
 import { SideBarWrapper } from '../SideBar/index';
-import { API_URL } from '../../constants';
+import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { BrandSpinner } from '../utils';
 
 export default class MyQuizzesPage extends Component {
@@ -16,15 +16,19 @@ export default class MyQuizzesPage extends Component {
       sideBarContent: {},
       loadingSideBar: true,
       contentLoading: true,
-      userT: 'student',
+      userT: STUDENT,
     };
   }
   componentWillMount() {
-    if (this.state.userT === 'teacher') { // CHANGE TO TEACHER
-      this.requestTeacherData();
-    }
-    if (this.state.userT === 'student') {
-      this.requestStudentData();
+    const settingUserType = cookie.load('userType');
+    if (settingUserType) {
+      this.setState({ userT: settingUserType });
+      if (settingUserType === TEACHER) {
+        this.requestTeacherData();
+      }
+      if (settingUserType === STUDENT) {
+        this.requestStudentData();
+      }
     }
   }
   requestStudentData() {
@@ -64,9 +68,7 @@ export default class MyQuizzesPage extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
-    //  console.log("My quizzes", response.data);
       const newSideBarContent = { quizzes: response.data.reverse() };
-    //  this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
       setTimeout(() => {
         this.setState({
           sideBarContent: newSideBarContent,
@@ -83,11 +85,15 @@ export default class MyQuizzesPage extends Component {
     }
   }
   reloadBar() {
-    if (this.state.userT === 'teacher') { // CHANGE TO TEACHER
-      this.requestTeacherData();
-    }
-    if (this.state.userT === 'student') {
-      this.requestStudentData();
+    const settingUserType = cookie.load('userType');
+    if (settingUserType) {
+      this.setState({ userT: settingUserType });
+      if (settingUserType === TEACHER) { // CHANGE TO TEACHER
+        this.requestTeacherData();
+      }
+      if (settingUserType === STUDENT) {
+        this.requestStudentData();
+      }
     }
   }
   updateCurrentQuiz(panelT) {
@@ -125,7 +131,7 @@ export default class MyQuizzesPage extends Component {
   renderQuizContent() {
 //    console.log("rendering",this.state.currentID);
     let element = <h1><b> My Quizzes</b></h1>;
-    if (this.state.userT === 'teacher') {
+    if (this.state.userT === TEACHER) {
       if (this.state.panelType === 'reviewer') {
         element = (<QuizCreatorReviewer
           quizID={this.state.currentID}
@@ -150,7 +156,7 @@ export default class MyQuizzesPage extends Component {
         />);
       }
     }
-    if (this.state.userT === 'student') {
+    if (this.state.userT === STUDENT) {
       if (this.state.panelType === 'viewer') {
         element = (<QuizViewerMainPage
           userToken={this.props.userToken}
