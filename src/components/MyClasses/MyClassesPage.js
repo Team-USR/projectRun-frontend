@@ -1,9 +1,10 @@
 import React, { PropTypes, Component } from 'react';
 import cookie from 'react-cookie';
 import axios from 'axios';
-import { SideBarWrapper } from '../SideBar/index';
+import { API_URL, STUDENT, TEACHER } from '../../constants';
+import { SideBarWrapper } from '../SideBar';
 import { MyClassesPanel } from './index';
-import { API_URL } from '../../constants';
+import { BrandSpinner } from '../utils';
 
 export default class MyClassesPage extends Component {
 
@@ -12,148 +13,170 @@ export default class MyClassesPage extends Component {
 
     this.state = {
       panelType: 'my_classes_default_panel',
-      allQuizzes: [
-        { quizId: 1, quizTitle: 'Math Quiz' },
-        { quizId: 2, quizTitle: 'Philosophy Quiz' },
-        { quizId: 3, quizTitle: 'Advanced Quiz' },
-        { quizId: 4, quizTitle: 'Physics Quiz' },
-        { quizId: 5, quizTitle: 'Anatomy Quiz' },
-      ],
+      loadingSideBar: true,
+      currentClassTitle: '',
+      currentClassId: '',
+      allQuizzes: [],
       allStudents: [
-        { studentId: 101, studentName: 'Gigel' },
-        { studentId: 102, studentName: 'Jlaba' },
-        { studentId: 103, studentName: 'Geon' },
-        { studentId: 104, studentName: 'Blercu' },
+        { id: 9, name: 'Geon' },
+        { id: 10, name: 'Gigel' },
+        { id: 11, name: 'Jlaba' },
+        { id: 12, name: 'Blercu' },
       ],
-      sideBarContent: {},
-      content: {},
-      901: {
-        classTitle: 'Class IX A ',
-        quizzes: [
-          { quizId: 1, quizTitle: 'Math Quiz' },
-          { quizId: 2, quizTitle: 'Philosophy Quiz' },
-          { quizId: 4, quizTitle: 'Physics Quiz' },
-        ],
-        students: [
-          { studentId: 101, studentName: 'Gigel' },
-          { studentId: 102, studentName: 'Jlaba' },
-          { studentId: 103, studentName: 'Geon' },
-          { studentId: 104, studentName: 'Blercu' },
-        ],
-      },
-      902: {
-        classTitle: 'Class IX B ',
-        quizzes: [
-          { quizId: 1, quizTitle: 'Math Quiz' },
-          { quizId: 3, quizTitle: 'Advanced Quiz' },
-        ],
-        students: [
-          { studentId: 101, studentName: 'Gigel' },
-          { studentId: 103, studentName: 'Geon' },
-          { studentId: 104, studentName: 'Blercu' },
-        ],
-      },
-      903: {
-        classTitle: 'Class X D ',
-        quizzes: [
-          { quizId: 1, quizTitle: 'Math Quiz' },
-          { quizId: 2, quizTitle: 'Philosophy Quiz' },
-          { quizId: 3, quizTitle: 'Advanced Quiz' },
-          { quizId: 4, quizTitle: 'Physics Quiz' },
-          { quizId: 5, quizTitle: 'Anatomy Quiz' },
-        ],
-        students: [
-          { studentId: 101, studentName: 'Gigel' },
-          { studentId: 104, studentName: 'Blercu' },
-        ],
-      },
-      904: {
-        classTitle: 'Class XI A ',
-        quizzes: [
-          { quizId: 1, quizTitle: 'Math Quiz' },
-          { quizId: 3, quizTitle: 'Advanced Quiz' },
-        ],
-        students: [
-          { studentId: 103, studentName: 'Geon' },
-          { studentId: 101, studentName: 'Gigel' },
-        ],
-      },
-      905: {
-        classTitle: 'Class XII A ',
-        quizzes: [
-          { quizId: 1, quizTitle: 'Math Quiz' },
-          { quizId: 5, quizTitle: 'Anatomy Quiz' },
-        ],
-        students: [
-          { studentId: 104, studentName: 'Blercu' },
-        ],
-      },
-      test: {
-        classTitle: 'Class Test',
-        quizzes: [
-          { quizId: 1, quizTitle: 'Math Quiz' },
-          { quizId: 5, quizTitle: 'Anatomy Quiz' },
-        ],
-        students: [
-          { studentId: 104, studentName: 'Geon' },
-        ],
-      },
+      sideBarContent: { classes: [] },
+      content: { quizzes: [], students: [] },
+      userT: STUDENT,
     };
   }
 
   componentWillMount() {
-    if (cookie.load('current-class-id') != null) {
-      const classId = cookie.load('current-class-id');
-      const newContent = this.getClassContent(classId);
-      if (newContent) {
-        this.setState({
-          panelType: 'show_selected_class',
-          content: newContent,
-        });
-      } else {
-        this.setState({ panelType: 'my_classes_default_panel' });
+    const settingUserType = cookie.load('userType');
+    if (settingUserType) {
+      if (settingUserType === TEACHER) {
+        this.requestTeacherData();
       }
+      if (settingUserType === STUDENT) {
+        this.requestStudentData();
+      }
+      this.setState({ userT: settingUserType });
+    } else {
+      this.requestStudentData();
     }
-    const getSideBar = {
-      classes: [
-        { className: 'Class IX A', classId: '901' },
-        { className: 'Class IX B', classId: '902' },
-        { className: 'Class X D', classId: '903' },
-        { className: 'Class XI A', classId: '904' },
-        { className: 'Class XII A', classId: '905' },
-      ],
-    };
-    this.setState({ sideBarContent: getSideBar });
   }
 
+  getClassContent(currentClassId) {
+    axios({
+      url: `${API_URL}/groups/${currentClassId}/quizzes`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      const newContent = this.state.content;
+      newContent.quizzes = response.data;
 
-  getClassContent(currentClass) {
-    // TODO: Make GET Request for a specific class;
-    return this.state[currentClass];
+      if (this.state.userT === TEACHER) {
+        axios({
+          url: `${API_URL}/groups/${currentClassId}/students`,
+          headers: this.props.userToken,
+        })
+        .then((studentsResponse) => {
+          newContent.students = studentsResponse.data;
+          this.setState({ panelType: 'show_selected_class', content: newContent });
+        });
+      } else if (this.state.userT === STUDENT) {
+        this.setState({ panelType: 'show_selected_class', content: newContent });
+      }
+    });
   }
 
-  saveCurrentQuiz(id) {
+  requestTeacherData() {
+    axios({
+      url: `${API_URL}/users/mine/groups`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      axios({
+        url: `${API_URL}/quizzes/mine`,
+        headers: this.props.userToken,
+      })
+      .then((quizzesResponse) => {
+        this.setState({ allQuizzes: quizzesResponse.data });
+      });
+
+      const newSideBarContent = { classes: response.data.filter(obj => obj.role === 'admin').reverse() };
+      const cookieClassId = cookie.load('current-class-id');
+      const cookieClassTitle = cookie.load('current-class-title');
+
+      if (cookieClassId != null && cookieClassTitle != null) {
+        this.getClassContent(cookieClassId);
+
+        setTimeout(() => {
+          this.setState({
+            currentClassId: cookieClassId,
+            currentClassTitle: cookieClassTitle,
+            sideBarContent: newSideBarContent,
+            loadingSideBar: false,
+          });
+        }, 1200);
+      } else {
+        setTimeout(() => {
+          this.setState({
+            panelType: 'my_classes_default_panel',
+            sideBarContent: newSideBarContent,
+            loadingSideBar: false,
+          });
+        }, 1200);
+      }
+    });
+  }
+
+  requestStudentData() {
+    axios({
+      url: `${API_URL}/users/mine/groups`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      const newSideBarContent = { classes: response.data.filter(obj => obj.role === 'student').reverse() };
+      const cookieClassId = cookie.load('current-class-id');
+      const cookieClassTitle = cookie.load('current-class-title');
+
+      if (cookieClassId != null && cookieClassTitle != null) {
+        const classId = cookie.load('current-class-id');
+        const classTitle = cookie.load('current-class-title');
+        this.getClassContent(classId);
+
+        setTimeout(() => {
+          this.setState({
+            currentClassId: classId,
+            currentClassTitle: classTitle,
+            sideBarContent: newSideBarContent,
+            loadingSideBar: false,
+          });
+        }, 1200);
+      } else {
+        setTimeout(() => {
+          this.setState({
+            panelType: 'my_classes_default_panel',
+            sideBarContent: newSideBarContent,
+            loadingSideBar: false,
+          });
+        }, 1200);
+      }
+    });
+  }
+
+  reloadBar() {
+    axios({
+      url: `${API_URL}/users/mine/groups`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      let responseClasses = response.data.reverse();
+      if (this.state.userT === TEACHER) {
+        responseClasses = responseClasses.filter(obj => obj.role === 'admin');
+      } else if (this.state.userT === STUDENT) {
+        responseClasses = responseClasses.filter(obj => obj.role === 'student');
+      }
+
+      const newSideBarContent = { classes: responseClasses };
+      setTimeout(() => {
+        this.setState({
+          sideBarContent: newSideBarContent,
+          panelType: 'my_classes_default_panel',
+        });
+      }, 1200);
+    });
+  }
+
+  saveCurrentClass(id, title) {
     this.id = id;
-    cookie.save('current-class-id', id.toString());
+    cookie.save('current-class-id', id);
+    cookie.save('current-class-title', title);
   }
 
   handleSideBarTitleClick() {
     cookie.remove('current-class-id');
+    cookie.remove('current-class-title');
     this.setState({ panelType: 'my_classes_default_panel' });
-  }
-
-  handleRemoveStudentClick(id) {
-    this.id = id;
-    // const studentsCopy = this.state.studentsArray;
-    // const tempPos = studentsCopy.map(item => item.userId).indexOf(id);
-    // if (tempPos !== -1) {
-    //   studentsCopy.splice(tempPos, 1);
-    // }
-    // this.setState({ studentsArray: studentsCopy });
-  }
-
-  handleAddStudentClick(id) {
-    this.id = id;
   }
 
   handleManageStudentsFromClass() {
@@ -164,16 +187,15 @@ export default class MyClassesPage extends Component {
     this.setState({ panelType: 'manage_quizzes_panel' });
   }
 
-  handleSideBarClassClick(currentClassId) {
-    const newContent = this.getClassContent(currentClassId);
-    this.saveCurrentQuiz(currentClassId);
-    this.setState({
-      panelType: 'show_selected_class',
-      content: newContent });
+  handleSideBarClassClick(classId, classTitle) {
+    this.getClassContent(classId);
+    this.saveCurrentClass(classId, classTitle);
+    this.setState({ currentClassId: classId, currentClassTitle: classTitle });
   }
 
   handleCreateClassClick() {
     cookie.remove('current-class-id');
+    cookie.remove('current-class-title');
     this.setState({ panelType: 'create_new_class' });
   }
 
@@ -185,27 +207,75 @@ export default class MyClassesPage extends Component {
       data: newClassObj,
       headers: this.props.userToken,
     })
-    .then((response) => {
-      const data = response.data;
-      const newSideBarContent = this.state.sideBarContent;
-      newSideBarContent.classes.push({ className: newClassTitle, classId: data.id });
-      this.setState({ sideBarContent: newSideBarContent });
+    .then(() => {
+      this.reloadBar();
     });
+  }
+
+  handleDeleteClass(classId) {
+    axios({
+      url: `${API_URL}/groups/${classId}`,
+      method: 'delete',
+      headers: this.props.userToken,
+    })
+    .then(() => {
+      this.reloadBar();
+      cookie.remove('current-class-id');
+      cookie.remove('current-class-title');
+      this.setState({ panelType: 'my_classes_default_panel' });
+    });
+  }
+
+  handleSaveAssignedQuizzes(newQuizzesArray) {
+    this.newQuizzesArray = [];
+    const quizzesIdArray = newQuizzesArray.map(obj => obj.id);
+    const postObject = { quizzes: quizzesIdArray };
+    const groupId = this.state.currentClassId.toString();
+    axios({
+      url: `${API_URL}/groups/${groupId}/quizzes_update`,
+      method: 'post',
+      data: postObject,
+      headers: this.props.userToken,
+    })
+    .then(() => this.setState({ panelType: 'show_selected_class' }));
+  }
+
+  handleSaveEnrolledStudents(newStundentsArray) {
+    this.newStundentsArray = newStundentsArray;
+    const studentsIdArray = newStundentsArray.map(obj => obj.id);
+    const postObject = { users: studentsIdArray };
+    const groupId = this.state.currentClassId.toString();
+
+    axios({
+      url: `${API_URL}/groups/${groupId}/users_update`,
+      method: 'post',
+      data: postObject,
+      headers: this.props.userToken,
+    })
+    .then(() => this.setState({ panelType: 'show_selected_class' }));
   }
 
   renderClassesPanel() {
     const element = (
       <MyClassesPanel
-        panelType={this.state.panelType}
         userToken={this.props.userToken}
+        userType={this.state.userT}
+        classId={this.state.currentClassId}
+        classTitle={this.state.currentClassTitle}
+        panelType={this.state.panelType}
         content={this.state.content}
         allQuizzes={this.state.allQuizzes}
         allStudents={this.state.allStudents}
         numberOfClasses={this.state.sideBarContent.classes.length}
-        handleSaveNewClassClick={newClassTitle => this.handleSaveNewClassClick(newClassTitle)}
-        handleRemoveStudentClick={id => this.handleRemoveStudentClick(id)}
+        handleSaveNewClassClick={newClassTitle =>
+          this.handleSaveNewClassClick(newClassTitle)}
+        handleSaveAssignedQuizzes={newQuizzesArray =>
+          this.handleSaveAssignedQuizzes(newQuizzesArray)}
+        handleSaveEnrolledStudents={newStudentsArray =>
+          this.handleSaveEnrolledStudents(newStudentsArray)}
         handleManageStudentsFromClass={() => this.handleManageStudentsFromClass()}
         handleManageQuizzesFromClass={() => this.handleManageQuizzesFromClass()}
+        handleDeleteClass={id => this.handleDeleteClass(id)}
       />);
     return element;
   }
@@ -216,10 +286,11 @@ export default class MyClassesPage extends Component {
         onSideBarTitleClick={() => this.handleSideBarTitleClick()}
         onCreateClassClick={() => this.handleCreateClassClick()}
         sideBarContent={this.state.sideBarContent}
-        onSideBarItemClick={currentClass =>
-          this.handleSideBarClassClick(currentClass)}
+        onSideBarItemClick={(currentClassId, classTitle) =>
+          this.handleSideBarClassClick(currentClassId, classTitle)}
         title={'My Classes'}
         type={'SideBarClasses'}
+        userType={this.state.userT}
       />
     );
 
@@ -227,6 +298,9 @@ export default class MyClassesPage extends Component {
   }
 
   render() {
+    if (this.state.loadingSideBar) {
+      return <BrandSpinner />;
+    }
     return (
       <div className="myClassesPageWrapper">
         { this.renderSideBar() }

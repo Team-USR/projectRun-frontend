@@ -5,6 +5,7 @@ import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
+import { BrandSpinner } from '../../components/utils';
 
 
 const styles = {
@@ -43,25 +44,37 @@ export default class QuizCreatorReviewer extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
+      setTimeout(() => {
+        this.setState({
+          loadingQuiz: false,
+        });
+      }, 510);
       this.setState({
-        quizInfo: response.data, loadingQuiz: false, published: response.data.published });
+        quizInfo: response.data, published: response.data.published });
     });
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ loadingQuiz: true });
+    if (this.props.quizID !== nextProps.quizID) {
+      this.setState({ loadingQuiz: true });
 //    console.log("SDADS", nextProps.quizID);
-    axios({
-      url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
-      headers: this.props.userToken,
-    })
-    .then((response) => {
+      axios({
+        url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
+        headers: this.props.userToken,
+      })
+      .then((response) => {
   //    console.log(response);
-      if (!response || (response && response.status !== 200)) {
-        this.setState({ errorState: true });
-      }
-      this.setState({
-        quizInfo: response.data, loadingQuiz: false, published: response.data.published });
-    });
+        if (!response || (response && response.status !== 200)) {
+          this.setState({ errorState: true });
+        }
+        this.setState({
+          quizInfo: response.data, published: response.data.published });
+        setTimeout(() => {
+          this.setState({
+            loadingQuiz: false,
+          });
+        }, 510);
+      });
+    }
   }
   publishQuiz() {
     this.setState({ loadingPublishing: true });
@@ -75,8 +88,13 @@ export default class QuizCreatorReviewer extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
+      setTimeout(() => {
+        this.setState({
+          loadingPublishing: false,
+        });
+      }, 510);
       this.props.handlePublish();
-      this.setState({ published: true, loadingPublishing: false });
+      this.setState({ published: true });
     });
   }
   isReviewMode() {
@@ -86,6 +104,7 @@ export default class QuizCreatorReviewer extends Component {
   renderQuestions(question, index) {
   //  console.log(answers);
   //  console.log(type);
+//    console.log("ANSWERSATTRIBUTES", question.answers);
     const answersAttributes = question.answers;
     if (question.type === 'multiple_choice') {
       return (
@@ -138,14 +157,10 @@ export default class QuizCreatorReviewer extends Component {
       </div>);
     } else
     if (this.state.loadingQuiz) {
-      return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Loading draft...</h1>
-      </div>);
+      return (<BrandSpinner />);
     } else
     if (this.state.loadingPublishing) {
-      return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Publishing...</h1>
-      </div>);
+      return <BrandSpinner />;
     }
     if (!this.state.published) {
       return (
@@ -172,6 +187,12 @@ export default class QuizCreatorReviewer extends Component {
           <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
           {this.state.quizInfo.questions.map((question, index) =>
           this.renderQuestions(question, index))}
+          <div className="submitPanel">
+            <Button
+              className="submitButton"
+              onClick={() => this.props.deleteQuiz(this.state.quizInfo.id)}
+            >DELETE QUIZ</Button>
+          </div>
         </div>
       );
     }
@@ -196,7 +217,9 @@ QuizCreatorReviewer.propTypes = {
   handleSubmitButton: React.PropTypes.func.isRequired,
   handlePublish: React.PropTypes.func,
   quizID: React.PropTypes.string.isRequired,
+  deleteQuiz: React.PropTypes.func,
 };
 QuizCreatorReviewer.defaultProps = {
   handlePublish: null,
+  deleteQuiz: null,
 };

@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Button } from 'react-bootstrap';
+import { TEACHER } from '../../../constants';
 
 export default class GroupQuizzes extends Component {
 
@@ -8,10 +9,17 @@ export default class GroupQuizzes extends Component {
       return <h4>There are no quizzes assigned to this class!</h4>;
     }
     return this.props.quizzes.map(obj =>
-      <li key={`group_quiz_${obj.quizId}`}>
-        <span><b> {obj.quizTitle} </b></span>
+      <li key={`group_quiz_${obj.id}`}>
+        <span><b> {obj.title} </b></span>
       </li>,
     );
+  }
+
+  renderManageButton() {
+    if (this.props.userType === TEACHER) {
+      return <Button onClick={this.props.handleManageQuizzesFromClass}> Manage Section </Button>;
+    }
+    return (null);
   }
 
   render() {
@@ -20,14 +28,19 @@ export default class GroupQuizzes extends Component {
         <h1>Quizzes</h1>
         <ul>
           { this.renderQuizzes() }
+          { this.renderManageButton() }
         </ul>
-        <Button onClick={this.props.handleManageQuizzesFromClass}> Manage Section </Button>
       </div>
     );
   }
 }
 
 GroupQuizzes.propTypes = {
+  userType: PropTypes.string.isRequired,
   quizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  handleManageQuizzesFromClass: PropTypes.func.isRequired,
+  handleManageQuizzesFromClass: PropTypes.func,
+};
+
+GroupQuizzes.defaultProps = {
+  handleManageQuizzesFromClass: null,
 };

@@ -22,12 +22,12 @@ export default class QuizzesPanel extends Component {
   getAvailableQuizzes() {
     const newQuizzesObj = {};
     this.props.quizzes.map((obj) => {
-      newQuizzesObj[obj.quizId] = obj.quizTitle;
+      newQuizzesObj[obj.id] = obj.title;
       return 0;
     });
 
     return this.props.allQuizzes.filter((obj) => {
-      if (!newQuizzesObj[obj.quizId]) {
+      if (!newQuizzesObj[obj.id]) {
         return true;
       }
       return false;
@@ -64,12 +64,12 @@ export default class QuizzesPanel extends Component {
       return <h4>There are no quizzes assigned to this class!</h4>;
     }
     return this.state.selectedQuizzes.map((obj, index) =>
-      <li key={`class_selected_quiz_${obj.quizId}`}>
+      <li key={`class_selected_quiz_${obj.id}`}>
         <QuizManager
           type={'remove'}
-          quizId={obj.quizId}
+          id={obj.id}
           index={index}
-          value={obj.quizTitle}
+          title={obj.title}
           removeQuiz={id => this.removeQuiz(id)}
         />
       </li>,
@@ -81,12 +81,12 @@ export default class QuizzesPanel extends Component {
       return <h4>All your quizzes have been assigned!</h4>;
     }
     return this.state.availableQuizzes.map((obj, index) =>
-      <li key={`class_available_quiz_${obj.quizId}`}>
+      <li key={`class_available_quiz_${obj.id}`}>
         <QuizManager
           type={'add'}
-          quizId={obj.quizId}
+          id={obj.id}
           index={index}
-          value={obj.quizTitle}
+          title={obj.title}
           addQuiz={id => this.addQuiz(id)}
         />
       </li>,
@@ -114,7 +114,10 @@ export default class QuizzesPanel extends Component {
         </Col>
         <Col md={12}>
           <hr />
-          <Button>Save</Button>
+          <Button
+            onClick={() =>
+              this.props.handleSaveAssignedQuizzes(this.state.selectedQuizzes)}
+          > Save </Button>
         </Col>
       </div>
     );
@@ -124,4 +127,5 @@ export default class QuizzesPanel extends Component {
 QuizzesPanel.propTypes = {
   quizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   allQuizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  handleSaveAssignedQuizzes: PropTypes.func.isRequired,
 };
