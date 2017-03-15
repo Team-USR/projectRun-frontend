@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { MatchLeftElement, MatchRightElement } from './index';
-import '../../style/Match.css';
 
 export default class MatchQuiz extends Component {
 
@@ -117,9 +116,20 @@ export default class MatchQuiz extends Component {
     const rightElements = this.rightColumnShuffled;
     const matchQuizTitle = this.state.matchQuizTitle;
     const quizIndex = this.state.matchQuizIndex;
+    this.answerClass = '';
 
+    if (this.props.resultsState) {
+      const correctAnswer = this.props.correctAnswer;
+      if (correctAnswer && correctAnswer.correct) {
+        this.answerClass = 'correctAnswerWrapper';
+      } else {
+        this.answerClass = 'wrongAnswerWrapper';
+      }
+    }
+
+    const styleClasses = `matchQuizContainer ${this.answerClass}`;
     const matchQuiz = (
-      <div className="matchQuizContainer">
+      <div className={styleClasses}>
 
         <div className="matchQuizTitle">
           <h3> { quizIndex }. { matchQuizTitle } </h3>
@@ -159,5 +169,16 @@ MatchQuiz.propTypes = {
     type: PropTypes.string.isRequired,
   }).isRequired,
   index: PropTypes.number.isRequired,
+  correctAnswer: PropTypes.shape({
+    correct: PropTypes.bool,
+    correct_answers: PropTypes.arrayOf(PropTypes.number),
+  }),
   callbackParent: PropTypes.func.isRequired,
+};
+
+MatchQuiz.defaultProps = {
+  correctAnswer: {
+    correct: false,
+    correct_answers: [],
+  },
 };

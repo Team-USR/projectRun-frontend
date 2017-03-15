@@ -1,23 +1,44 @@
-.questionWrapper {
+$brand-green-color: #0e8c16;
+$brand-red-color: #b22121;
+
+html {
+  font: normal 16px/1.2 "Open Sans", sans-serif !important;
+  color: #646666;
+}
+
+.appContent {
+  padding-top: 51px;
+
+  @media (max-width: 767px) {
+    padding-top: 0;
+  }
+}
+
+ul {
+  list-style: none;
+}
+
+.matchQuizContainer,
+.mixQuizContainer,
+.multipleChoiceContainer {
+  text-align: center;
+  width: 40%;
+  min-height: 250px;
+  margin: 5% auto;
   padding: 30px;
   border: 3px solid #000000;
+  margin-bottom: 10px;
   box-shadow: 5px 5px 5px #888888;
-  width: 40%;
-  margin: 5% auto;
-  min-height: 250px;
 }
 
-.questionBlock {
-  text-align: center;
+.correctAnswerWrapper {
+  border-color: #0e8c16;
+  box-shadow: 5px 5px 5px #0e8c16;
 }
 
-.submitPanel{
-  text-align: center;
-  padding:30px;
-}
-
-.questionPanel{
-  text-align: center;
+.wrongAnswerWrapper {
+  border-color: #b22121;
+  box-shadow: 5px 5px 5px #b22121;
 }
 
 .submitButton {
@@ -56,7 +77,5 @@
 }
 
 @media (max-width: 900px) {
-  .questionWrapper{
-    width: 60%;
-  }
-}
+  .matchQuizContainer, .mixQuizContainer, .multipleChoiceContainer {
+    width: 60%; } }

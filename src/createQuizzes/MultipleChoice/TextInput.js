@@ -8,19 +8,22 @@ export default class TextInput extends Component {
   }
   handleChange(event) {
     this.setState({ value: event.target.value });
-    this.props.callbackParent(event.target.value);
+  //  this.props.callbackParent(event.target.value);
   }
   render() {
     return (
       <label htmlFor="textInput">
         { this.props.text }
-        <input id="textInput" type="text" value={this.props.value} onChange={this.handleChange} />
+        <input id="textInput" type="text"  onChange={this.handleChange} />
       </label>
     );
   }
 }
 TextInput.propTypes = {
-  //callbackParent: PropTypes.func.isRequired,
-//  value: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
+  value: PropTypes.string,
+};
+TextInput.defaultProps = {
+  value: '',
+  callbackParent: '',
 };

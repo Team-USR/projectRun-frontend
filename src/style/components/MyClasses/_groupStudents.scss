@@ -1,0 +1,26 @@
+.groupPanelWrapper {
+  .studentsPanelWrapper {
+    .studentsList {
+      min-height: 30vh;
+
+      .studentManagerWrapper {
+        .classStudentBtn {
+          width: 180px;
+          margin: 5px 0;
+
+          .glyphicon {
+            float: right;
+          }
+
+          .glyphicon-remove {
+            color: $brand-red-color;
+          }
+
+          .glyphicon-plus {
+            color: $brand-green-color;
+          }
+        }
+      }
+    }
+  }
+}

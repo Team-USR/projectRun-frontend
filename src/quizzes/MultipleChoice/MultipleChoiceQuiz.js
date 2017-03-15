@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { QuestionWrapper } from './index';
-import '../../style/MultipleChoice.css';
 
 class MultipleChoiceQuiz extends Component {
   constructor() {
@@ -24,6 +23,9 @@ class MultipleChoiceQuiz extends Component {
         key={index}
         inReview={reviewState}
         inResultsState={resultsState}
+        correctAnswer={this.props.correctAnswer}
+        creatorAnswers={this.props.creatorAnswers}
+        sessionAnswers={this.props.sessionAnswers}
         myAnswers={this.state.answers}
         callbackParent={newState => this.onChildChanged(newState, index)}
       />
@@ -40,11 +42,34 @@ class MultipleChoiceQuiz extends Component {
   }
 }
 MultipleChoiceQuiz.propTypes = {
+  callbackParent: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   reviewState: PropTypes.bool.isRequired,
   resultsState: PropTypes.bool.isRequired,
-  callbackParent: PropTypes.func.isRequired,
+  question: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    question: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    answers: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      answer: PropTypes.string.isRequired,
+    })).isRequired,
+  }).isRequired,
+  correctAnswer: PropTypes.shape({
+    correct: PropTypes.bool,
+    correct_answers: PropTypes.arrayOf(PropTypes.number),
+  }),
+  creatorAnswers: PropTypes.arrayOf(PropTypes.shape({})),
+  sessionAnswers: PropTypes.shape({}),
+};
 
+MultipleChoiceQuiz.defaultProps = {
+  correctAnswer: {
+    correct: false,
+    correct_answers: [],
+  },
+  creatorAnswers: [],
+  sessionAnswers: {},
 };
 
 export default MultipleChoiceQuiz;
