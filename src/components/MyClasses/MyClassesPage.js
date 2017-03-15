@@ -25,15 +25,21 @@ export default class MyClassesPage extends Component {
       ],
       sideBarContent: { classes: [] },
       content: { quizzes: [], students: [] },
-      userT: TEACHER,
+      userT: STUDENT,
     };
   }
 
   componentWillMount() {
-    if (this.state.userT === TEACHER) {
-      this.requestTeacherData();
-    }
-    if (this.state.userT === STUDENT) {
+    const settingUserType = cookie.load('userType');
+    if (settingUserType) {
+      if (settingUserType === TEACHER) {
+        this.requestTeacherData();
+      }
+      if (settingUserType === STUDENT) {
+        this.requestStudentData();
+      }
+      this.setState({ userT: settingUserType });
+    } else {
       this.requestStudentData();
     }
   }
