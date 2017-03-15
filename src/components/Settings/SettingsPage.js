@@ -1,55 +1,100 @@
 import React, { Component } from 'react';
+import cookie from 'react-cookie';
+import Toggle from 'react-toggle';
+import { Tabs, Tab, Grid, Col, Row } from 'react-bootstrap';
+import { STUDENT, TEACHER } from '../../constants';
+
 
 export default class SettingsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedOption: 'teacher',
+      isTeacher: false,
     };
   }
 
-  onChange(e) {
-    const name = e.target.name;
-    if (name === 'teacher') {
-      this.setState({ selectedOption: 'teacher' });
-    } else if (name === 'student') {
-      this.setState({ selectedOption: 'student' });
+  componentWillMount() {
+    const settingUserType = cookie.load('userType');
+    if (settingUserType === TEACHER) {
+      this.setState({ isTeacher: true });
     }
   }
 
-  renderSettings() {
-    this.setiings = [];
+  changeUserType() {
+    if (this.state.isTeacher) {
+      cookie.save('userType', STUDENT);
+      this.setState({ isTeacher: false });
+    } else {
+      cookie.save('userType', TEACHER);
+      this.setState({ isTeacher: true });
+    }
+  }
+
+  renderProfileTab() {
+    this.profile = [];
     return (
       <div>
-        <h1><b>Panel</b></h1>
-        <form action="" >
-          <input
-            type="radio"
-            name="teacher"
-            value="teacher"
-            onChange={e => this.onChange(e)}
-            checked={this.state.selectedOption === 'teacher'}
-          /> TEACHER<br />
-          <input
-            type="radio"
-            name="student"
-            value="student"
-            onChange={e => this.onChange(e)}
-            checked={this.state.selectedOption === 'student'}
-          /> STUDENT<br />
+        <h1><b>Profile</b></h1>
+        <form>
+          <label htmlFor={'userType'}>
+            <span>Student</span>
+            <Toggle
+              defaultChecked={this.state.isTeacher}
+              icons={false}
+              onChange={() => this.changeUserType()}
+            />
+            <span>Teacher</span>
+          </label>
         </form>
       </div>
     );
   }
 
-  render() {
+  renderPasswordTab() {
+    this.password = [];
     return (
-      <div className="myClassesPageWrapper">
-        <h1><b>Settings</b></h1>
-        <div className="contentWrapper">
-          { this.renderSettings() }
-        </div>
+      <div>
+        <h1><b>Password</b></h1>
       </div>
+    );
+  }
+
+  renderPrefTab() {
+    this.preferences = [];
+    return (
+      <div>
+        <h1><b>Preferences</b></h1>
+      </div>
+    );
+  }
+
+  render() {
+    const profileTab = this.renderProfileTab();
+    const passwordTab = this.renderPasswordTab();
+    const prefTab = this.renderPrefTab();
+    return (
+      <Grid>
+        <Row>
+          <Col md={12}>
+            <h1><b>Settings</b></h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
+              <Tab eventKey={1} title="Profile">
+                { profileTab }
+              </Tab>
+              <Tab eventKey={2} title="Password">
+                { passwordTab }
+              </Tab>
+              <Tab eventKey={3} title="Preferences">
+                { prefTab }
+              </Tab>
+            </Tabs>
+          </Col>
+        </Row>
+      </Grid>
     );
   }
 }

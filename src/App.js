@@ -2,6 +2,8 @@ import React from 'react';
 import { NavBarContainer } from './containers';
 import './App.css';
 
+require('react-toggle/style.css');
+
 export default function App(props) {
   return (
     <div className="appWrapper">
