@@ -49,14 +49,8 @@ export default class MatchQuizGenerator extends Component {
     const value = target.value;
     this.setState({ matchQuizQuestion: value });
 
-    /* TODO:
-    * callBackParent
-      {
-        question: matchQuizQuestion,
-        type: 'match',
-        pairs_attribute: newCreateItemsArray
-      }
-    */
+    // Send Match Data to MainQuizGenerator
+    this.props.updateParent(this.state.createItems, value, this.props.index);
   }
 
   /* Function called everytime when user types in DEFAULT VALUE textarea */
@@ -68,6 +62,11 @@ export default class MatchQuizGenerator extends Component {
     if (name === this.state.defaultTextareaName) {
       this.setState({ defaultSelectValue: value });
     }
+
+    // TODO: Update when DefaultValueTextArea is available
+    // Send Match Data to MainQuizGenerator
+    // this.props.updateParent(this.state.createItems,
+    //    this.state.matchQuizQuestion, this.props.index);
   }
 
   /* Function called everytime when user types
@@ -89,6 +88,9 @@ export default class MatchQuizGenerator extends Component {
     }
     const newCreateItemsArray = this.state.createItems;
     newCreateItemsArray[index] = editedItem;
+
+    // Send Match Data to MainQuizGenerator
+    this.props.updateParent(newCreateItemsArray, this.state.matchQuizQuestion, this.props.index);
     this.setState({ createItems: newCreateItemsArray });
   }
 
@@ -200,6 +202,8 @@ export default class MatchQuizGenerator extends Component {
 }
 
 MatchQuizGenerator.propTypes = {
+  index: PropTypes.number.isRequired,
   reviewState: PropTypes.bool.isRequired,
   resultsState: PropTypes.bool.isRequired,
+  updateParent: PropTypes.func.isRequired,
 };

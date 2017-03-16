@@ -122,14 +122,36 @@ export default class QuizCreatorReviewer extends Component {
       );
     }
     if (question.type === 'match') {
+      const newQuestion = question;
+      const pairs1 = newQuestion.pairs;
+      const pairs2 = newQuestion.pairs;
+      // console.log(newQuestion.pairs);
+      const Xleft = pairs1.map((obj) => {
+        // console.log(obj);
+        const x = { id: obj.id.toString(), answer: obj.left_choice };
+        return x;
+      });
+      const Xright = pairs2.map((obj) => {
+        // console.log(obj);
+        const x2 = { id: obj.id.toString(), answer: obj.right_choice };
+        return x2;
+      });
+
+      newQuestion.left = Xleft;
+      newQuestion.right = Xright;
+
+      // console.log(Xleft, Xright);
+
+      // console.log(newQuestion);
+      // console.log(question.pairs);
       return (
         <MatchQuiz
           id={question.id}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
-          question={question}
+          question={newQuestion}
           index={index}
-          correctAnswer={this.state.data[question.id]}
+          correctAnswer={{}}
           callbackParent={() => {}}
           key={`match_quiz_${question.id}`}
         />
