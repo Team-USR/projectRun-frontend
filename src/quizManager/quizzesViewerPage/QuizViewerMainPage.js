@@ -270,6 +270,7 @@ export default class QuizViewerMainPage extends Component {
       <div className="mainQuizViewerBlock">
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         <h5 style={styles.quizTile}>Created by: {this.state.quizInfo.creator}</h5>
+        <h5 style={styles.quizTile}>Attempts remaining: {this.state.quizInfo.attempts}</h5>
         {this.state.quizInfo.questions.map((question, index) =>
         this.renderQuestions(question, index))}
         {this.renderSubmitPanel()}

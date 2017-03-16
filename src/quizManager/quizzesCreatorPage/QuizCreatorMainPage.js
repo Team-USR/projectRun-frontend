@@ -33,6 +33,7 @@ export default class QuizCreatorMainPage extends Component {
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
     this.changeTitle = this.changeTitle.bind(this);
+    this.changeAttempts = this.changeAttempts.bind(this);
   }
   removeQuiz(index) {
     displayIndex = 0;
@@ -145,6 +146,11 @@ export default class QuizCreatorMainPage extends Component {
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
   }
+  changeAttempts(event) {
+    const attempted = this.state.submitedQuestions;
+    attempted.quiz.attempts = event.target.value;
+    this.setState({ submitedQuestions: attempted });
+  }
   renderQuestions() {
     displayIndex = 0;
     return (
@@ -208,6 +214,12 @@ export default class QuizCreatorMainPage extends Component {
            <input
              id="titleInput" type="text" placeholder="title" onChange={this.changeTitle}
            />
+            <input
+              id="attemptsInput"
+              type="number"
+              placeholder="Number of attempts"
+              onChange={this.changeAttempts}
+            />
           </label>
           <br /><br />
          Select a quiz to be added:

@@ -36,6 +36,7 @@ export default class QuizEditorMainPage extends Component {
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
     this.changeTitle = this.changeTitle.bind(this);
+    this.changeAttempts = this.changeAttempts.bind(this);
   }
   componentWillMount() {
     this.setState({ loadingQuiz: true });
@@ -49,6 +50,7 @@ export default class QuizEditorMainPage extends Component {
        }
        const generatedQuiz = this.state.submitedQuestions;
        generatedQuiz.quiz.title = response.data.title;
+       generatedQuiz.quiz.attempts = response.data.attempts;
      //  console.log("LOADING FINISHED");
        setTimeout(() => {
          this.setState({
@@ -77,6 +79,7 @@ export default class QuizEditorMainPage extends Component {
         }
         const generatedQuiz = this.state.submitedQuestions;
         generatedQuiz.quiz.title = response.data.title;
+        generatedQuiz.quiz.attempts = response.data.attempts;
         setTimeout(() => {
           this.setState({
             loadingQuiz: false,
@@ -197,6 +200,11 @@ export default class QuizEditorMainPage extends Component {
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
   }
+  changeAttempts(event) {
+    const attempted = this.state.submitedQuestions;
+    attempted.quiz.attempts = event.target.value;
+    this.setState({ submitedQuestions: attempted });
+  }
   renderQuestions() {
     displayIndex = 0;
     return (
@@ -253,9 +261,11 @@ export default class QuizEditorMainPage extends Component {
       return <BrandSpinner />;
     } else
     if (!this.state.reviewState && this.state.loading === false) {
+    //  console.log("ATTEMPTS", submit.quiz.attempts);
+    //  console.log("TITLE",submit.quiz.title);
       return (
         <div className="mainQuizGeneratorBlock">
-          <h1> Quiz creator </h1>
+          <h1> Quiz editor </h1>
           <label htmlFor="titleInput">
           Title:
            <input
@@ -265,6 +275,13 @@ export default class QuizEditorMainPage extends Component {
              onChange={this.changeTitle}
              value={submit.quiz.title}
            />
+            <input
+              id="attemptsInput"
+              type="number"
+              placeholder="attempts"
+              onChange={this.changeAttempts}
+              value={submit.quiz.attempts}
+            />
           </label>
           <br /><br />
          Select a quiz to be added:

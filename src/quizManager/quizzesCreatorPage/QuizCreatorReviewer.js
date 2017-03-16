@@ -170,6 +170,7 @@ export default class QuizCreatorReviewer extends Component {
       return (
         <div className="mainQuizViewerBlock">
           <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
+          <h5 style={styles.quizTitle}>Attempts remaining: {this.state.quizInfo.attempts}</h5>
           {this.state.quizInfo.questions.map((question, index) =>
           this.renderQuestions(question, index))}
           <div className="submitPanel">
