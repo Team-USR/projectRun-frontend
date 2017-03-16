@@ -126,8 +126,7 @@ export default class MyQuizzesPage extends Component {
     cookie.save('current-session-id', id);
   }
   handleSideBarTitleClick() {
-    this.todo = 'TO DO';
-    // this.setState({ panelType: 'my_classes_default_panel' });
+    this.updateCurrentQuiz('default');
   }
   renderQuizContent() {
 //    console.log("rendering",this.state.currentID);

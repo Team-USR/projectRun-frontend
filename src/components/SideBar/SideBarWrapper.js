@@ -64,7 +64,11 @@ export default class SideBarWrapper extends Component {
         <Navbar inverse collapseOnSelect className="mainNavContainer">
           <Navbar.Header>
             <Navbar.Brand>
-              <Button onClick={() => this.props.onSideBarTitleClick()}>{this.props.title}</Button>
+              <Button
+                className="titleButton"
+                onClick={() => this.props.onSideBarTitleClick()}
+              >
+                {this.props.title}</Button>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
