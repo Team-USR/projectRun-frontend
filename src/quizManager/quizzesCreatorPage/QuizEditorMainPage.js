@@ -31,7 +31,7 @@ export default class QuizEditorMainPage extends Component {
       loading: false,
       quizInfo: [],
       loadingQuiz: true,
-      errorState: false,
+      error: false,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -58,6 +58,10 @@ export default class QuizEditorMainPage extends Component {
        this.setState({
          quizInfo: response.data, submitedQuestions: generatedQuiz });
        response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
+     })
+     .catch(() => {
+       this.setState({ error: true });
+       this.props.handleError('default');
      });
   }
   componentWillReceiveProps(nextProps) {
@@ -240,7 +244,7 @@ export default class QuizEditorMainPage extends Component {
     const submit = this.state.submitedQuestions;
   //  console.log(this.state.questions);
   //  console.log("end rendering");
-    if (this.state.errorState === true) {
+    if (this.state.error === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>
       </div>);
@@ -283,4 +287,8 @@ QuizEditorMainPage.propTypes = {
   userToken: React.PropTypes.shape({}).isRequired,
   handleSubmitButton: PropTypes.func.isRequired,
   quizID: PropTypes.string.isRequired,
+  handleError: PropTypes.func,
+};
+QuizEditorMainPage.defaultProps = {
+  handleError: null,
 };

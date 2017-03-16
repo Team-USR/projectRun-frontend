@@ -6,12 +6,13 @@ import { QuizViewerMainPage } from './../../quizManager/quizzesViewerPage';
 import { SideBarWrapper } from '../SideBar/index';
 import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { BrandSpinner } from '../utils';
+import { DefaultQuizzesPanel } from './panels';
 
 export default class MyQuizzesPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      panelType: 'my_quizzes_default_panel',
+      panelType: 'default',
       currentID: -1,
       sideBarContent: {},
       loadingSideBar: true,
@@ -29,7 +30,7 @@ export default class MyQuizzesPage extends Component {
       if (settingUserType === STUDENT) {
         this.requestStudentData();
       }
-    }
+    } else this.requestStudentData();
   }
   requestStudentData() {
     axios({
@@ -50,14 +51,14 @@ export default class MyQuizzesPage extends Component {
           loadingSideBar: false,
         });
       }, 1200);
+      let pType = 'default';
+      let quizID = -1;
+      if (cookie.load('current-session-type') != null && cookie.load('current-session-id') != null) {
+        pType = cookie.load('current-session-type');
+        quizID = cookie.load('current-session-id');
+        this.setState({ panelType: pType, currentID: quizID });
+      }
     });
-    let pType = 'default';
-    let quizID = -1;
-    if (cookie.load('current-session-type') != null && cookie.load('current-session-id') != null) {
-      pType = cookie.load('current-session-type');
-      quizID = cookie.load('current-session-id');
-      this.setState({ panelType: pType, currentID: quizID });
-    }
   }
   requestTeacherData() {
     axios({
@@ -75,14 +76,14 @@ export default class MyQuizzesPage extends Component {
           loadingSideBar: false,
         });
       }, 1200);
+      let pType = 'default';
+      let quizID = -1;
+      if (cookie.load('current-session-type') != null && cookie.load('current-session-id') != null) {
+        pType = cookie.load('current-session-type');
+        quizID = cookie.load('current-session-id');
+        this.setState({ panelType: pType, currentID: quizID });
+      }
     });
-    let pType = 'default';
-    let quizID = -1;
-    if (cookie.load('current-session-type') != null && cookie.load('current-session-id') != null) {
-      pType = cookie.load('current-session-type');
-      quizID = cookie.load('current-session-id');
-      this.setState({ panelType: pType, currentID: quizID });
-    }
   }
   reloadBar() {
     const settingUserType = cookie.load('userType');
@@ -94,7 +95,7 @@ export default class MyQuizzesPage extends Component {
       if (settingUserType === STUDENT) {
         this.requestStudentData();
       }
-    }
+    } else this.requestStudentData();
   }
   updateCurrentQuiz(panelT) {
   //  console.log(panelT);
@@ -131,6 +132,9 @@ export default class MyQuizzesPage extends Component {
   renderQuizContent() {
 //    console.log("rendering",this.state.currentID);
     let element = <h1><b> My Quizzes</b></h1>;
+    if (this.state.panelType === 'default') {
+      element = (<DefaultQuizzesPanel />);
+    }
     if (this.state.userT === TEACHER) {
       if (this.state.panelType === 'reviewer') {
         element = (<QuizCreatorReviewer
@@ -139,6 +143,7 @@ export default class MyQuizzesPage extends Component {
           handlePublish={() => this.reloadBar()}
           handleSubmitButton={() => this.updateCurrentQuiz('editor')}
           deleteQuiz={deletedID => this.deleteThisQUiz(deletedID)}
+          handleError={type => this.updateCurrentQuiz(type)}
         />);
       }
       if (this.state.panelType === 'editor') {
@@ -146,6 +151,7 @@ export default class MyQuizzesPage extends Component {
           quizID={this.state.currentID}
           userToken={this.props.userToken}
           handleSubmitButton={() => this.updateCurrentQuiz('reviewer')}
+          handleError={type => this.updateCurrentQuiz(type)}
         />);
       }
       if (this.state.panelType === 'creator') {
@@ -153,6 +159,7 @@ export default class MyQuizzesPage extends Component {
           userToken={this.props.userToken}
           handlePublish={(id) => { this.reloadBar(); this.saveCurrentQuiz(id); }}
           handleSubmitButton={() => this.updateCurrentQuiz('reviewer')}
+          handleError={type => this.updateCurrentQuiz(type)}
         />);
       }
     }
@@ -163,6 +170,7 @@ export default class MyQuizzesPage extends Component {
           quizID={this.state.currentID} // this.state.currentID
           handleSubmitButton={() => { this.reloadBar(); this.updateCurrentQuiz('viewer'); }}
           reloadSideBar={() => this.reloadBar()}
+          handleError={type => this.updateCurrentQuiz(type)}
         />);
       }
     }
