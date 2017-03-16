@@ -141,7 +141,14 @@ export function signupUser(user) {
 }
 
 export async function logoutUser() {
-  cookie.remove('token');
+  cookie.remove('access-token');
+  cookie.remove('client');
+  cookie.remove('token-type');
+  cookie.remove('uid');
+  cookie.remove('current-class-id');
+  cookie.remove('current-class-title');
+  cookie.remove('current-session-type');
+  cookie.remove('current-session-id');
   return {
     type: USER_LOGOUT,
   };

@@ -2,15 +2,11 @@ import React, { PropTypes, Component } from 'react';
 import cookie from 'react-cookie';
 import axios from 'axios';
 import { QuizCreatorMainPage, QuizCreatorReviewer, QuizEditorMainPage } from './../../quizManager/quizzesCreatorPage';
+import { QuizViewerMainPage } from './../../quizManager/quizzesViewerPage';
 import { SideBarWrapper } from '../SideBar/index';
-import { API_URL } from '../../constants';
+import { API_URL, STUDENT, TEACHER } from '../../constants';
+import { BrandSpinner } from '../utils';
 
-const styles = {
-  loading: {
-    textAlign: 'center',
-    marginTop: 100,
-  },
-};
 export default class MyQuizzesPage extends Component {
   constructor(props) {
     super(props);
@@ -19,37 +15,51 @@ export default class MyQuizzesPage extends Component {
       currentID: -1,
       sideBarContent: {},
       loadingSideBar: true,
+      contentLoading: true,
+      userT: STUDENT,
     };
   }
   componentWillMount() {
+    const settingUserType = cookie.load('userType');
+    if (settingUserType) {
+      this.setState({ userT: settingUserType });
+      if (settingUserType === TEACHER) {
+        this.requestTeacherData();
+      }
+      if (settingUserType === STUDENT) {
+        this.requestStudentData();
+      }
+    }
+  }
+  requestStudentData() {
     axios({
-      url: `${API_URL}/quizzes/mine`,
+      url: `${API_URL}/users/mine/quizzes`,
       headers: this.props.userToken,
     })
     .then((response) => {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
-    //  console.log("My quizzes", response.data);
-      const newSideBarContent = { quizzes: response.data };
-      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+//      console.log(response.data);
+      const newSideBarContent = { session: response.data.reverse() };
+  //  console.log("My quizzes", response.data);
+  //  this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+      setTimeout(() => {
+        this.setState({
+          sideBarContent: newSideBarContent,
+          loadingSideBar: false,
+        });
+      }, 1200);
     });
     let pType = 'default';
     let quizID = -1;
-    if (cookie.load('current-session-type') != null) {
+    if (cookie.load('current-session-type') != null && cookie.load('current-session-id') != null) {
       pType = cookie.load('current-session-type');
-      this.setState({ panelType: pType });
-    }
-    if (cookie.load('current-session-id') != null) {
       quizID = cookie.load('current-session-id');
-      this.setState({ currentID: quizID });
+      this.setState({ panelType: pType, currentID: quizID });
     }
-    // const getSideBar = {
-    //   quizzes: [{ id: 3, title: 'Quiz REVIEWER' }],
-    // };
-    // this.setState({ sideBarContent: getSideBar });
   }
-  reloadBar() {
+  requestTeacherData() {
     axios({
       url: `${API_URL}/quizzes/mine`,
       headers: this.props.userToken,
@@ -58,19 +68,59 @@ export default class MyQuizzesPage extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
-    //  console.log("My quizzes", response.data);
-      const newSideBarContent = { quizzes: response.data };
-      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+      const newSideBarContent = { quizzes: response.data.reverse() };
+      setTimeout(() => {
+        this.setState({
+          sideBarContent: newSideBarContent,
+          loadingSideBar: false,
+        });
+      }, 1200);
     });
+    let pType = 'default';
+    let quizID = -1;
+    if (cookie.load('current-session-type') != null && cookie.load('current-session-id') != null) {
+      pType = cookie.load('current-session-type');
+      quizID = cookie.load('current-session-id');
+      this.setState({ panelType: pType, currentID: quizID });
+    }
+  }
+  reloadBar() {
+    const settingUserType = cookie.load('userType');
+    if (settingUserType) {
+      this.setState({ userT: settingUserType });
+      if (settingUserType === TEACHER) { // CHANGE TO TEACHER
+        this.requestTeacherData();
+      }
+      if (settingUserType === STUDENT) {
+        this.requestStudentData();
+      }
+    }
   }
   updateCurrentQuiz(panelT) {
-    this.setState({ panelType: panelT });
   //  console.log(panelT);
+    this.setState({ panelType: panelT });
     cookie.save('current-session-type', panelT);
+  }
+  deleteThisQUiz(id) {
+    axios({
+      url: `${API_URL}/quizzes/${id}`,
+      method: 'delete',
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+  //    console.log('deleted');
+      cookie.remove('current-session-id');
+      cookie.remove('current-session-type');
+      this.updateCurrentQuiz('default');
+      this.reloadBar();
+    //  this.setState({ loadingSideBar: false });
+    });
   }
   saveCurrentQuiz(id) {
     this.id = id;
-//    console.log(id);
     this.setState({ currentID: id.toString() });
     cookie.save('current-session-id', id);
   }
@@ -81,42 +131,53 @@ export default class MyQuizzesPage extends Component {
   renderQuizContent() {
 //    console.log("rendering",this.state.currentID);
     let element = <h1><b> My Quizzes</b></h1>;
-    if (this.state.panelType === 'reviewer') {
-      element = (<QuizCreatorReviewer
-        quizID={this.state.currentID}
-        userToken={this.props.userToken}
-        handlePublish={() => this.reloadBar()}
-        handleSubmitButton={() => this.updateCurrentQuiz('editor')}
-      />);
+    if (this.state.userT === TEACHER) {
+      if (this.state.panelType === 'reviewer') {
+        element = (<QuizCreatorReviewer
+          quizID={this.state.currentID}
+          userToken={this.props.userToken}
+          handlePublish={() => this.reloadBar()}
+          handleSubmitButton={() => this.updateCurrentQuiz('editor')}
+          deleteQuiz={deletedID => this.deleteThisQUiz(deletedID)}
+        />);
+      }
+      if (this.state.panelType === 'editor') {
+        element = (<QuizEditorMainPage
+          quizID={this.state.currentID}
+          userToken={this.props.userToken}
+          handleSubmitButton={() => this.updateCurrentQuiz('reviewer')}
+        />);
+      }
+      if (this.state.panelType === 'creator') {
+        element = (<QuizCreatorMainPage
+          userToken={this.props.userToken}
+          handlePublish={(id) => { this.reloadBar(); this.saveCurrentQuiz(id); }}
+          handleSubmitButton={() => this.updateCurrentQuiz('reviewer')}
+        />);
+      }
     }
-    if (this.state.panelType === 'editor') {
-      element = (<QuizEditorMainPage
-        quizID={this.state.currentID}
-        userToken={this.props.userToken}
-        handleSubmitButton={() => this.updateCurrentQuiz('reviewer')}
-      />);
-    }
-    if (this.state.panelType === 'creator') {
-      element = (<QuizCreatorMainPage
-        userToken={this.props.userToken}
-        handlePublish={(id) => { this.reloadBar(); this.saveCurrentQuiz(id); }}
-        handleSubmitButton={() => this.updateCurrentQuiz('reviewer')}
-      />);
+    if (this.state.userT === STUDENT) {
+      if (this.state.panelType === 'viewer') {
+        element = (<QuizViewerMainPage
+          userToken={this.props.userToken}
+          quizID={this.state.currentID} // this.state.currentID
+          handleSubmitButton={() => { this.reloadBar(); this.updateCurrentQuiz('viewer'); }}
+          reloadSideBar={() => this.reloadBar()}
+        />);
+      }
     }
     return element;
   }
 
   render() {
     if (this.state.loadingSideBar === true) {
-      return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Loading quizzes...</h1>
-      </div>);
+      return (<BrandSpinner />);
     }
     return (
       <div className="myQuizzesPageWrapper">
         <SideBarWrapper
-          onSideBarItemClick={(id) => {
-            this.updateCurrentQuiz('reviewer');
+          onSideBarItemClick={(id, panelType) => {
+            this.updateCurrentQuiz(panelType);
             this.saveCurrentQuiz(id);
           }}
           createQuiz={() => this.updateCurrentQuiz('creator')}
@@ -124,6 +185,7 @@ export default class MyQuizzesPage extends Component {
           sideBarContent={this.state.sideBarContent}
           title={'My Quizzes'}
           type={'SideBarQuizzes'}
+          userType={this.state.userT}
         />
         <div className="contentWrapper">
           {this.renderQuizContent()}

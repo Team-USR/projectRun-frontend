@@ -1,0 +1,26 @@
+.studentsPanelWrapper{
+  .form_container {
+    text-align: left;
+    width: 63%;
+    margin: auto;
+    .form_section {
+      h2{
+        text-align: left;
+      }
+      margin-bottom:10px;
+      .inside{
+        padding: 30px;
+        .student_input {
+          margin-right:10px;
+          outline:none;
+          border:none;
+          border-bottom: 1px solid black;
+          padding: 6px 12px;
+        }
+        label{
+          margin: 0 auto;
+        }
+      }
+    }
+  }
+}

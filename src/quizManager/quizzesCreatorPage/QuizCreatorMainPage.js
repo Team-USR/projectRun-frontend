@@ -5,6 +5,7 @@ import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice'
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
+import { BrandSpinner } from '../../components/utils';
 
 const styles = {
   loading: {
@@ -53,9 +54,8 @@ export default class QuizCreatorMainPage extends Component {
 //    console.log("submitedQuestions ", sQuestions,"finishsubmited");
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
      element !== null);
-    const loadingTrue = true;
 //    console.log("filtered ",filteredQuestions," finishfiltered");
-    this.setState({ loading: loadingTrue, submitedQuestions: filteredQuestions });
+    this.setState({ submitedQuestions: filteredQuestions });
   //  console.log("----------");
   //  console.log(this.state.submitedQuestions);
 //  console.log("----------");
@@ -196,6 +196,9 @@ export default class QuizCreatorMainPage extends Component {
         <h1>Connection error...</h1>
       </div>);
     } else
+    if (this.state.loading === true) {
+      return (<BrandSpinner />);
+    }
     if (!this.state.reviewState && this.state.loading === false) {
       return (
         <div className="mainQuizGeneratorBlock">
@@ -218,9 +221,7 @@ export default class QuizCreatorMainPage extends Component {
       );
     } else
     if (this.state.loading === true) {
-      return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Saving draft...</h1>
-      </div>);
+      return <BrandSpinner />;
     }
     return ('');
   }
@@ -228,4 +229,8 @@ export default class QuizCreatorMainPage extends Component {
 QuizCreatorMainPage.propTypes = {
   handleSubmitButton: PropTypes.func.isRequired,
   userToken: PropTypes.shape({}).isRequired,
+  handlePublish: PropTypes.func,
+};
+QuizCreatorMainPage.defaultProps = {
+  handlePublish: null,
 };

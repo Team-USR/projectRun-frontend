@@ -28,6 +28,17 @@ class QuestionWrapper extends Component {
     //  console.log("true");
       defaultAnswer = this.props.creatorAnswers[indexQ].is_correct;
     }
+    if (this.props.sessionAnswers !== null && this.props.sessionAnswers !== undefined) {
+      if (this.props.sessionAnswers.answer_ids !== null
+        && this.props.sessionAnswers.answer_ids !== undefined) {
+        const ids = this.props.sessionAnswers.answer_ids;
+        defaultAnswer = ids.map((element) => {
+          if (element === choices.id) return true;
+          return (null);
+        })[0];
+      }
+    }
+    // console.log("SESSION",this.props.sessionAnswers);
     return (
       <Choice
         value={indexQ} choiceText={choices.answer}
@@ -112,6 +123,9 @@ QuestionWrapper.propTypes = {
   creatorAnswers: PropTypes.arrayOf(PropTypes.shape({
     is_correct: PropTypes.bool,
   })),
+  sessionAnswers: PropTypes.shape({
+    answer_ids: PropTypes.arrayOf(PropTypes.number),
+  }),
 };
 
 QuestionWrapper.defaultProps = {
@@ -121,6 +135,9 @@ QuestionWrapper.defaultProps = {
   },
   creatorAnswers: [],
   is_correct: false,
+  sessionAnswers: {
+    answer_ids: [],
+  },
 };
 
 export default QuestionWrapper;

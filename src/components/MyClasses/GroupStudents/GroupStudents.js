@@ -8,8 +8,8 @@ export default class GroupStudents extends Component {
       return <h4>There are no students enrolled in this class!</h4>;
     }
     return this.props.students.map(obj =>
-      <li key={`group_student_${obj.studentId}`}>
-        <span><b> {obj.studentName} </b></span>
+      <li key={`group_student_${obj.id}`}>
+        <span><b> {obj.name} </b></span>
       </li>,
     );
   }

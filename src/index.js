@@ -14,6 +14,7 @@ import {
   MyQuizzesContainer,
   MyClassesContainer,
   SignupContainer,
+  SettingsContainer,
 } from './containers';
 import authReducer from './redux/modules/user';
 
@@ -41,6 +42,7 @@ ReactDOM.render(
         <Route path="/quiz-generator" component={MyQuizzesContainer} />
         <Route path="/my-quizzes" component={MyQuizzesContainer} />
         <Route path="/my-classes" component={MyClassesContainer} />
+        <Route path="/settings" component={SettingsContainer} />
       </Route>
       <Route path="/login" component={LoginContainer} />
       <Route path="/signup" component={SignupContainer} />
