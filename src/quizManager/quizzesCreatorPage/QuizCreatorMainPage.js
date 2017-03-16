@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
+import { ClozeGenerator } from '../../createQuizzes/Cloze';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
@@ -80,6 +81,7 @@ export default class QuizCreatorMainPage extends Component {
     const newState = !this.state.resultsState;
     this.setState({ resultsState: newState });
   }
+
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
     const quiz = { question, type, answers_attributes: answersAttributes };
@@ -91,6 +93,21 @@ export default class QuizCreatorMainPage extends Component {
   //  }
     this.setState({ submitedQuestions: inputQ });
   }
+
+  collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+    console.log(sentenceAttributes);
+    console.log(gapsAttributes);
+    const newQuestion = {
+      question: 'Fill in the gaps:',
+      type: 'cloze',
+      cloze_sentence_attributes: sentenceAttributes,
+      gaps_attributes: gapsAttributes,
+    };
+    const inputQ = this.state.submitedQuestions;
+    inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.setState({ submitedQuestions: inputQ });
+  }
+
   addQuiz(quizType) {
   //  console.log(id);
     displayIndex = 0;
@@ -131,6 +148,19 @@ export default class QuizCreatorMainPage extends Component {
           resultsState={this.state.resultsState}
           index={id}
           key={`match${id}`}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+
+    if (quizType === 'cloze') {
+      const question = (
+        <ClozeGenerator
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          updateParent={(questionID, qSent, sentenceAttributes, gapsAttributes) =>
+            this.collectClozeObject(questionID, qSent, sentenceAttributes, gapsAttributes)}
+          index={id}
+          key={`cloze${id}`}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -214,6 +244,7 @@ export default class QuizCreatorMainPage extends Component {
          <br />
           <Button onClick={() => this.addQuiz('multiple_choice')}> Multiple Choice</Button>
           <Button onClick={() => this.addQuiz('match')}>Match</Button>
+          <Button onClick={() => this.addQuiz('cloze')}>Cloze</Button>
           {this.renderQuestions()}
           <br /><br /><br />
           { this.renderSubmitPanel() }

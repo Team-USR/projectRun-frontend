@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 
 export default function ClozeList(props) {
   return (
-    <ol>
+    <ol className="cloze-sentences">
       {props.questions.map(q => (
         <li key={q.no}>{q.question}
           <Button onClick={() => props.removeQuestion(q)}>x</Button>
