@@ -20,7 +20,8 @@ ul {
 
 .matchQuizContainer,
 .mixQuizContainer,
-.multipleChoiceContainer {
+.multipleChoiceContainer,
+.clozeQuizContainer {
   text-align: center;
   width: 40%;
   min-height: 250px;
@@ -77,5 +78,5 @@ ul {
 }
 
 @media (max-width: 900px) {
-  .matchQuizContainer, .mixQuizContainer, .multipleChoiceContainer {
+  .matchQuizContainer, .mixQuizContainer, .multipleChoiceContainer, .clozeQuizContainer {
     width: 60%; } }
