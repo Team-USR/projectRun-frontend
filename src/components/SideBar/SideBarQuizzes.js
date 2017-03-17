@@ -8,7 +8,7 @@ export default class SideBarQuizzes extends Component {
     this.filterItems = this.filterItems.bind(this);
     this.state = {
       content: {},
-      activePanel: '0',
+      activePanel: null,
     };
   }
   componentWillMount() {

@@ -31,6 +31,27 @@ export default class QuizSessionViewer extends Component {
       this.props.handleError('default');
     });
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.quizID !== this.props.quizID) {
+      this.setState({ loading: true });
+      console.log("LOL");
+      axios({
+        url: `${API_URL}/quizzes/${nextProps.quizID}/start`,
+        headers: nextProps.userToken,
+      })
+      .then(response => setTimeout(() => {
+        this.setState({
+          loading: false,
+          sessionsList: response.data.sessions,
+          quizInfo: response.data.quiz,
+        });
+      }, 510))
+      .catch(() => {
+        this.setState({ error: true });
+        this.props.handleError('default');
+      });
+    }
+  }
   renderSessionCards() {
     const element = [];
     this.state.sessionsList.map((item, index) => {
