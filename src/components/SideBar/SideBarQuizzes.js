@@ -8,7 +8,7 @@ export default class SideBarQuizzes extends Component {
     this.filterItems = this.filterItems.bind(this);
     this.state = {
       content: {},
-      activePanel: 2,
+      activePanel: '0',
     };
   }
   componentWillMount() {
@@ -31,7 +31,11 @@ export default class SideBarQuizzes extends Component {
       filteredContent = this.props.content;
     }
     if (this.props.userType === STUDENT) {
-      this.decideActivePanel(filteredContent);
+      if (filteredContent.length === 0 || event.target.value === '') {
+        this.setState({ activePanel: null });
+      } else {
+        this.decideActivePanel(filteredContent);
+      }
     }
     this.setState({ content: filteredContent });
   }
@@ -63,13 +67,13 @@ export default class SideBarQuizzes extends Component {
     },
 );
     if (type === 'not_started') {
-      this.setState({ activePanel: 1 });
+      this.setState({ activePanel: '1' });
     }
     if (type === 'in_progress') {
-      this.setState({ activePanel: 2 });
+      this.setState({ activePanel: '2' });
     }
     if (type === 'submitted') {
-      this.setState({ activePanel: 3 });
+      this.setState({ activePanel: '3' });
     }
   }
   renderSearchBar() {
@@ -174,7 +178,7 @@ export default class SideBarQuizzes extends Component {
         <div>
           {this.renderSearchBar()}
           <Nav key={'student'}>
-            <Accordion activeKey={this.state.activePanel.toString()}>
+            <Accordion defaultActiveKey={this.state.activePanel}>
 
               <Panel header={`Not started (${notStartedContent.length})`} eventKey="1" >
                 {

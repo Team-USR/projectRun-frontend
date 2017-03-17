@@ -36,13 +36,17 @@ export default class QuizSessionViewer extends Component {
     this.state.sessionsList.map((item, index) => {
       if (item.state === 'submitted') {
         element.push(
-          <div style={{ borderWidth: 1, borderColor: '#000000', marginTop: 50 }} key={`session${index + 1}`}>
-            <hr />
-            <h5>Created at: {item.created_at}</h5>
-            <h5>Last updated at: {item.last_updated}</h5>
-            <h5>Score: {item.score}</h5>
-            <h5>Status: `Submitted`</h5>
-            <hr />
+          <div className="sessionCard" key={`session${index + 1}`}>
+            <div className="row">
+              <div className="col-md-9">
+                <h5>{item.created_at}</h5>
+                <h5>{item.last_updated}</h5>
+              </div>
+              <div className="col-md-3 rightSection">
+                <h5>Submitted</h5>
+                <h5>Score: {item.score}</h5>
+              </div>
+            </div>
           </div>,
         );
       }
@@ -51,13 +55,17 @@ export default class QuizSessionViewer extends Component {
     this.state.sessionsList.map((item, index) => {
       if (item.state === 'in_progress') {
         element.push(
-          <div style={{ borderWidth: 1, borderColor: '#000000', marginTop: 50 }} key={`session${index + 1}`}>
-            <hr />
-            <h5>Created at: {item.created_at}</h5>
-            <h5>Last updated at: {item.last_updated}</h5>
-            <h5>Status: `In progress`</h5>
-            <Button onClick={() => this.props.handleStartButton()}>CONTINUE</Button>
-            <hr />
+          <div className="inProgress" key={`session${index + 1}`}>
+            <div className="row">
+              <div className="col-md-9">
+                <h5>{item.created_at}</h5>
+                <h5>{item.last_updated}</h5>
+              </div>
+              <div className="col-md-3 rightSection">
+                <h5>In progress</h5>
+                <Button onClick={() => this.props.handleStartButton()}>CONTINUE</Button>
+              </div>
+            </div>
           </div>,
               );
       }
@@ -72,12 +80,17 @@ export default class QuizSessionViewer extends Component {
     }
     return (
       <div>
-        <div>
-          <h1>{this.state.quizInfo.title}</h1>
-          <h5>Created by {this.state.quizInfo.creator_name}</h5>
-          <h5>Attempts remaining: {this.state.quizInfo.attempts}</h5>
+        <div className="mainQuizSessionBlock">
+          <div className="mainHeading">
+            <h1>{this.state.quizInfo.title}</h1>
+            <h5>Created by {this.state.quizInfo.creator_name}</h5>
+            <h5>Attempts remaining: {this.state.quizInfo.attempts}</h5>
+          </div>
+          <div className="sessionWrapper">
+            {this.renderSessionCards()}
+          </div>
         </div>
-        {this.renderSessionCards()}
+
       </div>
     );
   }
