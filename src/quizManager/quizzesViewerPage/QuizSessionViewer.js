@@ -32,9 +32,10 @@ export default class QuizSessionViewer extends Component {
     });
   }
   renderSessionCards() {
-    const element = this.state.sessionsList.map((item, index) => {
+    const element = [];
+    this.state.sessionsList.map((item, index) => {
       if (item.state === 'submitted') {
-        return (
+        element.push(
           <div style={{ borderWidth: 1, borderColor: '#000000', marginTop: 50 }} key={`session${index + 1}`}>
             <hr />
             <h5>Created at: {item.created_at}</h5>
@@ -42,11 +43,14 @@ export default class QuizSessionViewer extends Component {
             <h5>Score: {item.score}</h5>
             <h5>Status: `Submitted`</h5>
             <hr />
-          </div>
+          </div>,
         );
       }
+      return (null);
+    },
+    this.state.sessionsList.map((item, index) => {
       if (item.state === 'in_progress') {
-        return (
+        element.push(
           <div style={{ borderWidth: 1, borderColor: '#000000', marginTop: 50 }} key={`session${index + 1}`}>
             <hr />
             <h5>Created at: {item.created_at}</h5>
@@ -54,13 +58,13 @@ export default class QuizSessionViewer extends Component {
             <h5>Status: `In progress`</h5>
             <Button onClick={() => this.props.handleStartButton()}>CONTINUE</Button>
             <hr />
-          </div>
-        );
+          </div>,
+              );
       }
       return (null);
-    },
+    }),
   );
-    return element;
+    return element.reverse();
   }
   render() {
     if (this.state.loading) {
@@ -77,8 +81,6 @@ export default class QuizSessionViewer extends Component {
       </div>
     );
   }
-
-
 }
 QuizSessionViewer.propTypes = {
   userToken: React.PropTypes.shape({}).isRequired,
