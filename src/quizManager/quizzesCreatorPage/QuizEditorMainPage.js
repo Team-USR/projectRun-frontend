@@ -32,11 +32,12 @@ export default class QuizEditorMainPage extends Component {
       loading: false,
       quizInfo: [],
       loadingQuiz: true,
-      errorState: false,
+      error: false,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
     this.changeTitle = this.changeTitle.bind(this);
+    this.changeAttempts = this.changeAttempts.bind(this);
   }
   componentWillMount() {
     this.setState({ loadingQuiz: true });
@@ -50,6 +51,7 @@ export default class QuizEditorMainPage extends Component {
        }
        const generatedQuiz = this.state.submitedQuestions;
        generatedQuiz.quiz.title = response.data.title;
+       generatedQuiz.quiz.attempts = response.data.attempts;
      //  console.log("LOADING FINISHED");
        setTimeout(() => {
          this.setState({
@@ -59,6 +61,10 @@ export default class QuizEditorMainPage extends Component {
        this.setState({
          quizInfo: response.data, submitedQuestions: generatedQuiz });
        response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
+     })
+     .catch(() => {
+       this.setState({ error: true });
+       this.props.handleError('default');
      });
   }
   componentWillReceiveProps(nextProps) {
@@ -74,6 +80,7 @@ export default class QuizEditorMainPage extends Component {
         }
         const generatedQuiz = this.state.submitedQuestions;
         generatedQuiz.quiz.title = response.data.title;
+        generatedQuiz.quiz.attempts = response.data.attempts;
         setTimeout(() => {
           this.setState({
             loadingQuiz: false,
@@ -205,6 +212,11 @@ export default class QuizEditorMainPage extends Component {
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
   }
+  changeAttempts(event) {
+    const attempted = this.state.submitedQuestions;
+    attempted.quiz.attempts = event.target.value;
+    this.setState({ submitedQuestions: attempted });
+  }
   renderQuestions() {
     displayIndex = 0;
     return (
@@ -252,7 +264,7 @@ export default class QuizEditorMainPage extends Component {
     const submit = this.state.submitedQuestions;
   //  console.log(this.state.questions);
   //  console.log("end rendering");
-    if (this.state.errorState === true) {
+    if (this.state.error === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>
       </div>);
@@ -261,6 +273,8 @@ export default class QuizEditorMainPage extends Component {
       return <BrandSpinner />;
     } else
     if (!this.state.reviewState && this.state.loading === false) {
+    //  console.log("ATTEMPTS", submit.quiz.attempts);
+    //  console.log("TITLE",submit.quiz.title);
       return (
         <div className="mainQuizGeneratorBlock">
           <h1> Quiz Editor </h1>
@@ -273,6 +287,13 @@ export default class QuizEditorMainPage extends Component {
              onChange={this.changeTitle}
              value={submit.quiz.title}
            />
+            <input
+              id="attemptsInput"
+              type="number"
+              placeholder="attempts"
+              onChange={this.changeAttempts}
+              value={submit.quiz.attempts}
+            />
           </label>
           <br /><br />
          Select a quiz to be added:
@@ -296,4 +317,8 @@ QuizEditorMainPage.propTypes = {
   userToken: React.PropTypes.shape({}).isRequired,
   handleSubmitButton: PropTypes.func.isRequired,
   quizID: PropTypes.string.isRequired,
+  handleError: PropTypes.func,
+};
+QuizEditorMainPage.defaultProps = {
+  handleError: null,
 };
