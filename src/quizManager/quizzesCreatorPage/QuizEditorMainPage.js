@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
+import { ClozeGenerator } from '../../createQuizzes/Cloze';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
@@ -190,6 +191,17 @@ export default class QuizEditorMainPage extends Component {
       questionObject = { id, question, buttonGroup };
     }
 
+    if (quizType === 'cloze') {
+      const question = (
+        <ClozeGenerator
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          index={id}
+          key={`cloze${id}`}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+
     inputQuestionList.push(inputQuestion);
     questionList.push(questionObject);
     this.setState({ questions: questionList, inputQuestions: inputQuestionList });
@@ -265,7 +277,7 @@ export default class QuizEditorMainPage extends Component {
     //  console.log("TITLE",submit.quiz.title);
       return (
         <div className="mainQuizGeneratorBlock">
-          <h1> Quiz editor </h1>
+          <h1> Quiz Editor </h1>
           <label htmlFor="titleInput">
           Title:
            <input
@@ -288,6 +300,7 @@ export default class QuizEditorMainPage extends Component {
          <br />
           <Button onClick={() => this.addQuiz('multiple_choice', null)}> Multiple Choice</Button>
           <Button onClick={() => this.addQuiz('match', null)}>Match</Button>
+          <Button onClick={() => this.addQuiz('cloze', null)}>Cloze</Button>
           {this.renderQuestions()}
           <br /><br /><br />
           { this.renderSubmitPanel() }
