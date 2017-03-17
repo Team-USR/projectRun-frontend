@@ -6,7 +6,10 @@ export default class SideBarQuizzes extends Component {
   constructor() {
     super();
     this.filterItems = this.filterItems.bind(this);
-    this.state = { content: {} };
+    this.state = {
+      content: {},
+      activePanel: 2,
+    };
   }
   componentWillMount() {
     this.setState({ content: this.props.content });
@@ -27,7 +30,47 @@ export default class SideBarQuizzes extends Component {
     if (filteredContent.length === 0 || event.target.value === '') {
       filteredContent = this.props.content;
     }
+    if (this.props.userType === STUDENT) {
+      this.decideActivePanel(filteredContent);
+    }
     this.setState({ content: filteredContent });
+  }
+  decideActivePanel(filteredContent) {
+    this.filteredContent = filteredContent;
+    let con = filteredContent;
+    con = con.sort((a, b) => {
+      if (a.status < b.status) return -1;
+      if (a.status > b.status) return 1;
+      return 0;
+    });
+    let counter = 0;
+    let max = 0;
+    let type = '';
+    con.map((item, index) => {
+      if (con[index + 1] !== null && con[index + 1] !== undefined) {
+        if (item.status === con[index + 1].status) {
+          counter += 1;
+          if (counter >= max) {
+            max = counter;
+            type = item.status;
+          }
+        } else counter = 0;
+      }
+      if (con.length === 1) {
+        type = item.status;
+      }
+      return 0;
+    },
+);
+    if (type === 'not_started') {
+      this.setState({ activePanel: 1 });
+    }
+    if (type === 'in_progress') {
+      this.setState({ activePanel: 2 });
+    }
+    if (type === 'submitted') {
+      this.setState({ activePanel: 3 });
+    }
   }
   renderSearchBar() {
     return (
@@ -68,7 +111,7 @@ export default class SideBarQuizzes extends Component {
             </NavItem>
           </Nav>
           <Nav key={'teacher'} >
-            <Accordion>
+            <Accordion defaultActiveKey={'1'}>
               <Panel header={`Unpublished (${unpublishedContent.length})`} eventKey="1">
                 {
         unpublishedContent.map((item, index) => {
@@ -131,8 +174,9 @@ export default class SideBarQuizzes extends Component {
         <div>
           {this.renderSearchBar()}
           <Nav key={'student'}>
-            <Accordion defaultActiveKey={'2'}>
-              <Panel header={`Not started (${notStartedContent.length})`} eventKey="1">
+            <Accordion activeKey={this.state.activePanel.toString()}>
+
+              <Panel header={`Not started (${notStartedContent.length})`} eventKey="1" >
                 {
             notStartedContent.map((item, index) => {
               if (index < 5) {
@@ -151,6 +195,7 @@ export default class SideBarQuizzes extends Component {
             },
         )
       }
+
               </Panel>
               <Panel header={`In progress (${inprogressContent.length})`} eventKey="2">
                 {

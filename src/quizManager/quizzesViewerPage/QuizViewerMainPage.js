@@ -257,9 +257,6 @@ export default class QuizViewerMainPage extends Component {
     return ('');
   }
   render() {
-//    console.log("ANSWERS", this.state.answers);
-//    console.log("SESSSION", this.state.session);
-//    console.log(this.state.loadingQuiz);
     if (this.state.error) {
       return (<h1>ERROR</h1>);
     }

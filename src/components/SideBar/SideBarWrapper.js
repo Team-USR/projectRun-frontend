@@ -14,7 +14,7 @@ export default class SideBarWrapper extends Component {
             key={'stud'}
             userType={this.props.userType}
             onQuizClick={id =>
-            this.props.onSideBarItemClick(id, 'viewer')}
+            this.props.onSideBarItemClick(id, 'sessions')}
             content={this.props.sideBarContent.session}
           />
         );

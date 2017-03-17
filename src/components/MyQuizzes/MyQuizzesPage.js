@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import cookie from 'react-cookie';
 import axios from 'axios';
 import { QuizCreatorMainPage, QuizCreatorReviewer, QuizEditorMainPage } from './../../quizManager/quizzesCreatorPage';
-import { QuizViewerMainPage } from './../../quizManager/quizzesViewerPage';
+import { QuizViewerMainPage, QuizSessionViewer } from './../../quizManager/quizzesViewerPage';
 import { SideBarWrapper } from '../SideBar/index';
 import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { BrandSpinner } from '../utils';
@@ -163,6 +163,13 @@ export default class MyQuizzesPage extends Component {
       }
     }
     if (this.state.userT === STUDENT) {
+      if (this.state.panelType === 'sessions') {
+        element = (<QuizSessionViewer
+          userToken={this.props.userToken}
+          quizID={this.state.currentID}
+          handleStartButton={() => { this.reloadBar(); this.updateCurrentQuiz('viewer'); }}
+        />);
+      }
       if (this.state.panelType === 'viewer') {
         element = (<QuizViewerMainPage
           userToken={this.props.userToken}
