@@ -1,13 +1,6 @@
-import axios from 'axios';
-
-// TODO: parser for questions
+import { GAP_MATCHER } from '../constants';
 
 
-export default async function postCloze(token, quiz) {
-  // quiz id 121 - question 156
-  if (quiz) {
-    axios.post('https://project-run.herokuapp.com/quizzes',
-      quiz, { headers: {
-        Authorization: token } }).then(res => console.log(res));
-  }
+export default function getNOfGaps(sentence) {
+  return sentence.match(GAP_MATCHER).length;
 }

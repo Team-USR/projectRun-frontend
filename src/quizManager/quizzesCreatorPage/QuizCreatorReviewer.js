@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
+import { ClozeQuestion } from '../../quizzes/Cloze';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
+import getNOfGaps from '../../helpers/Cloze';
 
 
 const styles = {
@@ -144,6 +146,26 @@ export default class QuizCreatorReviewer extends Component {
         <MixQuiz
           question={question}
           index={index}
+          key={question.id}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+        />
+      );
+    }
+    if (question.type === 'cloze') {
+      const sentencesInExercise = question.cloze_sentence.text.split('\n');
+      const reversedGaps = question.gaps.slice().reverse();
+      const questionsArray = sentencesInExercise.map((sentence, ind) => ({
+        no: ind + 1,
+        question: sentence,
+        gaps: reversedGaps.splice(0, getNOfGaps(sentence)),
+      }));
+
+      return (
+        <ClozeQuestion
+          req={question.question}
+          index={index}
+          questions={questionsArray}
           key={question.id}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}

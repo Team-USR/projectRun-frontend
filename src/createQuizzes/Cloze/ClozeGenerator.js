@@ -1,5 +1,6 @@
 import React from 'react';
 import { ClozeForm, ClozeList } from './index';
+import { GAP_MATCHER, HINT_MATCHER } from '../../constants';
 
 
 function findTokens(clozePhrase, currentInd) {
@@ -10,7 +11,7 @@ function findTokens(clozePhrase, currentInd) {
       gap_text: clozePhrase[0].split(/[{}]/)[1],
     };
     clozePhrase.splice(0, 1);
-    if (clozePhrase.length && clozePhrase[0].match(/\*[A-zÀ-ÿ0-9]+\*/)) {
+    if (clozePhrase.length && clozePhrase[0].match(HINT_MATCHER)) {
       gapText.hint_attributes = {
         hint_text: clozePhrase[0].split(/\*/g)[1],
       };
@@ -36,27 +37,17 @@ export default class ClozeGenerator extends React.Component {
 
     this.addQuestion = this.addQuestion.bind(this);
     this.removeQuestion = this.removeQuestion.bind(this);
-    this.isReviewMode = this.isReviewMode.bind(this);
-    this.isResultsMode = this.isResultsMode.bind(this);
     this.strip = this.strip.bind(this);
   }
 
   strip(question) {
-    const gapsArray = question.match(/{[A-zÀ-ÿ0-9]+}/g);
+    const gapsArray = question.match(GAP_MATCHER);
     const findIndex = match => `{${gapsArray.indexOf(match) + this.state.count}}`;
 
     return {
-      phrase: question.replace(/{[A-zÀ-ÿ0-9]+}/g, findIndex).split(/\*[A-zÀ-ÿ0-9]+\*/g).join(''),
+      phrase: question.replace(GAP_MATCHER, findIndex).split(HINT_MATCHER).join(''),
       length: gapsArray.length,
     };
-  }
-
-  isReviewMode() {
-    this.setState({ reviewState: !this.state.reviewState });
-  }
-
-  isResultsMode() {
-    this.setState({ resultsState: !this.state.resultsState });
   }
 
   addQuestion(text) {
@@ -64,7 +55,7 @@ export default class ClozeGenerator extends React.Component {
       no: this.state.current,
       question: text,
     };
-    const gapsAndHints = text.match(/{[A-zÀ-ÿ0-9]+}|\*[A-zÀ-ÿ0-9]+\*/g);
+    const gapsAndHints = text.match(/GAP_MATCHER|HINT_MATCHER/);
     const gaps = findTokens(gapsAndHints, this.state.current);
     const stripResult = this.strip(text);
 

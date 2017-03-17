@@ -156,8 +156,6 @@ export default class QuizCreatorMainPage extends Component {
     if (quizType === 'cloze') {
       const question = (
         <ClozeGenerator
-          reviewState={this.state.reviewState}
-          resultsState={this.state.resultsState}
           updateParent={(questionID, qSent, sentenceAttributes, gapsAttributes) =>
             this.collectClozeObject(questionID, qSent, sentenceAttributes, gapsAttributes)}
           index={id}
