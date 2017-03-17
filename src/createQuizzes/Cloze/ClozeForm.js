@@ -9,8 +9,10 @@ export default class ClozeForm extends React.Component {
   }
 
   renderQuestion() {
-    this.props.addQuestion(this.content.value);
-    this.content.value = '';
+    if (this.content.value) {
+      this.props.addQuestion(this.content.value);
+      this.content.value = '';
+    }
   }
 
   render() {

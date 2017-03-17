@@ -95,12 +95,12 @@ export default class QuizCreatorMainPage extends Component {
   }
 
   collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
-    console.log(sentenceAttributes);
-    console.log(gapsAttributes);
     const newQuestion = {
       question: 'Fill in the gaps:',
       type: 'cloze',
-      cloze_sentence_attributes: sentenceAttributes,
+      cloze_sentence_attributes: {
+        text: sentenceAttributes,
+      },
       gaps_attributes: gapsAttributes,
     };
     const inputQ = this.state.submitedQuestions;
