@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
+import { ClozeQuestion } from '../../quizzes/Cloze';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
+import getNOfGaps from '../../helpers/Cloze';
 
 
 const styles = {
@@ -29,7 +31,7 @@ export default class QuizCreatorReviewer extends Component {
       answers: { questions: [] },
       getResponse: '',
       data: {},
-      errorState: false,
+      error: false,
       published: false,
       loadingPublishing: false,
     };
@@ -51,6 +53,10 @@ export default class QuizCreatorReviewer extends Component {
       }, 510);
       this.setState({
         quizInfo: response.data, published: response.data.published });
+    })
+    .catch(() => {
+      this.setState({ error: true });
+      this.props.handleError('default');
     });
   }
   componentWillReceiveProps(nextProps) {
@@ -168,14 +174,34 @@ export default class QuizCreatorReviewer extends Component {
         />
       );
     }
+    if (question.type === 'cloze') {
+      const sentencesInExercise = question.cloze_sentence.text.split('\n');
+      const reversedGaps = question.gaps.slice().reverse();
+      const questionsArray = sentencesInExercise.map((sentence, ind) => ({
+        no: ind + 1,
+        question: sentence,
+        gaps: reversedGaps.splice(0, getNOfGaps(sentence)),
+      }));
+
+      return (
+        <ClozeQuestion
+          req={question.question}
+          index={index}
+          questions={questionsArray}
+          key={question.id}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+        />
+      );
+    }
     return ('');
   }
   render() {
   //  console.log(this.state.quizInfo);
   //    console.log("RENDER QUIZ "+ this.props.quizID, this.state.quizInfo.title);
-    if (this.state.errorState === true) {
+    if (this.state.error === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Connection error...</h1>
+        <h1>Error</h1>
       </div>);
     } else
     if (this.state.loadingQuiz) {
@@ -188,6 +214,7 @@ export default class QuizCreatorReviewer extends Component {
       return (
         <div className="mainQuizViewerBlock">
           <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
+          <h5 style={styles.quizTitle}>Attempts remaining: {this.state.quizInfo.attempts}</h5>
           {this.state.quizInfo.questions.map((question, index) =>
           this.renderQuestions(question, index))}
           <div className="submitPanel">
@@ -240,8 +267,10 @@ QuizCreatorReviewer.propTypes = {
   handlePublish: React.PropTypes.func,
   quizID: React.PropTypes.string.isRequired,
   deleteQuiz: React.PropTypes.func,
+  handleError: React.PropTypes.func,
 };
 QuizCreatorReviewer.defaultProps = {
   handlePublish: null,
   deleteQuiz: null,
+  handleError: null,
 };

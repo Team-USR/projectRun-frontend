@@ -28,7 +28,7 @@ const history = syncHistoryWithStore(browserHistory, store);
 
 
 function isAuth() {
-  if (store.getState().auth.token === null) {
+  if (!store.getState().auth.token) {
     store.dispatch(push('/login'));
   }
 }
