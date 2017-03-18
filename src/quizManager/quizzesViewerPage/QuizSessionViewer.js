@@ -34,7 +34,6 @@ export default class QuizSessionViewer extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.quizID !== this.props.quizID) {
       this.setState({ loading: true });
-      console.log("LOL");
       axios({
         url: `${API_URL}/quizzes/${nextProps.quizID}/start`,
         headers: nextProps.userToken,
