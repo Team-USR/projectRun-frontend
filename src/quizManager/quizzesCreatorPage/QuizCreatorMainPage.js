@@ -88,10 +88,19 @@ export default class QuizCreatorMainPage extends Component {
 
     let quiz = {};
     if (type === 'match') {
-      quiz = { question, type, pairs_attributes: answersAttributes };
+      quiz = {
+        question: question.question,
+        match_default_attributes: {
+          default_text: question.match_default,
+        },
+        type,
+        pairs_attributes: answersAttributes,
+      };
     } else if (type === 'multiple_choice') {
       quiz = { question, type, answers_attributes: answersAttributes };
     }
+
+    console.log('QUIZ POST', quiz);
     inputQ.quiz.questions_attributes[questionID] = quiz;
     this.setState({ submitedQuestions: inputQ });
   }
@@ -146,7 +155,6 @@ export default class QuizCreatorMainPage extends Component {
     if (quizType === 'match') {
       const question = (
         <MatchQuizGenerator
-          handleInput={(questionI, answers) => this.handleInput(questionI, answers, id)}
           content={null}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}

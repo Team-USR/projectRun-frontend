@@ -62,13 +62,11 @@ export default class QuizCreatorReviewer extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.quizID !== nextProps.quizID) {
       this.setState({ loadingQuiz: true });
-//    console.log("SDADS", nextProps.quizID);
       axios({
         url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
         headers: this.props.userToken,
       })
       .then((response) => {
-  //    console.log(response);
         if (!response || (response && response.status !== 200)) {
           this.setState({ errorState: true });
         }
@@ -108,9 +106,6 @@ export default class QuizCreatorReviewer extends Component {
     this.setState({ reviewState: newState });
   }
   renderQuestions(question, index) {
-  //  console.log(answers);
-  //  console.log(type);
-//    console.log("ANSWERSATTRIBUTES", question.answers);
     const answersAttributes = question.answers;
     if (question.type === 'multiple_choice') {
       return (
@@ -129,27 +124,16 @@ export default class QuizCreatorReviewer extends Component {
     }
     if (question.type === 'match') {
       const newQuestion = question;
-      const pairs1 = newQuestion.pairs;
-      const pairs2 = newQuestion.pairs;
-      // console.log(newQuestion.pairs);
-      const Xleft = pairs1.map((obj) => {
-        // console.log(obj);
-        const x = { id: obj.id.toString(), answer: obj.left_choice };
-        return x;
+      const pairs = newQuestion.pairs;
+      newQuestion.left = pairs.map((obj) => {
+        const leftItem = { id: obj.id.toString(), answer: obj.left_choice };
+        return leftItem;
       });
-      const Xright = pairs2.map((obj) => {
-        // console.log(obj);
-        const x2 = { id: obj.id.toString(), answer: obj.right_choice };
-        return x2;
+      newQuestion.right = pairs.map((obj) => {
+        const rightItem = { id: obj.id.toString(), answer: obj.right_choice };
+        return rightItem;
       });
 
-      newQuestion.left = Xleft;
-      newQuestion.right = Xright;
-
-      // console.log(Xleft, Xright);
-
-      // console.log(newQuestion);
-      // console.log(question.pairs);
       return (
         <MatchQuiz
           id={question.id}

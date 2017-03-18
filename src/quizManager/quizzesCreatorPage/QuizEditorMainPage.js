@@ -59,7 +59,9 @@ export default class QuizEditorMainPage extends Component {
          });
        }, 510);
        this.setState({
-         quizInfo: response.data, submitedQuestions: generatedQuiz });
+         quizInfo: response.data,
+         submitedQuestions: generatedQuiz,
+       });
        response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
      })
      .catch(() => {
@@ -69,6 +71,8 @@ export default class QuizEditorMainPage extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.quizID !== nextProps.quizID) {
+      id = 0;
+      displayIndex = 0;
       this.setState({ loadingQuiz: true });
       axios({
         url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
@@ -109,15 +113,15 @@ export default class QuizEditorMainPage extends Component {
   }
   isReviewMode() {
     const sQuestions = this.state.submitedQuestions;
-//    console.log("submitedQuestions ", sQuestions,"finishsubmited");
-    const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
-     element !== null);
-    const loadingTrue = true;
-//    console.log("filtered ",filteredQuestions," finishfiltered");
-    this.setState({ loading: loadingTrue, submitedQuestions: filteredQuestions });
-  //  console.log("----------");
+  //  console.log("submitedQuestions ", sQuestions,"finishsubmited");
+    const filteredQuestions = sQuestions.quiz.questions_attributes.filter(
+      element => element !== null,
+    );
+    // console.log('filtered', filteredQuestions, 'finishfiltered');
+    this.setState({ loading: true, submitedQuestions: filteredQuestions });
+//    console.log("----------");
 //    console.log(filteredQuestions);
-//  console.log("----------");
+//    console.log("----------");
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}`,
       data: this.state.submitedQuestions,
@@ -138,17 +142,28 @@ export default class QuizEditorMainPage extends Component {
   }
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
-    const quiz = { question, type, answers_attributes: answersAttributes };
-    // console.log("questionID"+questionID);
-    // if (inputQ.quiz.questions_attributes[questionID] === null) {
-    //   inputQ.quiz.questions_attributes.push(quiz);
-    // } else {
+
+    let quiz = {};
+    if (type === 'match') {
+      quiz = {
+        question: question.question,
+        match_default_attributes: {
+          default_text: question.match_default,
+        },
+        type,
+        pairs_attributes: answersAttributes,
+      };
+      if (!question.match_default) {
+        quiz.match_default_attributes.default_text = 'Choose an option';
+      }
+    } else if (type === 'multiple_choice') {
+      quiz = { question, type, answers_attributes: answersAttributes };
+    }
+
     inputQ.quiz.questions_attributes[questionID] = quiz;
-  //  }
     this.setState({ submitedQuestions: inputQ });
   }
   addQuiz(quizType, questionObj) {
-  //  console.log(id);
     displayIndex = 0;
 
     const buttonGroup = (
@@ -167,7 +182,6 @@ export default class QuizEditorMainPage extends Component {
     const answ = '';
     const inputQuestion = { id, ques, answ };
     if (quizType === 'multiple_choice') {
-    //  console.log(id);
       const question = (
         <MultipleChoiceQuizGenerator
           handleInput={(questionI, answers) => this.handleInput(questionI, answers, id)}
@@ -181,12 +195,26 @@ export default class QuizEditorMainPage extends Component {
     }
 
     if (quizType === 'match') {
+      const newQuestion = questionObj;
+
+      if (questionObj) {
+        const pairs = newQuestion.pairs;
+        const newPairs = pairs.map((obj) => {
+          const item = { right_choice: obj.right_choice, left_choice: obj.left_choice };
+          return item;
+        });
+        newQuestion.pairs = newPairs;
+      }
+
       const question = (
         <MatchQuizGenerator
+          content={newQuestion}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
           index={id}
           key={`match${id}`}
+          updateParent={(answersAttributes, qObject, ind) =>
+            this.collectObject(answersAttributes, qObject, 'match', ind)}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -204,6 +232,8 @@ export default class QuizEditorMainPage extends Component {
 
     inputQuestionList.push(inputQuestion);
     questionList.push(questionObject);
+
+    // console.log(questionList);
     this.setState({ questions: questionList, inputQuestions: inputQuestionList });
     id += 1;
   }
