@@ -24,7 +24,7 @@ export default class SideBarQuizzes extends Component {
       }
       return (null);
     });
-    if (!found && event.target.value !== '') {
+    if (!found && event.target.valaue !== '') {
       filteredContent = [];
     } else
     if (filteredContent.length === 0 || event.target.value === '') {
@@ -34,12 +34,12 @@ export default class SideBarQuizzes extends Component {
       if (filteredContent.length === 0 || event.target.value === '') {
         this.setState({ activePanel: null });
       } else {
-        this.decideActivePanel(filteredContent);
+        this.decideActiveStudentPanel(filteredContent);
       }
     }
     this.setState({ content: filteredContent });
   }
-  decideActivePanel(filteredContent) {
+  decideActiveStudentPanel(filteredContent) {
     this.filteredContent = filteredContent;
     let con = filteredContent;
     con = con.sort((a, b) => {
@@ -115,7 +115,7 @@ export default class SideBarQuizzes extends Component {
             </NavItem>
           </Nav>
           <Nav key={'teacher'} >
-            <Accordion defaultActiveKey={'1'}>
+            <Accordion defaultActiveKey={this.state.activePanel}>
               <Panel header={`Unpublished (${unpublishedContent.length})`} eventKey="1">
                 {
         unpublishedContent.map((item, index) => {
