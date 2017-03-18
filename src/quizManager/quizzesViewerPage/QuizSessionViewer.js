@@ -91,7 +91,7 @@ export default class QuizSessionViewer extends Component {
           </div>,
               );
       }
-      if (inprogress === 0 ) {
+      if (inprogress === 0) {
         element.push(
           <div className="inProgress" key={`startSession${index + 1}`}>
             <div className="row">

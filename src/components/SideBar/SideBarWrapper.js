@@ -65,7 +65,7 @@ export default class SideBarWrapper extends Component {
           <Navbar.Header>
             <Navbar.Brand>
               <Button
-                className="titleButton"
+                className="mainButton"
                 onClick={() => this.props.onSideBarTitleClick()}
               >
                 {this.props.title}</Button>

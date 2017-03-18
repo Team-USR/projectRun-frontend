@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { Nav, NavItem, Button, Accordion, Panel } from 'react-bootstrap';
 import { STUDENT, TEACHER } from '../../constants';
+import plusSign from '../../assets/images/plus.svg';
 
 export default class SideBarQuizzes extends Component {
   constructor() {
@@ -150,8 +151,15 @@ export default class SideBarQuizzes extends Component {
           <Nav>
             <NavItem key={0}>
               <Button className="titleButton" onClick={() => this.props.onQuizCreatorClick()}>
-        Create a quiz
-        </Button>
+                <div className="row">
+                  <div className="col-md-3 plusIconWrapper">
+                    <img className="plusIcon" src={plusSign} alt={'+'} />
+                  </div>
+                  <div className="col-md-9 createText">
+                Create a quiz
+                </div>
+                </div>
+              </Button>
             </NavItem>
           </Nav>
           <Nav key={'teacher'} >

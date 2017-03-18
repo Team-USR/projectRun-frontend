@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
 import React, { PropTypes, Component } from 'react';
-import { Button, Col } from 'react-bootstrap';
+import { Button, Col, NavItem } from 'react-bootstrap';
 import { StudentManager } from '../GroupStudents';
 
 export default class StudentsPanel extends Component {
@@ -171,12 +171,25 @@ export default class StudentsPanel extends Component {
       </li>,
     );
   }
-
+  renderSearchBar() {
+    return (
+      <NavItem key={'searchBar'} >
+        <input
+          className="searchBarItem"
+          id="searchBar"
+          type="text"
+          placeholder="Search for a quiz"
+          onChange={this.filterItems}
+        />
+      </NavItem>
+    );
+  }
   render() {
     return (
       <div className="studentsPanelWrapper">
         <Col md={12}>
           <h3>Manage enrolled Students</h3>
+          {this.renderSearchBar()}
         </Col>
         <Col md={12} className="studentsList">
           <Col md={6}>
