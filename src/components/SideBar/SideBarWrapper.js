@@ -1,23 +1,24 @@
 import React, { PropTypes, Component } from 'react';
 import { Navbar, Nav, Button } from 'react-bootstrap';
 import { SideBarQuizzes, SideBarClasses } from './index';
+import { STUDENT, TEACHER } from '../../constants';
 
 export default class SideBarWrapper extends Component {
 
   renderSideBarContent() {
     let sideBarContent = (<Nav />);
     if (this.props.type === 'SideBarQuizzes') {
-      if (this.props.userType === 'student') {
+      if (this.props.userType === STUDENT) {
         sideBarContent = (
           <SideBarQuizzes
             key={'stud'}
             userType={this.props.userType}
             onQuizClick={id =>
-            this.props.onSideBarItemClick(id, 'viewer')}
+            this.props.onSideBarItemClick(id, 'sessions')}
             content={this.props.sideBarContent.session}
           />
         );
-      } else if (this.props.userType === 'teacher') {
+      } else if (this.props.userType === TEACHER) {
         sideBarContent = (
           <SideBarQuizzes
             key={'teach'}
@@ -32,7 +33,7 @@ export default class SideBarWrapper extends Component {
     }
 
     if (this.props.type === 'SideBarClasses') {
-      if (this.props.userType === 'teacher') {
+      if (this.props.userType === TEACHER) {
         sideBarContent = (
           <SideBarClasses
             userType={this.props.userType}
@@ -42,7 +43,7 @@ export default class SideBarWrapper extends Component {
             content={this.props.sideBarContent.classes}
           />
         );
-      } else if (this.props.userType === 'student') {
+      } else if (this.props.userType === STUDENT) {
         sideBarContent = (
           <SideBarClasses
             userType={this.props.userType}
@@ -63,7 +64,11 @@ export default class SideBarWrapper extends Component {
         <Navbar inverse collapseOnSelect className="mainNavContainer">
           <Navbar.Header>
             <Navbar.Brand>
-              <Button onClick={() => this.props.onSideBarTitleClick()}>{this.props.title}</Button>
+              <Button
+                className="titleButton"
+                onClick={() => this.props.onSideBarTitleClick()}
+              >
+                {this.props.title}</Button>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>

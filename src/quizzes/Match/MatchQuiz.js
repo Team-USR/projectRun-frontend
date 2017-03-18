@@ -62,8 +62,12 @@ export default class MatchQuiz extends Component {
     const leftElements = matchQuizQuestions.leftElements;
     const rightElements = matchQuizQuestions.rightElements;
 
-    this.leftColumnShuffled = MatchQuiz.shuffleArray(leftElements);
-    this.rightColumnShuffled = MatchQuiz.shuffleArray(rightElements);
+    this.leftColumnShuffled = leftElements;
+    this.rightColumnShuffled = rightElements;
+    if (!this.props.reviewState) {
+      this.leftColumnShuffled = MatchQuiz.shuffleArray(leftElements);
+      this.rightColumnShuffled = MatchQuiz.shuffleArray(rightElements);
+    }
   }
 
   checkAnswers(answers) {
@@ -94,11 +98,19 @@ export default class MatchQuiz extends Component {
 
   renderRightElement(obj, index) {
     this.obj = obj;
+    let defaultOption = this.state.matchQuizQuestions.defaultValue;
+    let rightElements = this.rightColumnShuffled;
+    let leftElements = this.leftColumnShuffled;
+    if (this.props.reviewState) {
+      rightElements = this.props.question.right;
+      leftElements = this.props.question.left;
+      defaultOption = rightElements[index];
+    }
     const rightElement = (
       <MatchRightElement
-        rightElements={this.rightColumnShuffled}
-        leftElements={this.leftColumnShuffled}
-        defaultValue={this.state.matchQuizQuestions.defaultValue}
+        rightElements={rightElements}
+        leftElements={leftElements}
+        defaultValue={defaultOption}
         inReview={this.props.reviewState}
         inResult={this.props.resultsState}
         onChange={

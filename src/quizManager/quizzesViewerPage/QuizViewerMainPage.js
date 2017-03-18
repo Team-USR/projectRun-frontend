@@ -31,6 +31,7 @@ export default class QuizViewerMainPage extends Component {
       session: {},
       savedSession: true,
       score: null,
+      error: false,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -38,13 +39,11 @@ export default class QuizViewerMainPage extends Component {
   }
   componentWillMount() {
 //    console.log("mount");
-
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}`,
       headers: this.props.userToken,
     })
     .then(response => setTimeout(() => {
-//      console.log(response);
       this.setState({
         loadingQuiz: false,
         quizInfo: response.data.quiz,
@@ -53,7 +52,11 @@ export default class QuizViewerMainPage extends Component {
       });
       this.loadSession();
     //   console.log("SESSSION", this.state.quizInfo);
-    }, 510));
+    }, 510))
+    .catch(() => {
+      this.setState({ error: true });
+      this.props.handleError('default');
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -254,9 +257,9 @@ export default class QuizViewerMainPage extends Component {
     return ('');
   }
   render() {
-//    console.log("ANSWERS", this.state.answers);
-//    console.log("SESSSION", this.state.session);
-//    console.log(this.state.loadingQuiz);
+    if (this.state.error) {
+      return (<h1>ERROR</h1>);
+    }
     if (this.state.loadingQuiz) {
       return <BrandSpinner />;
     }
@@ -264,6 +267,7 @@ export default class QuizViewerMainPage extends Component {
       <div className="mainQuizViewerBlock">
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         <h5 style={styles.quizTile}>Created by: {this.state.quizInfo.creator}</h5>
+        <h5 style={styles.quizTile}>Attempts remaining: {this.state.quizInfo.attempts}</h5>
         {this.state.quizInfo.questions.map((question, index) =>
         this.renderQuestions(question, index))}
         {this.renderSubmitPanel()}
@@ -276,7 +280,9 @@ QuizViewerMainPage.propTypes = {
   userToken: React.PropTypes.shape({}).isRequired,
   quizID: React.PropTypes.string.isRequired,
   reloadSideBar: React.PropTypes.func,
+  handleError: React.PropTypes.func,
 };
 QuizViewerMainPage.defaultProps = {
   reloadSideBar: null,
+  handleError: null,
 };
