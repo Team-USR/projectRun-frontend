@@ -40,6 +40,7 @@ export default class QuizEditorMainPage extends Component {
     this.changeAttempts = this.changeAttempts.bind(this);
   }
   componentWillMount() {
+    id = 0;
     this.setState({ loadingQuiz: true });
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}/edit`,
@@ -71,8 +72,6 @@ export default class QuizEditorMainPage extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.quizID !== nextProps.quizID) {
-      id = 0;
-      displayIndex = 0;
       this.setState({ loadingQuiz: true });
       axios({
         url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
@@ -165,7 +164,6 @@ export default class QuizEditorMainPage extends Component {
   }
   addQuiz(quizType, questionObj) {
     displayIndex = 0;
-
     const buttonGroup = (
       <div className="">
         <ButtonWrapper
@@ -174,7 +172,6 @@ export default class QuizEditorMainPage extends Component {
           removeQuiz={index => this.removeQuiz(index)}
         />
       </div>);
-
     let questionObject = { id };
     const questionList = this.state.questions;
     const inputQuestionList = this.state.inputQuestions;

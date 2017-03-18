@@ -58,6 +58,11 @@ export default class MyQuizzesPage extends Component {
         quizID = cookie.load('current-session-id');
         this.setState({ panelType: pType, currentID: quizID });
       }
+    })
+    .catch(() => {
+      const newSideBarContent = { session: [] };
+      this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
+      this.updateCurrentQuiz('default');
     });
   }
   requestTeacherData() {
