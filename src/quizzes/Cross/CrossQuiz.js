@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { Board } from './index';
-import '../../style/Cross.css';
 
 export default class CrossQuiz extends Component {
   constructor(props) {

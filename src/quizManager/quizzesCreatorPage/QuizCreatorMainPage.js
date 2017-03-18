@@ -4,6 +4,7 @@ import axios from 'axios';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { ClozeGenerator } from '../../createQuizzes/Cloze';
+import { CrossQuizGenerator } from '../../createQuizzes/Cross';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
@@ -100,8 +101,22 @@ export default class QuizCreatorMainPage extends Component {
       quiz = { question, type, answers_attributes: answersAttributes };
     }
 
-    console.log('QUIZ POST', quiz);
     inputQ.quiz.questions_attributes[questionID] = quiz;
+    this.setState({ submitedQuestions: inputQ });
+  }
+
+  collectCrossObject(question, metaAtributes, rowsAttributes, hintsAttributes, questionID) {
+    const newQuestion = {
+      question,
+      type: 'cross',
+      metadata_attributes: metaAtributes,
+      rows_attributes: rowsAttributes,
+      hints_attributes: hintsAttributes,
+    };
+
+    const inputQ = this.state.submitedQuestions;
+    inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    // console.log(inputQ);
     this.setState({ submitedQuestions: inputQ });
   }
 
@@ -173,6 +188,19 @@ export default class QuizCreatorMainPage extends Component {
             this.collectClozeObject(questionID, qSent, sentenceAttributes, gapsAttributes)}
           index={id}
           key={`cloze${id}`}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+
+    if (quizType === 'cross') {
+      const question = (
+        <CrossQuizGenerator
+          updateParent={(questionTitle, metaAtributes, rowsAttributes, hintsAttributes) =>
+            this.collectCrossObject(
+              questionTitle, metaAtributes, rowsAttributes, hintsAttributes, id,
+            )}
+          index={id}
+          key={`cross${id}`}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -268,6 +296,7 @@ export default class QuizCreatorMainPage extends Component {
           <Button onClick={() => this.addQuiz('multiple_choice')}> Multiple Choice</Button>
           <Button onClick={() => this.addQuiz('match')}>Match</Button>
           <Button onClick={() => this.addQuiz('cloze')}>Cloze</Button>
+          <Button onClick={() => this.addQuiz('cross')}>Cross</Button>
           {this.renderQuestions()}
           <br /><br /><br />
           { this.renderSubmitPanel() }

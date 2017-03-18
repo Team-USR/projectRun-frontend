@@ -9,7 +9,11 @@ export default class DefaultQuizzesPanel extends Component {
   }
 
   render() {
-    return <h1><b>My Quizzes</b></h1>;
+    return (
+      <div>
+        <h1><b>My Quizzes</b></h1>
+      </div>
+    );
   }
 
 }
