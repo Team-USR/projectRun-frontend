@@ -37,7 +37,47 @@ export default class SideBarQuizzes extends Component {
         this.decideActiveStudentPanel(filteredContent);
       }
     }
+    if (this.props.userType === TEACHER) {
+      if (filteredContent.length === 0 || event.target.value === '') {
+        this.setState({ activePanel: null });
+      } else {
+        this.deciceActiveTeacherPanel(filteredContent);
+      }
+    }
     this.setState({ content: filteredContent });
+  }
+  deciceActiveTeacherPanel(filteredContent) {
+    this.filteredContent = filteredContent;
+    let con = filteredContent;
+    con = con.sort((a, b) => {
+      if (a.published) return -1;
+      if (b.published) return 1;
+      return 0;
+    });
+    let counter = 0;
+    let max = 0;
+    let type = '';
+    con.map((item, index) => {
+      if (con[index + 1] !== null && con[index + 1] !== undefined) {
+        if (item.published === con[index + 1].published) {
+          counter += 1;
+          if (counter >= max) {
+            max = counter;
+            type = item.published;
+          }
+        } else counter = 0;
+      }
+      if (con.length === 1) {
+        type = item.published;
+      }
+      return 0;
+    });
+    if (type === false) {
+      this.setState({ activePanel: '1' });
+    }
+    if (type === true) {
+      this.setState({ activePanel: '2' });
+    }
   }
   decideActiveStudentPanel(filteredContent) {
     this.filteredContent = filteredContent;
