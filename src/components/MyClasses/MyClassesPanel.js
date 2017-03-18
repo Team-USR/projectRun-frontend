@@ -11,7 +11,36 @@ import {
 } from './panels';
 
 export default class MyClassesPanel extends Component {
-
+  constructor() {
+    super();
+    this.state = {
+      filteredStudents: [],
+    };
+  }
+  componentWillMount() {
+    this.setState({ filteredStudents: this.props.content.students });
+  }
+  filterItems(value) {
+    let found = false;
+    let filtered = this.props.content.students.filter((item) => {
+      if (item.name.toLowerCase() === value.toLowerCase() ||
+          item.name.toLowerCase().includes(value.toLowerCase())) {
+        found = true;
+        return (item);
+      }
+      return (null);
+    });
+    if (!found && value !== '') {
+      filtered = [];
+    } else
+    if (filtered.length === 0 || value === '') {
+      filtered = this.props.content.students;
+    }
+    this.setState({ filteredStudents: filtered });
+  }
+  manageSearch(value) {
+    this.filterItems(value);
+  }
   renderPanel() {
     let element = (
       <DefaultClassesPanel
@@ -47,7 +76,10 @@ export default class MyClassesPanel extends Component {
               handleSaveEnrolledStudents={newStudentsArray =>
                 this.props.handleSaveEnrolledStudents(newStudentsArray)}
               students={this.props.content.students}
+              filteredStudents={this.state.filteredStudents}
               allStudents={this.props.allStudents}
+              manageSearch={value => this.manageSearch(value)}
+              forceFilter={value => this.filterItems(value)}
             />
           </div>
         );
@@ -129,4 +161,5 @@ MyClassesPanel.propTypes = {
   handleManageQuizzesFromClass: PropTypes.func.isRequired,
   handleManageStudentsFromClass: PropTypes.func.isRequired,
   handleDeleteClass: PropTypes.func.isRequired,
+  manageSearch: PropTypes.func.isRequired,
 };

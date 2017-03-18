@@ -26,6 +26,7 @@ export default class MyClassesPage extends Component {
       sideBarContent: { classes: [] },
       content: { quizzes: [], students: [] },
       userT: STUDENT,
+      loadingSearch: false,
     };
   }
 
@@ -254,7 +255,6 @@ export default class MyClassesPage extends Component {
     })
     .then(() => this.setState({ panelType: 'show_selected_class' }));
   }
-
   renderClassesPanel() {
     const element = (
       <MyClassesPanel
@@ -276,6 +276,7 @@ export default class MyClassesPage extends Component {
         handleManageStudentsFromClass={() => this.handleManageStudentsFromClass()}
         handleManageQuizzesFromClass={() => this.handleManageQuizzesFromClass()}
         handleDeleteClass={id => this.handleDeleteClass(id)}
+        manageSearch={value => this.manageSearch(value)}
       />);
     return element;
   }

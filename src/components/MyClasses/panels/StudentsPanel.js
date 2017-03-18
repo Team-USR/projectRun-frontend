@@ -12,10 +12,12 @@ export default class StudentsPanel extends Component {
       csvData: [],
       enrolledStudents: [],
       unenrolledStudents: [],
+      currentSearched: '',
     };
     this.changeInput = this.changeInput.bind(this);
     this.importCSV = this.importCSV.bind(this);
     this.parseFile = this.parseFile.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentWillMount() {
@@ -123,33 +125,48 @@ export default class StudentsPanel extends Component {
       enrolledStudents: newEnrolledObj,
       unenrolledStudents: newUnenrolledObj,
     });
+    this.props.forceFilter(this.state.currentSearched);
   }
 
-  removeStudent(index) {
-    const newUnenrolledObj = this.state.unenrolledStudents;
-    newUnenrolledObj.push(this.state.enrolledStudents[index]);
-
-    const newEnrolledObj = this.state.enrolledStudents;
-    newEnrolledObj.splice(index, 1);
-
-    this.setState({
-      enrolledStudents: newEnrolledObj,
-      unenrolledStudents: newUnenrolledObj,
+  removeStudent(id) {
+    let newIndex = -1;
+    this.state.enrolledStudents.map((item, index) => {
+      if (item.id === id) {
+        newIndex = index;
+      }
+      return (-1);
     });
-  }
+    if (newIndex >= 0) {
+      const newUnenrolledObj = this.state.unenrolledStudents;
+      newUnenrolledObj.push(this.state.enrolledStudents[newIndex]);
 
-  renderEnrolledStudents() {
-    if (this.state.enrolledStudents.length === 0) {
-      return <h4>There are no students enrolled in this class!</h4>;
+      const newEnrolledObj = this.state.enrolledStudents;
+      newEnrolledObj.splice(newIndex, 1);
+      this.setState({
+        enrolledStudents: newEnrolledObj,
+        unenrolledStudents: newUnenrolledObj,
+      });
+      this.props.forceFilter(this.state.currentSearched);
     }
-    return this.state.enrolledStudents.map((obj, index) =>
+  }
+  handleSearch(event) {
+    this.props.manageSearch(event.target.value);
+    this.setState({ currentSearched: event.target.value });
+  }
+  renderEnrolledStudents() {
+    if (this.props.students.length === 0) {
+      return <h4>There are no students enrolled in this class!</h4>;
+    } else if (this.props.filteredStudents.length === 0) {
+      return <h4>No students found with this name!</h4>;
+    }
+    return this.props.filteredStudents.map((obj, index) =>
       <li key={`enrolled_student_${obj.id}`}>
         <StudentManager
           type={'remove'}
           id={obj.id}
           index={index}
           name={obj.name}
-          removeStudent={studentIndex => this.removeStudent(studentIndex)}
+          removeStudent={() => this.removeStudent(obj.id)}
         />
       </li>,
     );
@@ -178,8 +195,8 @@ export default class StudentsPanel extends Component {
           className="searchBarItem"
           id="searchBar"
           type="text"
-          placeholder="Search for a quiz"
-          onChange={this.filterItems}
+          placeholder="Search for a student"
+          onChange={this.handleSearch}
         />
       </NavItem>
     );
@@ -240,7 +257,6 @@ export default class StudentsPanel extends Component {
             </div>
           </div>
         </Col>
-
       </div>
     );
   }
@@ -250,4 +266,7 @@ StudentsPanel.propTypes = {
   students: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   allStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   handleSaveEnrolledStudents: PropTypes.func.isRequired,
+  manageSearch: PropTypes.func.isRequired,
+  forceFilter: PropTypes.func.isRequired,
+  filteredStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
