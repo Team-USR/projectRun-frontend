@@ -34,7 +34,7 @@ export default class StudentsPanel extends Component {
       return 0;
     });
 
-    return this.props.allStudents.filter((obj) => {
+    return this.props.filteredAllStudents.filter((obj) => {
       if (!newStudentsObj[obj.id]) {
         return true;
       }
@@ -173,10 +173,10 @@ export default class StudentsPanel extends Component {
   }
 
   renderUnenrolledStudents() {
-    if (this.state.unenrolledStudents.length === 0) {
+    if (this.getUnenrolledStudents().length === 0) {
       return <h4>All students have been enrolled!</h4>;
     }
-    return this.state.unenrolledStudents.map((obj, index) =>
+    return this.getUnenrolledStudents().map((obj, index) =>
       <li key={`unenrolled_student_${obj.id}`}>
         <StudentManager
           type={'add'}
@@ -264,7 +264,7 @@ export default class StudentsPanel extends Component {
 
 StudentsPanel.propTypes = {
   students: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  allStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  filteredAllStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   handleSaveEnrolledStudents: PropTypes.func.isRequired,
   manageSearch: PropTypes.func.isRequired,
   forceFilter: PropTypes.func.isRequired,

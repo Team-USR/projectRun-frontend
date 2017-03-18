@@ -15,10 +15,14 @@ export default class MyClassesPanel extends Component {
     super();
     this.state = {
       filteredStudents: [],
+      filteredAllStudents: [],
     };
   }
   componentWillMount() {
-    this.setState({ filteredStudents: this.props.content.students });
+    this.setState({
+      filteredStudents: this.props.content.students,
+      filteredAllStudents: this.props.allStudents,
+    });
   }
   filterItems(value) {
     let found = false;
@@ -36,7 +40,23 @@ export default class MyClassesPanel extends Component {
     if (filtered.length === 0 || value === '') {
       filtered = this.props.content.students;
     }
-    this.setState({ filteredStudents: filtered });
+    let filteredAll = this.props.allStudents.filter((item) => {
+      if (item.name.toLowerCase() === value.toLowerCase() ||
+          item.name.toLowerCase().includes(value.toLowerCase())) {
+        found = true;
+        return (item);
+      }
+      return (null);
+    });
+    if (!found && value !== '') {
+      filteredAll = [];
+    } else
+    if (filteredAll.length === 0 || value === '') {
+      filteredAll = this.props.allStudents;
+    }
+    this.setState({
+      filteredStudents: filtered,
+      filteredAllStudents: filteredAll });
   }
   manageSearch(value) {
     this.filterItems(value);
@@ -78,6 +98,7 @@ export default class MyClassesPanel extends Component {
               students={this.props.content.students}
               filteredStudents={this.state.filteredStudents}
               allStudents={this.props.allStudents}
+              filteredAllStudents={this.state.filteredAllStudents}
               manageSearch={value => this.manageSearch(value)}
               forceFilter={value => this.filterItems(value)}
             />
@@ -161,5 +182,4 @@ MyClassesPanel.propTypes = {
   handleManageQuizzesFromClass: PropTypes.func.isRequired,
   handleManageStudentsFromClass: PropTypes.func.isRequired,
   handleDeleteClass: PropTypes.func.isRequired,
-  manageSearch: PropTypes.func.isRequired,
 };
