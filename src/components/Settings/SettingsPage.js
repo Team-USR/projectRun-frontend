@@ -28,6 +28,10 @@ export default class SettingsPage extends Component {
       cookie.save('userType', TEACHER);
       this.setState({ isTeacher: true });
     }
+    cookie.remove('current-class-id');
+    cookie.remove('current-class-title');
+    cookie.remove('current-session-id');
+    cookie.remove('current-session-type');
   }
 
   renderProfileTab() {

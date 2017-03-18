@@ -85,13 +85,23 @@ export default class QuizCreatorMainPage extends Component {
 
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
-    const quiz = { question, type, answers_attributes: answersAttributes };
-    // console.log("questionID"+questionID);
-    // if (inputQ.quiz.questions_attributes[questionID] === null) {
-    //   inputQ.quiz.questions_attributes.push(quiz);
-    // } else {
+
+    let quiz = {};
+    if (type === 'match') {
+      quiz = {
+        question: question.question,
+        match_default_attributes: {
+          default_text: question.match_default,
+        },
+        type,
+        pairs_attributes: answersAttributes,
+      };
+    } else if (type === 'multiple_choice') {
+      quiz = { question, type, answers_attributes: answersAttributes };
+    }
+
+    console.log('QUIZ POST', quiz);
     inputQ.quiz.questions_attributes[questionID] = quiz;
-  //  }
     this.setState({ submitedQuestions: inputQ });
   }
 
@@ -145,10 +155,13 @@ export default class QuizCreatorMainPage extends Component {
     if (quizType === 'match') {
       const question = (
         <MatchQuizGenerator
+          content={null}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
           index={id}
           key={`match${id}`}
+          updateParent={(answersAttributes, qObject, ind) =>
+            this.collectObject(answersAttributes, qObject, 'match', ind)}
         />);
       questionObject = { id, question, buttonGroup };
     }

@@ -62,13 +62,11 @@ export default class QuizCreatorReviewer extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.quizID !== nextProps.quizID) {
       this.setState({ loadingQuiz: true });
-//    console.log("SDADS", nextProps.quizID);
       axios({
         url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
         headers: this.props.userToken,
       })
       .then((response) => {
-  //    console.log(response);
         if (!response || (response && response.status !== 200)) {
           this.setState({ errorState: true });
         }
@@ -108,9 +106,6 @@ export default class QuizCreatorReviewer extends Component {
     this.setState({ reviewState: newState });
   }
   renderQuestions(question, index) {
-  //  console.log(answers);
-  //  console.log(type);
-//    console.log("ANSWERSATTRIBUTES", question.answers);
     const answersAttributes = question.answers;
     if (question.type === 'multiple_choice') {
       return (
@@ -128,14 +123,25 @@ export default class QuizCreatorReviewer extends Component {
       );
     }
     if (question.type === 'match') {
+      const newQuestion = question;
+      const pairs = newQuestion.pairs;
+      newQuestion.left = pairs.map((obj) => {
+        const leftItem = { id: obj.id.toString(), answer: obj.left_choice };
+        return leftItem;
+      });
+      newQuestion.right = pairs.map((obj) => {
+        const rightItem = { id: obj.id.toString(), answer: obj.right_choice };
+        return rightItem;
+      });
+
       return (
         <MatchQuiz
           id={question.id}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
-          question={question}
+          question={newQuestion}
           index={index}
-          correctAnswer={this.state.data[question.id]}
+          correctAnswer={{}}
           callbackParent={() => {}}
           key={`match_quiz_${question.id}`}
         />
