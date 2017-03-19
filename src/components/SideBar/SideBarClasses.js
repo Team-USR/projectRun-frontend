@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Nav, NavItem, Button } from 'react-bootstrap';
-import plusSign from '../../assets/images/plus.svg'
+import plusSign from '../../assets/images/plus.svg';
 
 export default class SideBarClasses extends Component {
   constructor() {
@@ -23,7 +23,7 @@ export default class SideBarClasses extends Component {
       }
       return (null);
     });
-    if (!found && event.target.valaue !== '') {
+    if (!found && event.target.value !== '') {
       filteredContent = [];
     } else
     if (filteredContent.length === 0 || event.target.value === '') {

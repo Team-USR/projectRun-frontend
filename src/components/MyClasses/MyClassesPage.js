@@ -18,10 +18,10 @@ export default class MyClassesPage extends Component {
       currentClassId: '',
       allQuizzes: [],
       allStudents: [
-        { id: 9, name: 'Geon' },
-        { id: 10, name: 'Gigel' },
-        { id: 11, name: 'Jlaba' },
-        { id: 12, name: 'Blercu' },
+        // { id: 9, name: 'Geon' },
+        // { id: 10, name: 'Gigel' },
+        // { id: 11, name: 'Jlaba' },
+        // { id: 12, name: 'Blercu' },
       ],
       sideBarContent: { classes: [] },
       content: { quizzes: [], students: [] },
@@ -69,7 +69,7 @@ export default class MyClassesPage extends Component {
     });
   }
   updateAllStudents(object) {
-    console.log("ALMOST UDPATED", object);
+//    console.log("ALMOST UDPATED", object);
     this.setState({ allStudents: object });
   }
   requestTeacherData() {

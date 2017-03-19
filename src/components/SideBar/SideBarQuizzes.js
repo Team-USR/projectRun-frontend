@@ -25,7 +25,7 @@ export default class SideBarQuizzes extends Component {
       }
       return (null);
     });
-    if (!found && event.target.valaue !== '') {
+    if (!found && event.target.value !== '') {
       filteredContent = [];
     } else
     if (filteredContent.length === 0 || event.target.value === '') {

@@ -28,8 +28,9 @@ export default class MyClassesPanel extends Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    console.log("RECEIVE PROPS");
+//    console.log("RECEIVE PROPS");
     this.setState({
+      filteredStudents: nextProps.content.students,
       filteredAllStudents: nextProps.allStudents,
     });
   }
@@ -68,21 +69,22 @@ export default class MyClassesPanel extends Component {
       filteredAllStudents: filteredAll });
   }
   manageSearch(value) {
-    this.setState({ loadingSearch: true });
     this.filterItems(value);
     if (timeout !== null) {
       clearTimeout(timeout);
     }
-    timeout = setTimeout(() => {
-      const searchedItem = { input: value };
-      axios({
-        url: `${API_URL}/users/search`,
-        headers: this.props.userToken,
-        method: 'post',
-        data: searchedItem,
-      })
+    if (value.length > 0) {
+      this.setState({ loadingSearch: true });
+      timeout = setTimeout(() => {
+        const searchedItem = { input: value };
+        axios({
+          url: `${API_URL}/users/search`,
+          headers: this.props.userToken,
+          method: 'post',
+          data: searchedItem,
+        })
       .then((response) => {
-        console.log(response);
+//        console.log(response);
         const retrievedStudents = [];
         let best = {};
         if (response.data.best_match_name[0]) {
@@ -99,7 +101,6 @@ export default class MyClassesPanel extends Component {
             name: response.data.best_match_email[0].name,
           };
           if (retrievedStudents[0].id !== response.data.best_match_email[0].id) {
-            console.log("ok");
             retrievedStudents.push(best2);
           }
         }
@@ -109,7 +110,6 @@ export default class MyClassesPanel extends Component {
             if (item.id === duplicateItem.id) {
               duplicate = true;
             }
-            duplicate = false;
             return 0;
           });
           if (!duplicate) {
@@ -124,7 +124,6 @@ export default class MyClassesPanel extends Component {
             if (item.id === duplicateItem.id) {
               duplicate = true;
             }
-            duplicate = false;
             return 0;
           });
           if (!duplicate) {
@@ -134,11 +133,16 @@ export default class MyClassesPanel extends Component {
           return 0;
         });
         this.props.updateAllStudents(retrievedStudents);
+        this.filterItems(value);
       });
-      this.setState({
-        loadingSearch: false,
-      });
-    }, 2000);
+        this.setState({
+          loadingSearch: false,
+        });
+      }, 2000);
+    }
+    if (value.length === 0) {
+      this.setState({ loadingSearch: false });
+    }
   }
   renderPanel() {
     let element = (
@@ -180,6 +184,7 @@ export default class MyClassesPanel extends Component {
               filteredAllStudents={this.state.filteredAllStudents}
               manageSearch={value => this.manageSearch(value)}
               forceFilter={value => this.filterItems(value)}
+              loadingSearch={this.state.loadingSearch}
             />
           </div>
         );

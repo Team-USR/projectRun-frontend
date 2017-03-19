@@ -2,6 +2,7 @@ import Papa from 'papaparse';
 import React, { PropTypes, Component } from 'react';
 import { Button, Col, NavItem } from 'react-bootstrap';
 import { StudentManager } from '../GroupStudents';
+import { SearchSpinner } from '../../../components/utils';
 
 export default class StudentsPanel extends Component {
   constructor() {
@@ -22,29 +23,30 @@ export default class StudentsPanel extends Component {
 
   componentWillMount() {
     this.setState({
+      loadingSearch: this.props.loadingSearch,
       enrolledStudents: this.props.students,
-      unenrolledStudents:
-      this.getUnenrolledStudents(this.props.students, this.props.filteredAllStudents),
+      filteredALl: this.props.filteredAllStudents,
+      unenrolledStudents: this.getUnenrolledStudents(this.props.filteredAllStudents),
     });
   }
   componentWillReceiveProps(nextProps) {
-    console.log("ENROLED: ", nextProps.students);
-    console.log("UNENROLED", nextProps.filteredAllStudents);
-    console.log("UNENROLD2", this.getUnenrolledStudents());
+//    console.log('ENROLED: ', nextProps.students);
+//    console.log('UNENROLED', nextProps.filteredAllStudents);
+//    console.log('UNENROLLED', this.getUnenrolledStudents(nextProps.filteredAllStudents));
     this.setState({
+      loadingSearch: nextProps.loadingSearch,
       enrolledStudents: nextProps.students,
-      unenrolledStudents:
-      this.getUnenrolledStudents(nextProps.students, nextProps.filteredAllStudents),
-    })
+      filteredALl: nextProps.filteredAllStudents,
+      unenrolledStudents: this.getUnenrolledStudents(nextProps.filteredAllStudents),
+    });
   }
-  getUnenrolledStudents(enrolled, unenrolled) {
+  getUnenrolledStudents(allStudents) {
     const newStudentsObj = {};
-    enrolled.map((obj) => {
+    this.props.students.map((obj) => {
       newStudentsObj[obj.id] = obj.name;
       return 0;
     });
-    console.log("UNSJDSD", this.props.filteredAllStudents);
-    return unenrolled.filter((obj) => {
+    return allStudents.filter((obj) => {
       if (!newStudentsObj[obj.id]) {
         return true;
       }
@@ -125,7 +127,8 @@ export default class StudentsPanel extends Component {
   }
 
   addStudent(id) {
-    console.log(id);
+//    console.log(id);
+//    console.log('ADD', this.state.unenrolledStudents);
     let newIndex = -1;
     this.state.unenrolledStudents.map((item, index) => {
       if (item.id === id) {
@@ -173,39 +176,52 @@ export default class StudentsPanel extends Component {
     this.setState({ currentSearched: event.target.value });
   }
   renderEnrolledStudents() {
-    if (this.props.students.length === 0) {
-      return <h4>There are no students enrolled in this class!</h4>;
-    } else if (this.props.filteredStudents.length === 0) {
-      return <h4>No students found with this name!</h4>;
-    }
-    return this.props.filteredStudents.map((obj, index) =>
-      <li key={`enrolled_student_${obj.id}`}>
-        <StudentManager
-          type={'remove'}
-          id={obj.id}
-          index={index}
-          name={obj.name}
-          removeStudent={() => this.removeStudent(obj.id)}
-        />
-      </li>,
+    if (this.state.loadingSearch === true) {
+      return <SearchSpinner />;
+    } else if (this.state.loadingSearch === false) {
+      if (this.props.students.length === 0) {
+        return <h4>There are no students enrolled in this class!</h4>;
+      } else if (this.props.filteredStudents.length === 0) {
+        return <h4>No enrolled students found!</h4>;
+      }
+      return this.props.filteredStudents.map((obj, index) =>
+        <li key={`enrolled_student_${obj.id}`}>
+          <StudentManager
+            type={'remove'}
+            id={obj.id}
+            index={index}
+            name={obj.name}
+            removeStudent={() => this.removeStudent(obj.id)}
+          />
+        </li>,
     );
+    }
+    return (null);
   }
 
   renderUnenrolledStudents() {
-    if (this.getUnenrolledStudents(this.props.students, this.props.filteredAllStudents).length === 0) {
-      return <h4>All students have been enrolled!</h4>;
+    if (this.state.loadingSearch === true) {
+      return <SearchSpinner />;
+    } else if (this.state.loadingSearch === false) {
+      if (this.state.currentSearched.length === 0) {
+        return (null);
+      }
+      if (this.state.unenrolledStudents.length === 0 && this.state.currentSearched.length > 0) {
+        return <h4>No unenrolled students found!</h4>;
+      }
+      return this.state.unenrolledStudents.map((obj, index) =>
+        <li key={`unenrolled_student_${obj.id}`}>
+          <StudentManager
+            type={'add'}
+            id={obj.id}
+            index={index}
+            name={obj.name}
+            addStudent={() => this.addStudent(obj.id)}
+          />
+        </li>,
+      );
     }
-    return this.getUnenrolledStudents(this.props.students, this.props.filteredAllStudents).map((obj, index) =>
-      <li key={`unenrolled_student_${obj.id}`}>
-        <StudentManager
-          type={'add'}
-          id={obj.id}
-          index={index}
-          name={obj.name}
-          addStudent={() => this.addStudent(obj.id)}
-        />
-      </li>,
-    );
+    return (null);
   }
   renderSearchBar() {
     return (
@@ -288,4 +304,5 @@ StudentsPanel.propTypes = {
   manageSearch: PropTypes.func.isRequired,
   forceFilter: PropTypes.func.isRequired,
   filteredStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  loadingSearch: PropTypes.bool.isRequired,
 };
