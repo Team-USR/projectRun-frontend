@@ -124,10 +124,27 @@ export default class ClozeGenerator extends React.Component {
   }
 
   removeQuestion(delQ) {
-    this.setState({ questions: this.state.questions.filter(q => q !== delQ),
-      gapsAttributes: this.state.gapsAttributes.filter(g => g.no !== delQ.no),
-      toSendQuestions: this.state.toSendQuestions.filter(q => q.no !== delQ.no),
+    const newGapAttr = this.state.gapsAttributes.filter(g => g.no !== delQ.no);
+    const newQuestions = this.state.questions.filter(q => q !== delQ);
+    const newToSend = this.state.toSendQuestions.filter(q => q.no !== delQ.no);
+    this.setState({ questions: newQuestions,
+      gapsAttributes: newGapAttr,
+      toSendQuestions: newToSend,
     });
+
+    this.props.updateParent(this.props.index,
+      newToSend.map(q => q.question).join('\n'),
+      newGapAttr.map((g) => {
+        if (g.hint_attributes) {
+          return {
+            gap_text: g.gap_text,
+            hint_attributes: {
+              hint_text: g.hint_attributes.hint_text,
+            },
+          };
+        }
+        return { gap_text: g.gap_text };
+      }));
   }
 
   render() {
