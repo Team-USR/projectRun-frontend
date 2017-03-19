@@ -1,16 +1,18 @@
 import React, { PropTypes } from 'react';
+import { Button } from 'react-bootstrap';
 
 export default function AlternateSolution(props) {
   return (
     <div className="AlternateSolutionWrapper">
       {props.index + 1}
       <input
+        className="form_alternate_input"
         value={props.value}
         onChange={e => props.handleInputChange(e, props.index)}
       />
-      <button onClick={() => props.removeSolution(props.index)}>
-        Remove Solution
-      </button>
+      <Button onClick={() => props.removeSolution(props.index)}>
+        Remove
+      </Button>
     </div>
   );
 }

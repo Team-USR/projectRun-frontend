@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
+import { MixQuizGenerator } from '../../createQuizzes/Mix';
 import { ClozeGenerator } from '../../createQuizzes/Cloze';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
@@ -23,7 +24,7 @@ export default class QuizCreatorMainPage extends Component {
       questions: [],
       inputQuestions: [{
       }],
-      submitedQuestions: { quiz: { title: '', questions_attributes: [] } },
+      submitedQuestions: { quiz: { title: '', questions_attributes: [], release_date: '2017-03-15' } },
       generatedQuizID: 0,
       answers: { quiz: [] },
       reviewState: false,
@@ -100,7 +101,7 @@ export default class QuizCreatorMainPage extends Component {
       quiz = { question, type, answers_attributes: answersAttributes };
     }
 
-    console.log('QUIZ POST', quiz);
+    //  console.log('QUIZ POST', quiz);
     inputQ.quiz.questions_attributes[questionID] = quiz;
     this.setState({ submitedQuestions: inputQ });
   }
@@ -117,6 +118,19 @@ export default class QuizCreatorMainPage extends Component {
     const inputQ = this.state.submitedQuestions;
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
     this.setState({ submitedQuestions: inputQ });
+  }
+
+  collectMixObject(data, questionTitle, questionID) {
+    const questionObject = {
+      question: questionTitle,
+      type: 'mix',
+      sentences_attributes: data,
+    };
+    const inputQ = this.state.submitedQuestions;
+    inputQ.quiz.questions_attributes[questionID] = questionObject;
+    this.setState({ submitedQuestions: inputQ });
+    //  console.log(inputQ);
+    // console.log(questionObject);
   }
 
   addQuiz(quizType) {
@@ -173,6 +187,17 @@ export default class QuizCreatorMainPage extends Component {
             this.collectClozeObject(questionID, qSent, sentenceAttributes, gapsAttributes)}
           index={id}
           key={`cloze${id}`}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+
+    if (quizType === 'mix') {
+      const question = (
+        <MixQuizGenerator
+          index={id}
+          key={`mix${id}`}
+          updateParent={(answersAttributes, qObject, ind) =>
+          this.collectMixObject(answersAttributes, qObject, ind)}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -268,6 +293,7 @@ export default class QuizCreatorMainPage extends Component {
           <Button onClick={() => this.addQuiz('multiple_choice')}> Multiple Choice</Button>
           <Button onClick={() => this.addQuiz('match')}>Match</Button>
           <Button onClick={() => this.addQuiz('cloze')}>Cloze</Button>
+          <Button onClick={() => this.addQuiz('mix')}>Mix</Button>
           {this.renderQuestions()}
           <br /><br /><br />
           { this.renderSubmitPanel() }
