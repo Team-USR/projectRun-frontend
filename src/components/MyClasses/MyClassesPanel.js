@@ -1,8 +1,9 @@
 import React, { PropTypes, Component } from 'react';
+import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { GroupQuizzes } from './GroupQuizzes';
 import { GroupStudents } from './GroupStudents';
-import { STUDENT, TEACHER } from '../../constants';
+import { STUDENT, TEACHER, API_URL } from '../../constants';
 import {
   StudentsPanel,
   QuizzesPanel,
@@ -11,8 +12,139 @@ import {
   ClassSearchPanel,
 } from './panels';
 
+let timeout = null;
 export default class MyClassesPanel extends Component {
-
+  constructor() {
+    super();
+    this.state = {
+      filteredStudents: [],
+      filteredAllStudents: [],
+      loadingSearch: false,
+    };
+  }
+  componentWillMount() {
+    this.setState({
+      filteredStudents: this.props.content.students,
+      filteredAllStudents: this.props.allStudents,
+    });
+  }
+  componentWillReceiveProps(nextProps) {
+//    console.log("RECEIVE PROPS");
+    this.setState({
+      filteredStudents: nextProps.content.students,
+      filteredAllStudents: nextProps.allStudents,
+    });
+  }
+  filterItems(value) {
+    let found = false;
+    let filtered = this.props.content.students.filter((item) => {
+      if (item.name.toLowerCase() === value.toLowerCase() ||
+          item.name.toLowerCase().includes(value.toLowerCase())) {
+        found = true;
+        return (item);
+      }
+      return (null);
+    });
+    if (!found && value !== '') {
+      filtered = [];
+    } else
+    if (filtered.length === 0 || value === '') {
+      filtered = this.props.content.students;
+    }
+    let filteredAll = this.props.allStudents.filter((item) => {
+      if (item.name.toLowerCase() === value.toLowerCase() ||
+          item.name.toLowerCase().includes(value.toLowerCase())) {
+        found = true;
+        return (item);
+      }
+      return (null);
+    });
+    if (!found && value !== '') {
+      filteredAll = [];
+    } else
+    if (filteredAll.length === 0 || value === '') {
+      filteredAll = this.props.allStudents;
+    }
+    this.setState({
+      filteredStudents: filtered,
+      filteredAllStudents: filteredAll });
+  }
+  manageSearch(value) {
+    this.filterItems(value);
+    if (timeout !== null) {
+      clearTimeout(timeout);
+    }
+    if (value.length > 0) {
+      this.setState({ loadingSearch: true });
+      timeout = setTimeout(() => {
+        const searchedItem = { input: value };
+        axios({
+          url: `${API_URL}/users/search`,
+          headers: this.props.userToken,
+          method: 'post',
+          data: searchedItem,
+        })
+      .then((response) => {
+//        console.log(response);
+        const retrievedStudents = [];
+        let best = {};
+        if (response.data.best_match_name[0]) {
+          best = {
+            id: response.data.best_match_name[0].id,
+            name: response.data.best_match_name[0].name,
+          };
+          retrievedStudents.push(best);
+        }
+        let best2 = {};
+        if (response.data.best_match_email[0]) {
+          best2 = {
+            id: response.data.best_match_email[0].id,
+            name: response.data.best_match_email[0].name,
+          };
+          if (retrievedStudents[0].id !== response.data.best_match_email[0].id) {
+            retrievedStudents.push(best2);
+          }
+        }
+        response.data.alternative_match_name.map((item) => {
+          let duplicate = false;
+          retrievedStudents.map((duplicateItem) => {
+            if (item.id === duplicateItem.id) {
+              duplicate = true;
+            }
+            return 0;
+          });
+          if (!duplicate) {
+            const objName = { id: item.id, name: item.name };
+            retrievedStudents.push(objName);
+          }
+          return 0;
+        });
+        response.data.alternative_match_email.map((item) => {
+          let duplicate = false;
+          retrievedStudents.map((duplicateItem) => {
+            if (item.id === duplicateItem.id) {
+              duplicate = true;
+            }
+            return 0;
+          });
+          if (!duplicate) {
+            const objEmail = { id: item.id, name: item.name };
+            retrievedStudents.push(objEmail);
+          }
+          return 0;
+        });
+        this.props.updateAllStudents(retrievedStudents);
+        this.filterItems(value);
+      });
+        this.setState({
+          loadingSearch: false,
+        });
+      }, 2000);
+    }
+    if (value.length === 0) {
+      this.setState({ loadingSearch: false });
+    }
+  }
   renderPanel() {
     let element = (
       <DefaultClassesPanel
@@ -48,7 +180,12 @@ export default class MyClassesPanel extends Component {
               handleSaveEnrolledStudents={newStudentsArray =>
                 this.props.handleSaveEnrolledStudents(newStudentsArray)}
               students={this.props.content.students}
+              filteredStudents={this.state.filteredStudents}
               allStudents={this.props.allStudents}
+              filteredAllStudents={this.state.filteredAllStudents}
+              manageSearch={value => this.manageSearch(value)}
+              forceFilter={value => this.filterItems(value)}
+              loadingSearch={this.state.loadingSearch}
             />
           </div>
         );
@@ -136,4 +273,6 @@ MyClassesPanel.propTypes = {
   handleManageStudentsFromClass: PropTypes.func.isRequired,
   handleDeleteClass: PropTypes.func.isRequired,
   getAllClasses: PropTypes.func.isRequired,
+  userToken: React.PropTypes.shape({}).isRequired,
+  updateAllStudents: React.PropTypes.func.isRequired,
 };

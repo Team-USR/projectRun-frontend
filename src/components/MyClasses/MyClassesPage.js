@@ -19,14 +19,15 @@ export default class MyClassesPage extends Component {
       currentClassId: '',
       allQuizzes: [],
       allStudents: [
-        { id: 9, name: 'Geon' },
-        { id: 10, name: 'Gigel' },
-        { id: 11, name: 'Jlaba' },
-        { id: 12, name: 'Blercu' },
+        // { id: 9, name: 'Geon' },
+        // { id: 10, name: 'Gigel' },
+        // { id: 11, name: 'Jlaba' },
+        // { id: 12, name: 'Blercu' },
       ],
       sideBarContent: { classes: [] },
       content: { quizzes: [], students: [] },
       userT: STUDENT,
+      loadingSearch: false,
     };
   }
 
@@ -68,7 +69,6 @@ export default class MyClassesPage extends Component {
       }
     });
   }
-
   getAllClasses() {
     axios({
       url: `${API_URL}/groups`,
@@ -76,6 +76,10 @@ export default class MyClassesPage extends Component {
     }).then(res => this.setState({ classes: res.data }));
   }
 
+  updateAllStudents(object) {
+//    console.log("ALMOST UDPATED", object);
+    this.setState({ allStudents: object });
+  }
   requestTeacherData() {
     axios({
       url: `${API_URL}/users/mine/groups`,
@@ -262,7 +266,6 @@ export default class MyClassesPage extends Component {
     })
     .then(() => this.setState({ panelType: 'show_selected_class' }));
   }
-
   renderClassesPanel() {
     const element = (
       <MyClassesPanel
@@ -277,6 +280,7 @@ export default class MyClassesPage extends Component {
         allStudents={this.state.allStudents}
         numberOfClasses={this.state.sideBarContent.classes.length}
         getAllClasses={() => this.getAllClasses()}
+        updateAllStudents={object => this.updateAllStudents(object)}
         handleSaveNewClassClick={newClassTitle =>
           this.handleSaveNewClassClick(newClassTitle)}
         handleSaveAssignedQuizzes={newQuizzesArray =>
@@ -286,6 +290,7 @@ export default class MyClassesPage extends Component {
         handleManageStudentsFromClass={() => this.handleManageStudentsFromClass()}
         handleManageQuizzesFromClass={() => this.handleManageQuizzesFromClass()}
         handleDeleteClass={id => this.handleDeleteClass(id)}
+        manageSearch={value => this.manageSearch(value)}
       />);
     return element;
   }
