@@ -52,7 +52,8 @@ export default class CrossQuizGenerator extends Component {
   }
 
   handleSquareChange(e, i, j) {
-    this.x = 'x';
+    // console.log(this.state.downWords);
+
     const event = e;
     const target = event.target;
     const value = target.value;
@@ -123,7 +124,12 @@ export default class CrossQuizGenerator extends Component {
   }
 
   handleGenerateBoard() {
-    if (this.boardHeight > 30 || this.boardWidth > 30) {
+    if (isNaN(this.boardHeight) || isNaN(this.boardWidth)) {
+      Popup.alert(
+        'The board dimensions should be valid numbers. Thank you! :)',
+        'Oops! Board Limits incorrect!',
+      );
+    } else if (this.boardHeight > 30 || this.boardWidth > 30) {
       Popup.alert(
         'The board size should not be larger than 30 x 30. Thank you! :)',
         'Oops! Board Limits exceeded!',
@@ -167,7 +173,6 @@ export default class CrossQuizGenerator extends Component {
   }
 
   generateWords(row, col) {
-    // console.log(row, col);
     const rowString = this.state.boardValues[row].row;
     const rowSplitArray = rowString.split('*');
 
@@ -191,16 +196,56 @@ export default class CrossQuizGenerator extends Component {
       return false;
     });
 
-    console.log(generatedRowWords);
-    console.log(generatedColWords);
+    // console.log(generatedRowWords);
+    // console.log(generatedColWords);
 
     // Update generatedWords Arrays
     const newDownWords = this.state.downWords;
-    newDownWords[col] = generatedColWords;
-    const newAcrossWords = this.state.acrossWords;
-    newAcrossWords[row] = generatedRowWords;
+    newDownWords[col] = generatedColWords.map((value, index) => {
+      let obj = {};
+      if (newDownWords[col][index] && newDownWords[col][index].clue) {
+        obj = { word: value, clue: newDownWords[col][index].clue };
+      } else {
+        obj = { word: value, clue: '' };
+      }
+      return obj;
+    });
+      // ({ word: value, clue: newDownWords[col][index].clue }));
 
+    const newAcrossWords = this.state.acrossWords;
+    newAcrossWords[row] = generatedRowWords.map((value, index) => {
+      let obj = {};
+      if (newAcrossWords[row][index] && newAcrossWords[row][index].clue) {
+        obj = { word: value, clue: newAcrossWords[row][index].clue };
+      } else {
+        obj = { word: value, clue: '' };
+      }
+      return obj;
+    });
+
+    // console.log(newAcrossWords);
     this.setState({ downWords: newDownWords, acrossWords: newAcrossWords });
+  }
+
+  handleClueChange(e, x, y, clueType) {
+    const target = e.target;
+    const value = target.value;
+    const newAcrossWords = this.state.acrossWords;
+    const newDownWords = this.state.downWords;
+
+    if (clueType === 'across') {
+      const wordObject = newAcrossWords[x][y];
+      wordObject.clue = value;
+      newAcrossWords[x][y] = wordObject;
+      this.setState({ acrossWords: newAcrossWords });
+    } else if (clueType === 'down') {
+      const wordObject = newDownWords[x][y];
+      wordObject.clue = value;
+      newDownWords[x][y] = wordObject;
+      this.setState({ downWords: newDownWords });
+    }
+
+    // console.log(this.state.acrossWords);
   }
 
   renderBoard() {
@@ -223,26 +268,36 @@ export default class CrossQuizGenerator extends Component {
     return board;
   }
 
+  renderClue(obj, x, y, clueType) {
+    return (
+      <div>
+        <label htmlFor="boardClue">{obj.word}</label>
+        <input
+          id="boardClue"
+          type="text"
+          onChange={e => this.handleClueChange(e, x, y, clueType)}
+          value={obj.clue}
+        />
+      </div>
+    );
+  }
+
   renderGeneratedWords() {
     if (this.state.showBoard) {
       return (
         <div>
           <div>
             <h3>Across:</h3>
-            { this.state.acrossWords.map(array =>
-              array.map(text =>
-                  (<span><b>{text}</b><br /></span>),
-                ),
+            { this.state.acrossWords.map((array, x) =>
+              array.map((obj, y) => this.renderClue(obj, x, y, 'across')),
               )
             }
           </div>
 
           <div>
             <h3>Down:</h3>
-            { this.state.downWords.map(array =>
-              array.map(text =>
-                  (<span><b>{text}</b><br /></span>),
-                ),
+            { this.state.downWords.map((array, x) =>
+              array.map((obj, y) => this.renderClue(obj, x, y, 'down')),
               )
             }
           </div>
