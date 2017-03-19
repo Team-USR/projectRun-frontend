@@ -1,27 +1,52 @@
 import React, { PropTypes } from 'react';
-import { Nav, NavItem } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { Nav, NavItem, Button } from 'react-bootstrap';
 
 export default function SideBarClasses(props) {
   const content = props.content;
+  let createClassButton = (null);
+
+  if (props.userType === 'teacher') {
+    createClassButton =
+    (
+      <NavItem>
+        <Button className="createClassBtn" onClick={() => props.onCreateClassClick()}>
+          Create Class
+        </Button>
+      </NavItem>
+    );
+  }
+
   return (
     <Nav>
+      { createClassButton }
       {
-        content.map((item) => {
-          const link = `/${item}`;
-          return (
-            <LinkContainer to={link} key={item} >
-              <NavItem>
-                {item}
+        content.map((obj, index) => {
+          if (index < 8) {
+            return (
+              <NavItem key={`class_${obj.id}`}>
+                <Button
+                  className="sideBarButton"
+                  onClick={() => props.onClassClick(obj.id.toString(), obj.name)}
+                >
+                  {obj.name}
+                </Button>
               </NavItem>
-            </LinkContainer>
-          );
-        })
+            );
+          }
+          return (null);
+        },
+        )
       }
     </Nav>
   );
 }
 
 SideBarClasses.propTypes = {
-  content: PropTypes.arrayOf(PropTypes.string).isRequired,
+  userType: PropTypes.string.isRequired,
+  onCreateClassClick: PropTypes.func,
+  content: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+};
+
+SideBarClasses.defaultProps = {
+  onCreateClassClick: null,
 };

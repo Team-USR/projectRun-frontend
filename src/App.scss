@@ -3,20 +3,24 @@
 
 /* components */
 @import './style/components/Login/_all';
+@import './style/components/Charts/_all';
 @import './style/components/UserAccount/_all';
 @import './style/components/MyQuizzes/_all';
 @import './style/components/MyClasses/_all';
 @import './style/components/SideBar/_all';
+@import './style/components/utils/_all';
 
 /* createQuizzes */
 @import './style/createQuizzes/Match/_all';
 @import './style/createQuizzes/Mix/_all';
 @import './style/createQuizzes/MultipleChoice/_all';
+@import './style/createQuizzes/Cloze/_all';
 
 /* quizzes */
 @import './style/quizzes/Match/_all';
 @import './style/quizzes/Mix/_all';
 @import './style/quizzes/MultipleChoice/_all';
+@import './style/quizzes/Cloze/_all';
 
 /* quizManager */
 @import './style/quizManager/quizzesCreatorPage/_all';

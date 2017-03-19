@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import { MatchQuizItem } from './index';
-import '../../style/createQuizzes/Match/MatchQuizGenerator.css';
 
 export default class MatchQuizGenerator extends Component {
   constructor(props) {
@@ -14,7 +13,7 @@ export default class MatchQuizGenerator extends Component {
       leftTextareaPlaceholder: 'Write a LEFT item',
       rightTextareaPlaceHolder: 'Write its corresponding RIGHT answer',
       defaultTextareaPlaceHolder: 'Write a default option for dropdowns',
-      defaultSelectValue: 'Choose an option!',
+      defaultSelectValue: 'Choose an option',
       matchQuizQuestion: '',
       createItems: [
         {
@@ -34,6 +33,31 @@ export default class MatchQuizGenerator extends Component {
     this.deleteMatchElement = this.deleteMatchElement.bind(this);
   }
 
+  componentWillMount() {
+    const defaultText = 'Choose an option';
+    if (this.props.content) {
+      const newState = {
+        matchQuizQuestion: this.props.content.question,
+        createItems: this.props.content.pairs,
+        defaultSelectValue: this.props.content.match_default,
+      };
+
+      const questionAndDefault = {
+        question: this.props.content.question,
+        match_default: this.props.content.match_default,
+      };
+
+      if (newState.defaultSelectValue === null) {
+        newState.defaultSelectValue = defaultText;
+        questionAndDefault.match_default = defaultText;
+      }
+      this.setState(newState);
+
+      // Send Match Data to MainQuizGenerator
+      this.props.updateParent(this.props.content.pairs, questionAndDefault, this.props.index);
+    }
+  }
+
   isReviewMode() {
     const newState = !this.state.reviewState;
     this.setState({ reviewState: newState });
@@ -50,14 +74,13 @@ export default class MatchQuizGenerator extends Component {
     const value = target.value;
     this.setState({ matchQuizQuestion: value });
 
-    /* TODO:
-    * callBackParent
-      {
-        question: matchQuizQuestion,
-        type: 'match',
-        pairs_attribute: newCreateItemsArray
-      }
-    */
+    const questionAndDefault = {
+      question: value,
+      match_default: this.state.defaultSelectValue,
+    };
+
+    // Send Match Data to MainQuizGenerator
+    this.props.updateParent(this.state.createItems, questionAndDefault, this.props.index);
   }
 
   /* Function called everytime when user types in DEFAULT VALUE textarea */
@@ -69,6 +92,14 @@ export default class MatchQuizGenerator extends Component {
     if (name === this.state.defaultTextareaName) {
       this.setState({ defaultSelectValue: value });
     }
+
+    const questionAndDefault = {
+      question: this.state.matchQuizQuestion,
+      match_default: value,
+    };
+
+    // Send Match Data to MainQuizGenerator
+    this.props.updateParent(this.state.createItems, questionAndDefault, this.props.index);
   }
 
   /* Function called everytime when user types
@@ -90,6 +121,14 @@ export default class MatchQuizGenerator extends Component {
     }
     const newCreateItemsArray = this.state.createItems;
     newCreateItemsArray[index] = editedItem;
+
+    const questionAndDefault = {
+      question: this.state.matchQuizQuestion,
+      match_default: this.state.defaultSelectValue,
+    };
+
+    // Send Match Data to MainQuizGenerator
+    this.props.updateParent(newCreateItemsArray, questionAndDefault, this.props.index);
     this.setState({ createItems: newCreateItemsArray });
   }
 
@@ -201,6 +240,17 @@ export default class MatchQuizGenerator extends Component {
 }
 
 MatchQuizGenerator.propTypes = {
+  index: PropTypes.number.isRequired,
   reviewState: PropTypes.bool.isRequired,
   resultsState: PropTypes.bool.isRequired,
+  updateParent: PropTypes.func.isRequired,
+  content: PropTypes.shape({
+    question: PropTypes.string.isRequired,
+    pairs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    match_default: PropTypes.string,
+  }),
+};
+
+MatchQuizGenerator.defaultProps = {
+  content: null,
 };

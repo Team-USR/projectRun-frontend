@@ -3,7 +3,11 @@ import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
-import { ButtonWrapper, QuizCreatorReviewer } from './index';
+import { MixQuizGenerator } from '../../createQuizzes/Mix';
+import { ClozeGenerator } from '../../createQuizzes/Cloze';
+import { ButtonWrapper } from './index';
+import { API_URL } from '../../constants';
+import { BrandSpinner } from '../../components/utils';
 
 const styles = {
   loading: {
@@ -20,16 +24,18 @@ export default class QuizCreatorMainPage extends Component {
       questions: [],
       inputQuestions: [{
       }],
-      submitedQuestions: { quiz: { title: '', questions_attributes: [] } },
+      submitedQuestions: { quiz: { title: '', questions_attributes: [], release_date: '2017-03-15' } },
       generatedQuizID: 0,
       answers: { quiz: [] },
       reviewState: false,
       resultsState: false,
       loading: false,
+      errorState: false,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
     this.changeTitle = this.changeTitle.bind(this);
+    this.changeAttempts = this.changeAttempts.bind(this);
   }
   removeQuiz(index) {
     displayIndex = 0;
@@ -51,40 +57,84 @@ export default class QuizCreatorMainPage extends Component {
 //    console.log("submitedQuestions ", sQuestions,"finishsubmited");
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
      element !== null);
-    const newState = !this.state.reviewState;
-    const loadingTrue = true;
 //    console.log("filtered ",filteredQuestions," finishfiltered");
-    this.setState({ loading: loadingTrue, submitedQuestions: filteredQuestions });
+    this.setState({ submitedQuestions: filteredQuestions });
   //  console.log("----------");
   //  console.log(this.state.submitedQuestions);
 //  console.log("----------");
-    const auth = 'Authorization';
-    axios.defaults.headers.common[auth] = this.props.userToken;
-    axios.post('https://project-run.herokuapp.com/quizzes', this.state.submitedQuestions)
+    axios({
+      url: `${API_URL}/quizzes`,
+      headers: this.props.userToken,
+      method: 'post',
+      data: this.state.submitedQuestions,
+    })
     .then((response) => {
-      const resultID = response.data.id;
-      const loadingFalse = false;
-      this.setState({ generatedQuizID: resultID, reviewState: newState, loading: loadingFalse });
+    //  const resultID = response.data.id;
+    //  console.log("Result id", resultID);
+      if (!response || (response && response.status !== 200)) {
+        this.setState({ errorState: true });
+      }
+      this.props.handlePublish(response.data.id.toString());
+      this.props.handleSubmitButton();
+  //    this.setState({ generatedQuizID: resultID, loading: loadingFalse });
     });
   }
   isResultsMode() {
     const newState = !this.state.resultsState;
     this.setState({ resultsState: newState });
   }
+
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
-    const quiz = { question, type, answers_attributes: answersAttributes };
-    // console.log("questionID"+questionID);
-    // if (inputQ.quiz.questions_attributes[questionID] === null) {
-    //   inputQ.quiz.questions_attributes.push(quiz);
-    // } else {
+
+    let quiz = {};
+    if (type === 'match') {
+      quiz = {
+        question: question.question,
+        match_default_attributes: {
+          default_text: question.match_default,
+        },
+        type,
+        pairs_attributes: answersAttributes,
+      };
+    } else if (type === 'multiple_choice') {
+      quiz = { question, type, answers_attributes: answersAttributes };
+    }
+
+    //  console.log('QUIZ POST', quiz);
     inputQ.quiz.questions_attributes[questionID] = quiz;
-  //  }
     this.setState({ submitedQuestions: inputQ });
   }
+
+  collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+    const newQuestion = {
+      question: 'Fill in the gaps:',
+      type: 'cloze',
+      cloze_sentence_attributes: {
+        text: sentenceAttributes,
+      },
+      gaps_attributes: gapsAttributes,
+    };
+    const inputQ = this.state.submitedQuestions;
+    inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.setState({ submitedQuestions: inputQ });
+  }
+
+  collectMixObject(data, questionTitle, questionID) {
+    const questionObject = {
+      question: questionTitle,
+      type: 'mix',
+      sentences_attributes: data,
+    };
+    const inputQ = this.state.submitedQuestions;
+    inputQ.quiz.questions_attributes[questionID] = questionObject;
+    this.setState({ submitedQuestions: inputQ });
+    //  console.log(inputQ);
+    // console.log(questionObject);
+  }
+
   addQuiz(quizType) {
   //  console.log(id);
-    let cont;
     displayIndex = 0;
 
     const buttonGroup = (
@@ -102,17 +152,14 @@ export default class QuizCreatorMainPage extends Component {
     const ques = '';
     const answ = '';
     const inputQuestion = { id, ques, answ };
-    if (this.state.inputQuestions[id].answers) {
-      cont = this.state.inputQuestions[id].answers;
-    }
     if (quizType === 'multiple_choice') {
     //  console.log(id);
       const question = (
         <MultipleChoiceQuizGenerator
           handleInput={(questionI, answers) => this.handleInput(questionI, answers, id)}
-          content={cont}
+          content={null}
           index={id}
-          key={id + 100}
+          key={`multiple_choice${id}`}
           updateParent={(answersAttributes, qObject, ind) =>
             this.collectObject(answersAttributes, qObject, 'multiple_choice', ind)}
         />);
@@ -122,10 +169,35 @@ export default class QuizCreatorMainPage extends Component {
     if (quizType === 'match') {
       const question = (
         <MatchQuizGenerator
+          content={null}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
           index={id}
-          key={id + 101}
+          key={`match${id}`}
+          updateParent={(answersAttributes, qObject, ind) =>
+            this.collectObject(answersAttributes, qObject, 'match', ind)}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+
+    if (quizType === 'cloze') {
+      const question = (
+        <ClozeGenerator
+          updateParent={(questionID, qSent, sentenceAttributes, gapsAttributes) =>
+            this.collectClozeObject(questionID, qSent, sentenceAttributes, gapsAttributes)}
+          index={id}
+          key={`cloze${id}`}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+
+    if (quizType === 'mix') {
+      const question = (
+        <MixQuizGenerator
+          index={id}
+          key={`mix${id}`}
+          updateParent={(answersAttributes, qObject, ind) =>
+          this.collectMixObject(answersAttributes, qObject, ind)}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -140,6 +212,11 @@ export default class QuizCreatorMainPage extends Component {
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
   }
+  changeAttempts(event) {
+    const attempted = this.state.submitedQuestions;
+    attempted.quiz.attempts = event.target.value;
+    this.setState({ submitedQuestions: attempted });
+  }
   renderQuestions() {
     displayIndex = 0;
     return (
@@ -151,7 +228,7 @@ export default class QuizCreatorMainPage extends Component {
     if (this.state.questions[index]) {
       displayIndex += 1;
       return (
-        <div className="generatorQuizContainer">
+        <div className="generatorQuizContainer" key={`generatorQuizContainer${displayIndex}`}>
           <h2>{displayIndex}</h2>
           {this.state.questions[index].question}
           {this.state.questions[index].buttonGroup}
@@ -171,7 +248,7 @@ export default class QuizCreatorMainPage extends Component {
     if (!this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}> Save</Button>
+          <Button className="submitButton" onClick={this.isReviewMode}>Save</Button>
         </div>);
     } if (this.state.resultsState) {
       return (
@@ -184,9 +261,16 @@ export default class QuizCreatorMainPage extends Component {
   render() {
   //  console.log("start rendering");
   //  console.log(this.state.submitedQuestions);
-    const submit = this.state.submitedQuestions;
   //  console.log(this.state.questions);
   //  console.log("end rendering");
+    if (this.state.errorState === true) {
+      return (<div className="mainQuizViewerBlock" style={styles.loading}>
+        <h1>Connection error...</h1>
+      </div>);
+    } else
+    if (this.state.loading === true) {
+      return (<BrandSpinner />);
+    }
     if (!this.state.reviewState && this.state.loading === false) {
       return (
         <div className="mainQuizGeneratorBlock">
@@ -196,43 +280,37 @@ export default class QuizCreatorMainPage extends Component {
            <input
              id="titleInput" type="text" placeholder="title" onChange={this.changeTitle}
            />
+            <input
+              id="attemptsInput"
+              type="number"
+              placeholder="Number of attempts"
+              onChange={this.changeAttempts}
+            />
           </label>
           <br /><br />
          Select a quiz to be added:
          <br />
           <Button onClick={() => this.addQuiz('multiple_choice')}> Multiple Choice</Button>
           <Button onClick={() => this.addQuiz('match')}>Match</Button>
+          <Button onClick={() => this.addQuiz('cloze')}>Cloze</Button>
+          <Button onClick={() => this.addQuiz('mix')}>Mix</Button>
           {this.renderQuestions()}
           <br /><br /><br />
           { this.renderSubmitPanel() }
         </div>
       );
     } else
-    if (this.state.reviewState && this.state.loading === false) {
-    //  console.log("test quiz reviwer");
-    //  console.log(submit);
-    //  console.log(submit);
-    //  console.log("end quiz reviwer");
-      return (
-        <div>
-          <QuizCreatorReviewer
-            quizID={this.state.generatedQuizID}
-            token={this.props.userToken}
-            questionsWithAnswers={submit}
-          />
-          <br /><br /><br />
-          { this.renderSubmitPanel() }
-        </div>
-      );
-    } else
     if (this.state.loading === true) {
-      return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Saving quiz draft...</h1>
-      </div>);
+      return <BrandSpinner />;
     }
     return ('');
   }
 }
 QuizCreatorMainPage.propTypes = {
-  userToken: PropTypes.string.isRequired,
+  handleSubmitButton: PropTypes.func.isRequired,
+  userToken: PropTypes.shape({}).isRequired,
+  handlePublish: PropTypes.func,
+};
+QuizCreatorMainPage.defaultProps = {
+  handlePublish: null,
 };
