@@ -41,11 +41,12 @@ export default class ClozeGenerator extends React.Component {
   }
 
   strip(question) {
-    const gapsArray = question.match(GAP_MATCHER);
+    const globalGMat = new RegExp(GAP_MATCHER.source, 'g');
+    const gapsArray = question.match(globalGMat);
     const findIndex = match => `{${gapsArray.indexOf(match) + this.state.count}}`;
 
     return {
-      phrase: question.replace(GAP_MATCHER, findIndex).split(HINT_MATCHER).join(''),
+      phrase: question.replace(globalGMat, findIndex).split(HINT_MATCHER).join(''),
       length: gapsArray.length,
     };
   }
@@ -55,7 +56,8 @@ export default class ClozeGenerator extends React.Component {
       no: this.state.current,
       question: text,
     };
-    const gapsAndHints = text.match(/GAP_MATCHER|HINT_MATCHER/);
+    const gapsAndHintsMatcher = new RegExp(`${GAP_MATCHER.source}|${HINT_MATCHER.source}`, 'g');
+    const gapsAndHints = text.match(gapsAndHintsMatcher);
     const gaps = findTokens(gapsAndHints, this.state.current);
     const stripResult = this.strip(text);
 
