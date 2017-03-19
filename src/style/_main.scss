@@ -80,3 +80,39 @@ ul {
   border: solid 1px #606f7a;
   box-shadow: inset 0 10px 15px 0 #7e92a1;
 }
+
+.enjoy-css {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  width: auto;
+  height: 20px;
+  cursor: pointer;
+  margin: 0 auto;
+  border: 2px solid #43B05C;
+  -webkit-border-radius: 40px;
+  border-radius: 5px;
+  font-size: 15px;
+  color: #43B05C;
+  text-align: center;
+  text-overflow: clip;
+  letter-spacing: 1px;
+  background: rgba(0,0,0,0);
+  -webkit-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+  -moz-transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+  transition: background-color 0.3s cubic-bezier(0, 0, 0, 0), color 0.3s cubic-bezier(0, 0, 0, 0), width 0.3s cubic-bezier(0, 0, 0, 0), border-width 0.3s cubic-bezier(0, 0, 0, 0), border-color 0.3s cubic-bezier(0, 0, 0, 0);
+}
+
+.enjoy-css:hover {
+  color: rgba(255,255,255,1);
+  background: #43B05C;
+}
+
+.enjoy-css:active {
+  border: 2px solid #43B05C;
+  background: #43B05C;
+  -webkit-transition: none;
+  -moz-transition: none;
+  transition: none;
+  outline: none;
+}

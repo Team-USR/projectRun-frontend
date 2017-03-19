@@ -1,10 +1,31 @@
 .myClassesPageWrapper {
   text-align: center;
   width: 100%;
+  .deleteButton{
+    text-align: center;
+  }
 
   .contentWrapper {
     overflow: hidden;
     margin-left: 200px;
+    text-align: center;
+
+    .groupSectionWrapper {
+        width: auto;
+        .titleSection{
+          text-align: center;
+        }
+        ul {
+          padding: 0;
+          list-style-type: none;
+        }
+      .elementList{
+        margin-top:5px;
+        margin-bottom:5px;
+      }
+
+    }
+
 
     @media (max-width: 767px) {
       margin-left: 0;
