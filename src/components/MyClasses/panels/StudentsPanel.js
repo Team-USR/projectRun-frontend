@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
 import React, { PropTypes, Component } from 'react';
-import { Button, Col, NavItem } from 'react-bootstrap';
+import { Button, Col, NavItem, Tabs, Tab } from 'react-bootstrap';
 import { StudentManager } from '../GroupStudents';
 import { SearchSpinner } from '../../../components/utils';
 
@@ -236,13 +236,10 @@ export default class StudentsPanel extends Component {
       </NavItem>
     );
   }
-  render() {
+  renderSearchStudent() {
     return (
-      <div className="studentsPanelWrapper">
-        <Col md={12}>
-          <h3>Manage enrolled Students</h3>
-          {this.renderSearchBar()}
-        </Col>
+      <div>
+        {this.renderSearchBar()}
         <Col md={12} className="studentsList">
           <Col md={6}>
             <ul>
@@ -257,16 +254,21 @@ export default class StudentsPanel extends Component {
         </Col>
         <Col md={12}>
           <Button
+            className="enjoy-css"
             onClick={() =>
-              this.props.handleSaveEnrolledStudents(this.state.enrolledStudents)}
+            this.props.handleSaveEnrolledStudents(this.state.enrolledStudents)}
           > Save </Button>
           <hr />
         </Col>
-
+      </div>
+    );
+  }
+  renderInviteStudent() {
+    return (
+      <div>
         <Col md={12} >
           <div className="form_container">
             <div className="form_section">
-              <h2> Invite student </h2>
               <div className="inside">
                 <p>Enter email to invite student to class:</p>
                 <input
@@ -276,8 +278,17 @@ export default class StudentsPanel extends Component {
                 <Button >Invite student</Button>
               </div>
             </div>
+          </div>
+        </Col>
+      </div>
+    );
+  }
+  renderImportStudents() {
+    return (
+      <div>
+        <Col md={12}>
+          <div className="form_container">
             <div className="form_section">
-              <h2> Import students </h2>
               <div className="inside">
                 <p>Select a .csv file to retrieve the emails.</p><input
                   type="file"
@@ -292,6 +303,23 @@ export default class StudentsPanel extends Component {
             </div>
           </div>
         </Col>
+      </div>
+    );
+  }
+  render() {
+    return (
+      <div className="studentsPanelWrapper">
+        <Tabs defaultActiveKey={1} id="uncontrolled-tab-example" className="tabsWrapper">
+          <Tab eventKey={1} title="Manage enrolled students">
+            {this.renderSearchStudent() }
+          </Tab>
+          <Tab eventKey={2} title="Invite student">
+            { this.renderInviteStudent() }
+          </Tab>
+          <Tab eventKey={3} title="Import students">
+            { this.renderImportStudents() }
+          </Tab>
+        </Tabs>
       </div>
     );
   }

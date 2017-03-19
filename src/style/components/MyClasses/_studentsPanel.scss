@@ -1,7 +1,46 @@
 .studentsPanelWrapper{
-  .form_container {
+
+  .tabsWrapper {
+    float:center;
+  }
+  .nav-tabs > li {
+    float:none;
+    display:inline-block;
+    zoom:1;
+  }
+  .nav-tabs {
+    text-align:center;
+    color:red;
+  }
+  .nav-tabs > li > a{
+    color:black;
+  }
+.nav-tabs > li > a:hover{
+    color:#626572;
+    background-color: rgba(255,255,255,1);
+  }
+  li {
+    list-style-type: none;
+  }
+  .searchBarItem {
+    margin-top:20px;
+    width:300px;
+    margin-right:15px;
+    background-color:#ffffff;
+    color: black;
+    border:0px;
+    border-bottom:1px solid black;
+    outline: none;
+    font-size: 18px;
+    padding-left: 5vw;
     text-align: left;
-    width: 63%;
+    margin-bottom:50px;
+
+
+  }
+  .form_container {
+    text-align: center;
+    width: 500px;
     margin: auto;
     .form_section {
       h2{
