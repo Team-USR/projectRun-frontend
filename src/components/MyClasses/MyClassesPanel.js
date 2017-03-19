@@ -8,6 +8,7 @@ import {
   QuizzesPanel,
   DefaultClassesPanel,
   CreateClassPanel,
+  ClassSearchPanel,
 } from './panels';
 
 export default class MyClassesPanel extends Component {
@@ -95,6 +96,10 @@ export default class MyClassesPanel extends Component {
               quizzes={this.props.content.quizzes}
             />
             <hr />
+            <ClassSearchPanel
+              getAllClasses={this.props.getAllClasses}
+              allClasses={this.props.allClasses}
+            />
           </div>
         );
       }
@@ -122,6 +127,7 @@ MyClassesPanel.propTypes = {
   }).isRequired,
   allQuizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   allStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  allClasses: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   numberOfClasses: PropTypes.number.isRequired,
   handleSaveNewClassClick: PropTypes.func.isRequired,
   handleSaveAssignedQuizzes: PropTypes.func.isRequired,
@@ -129,4 +135,5 @@ MyClassesPanel.propTypes = {
   handleManageQuizzesFromClass: PropTypes.func.isRequired,
   handleManageStudentsFromClass: PropTypes.func.isRequired,
   handleDeleteClass: PropTypes.func.isRequired,
+  getAllClasses: PropTypes.func.isRequired,
 };

@@ -14,6 +14,7 @@ export default class MyClassesPage extends Component {
     this.state = {
       panelType: 'my_classes_default_panel',
       loadingSideBar: true,
+      classes: [],
       currentClassTitle: '',
       currentClassId: '',
       allQuizzes: [],
@@ -66,6 +67,13 @@ export default class MyClassesPage extends Component {
         this.setState({ panelType: 'show_selected_class', content: newContent });
       }
     });
+  }
+
+  getAllClasses() {
+    axios({
+      url: `${API_URL}/groups`,
+      headers: this.props.userToken,
+    }).then(res => this.setState({ classes: res.data }));
   }
 
   requestTeacherData() {
@@ -264,9 +272,11 @@ export default class MyClassesPage extends Component {
         classTitle={this.state.currentClassTitle}
         panelType={this.state.panelType}
         content={this.state.content}
+        allClasses={this.state.classes}
         allQuizzes={this.state.allQuizzes}
         allStudents={this.state.allStudents}
         numberOfClasses={this.state.sideBarContent.classes.length}
+        getAllClasses={() => this.getAllClasses()}
         handleSaveNewClassClick={newClassTitle =>
           this.handleSaveNewClassClick(newClassTitle)}
         handleSaveAssignedQuizzes={newQuizzesArray =>
