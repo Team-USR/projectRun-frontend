@@ -53,6 +53,7 @@ export default class QuizSessionViewer extends Component {
   }
   renderSessionCards() {
     const element = [];
+    let inprogress = 0;
     this.state.sessionsList.map((item, index) => {
       if (item.state === 'submitted') {
         element.push(
@@ -74,6 +75,7 @@ export default class QuizSessionViewer extends Component {
     },
     this.state.sessionsList.map((item, index) => {
       if (item.state === 'in_progress') {
+        inprogress += 1;
         element.push(
           <div className="inProgress" key={`session${index + 1}`}>
             <div className="row">
@@ -89,8 +91,25 @@ export default class QuizSessionViewer extends Component {
           </div>,
               );
       }
+      if (inprogress === 0) {
+        element.push(
+          <div className="inProgress" key={`startSession${index + 1}`}>
+            <div className="row">
+              <div className="col-md-9">
+                <h5>New session</h5>
+                <h5>{}</h5>
+              </div>
+              <div className="col-md-3 rightSection">
+                <Button onClick={() => this.props.handleStartButton()}>Start</Button>
+              </div>
+            </div>
+          </div>,
+              );
+      }
       return (null);
-    }),
+    },
+
+  ),
   );
     return element.reverse();
   }

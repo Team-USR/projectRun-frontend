@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { Nav, NavItem, Button, Accordion, Panel } from 'react-bootstrap';
 import { STUDENT, TEACHER } from '../../constants';
+import plusSign from '../../assets/images/plus.svg';
 
 export default class SideBarQuizzes extends Component {
   constructor() {
@@ -34,12 +35,52 @@ export default class SideBarQuizzes extends Component {
       if (filteredContent.length === 0 || event.target.value === '') {
         this.setState({ activePanel: null });
       } else {
-        this.decideActivePanel(filteredContent);
+        this.decideActiveStudentPanel(filteredContent);
+      }
+    }
+    if (this.props.userType === TEACHER) {
+      if (filteredContent.length === 0 || event.target.value === '') {
+        this.setState({ activePanel: null });
+      } else {
+        this.deciceActiveTeacherPanel(filteredContent);
       }
     }
     this.setState({ content: filteredContent });
   }
-  decideActivePanel(filteredContent) {
+  deciceActiveTeacherPanel(filteredContent) {
+    this.filteredContent = filteredContent;
+    let con = filteredContent;
+    con = con.sort((a, b) => {
+      if (a.published) return -1;
+      if (b.published) return 1;
+      return 0;
+    });
+    let counter = 0;
+    let max = 0;
+    let type = '';
+    con.map((item, index) => {
+      if (con[index + 1] !== null && con[index + 1] !== undefined) {
+        if (item.published === con[index + 1].published) {
+          counter += 1;
+          if (counter >= max) {
+            max = counter;
+            type = item.published;
+          }
+        } else counter = 0;
+      }
+      if (con.length === 1) {
+        type = item.published;
+      }
+      return 0;
+    });
+    if (type === false) {
+      this.setState({ activePanel: '1' });
+    }
+    if (type === true) {
+      this.setState({ activePanel: '2' });
+    }
+  }
+  decideActiveStudentPanel(filteredContent) {
     this.filteredContent = filteredContent;
     let con = filteredContent;
     con = con.sort((a, b) => {
@@ -110,12 +151,19 @@ export default class SideBarQuizzes extends Component {
           <Nav>
             <NavItem key={0}>
               <Button className="titleButton" onClick={() => this.props.onQuizCreatorClick()}>
-        Create a quiz
-        </Button>
+                <div className="row">
+                  <div className="col-md-3 plusIconWrapper">
+                    <img className="plusIcon" src={plusSign} alt={'+'} />
+                  </div>
+                  <div className="col-md-9 createText">
+                Create a quiz
+                </div>
+                </div>
+              </Button>
             </NavItem>
           </Nav>
           <Nav key={'teacher'} >
-            <Accordion defaultActiveKey={'1'}>
+            <Accordion defaultActiveKey={this.state.activePanel}>
               <Panel header={`Unpublished (${unpublishedContent.length})`} eventKey="1">
                 {
         unpublishedContent.map((item, index) => {
