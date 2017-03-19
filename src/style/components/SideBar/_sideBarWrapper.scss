@@ -57,16 +57,66 @@
     .titleButton{
       background-color: #222222;
       border:0px;
+      margin-left:15px;
+      color:grey;
+      font-size: 16px;
+      text-align: center;
+      display: inline;
+      width:150px;
+      .createText {
+        padding-top: 5px;
+      }
+      .plusIconWrapper {
+        width:32px;
+        height:32px;
+        margin-right:5px;
+        .plusIcon{
+          width: 30px;
+          height: 30px;
+          margin-right:3px;
+        }
+      }
+    }
+    .mainButton {
+      background-color: #222222;
+      border:0px;
+      font-size: 18px;
       margin-left:30px;
       color:grey;
       text-align: center;
+      display: inline;
     }
+    .mainButton:hover {
+    background-color: #222222;
+    border:0px;
+    font-size: 18px;
+    margin-left:30px;
+    color:white;
+    text-align: center;
+    display: inline;
+  }
     .titleButton:hover{
       background-color: #222222;
       border:0px;
-      margin-left:30px;
+      font-size: 16px;
+      margin-left:15px;
       color:white;
       text-align: center;
+      display: inline;
+      width:150px;
+      .createText {
+        padding-top: 5px;
+      }
+      .plusIconWrapper {
+        width:32px;
+        height:32px;
+        margin-right:5px;
+        .plusIcon{
+          width: 30px;
+          height: 30px;
+          margin-right:3px;
+        }
+      }
     }
     .sideBarButton{
       color:grey;

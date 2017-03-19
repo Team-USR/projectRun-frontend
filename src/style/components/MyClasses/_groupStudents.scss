@@ -2,7 +2,10 @@
   .studentsPanelWrapper {
     .studentsList {
       min-height: 30vh;
-
+      .studentSearchSpinner{
+        width: 30px;
+        height: 30px;
+      }
       .studentManagerWrapper {
         .classStudentBtn {
           width: 180px;
