@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
+import Popup from 'react-popup';
 import { Board } from './index';
 
 export default class CrossQuizGenerator extends Component {
@@ -14,13 +15,7 @@ export default class CrossQuizGenerator extends Component {
       metaAtributes: [],
       hintsAttributes: [],
       acrossWords: [],
-      downWords: [
-        // ['AB', 'DE'],
-        // [],
-        // ['QW', 'RT'],
-        // [],
-        // [],
-      ],
+      downWords: [],
     };
 
     this.boardWidth = 5;
@@ -95,37 +90,47 @@ export default class CrossQuizGenerator extends Component {
   }
 
   handleGenerateBoard() {
-    const newBoard = this.state.boardValues;
-    for (let i = 0; i < this.boardHeight; i += 1) {
-      let row = '';
-      if (newBoard[i] && newBoard[i].row) {
-        if (newBoard[i].row.length >= this.boardWidth) {
-          row = newBoard[i].row.substring(0, this.boardWidth);
+    if (this.boardHeight > 30 || this.boardWidth > 30) {
+      Popup.alert(
+        'The board size should not be larger than 30 x 30. Thank you! :)',
+        'Oops! Board Limits exceeded!',
+      );
+    } else if (this.boardHeight < 1 || this.boardWidth < 1) {
+      Popup.alert(
+        'The board should contain at least 1 row or 1 column. Thank you! :)',
+        'Oops! The Board is too small!',
+      );
+    } else {
+      const newBoard = this.state.boardValues;
+      for (let i = 0; i < this.boardHeight; i += 1) {
+        let row = '';
+        if (newBoard[i] && newBoard[i].row) {
+          if (newBoard[i].row.length >= this.boardWidth) {
+            row = newBoard[i].row.substring(0, this.boardWidth);
+          } else {
+            row = newBoard[i].row + '*'.repeat(this.boardWidth - newBoard[i].row.length);
+          }
         } else {
-          row = newBoard[i].row + '*'.repeat(this.boardWidth - newBoard[i].row.length);
+          row = '*'.repeat(this.boardWidth);
         }
-      } else {
-        row = '*'.repeat(this.boardWidth);
+        newBoard[i] = { row };
       }
-      newBoard[i] = { row };
+
+      this.setState({
+        showBoard: true,
+        boardValues: newBoard,
+        boardWidth: this.boardWidth,
+        boardHeight: this.boardHeight,
+      });
+
+      const questionTitle = this.state.crossQuizQuestion;
+      const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
+      const rowsAttributes = newBoard;
+      const hintsAttributes = this.state.hintsAttributes;
+
+      // Send Match Data to MainQuizGenerator
+      this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
     }
-
-    this.setState({
-      showBoard: true,
-      boardValues: newBoard,
-      boardWidth: this.boardWidth,
-      boardHeight: this.boardHeight,
-    });
-
-    // this.generateWords(this.boardWidth, this.boardHeight);
-
-    const questionTitle = this.state.crossQuizQuestion;
-    const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
-    const rowsAttributes = newBoard;
-    const hintsAttributes = this.state.hintsAttributes;
-
-    // Send Match Data to MainQuizGenerator
-    this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
   }
 
   generateWords(row, col) {
@@ -212,9 +217,17 @@ export default class CrossQuizGenerator extends Component {
   render() {
     return (
       <div className="crossQuizGenerator">
+        <Popup
+          className="mm-popup"
+          btnClass="mm-popup__btn"
+          closeBtn
+          defaultOk="Ok"
+          wildClasses={false}
+        />
         <div className="createCrossQuizTitle">
           <h3>Cross question</h3>
-
+        </div>
+        <div className="createCrossQuizContent">
           <b>Question: </b>
           <input
             type="text"
