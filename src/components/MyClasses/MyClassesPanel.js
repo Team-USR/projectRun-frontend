@@ -1,8 +1,9 @@
 import React, { PropTypes, Component } from 'react';
+import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { GroupQuizzes } from './GroupQuizzes';
 import { GroupStudents } from './GroupStudents';
-import { STUDENT, TEACHER } from '../../constants';
+import { STUDENT, TEACHER, API_URL } from '../../constants';
 import {
   StudentsPanel,
   QuizzesPanel,
@@ -10,18 +11,26 @@ import {
   CreateClassPanel,
 } from './panels';
 
+let timeout = null;
 export default class MyClassesPanel extends Component {
   constructor() {
     super();
     this.state = {
       filteredStudents: [],
       filteredAllStudents: [],
+      loadingSearch: false,
     };
   }
   componentWillMount() {
     this.setState({
       filteredStudents: this.props.content.students,
       filteredAllStudents: this.props.allStudents,
+    });
+  }
+  componentWillReceiveProps(nextProps) {
+    console.log("RECEIVE PROPS");
+    this.setState({
+      filteredAllStudents: nextProps.allStudents,
     });
   }
   filterItems(value) {
@@ -59,7 +68,77 @@ export default class MyClassesPanel extends Component {
       filteredAllStudents: filteredAll });
   }
   manageSearch(value) {
+    this.setState({ loadingSearch: true });
     this.filterItems(value);
+    if (timeout !== null) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      const searchedItem = { input: value };
+      axios({
+        url: `${API_URL}/users/search`,
+        headers: this.props.userToken,
+        method: 'post',
+        data: searchedItem,
+      })
+      .then((response) => {
+        console.log(response);
+        const retrievedStudents = [];
+        let best = {};
+        if (response.data.best_match_name[0]) {
+          best = {
+            id: response.data.best_match_name[0].id,
+            name: response.data.best_match_name[0].name,
+          };
+          retrievedStudents.push(best);
+        }
+        let best2 = {};
+        if (response.data.best_match_email[0]) {
+          best2 = {
+            id: response.data.best_match_email[0].id,
+            name: response.data.best_match_email[0].name,
+          };
+          if (retrievedStudents[0].id !== response.data.best_match_email[0].id) {
+            console.log("ok");
+            retrievedStudents.push(best2);
+          }
+        }
+        response.data.alternative_match_name.map((item) => {
+          let duplicate = false;
+          retrievedStudents.map((duplicateItem) => {
+            if (item.id === duplicateItem.id) {
+              duplicate = true;
+            }
+            duplicate = false;
+            return 0;
+          });
+          if (!duplicate) {
+            const objName = { id: item.id, name: item.name };
+            retrievedStudents.push(objName);
+          }
+          return 0;
+        });
+        response.data.alternative_match_email.map((item) => {
+          let duplicate = false;
+          retrievedStudents.map((duplicateItem) => {
+            if (item.id === duplicateItem.id) {
+              duplicate = true;
+            }
+            duplicate = false;
+            return 0;
+          });
+          if (!duplicate) {
+            const objEmail = { id: item.id, name: item.name };
+            retrievedStudents.push(objEmail);
+          }
+          return 0;
+        });
+        this.props.updateAllStudents(retrievedStudents);
+      });
+      this.setState({
+        loadingSearch: false,
+      });
+    }, 2000);
   }
   renderPanel() {
     let element = (
@@ -182,4 +261,6 @@ MyClassesPanel.propTypes = {
   handleManageQuizzesFromClass: PropTypes.func.isRequired,
   handleManageStudentsFromClass: PropTypes.func.isRequired,
   handleDeleteClass: PropTypes.func.isRequired,
+  userToken: React.PropTypes.shape({}).isRequired,
+  updateAllStudents: React.PropTypes.func.isRequired,
 };

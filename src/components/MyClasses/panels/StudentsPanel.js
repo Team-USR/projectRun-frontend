@@ -23,18 +23,28 @@ export default class StudentsPanel extends Component {
   componentWillMount() {
     this.setState({
       enrolledStudents: this.props.students,
-      unenrolledStudents: this.getUnenrolledStudents(),
+      unenrolledStudents:
+      this.getUnenrolledStudents(this.props.students, this.props.filteredAllStudents),
     });
   }
-
-  getUnenrolledStudents() {
+  componentWillReceiveProps(nextProps) {
+    console.log("ENROLED: ", nextProps.students);
+    console.log("UNENROLED", nextProps.filteredAllStudents);
+    console.log("UNENROLD2", this.getUnenrolledStudents());
+    this.setState({
+      enrolledStudents: nextProps.students,
+      unenrolledStudents:
+      this.getUnenrolledStudents(nextProps.students, nextProps.filteredAllStudents),
+    })
+  }
+  getUnenrolledStudents(enrolled, unenrolled) {
     const newStudentsObj = {};
-    this.props.students.map((obj) => {
+    enrolled.map((obj) => {
       newStudentsObj[obj.id] = obj.name;
       return 0;
     });
-
-    return this.props.filteredAllStudents.filter((obj) => {
+    console.log("UNSJDSD", this.props.filteredAllStudents);
+    return unenrolled.filter((obj) => {
       if (!newStudentsObj[obj.id]) {
         return true;
       }
@@ -114,20 +124,29 @@ export default class StudentsPanel extends Component {
     return ('');
   }
 
-  addStudent(index) {
-    const newEnrolledObj = this.state.enrolledStudents;
-    newEnrolledObj.push(this.state.unenrolledStudents[index]);
-
-    const newUnenrolledObj = this.state.unenrolledStudents;
-    newUnenrolledObj.splice(index, 1);
-
-    this.setState({
-      enrolledStudents: newEnrolledObj,
-      unenrolledStudents: newUnenrolledObj,
+  addStudent(id) {
+    console.log(id);
+    let newIndex = -1;
+    this.state.unenrolledStudents.map((item, index) => {
+      if (item.id === id) {
+        newIndex = index;
+      }
+      return (-1);
     });
-    this.props.forceFilter(this.state.currentSearched);
-  }
+    if (newIndex >= 0) {
+      const newEnrolledObj = this.state.enrolledStudents;
+      newEnrolledObj.push(this.state.unenrolledStudents[newIndex]);
 
+      const newUnenrolledObj = this.state.unenrolledStudents;
+      newUnenrolledObj.splice(newIndex, 1);
+
+      this.setState({
+        enrolledStudents: newEnrolledObj,
+        unenrolledStudents: newUnenrolledObj,
+      });
+      this.props.forceFilter(this.state.currentSearched);
+    }
+  }
   removeStudent(id) {
     let newIndex = -1;
     this.state.enrolledStudents.map((item, index) => {
@@ -173,17 +192,17 @@ export default class StudentsPanel extends Component {
   }
 
   renderUnenrolledStudents() {
-    if (this.getUnenrolledStudents().length === 0) {
+    if (this.getUnenrolledStudents(this.props.students, this.props.filteredAllStudents).length === 0) {
       return <h4>All students have been enrolled!</h4>;
     }
-    return this.getUnenrolledStudents().map((obj, index) =>
+    return this.getUnenrolledStudents(this.props.students, this.props.filteredAllStudents).map((obj, index) =>
       <li key={`unenrolled_student_${obj.id}`}>
         <StudentManager
           type={'add'}
           id={obj.id}
           index={index}
           name={obj.name}
-          addStudent={studentIndex => this.addStudent(studentIndex)}
+          addStudent={() => this.addStudent(obj.id)}
         />
       </li>,
     );

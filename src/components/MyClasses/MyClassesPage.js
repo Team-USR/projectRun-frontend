@@ -68,7 +68,10 @@ export default class MyClassesPage extends Component {
       }
     });
   }
-
+  updateAllStudents(object) {
+    console.log("ALMOST UDPATED", object);
+    this.setState({ allStudents: object });
+  }
   requestTeacherData() {
     axios({
       url: `${API_URL}/users/mine/groups`,
@@ -267,6 +270,7 @@ export default class MyClassesPage extends Component {
         allQuizzes={this.state.allQuizzes}
         allStudents={this.state.allStudents}
         numberOfClasses={this.state.sideBarContent.classes.length}
+        updateAllStudents={object => this.updateAllStudents(object)}
         handleSaveNewClassClick={newClassTitle =>
           this.handleSaveNewClassClick(newClassTitle)}
         handleSaveAssignedQuizzes={newQuizzesArray =>
