@@ -13,6 +13,14 @@ export default class CrossQuizGenerator extends Component {
       crossQuizQuestion: 'Question',
       metaAtributes: [],
       hintsAttributes: [],
+      acrossWords: [],
+      downWords: [
+        // ['AB', 'DE'],
+        // [],
+        // ['QW', 'RT'],
+        // [],
+        // [],
+      ],
     };
 
     this.boardWidth = 5;
@@ -61,9 +69,21 @@ export default class CrossQuizGenerator extends Component {
     // Replace the Changed Letter and Update the Board
     const newBoard = this.state.boardValues;
     let changedRow = newBoard[i].row;
-    changedRow = changedRow.substr(0, j) + event.target.value + changedRow.substr(j + 1);
+
+    // Check if the value of square was deleted or is a space
+    //  replace it with '*' in boardValues
+    let newSquareValue = event.target.value;
+    if (newSquareValue === '' || newSquareValue === ' ') {
+      newSquareValue = '*';
+    }
+
+    // Update the board
+    changedRow = changedRow.substr(0, j) + newSquareValue + changedRow.substr(j + 1);
     newBoard[i].row = changedRow;
     this.setState({ boardValues: newBoard });
+
+    // Update Across and Down Words
+    this.generateWords(i, j);
 
     const questionTitle = this.state.crossQuizQuestion;
     const metaAtributes = { width: this.state.boardWidth, height: this.state.boardHeight };
@@ -97,6 +117,8 @@ export default class CrossQuizGenerator extends Component {
       boardHeight: this.boardHeight,
     });
 
+    // this.generateWords(this.boardWidth, this.boardHeight);
+
     const questionTitle = this.state.crossQuizQuestion;
     const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
     const rowsAttributes = newBoard;
@@ -104,6 +126,43 @@ export default class CrossQuizGenerator extends Component {
 
     // Send Match Data to MainQuizGenerator
     this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
+  }
+
+  generateWords(row, col) {
+    // console.log(row, col);
+    const rowString = this.state.boardValues[row].row;
+    const rowSplitArray = rowString.split('*');
+
+    const generatedRowWords = rowSplitArray.filter((word) => {
+      if (word.length > 1) {
+        return true;
+      }
+      return false;
+    });
+
+    let colString = '';
+    for (let i = 0; i < this.state.boardHeight; i += 1) {
+      colString += this.state.boardValues[i].row[col];
+    }
+
+    const colSplitArray = colString.split('*');
+    const generatedColWords = colSplitArray.filter((word) => {
+      if (word.length > 1) {
+        return true;
+      }
+      return false;
+    });
+
+    console.log(generatedRowWords);
+    console.log(generatedColWords);
+
+    // Update generatedWords Arrays
+    const newDownWords = this.state.downWords;
+    newDownWords[col] = generatedColWords;
+    const newAcrossWords = this.state.acrossWords;
+    newAcrossWords[row] = generatedRowWords;
+
+    this.setState({ downWords: newDownWords, acrossWords: newAcrossWords });
   }
 
   renderBoard() {
@@ -119,6 +178,35 @@ export default class CrossQuizGenerator extends Component {
     }
 
     return board;
+  }
+
+  renderGeneratedWords() {
+    if (this.state.showBoard) {
+      return (
+        <div>
+          <div>
+            <h3>Across:</h3>
+            { this.state.acrossWords.map(array =>
+              array.map(text =>
+                  (<span><b>{text}</b><br /></span>),
+                ),
+              )
+            }
+          </div>
+
+          <div>
+            <h3>Down:</h3>
+            { this.state.downWords.map(array =>
+              array.map(text =>
+                  (<span><b>{text}</b><br /></span>),
+                ),
+              )
+            }
+          </div>
+        </div>
+      );
+    }
+    return (null);
   }
 
   render() {
@@ -157,6 +245,7 @@ export default class CrossQuizGenerator extends Component {
           </form>
 
           { this.renderBoard() }
+          { this.renderGeneratedWords() }
         </div>
       </div>
     );
