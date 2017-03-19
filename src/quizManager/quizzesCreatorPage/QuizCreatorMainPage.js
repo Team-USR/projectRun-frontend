@@ -34,6 +34,7 @@ export default class QuizCreatorMainPage extends Component {
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
     this.changeTitle = this.changeTitle.bind(this);
+    this.changeAttempts = this.changeAttempts.bind(this);
   }
   removeQuiz(index) {
     displayIndex = 0;
@@ -84,13 +85,23 @@ export default class QuizCreatorMainPage extends Component {
 
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
-    const quiz = { question, type, answers_attributes: answersAttributes };
-    // console.log("questionID"+questionID);
-    // if (inputQ.quiz.questions_attributes[questionID] === null) {
-    //   inputQ.quiz.questions_attributes.push(quiz);
-    // } else {
+
+    let quiz = {};
+    if (type === 'match') {
+      quiz = {
+        question: question.question,
+        match_default_attributes: {
+          default_text: question.match_default,
+        },
+        type,
+        pairs_attributes: answersAttributes,
+      };
+    } else if (type === 'multiple_choice') {
+      quiz = { question, type, answers_attributes: answersAttributes };
+    }
+
+    console.log('QUIZ POST', quiz);
     inputQ.quiz.questions_attributes[questionID] = quiz;
-  //  }
     this.setState({ submitedQuestions: inputQ });
   }
 
@@ -144,10 +155,13 @@ export default class QuizCreatorMainPage extends Component {
     if (quizType === 'match') {
       const question = (
         <MatchQuizGenerator
+          content={null}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
           index={id}
           key={`match${id}`}
+          updateParent={(answersAttributes, qObject, ind) =>
+            this.collectObject(answersAttributes, qObject, 'match', ind)}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -172,6 +186,11 @@ export default class QuizCreatorMainPage extends Component {
     const generatedQuiz = this.state.submitedQuestions;
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
+  }
+  changeAttempts(event) {
+    const attempted = this.state.submitedQuestions;
+    attempted.quiz.attempts = event.target.value;
+    this.setState({ submitedQuestions: attempted });
   }
   renderQuestions() {
     displayIndex = 0;
@@ -236,6 +255,12 @@ export default class QuizCreatorMainPage extends Component {
            <input
              id="titleInput" type="text" placeholder="title" onChange={this.changeTitle}
            />
+            <input
+              id="attemptsInput"
+              type="number"
+              placeholder="Number of attempts"
+              onChange={this.changeAttempts}
+            />
           </label>
           <br /><br />
          Select a quiz to be added:

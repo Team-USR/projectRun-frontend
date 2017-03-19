@@ -14,7 +14,7 @@ export default class SideBarWrapper extends Component {
             key={'stud'}
             userType={this.props.userType}
             onQuizClick={id =>
-            this.props.onSideBarItemClick(id, 'viewer')}
+            this.props.onSideBarItemClick(id, 'sessions')}
             content={this.props.sideBarContent.session}
           />
         );
@@ -64,7 +64,11 @@ export default class SideBarWrapper extends Component {
         <Navbar inverse collapseOnSelect className="mainNavContainer">
           <Navbar.Header>
             <Navbar.Brand>
-              <Button onClick={() => this.props.onSideBarTitleClick()}>{this.props.title}</Button>
+              <Button
+                className="titleButton"
+                onClick={() => this.props.onSideBarTitleClick()}
+              >
+                {this.props.title}</Button>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
