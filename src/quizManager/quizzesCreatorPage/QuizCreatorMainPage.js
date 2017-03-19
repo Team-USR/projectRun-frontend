@@ -100,7 +100,6 @@ export default class QuizCreatorMainPage extends Component {
     } else if (type === 'multiple_choice') {
       quiz = { question, type, answers_attributes: answersAttributes };
     }
-
     //  console.log('QUIZ POST', quiz);
     inputQ.quiz.questions_attributes[questionID] = quiz;
     this.setState({ submitedQuestions: inputQ });
