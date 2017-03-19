@@ -7,7 +7,6 @@ export default function LoginForm(props) {
   if (props.loginError) {
     error = <h3 className="invalidHeader">{props.loginError}</h3>;
   }
-
   return (
     <div className="loginPage">
       <h1 className="welcomeTitle" id="title">Welcome!</h1>
@@ -55,4 +54,7 @@ LoginForm.propTypes = {
   handlePasswordChange: React.PropTypes.func.isRequired,
   email: React.PropTypes.string.isRequired,
   password: React.PropTypes.string.isRequired,
+};
+LoginForm.defaultProps = {
+  loginError: null,
 };
