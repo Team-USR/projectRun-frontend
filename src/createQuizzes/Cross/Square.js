@@ -8,6 +8,7 @@ export default class Square extends Component {
         <input
           className="crossSquareInput"
           type="text"
+          value={this.props.value}
           onChange={e => this.props.handleSquareChange(e)}
         />
       </td>
@@ -17,5 +18,6 @@ export default class Square extends Component {
 }
 
 Square.propTypes = {
+  value: PropTypes.string.isRequired,
   handleSquareChange: PropTypes.func.isRequired,
 };

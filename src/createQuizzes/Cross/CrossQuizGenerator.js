@@ -89,6 +89,39 @@ export default class CrossQuizGenerator extends Component {
     this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
   }
 
+  handleClearBoard() {
+    Popup.create({
+      title: 'Clear the Board ? ',
+      content: 'Are you sure that you want to clear the board? \n This is an irreversible action which will affect the stored words! ',
+      buttons: {
+        right: [{
+          text: 'Clear Board',
+          className: 'danger',
+          action: () => {
+            const newBoard = this.state.boardValues;
+            for (let i = 0; i < this.boardHeight; i += 1) {
+              const row = '*'.repeat(this.boardWidth);
+              newBoard[i] = { row };
+            }
+
+            this.setState({
+              boardValues: newBoard,
+              hintsAttributes: [],
+              acrossWords: [],
+              downWords: [],
+            });
+
+            Popup.close();
+          },
+        }],
+        left: [{
+          text: 'Cancel',
+          action: () => Popup.close(),
+        }],
+      },
+    });
+  }
+
   handleGenerateBoard() {
     if (this.boardHeight > 30 || this.boardWidth > 30) {
       Popup.alert(
@@ -175,11 +208,16 @@ export default class CrossQuizGenerator extends Component {
     let board = (null);
     if (this.state.showBoard) {
       board = (
-        <Board
-          width={this.state.boardWidth}
-          height={this.state.boardHeight}
-          handleSquareChange={(e, i, j) => this.handleSquareChange(e, i, j)}
-        />);
+        <div className="crossBoardPanel">
+          <Button onClick={() => this.handleClearBoard()}>Clear Board</Button>
+          <Board
+            content={this.state.boardValues}
+            width={this.state.boardWidth}
+            height={this.state.boardHeight}
+            handleSquareChange={(e, i, j) => this.handleSquareChange(e, i, j)}
+          />
+        </div>
+        );
     }
 
     return board;

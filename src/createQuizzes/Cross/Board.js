@@ -4,9 +4,14 @@ import { Square } from './index';
 export default class Board extends Component {
 
   renderSquare(i, j) {
+    const board = this.props.content;
+    let squareValue = '';
+    if (board[i].row[j] && board[i].row[j] !== '*') {
+      squareValue = board[i].row[j];
+    }
     return (
       <Square
-        value={'X'}
+        value={squareValue}
         handleSquareChange={e => this.props.handleSquareChange(e, i, j)}
         key={`square${i}${j}`}
       />
@@ -34,7 +39,7 @@ export default class Board extends Component {
 
     return (
       <div>
-        <table className="crossBoardWrapper">
+        <table className="crossBoardTable">
           <tbody>
             {
               board.map((array, index) => {
@@ -56,8 +61,7 @@ export default class Board extends Component {
   render() {
     this.i = 'i';
     return (
-      <div>
-        Board
+      <div className="crossBoardWrapper">
         { this.renderBoard() }
       </div>
     );
@@ -67,5 +71,6 @@ export default class Board extends Component {
 Board.propTypes = {
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
+  content: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   handleSquareChange: PropTypes.func.isRequired,
 };
