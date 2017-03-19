@@ -116,7 +116,7 @@ export default class QuizCreatorMainPage extends Component {
 
     const inputQ = this.state.submitedQuestions;
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
-    // console.log(inputQ);
+    console.log(inputQ);
     this.setState({ submitedQuestions: inputQ });
   }
 

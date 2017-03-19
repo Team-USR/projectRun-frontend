@@ -5,7 +5,11 @@ export default class Square extends Component {
   render() {
     const square = (
       <td>
-        <input type="text" onChange={e => this.props.handleSquareChange(e)} />
+        <input
+          className="crossSquareInput"
+          type="text"
+          onChange={e => this.props.handleSquareChange(e)}
+        />
       </td>
     );
     return square;

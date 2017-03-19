@@ -10,7 +10,7 @@ export default class CrossQuizGenerator extends Component {
       boardWidth: 5,
       boardHeight: 5,
       boardValues: [{}],
-      question: 'Question',
+      crossQuizQuestion: 'Question',
       metaAtributes: [],
       hintsAttributes: [],
     };
@@ -33,6 +33,21 @@ export default class CrossQuizGenerator extends Component {
     this.boardHeight = value;
   }
 
+  /* Function called everytime when user types in Quiz Title Input */
+  handleQuestionInputChange(e) {
+    const target = e.target;
+    const value = target.value;
+    this.setState({ crossQuizQuestion: value });
+
+    const questionTitle = value;
+    const metaAtributes = { width: this.state.boardWidth, height: this.state.boardHeight };
+    const rowsAttributes = this.state.boardValues;
+    const hintsAttributes = this.state.hintsAttributes;
+
+    // Send Match Data to MainQuizGenerator
+    this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
+  }
+
   handleSquareChange(e, i, j) {
     this.x = 'x';
     const event = e;
@@ -50,12 +65,13 @@ export default class CrossQuizGenerator extends Component {
     newBoard[i].row = changedRow;
     this.setState({ boardValues: newBoard });
 
-    this.props.updateParent(
-      this.state.question,
-      this.state.metaAtributes,
-      newBoard,
-      this.state.hintsAttributes,
-    );
+    const questionTitle = this.state.crossQuizQuestion;
+    const metaAtributes = { width: this.state.boardWidth, height: this.state.boardHeight };
+    const rowsAttributes = newBoard;
+    const hintsAttributes = this.state.hintsAttributes;
+
+    // Send Match Data to MainQuizGenerator
+    this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
   }
 
   handleGenerateBoard() {
@@ -63,7 +79,11 @@ export default class CrossQuizGenerator extends Component {
     for (let i = 0; i < this.boardHeight; i += 1) {
       let row = '';
       if (newBoard[i] && newBoard[i].row) {
-        row = newBoard[i].row.substring(0, this.boardWidth);
+        if (newBoard[i].row.length >= this.boardWidth) {
+          row = newBoard[i].row.substring(0, this.boardWidth);
+        } else {
+          row = newBoard[i].row + '*'.repeat(this.boardWidth - newBoard[i].row.length);
+        }
       } else {
         row = '*'.repeat(this.boardWidth);
       }
@@ -76,6 +96,14 @@ export default class CrossQuizGenerator extends Component {
       boardWidth: this.boardWidth,
       boardHeight: this.boardHeight,
     });
+
+    const questionTitle = this.state.crossQuizQuestion;
+    const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
+    const rowsAttributes = newBoard;
+    const hintsAttributes = this.state.hintsAttributes;
+
+    // Send Match Data to MainQuizGenerator
+    this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
   }
 
   renderBoard() {
@@ -98,6 +126,16 @@ export default class CrossQuizGenerator extends Component {
       <div className="crossQuizGenerator">
         <div className="createCrossQuizTitle">
           <h3>Cross question</h3>
+
+          <b>Question: </b>
+          <input
+            type="text"
+            name="crossQuizTitle"
+            className="quizTitleInput"
+            value={this.state.matchQuizQuestion}
+            placeholder={this.state.quizTitlePlaceHolder}
+            onChange={e => this.handleQuestionInputChange(e)}
+          />
 
           <h5>Board Size: </h5>
           <form>
