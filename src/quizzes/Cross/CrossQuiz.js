@@ -36,13 +36,51 @@ export default class CrossQuiz extends Component {
         ],
       ],
       size: 5,
+      width: 1,
+      height: 1,
+      boardValues: [],
     };
+  }
+
+  componentWillMount() {
+    // console.log(this.props.question);
+
+    if (this.props.reviewState) {
+      // console.log('reviewState');
+
+      this.setState({
+        width: this.props.question.width,
+        height: this.props.question.height,
+        boardValues: this.props.question.rows,
+      });
+    }
   }
 
   handleClick(i) {
     const newSquares = this.state.squares.slice();
     newSquares[i] = 'X';
     this.setState({ squares: newSquares });
+  }
+
+  renderBoard() {
+    return (
+      <div className="crossBoard">
+        <Board
+          inReview={this.props.reviewState}
+          inResult={this.props.resultsState}
+          height={this.props.question.height}
+          width={this.props.question.width}
+          content={this.props.question.rows}
+
+          size={this.state.size}
+          squares={this.state.squares}
+          onClick={i => this.handleClick(i)}
+          onChange={answers =>
+            this.props.callbackParent(this.state.matchQuizId, answers)
+          }
+        />
+      </div>
+    );
   }
 
   render() {
@@ -56,7 +94,7 @@ export default class CrossQuiz extends Component {
           <h3> { quizIndex }. { crossQuizTitle } </h3>
         </div>
 
-        <div className="leftColumn">
+        <div className="">
           <div>
             <h4> 1. Across: Follow the instructions</h4>
             <h4> 2. Down: Follow the instructions</h4>
@@ -64,19 +102,8 @@ export default class CrossQuiz extends Component {
           <ol>{/* TODO */}</ol>
         </div>
 
-        <div className="rightColumn">
-          <div className="crossBoard">
-            <Board
-              inReview={this.props.reviewState}
-              inResult={this.props.resultsState}
-              size={this.state.size}
-              squares={this.state.squares}
-              onClick={i => this.handleClick(i)}
-              onChange={answers =>
-                this.props.callbackParent(this.state.matchQuizId, answers)
-              }
-            />
-          </div>
+        <div className="">
+          { this.renderBoard() }
         </div>
       </div>
     );
@@ -88,6 +115,9 @@ CrossQuiz.propTypes = {
   resultsState: PropTypes.bool.isRequired,
   question: PropTypes.shape({
     id: PropTypes.number.isRequired,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    rows: PropTypes.arrayOf(PropTypes.string).isRequired,
     question: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
   }).isRequired,

@@ -16,7 +16,7 @@ export default function Square(props) {
   if (props.squareType === 'static') {
     square = (
       <td className="square">
-        {props.value}
+        <b> {props.value} </b>
       </td>);
   }
 
@@ -29,5 +29,5 @@ export default function Square(props) {
 
 Square.propTypes = {
   value: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
 };

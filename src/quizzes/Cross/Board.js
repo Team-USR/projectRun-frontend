@@ -2,56 +2,97 @@ import React, { Component, PropTypes } from 'react';
 import { Square } from './index';
 
 export default class Board extends Component {
-  renderSquare(i) {
-    this.i = i;
-    return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
-  }
-  renderSq(i, j) {
+  // renderSquare2(i) {
+  //   this.i = i;
+  //   return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
+  // }
+  // renderSq(i, j) {
+  //   return (
+  //     <Square
+  //       value={this.props.squares[i][j].value}
+  //       squareType={this.props.squares[i][j].type}
+  //       onClick={() => this.props.onClick()}
+  //     />
+  //   );
+  // }
+
+  renderSquare(i, j) {
+    // console.log(this.props.content);
+    const board = this.props.content;
+    let squareValue = '';
+    let sqType = 'black';
+    if (board[i][j] && board[i][j] !== '*') {
+      squareValue = board[i][j].toUpperCase();
+      sqType = 'static';
+    }
     return (
       <Square
-        value={this.props.squares[i][j].value}
-        squareType={this.props.squares[i][j].type}
-        onClick={() => this.props.onClick()}
+        squareType={sqType}
+        value={squareValue}
+        handleSquareChange={e => this.props.handleSquareChange(e, i, j)}
+        key={`square${i}${j}`}
       />
     );
   }
+
+  renderRow(i) {
+    const row = [];
+    for (let j = 0; j < this.props.width; j += 1) {
+      const sq = this.renderSquare(i, j);
+      row.push(sq);
+    }
+    return row;
+  }
+
+  renderBoard() {
+    // console.log(this.props.height);
+    const height = this.props.height;
+    const board = [];
+
+    for (let i = 0; i < height; i += 1) {
+      const row = this.renderRow(i);
+      board.push(row);
+    }
+
+    // console.log(board);
+    return (
+      <div>
+        <table className="crossBoardTable">
+          <tbody>
+            {
+              board.map((array, index) => {
+                const ind = index;
+                const row = (
+                  <tr
+                    key={`row${ind}`}
+                  >{ array }</tr>
+                );
+                return row;
+              })
+            }
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="crossBoardWrapper">
-        <table>
-          <tbody>
-            <tr>
-              {this.renderSq(0, 0)}
-              {this.renderSq(0, 1)}
-              {this.renderSq(0, 2)}
-              {this.renderSq(0, 3)}
-            </tr>
-            <tr>
-              {this.renderSq(1, 0)}
-              {this.renderSq(1, 1)}
-              {this.renderSq(1, 2)}
-              {this.renderSq(1, 3)}
-            </tr>
-            <tr>
-              {this.renderSq(2, 0)}
-              {this.renderSq(2, 1)}
-              {this.renderSq(2, 2)}
-              {this.renderSq(2, 3)}
-            </tr>
-            <tr>
-              {this.renderSq(3, 0)}
-              {this.renderSq(3, 1)}
-              {this.renderSq(3, 2)}
-              {this.renderSq(3, 3)}
-            </tr>
-          </tbody>
-        </table>
+        { this.renderBoard() }
       </div>
     );
   }
 }
 
 Board.propTypes = {
-  squares: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onClick: PropTypes.func.isRequired,
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
+  content: PropTypes.arrayOf(PropTypes.string).isRequired,
+  // squares: PropTypes.arrayOf(PropTypes.string).isRequired,
+  handleSquareChange: PropTypes.func,
+};
+
+Board.defaultProps = {
+  handleSquareChange: null,
 };

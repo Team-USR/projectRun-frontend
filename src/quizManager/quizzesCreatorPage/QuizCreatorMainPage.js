@@ -282,9 +282,12 @@ export default class QuizCreatorMainPage extends Component {
           <h1> Quiz creator </h1>
           <label htmlFor="titleInput">
           Title:
-           <input
-             id="titleInput" type="text" placeholder="title" onChange={this.changeTitle}
-           />
+            <input
+              id="titleInput"
+              type="text"
+              placeholder="title"
+              onChange={this.changeTitle}
+            />
             <input
               id="attemptsInput"
               type="number"
@@ -293,8 +296,8 @@ export default class QuizCreatorMainPage extends Component {
             />
           </label>
           <br /><br />
-         Select a quiz to be added:
-         <br />
+          Select a quiz to be added:
+          <br />
           <Button onClick={() => this.addQuiz('multiple_choice')}> Multiple Choice</Button>
           <Button onClick={() => this.addQuiz('match')}>Match</Button>
           <Button onClick={() => this.addQuiz('cloze')}>Cloze</Button>

@@ -59,7 +59,6 @@ export default class Board extends Component {
   }
 
   render() {
-    this.i = 'i';
     return (
       <div className="crossBoardWrapper">
         { this.renderBoard() }

@@ -183,17 +183,14 @@ export default class QuizCreatorReviewer extends Component {
     if (question.type === 'cross') {
       return (
         <CrossQuiz
-          reviewState={false}
-          resultsState={false}
-          question={{
-            id: 10,
-            question: 'Cross Quiz',
-            type: 'cross',
-          }}
-          index={1}
-          callbackParent={(questionId, answers) =>
-          this.collectAnswers(questionId, answers, 'cross', 1)}
-          key={10}
+          id={question.id}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          question={question}
+          index={index}
+          correctAnswer={{}}
+          callbackParent={() => {}}
+          key={`match_quiz_${question.id}`}
         />
       );
     }
@@ -224,11 +221,15 @@ export default class QuizCreatorReviewer extends Component {
             <Button
               className="submitButton"
               onClick={() => this.props.handleSubmitButton()}
-            >EDIT QUIZ</Button>
+            >
+              EDIT QUIZ
+            </Button>
             <Button
               className="submitButton"
               onClick={() => this.publishQuiz()}
-            >Publish quiz</Button>
+            >
+              Publish quiz
+            </Button>
           </div>
         </div>
       );
@@ -243,7 +244,9 @@ export default class QuizCreatorReviewer extends Component {
             <Button
               className="submitButton"
               onClick={() => this.props.deleteQuiz(this.state.quizInfo.id)}
-            >DELETE QUIZ</Button>
+            >
+              DELETE QUIZ
+            </Button>
           </div>
         </div>
       );
@@ -257,7 +260,9 @@ export default class QuizCreatorReviewer extends Component {
           <Button
             className="submitButton"
             onClick={() => this.props.handleSubmitButton()}
-          >EDIT QUIZ</Button>
+          >
+            EDIT QUIZ
+          </Button>
         </div>
       </div>
     );

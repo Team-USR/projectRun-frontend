@@ -102,7 +102,7 @@ export default class CrossQuizGenerator extends Component {
     if (value.length > 1) {
       event.target.value = value[1];
     }
-    event.target.value = event.target.value.toUpperCase();
+    event.target.value = event.target.value.toLowerCase();
 
     // Replace the Changed Letter and Update the Board
     const newBoard = this.state.boardValues;
@@ -245,11 +245,11 @@ export default class CrossQuizGenerator extends Component {
       return false;
     });
 
-    let newRowPosX = row;
-    let newRowPosY = col;
+    const newRowPosX = row;
+    const newRowPosY = col;
 
-    let newColPosX = row;
-    let newColPosY = col;
+    // const newColPosX = row;
+    // const newColPosY = col;
 
     // console.log(generatedRowWords);
     // console.log(generatedColWords);
@@ -275,13 +275,13 @@ export default class CrossQuizGenerator extends Component {
       return obj;
     });
 
-    let actionType = '';
-
-    if (this.state.boardValues[row].row[col] !== '*') {
-      actionType = 'modified';
-    } else {
-      actionType = 'deleted';
-    }
+    // let actionType = '';
+    //
+    // if (this.state.boardValues[row].row[col] !== '*') {
+    //   actionType = 'modified';
+    // } else {
+    //   actionType = 'deleted';
+    // }
 
     // console.log(actionType);
 
@@ -389,7 +389,6 @@ export default class CrossQuizGenerator extends Component {
   }
 
   renderBoard() {
-    this.board = 'board';
     let board = (null);
     if (this.state.showBoard) {
       board = (
