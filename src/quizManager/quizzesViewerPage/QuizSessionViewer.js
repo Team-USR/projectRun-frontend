@@ -54,25 +54,26 @@ export default class QuizSessionViewer extends Component {
   renderSessionCards() {
     const element = [];
     let inprogress = 0;
-    this.state.sessionsList.map((item, index) => {
-      if (item.state === 'submitted') {
-        element.push(
-          <div className="sessionCard" key={`session${index + 1}`}>
-            <div className="row">
-              <div className="col-md-9">
-                <h5>{item.created_at}</h5>
-                <h5>{item.last_updated}</h5>
+    if (this.state.sessionsList.length > 0) {
+      this.state.sessionsList.map((item, index) => {
+        if (item.state === 'submitted') {
+          element.push(
+            <div className="sessionCard" key={`session${index + 1}`}>
+              <div className="row">
+                <div className="col-md-9">
+                  <h5>{item.created_at}</h5>
+                  <h5>{item.last_updated}</h5>
+                </div>
+                <div className="col-md-3 rightSection">
+                  <h5>Submitted</h5>
+                  <h5>Score: {item.score}</h5>
+                </div>
               </div>
-              <div className="col-md-3 rightSection">
-                <h5>Submitted</h5>
-                <h5>Score: {item.score}</h5>
-              </div>
-            </div>
-          </div>,
+            </div>,
         );
-      }
-      return (null);
-    },
+        }
+        return (null);
+      },
     this.state.sessionsList.map((item, index) => {
       if (item.state === 'in_progress') {
         inprogress += 1;
@@ -91,26 +92,27 @@ export default class QuizSessionViewer extends Component {
           </div>,
               );
       }
-      if (inprogress === 0) {
-        element.push(
-          <div className="inProgress" key={`startSession${index + 1}`}>
-            <div className="row">
-              <div className="col-md-9">
-                <h5>New session</h5>
-                <h5>{}</h5>
-              </div>
-              <div className="col-md-3 rightSection">
-                <Button onClick={() => this.props.handleStartButton()}>Start</Button>
-              </div>
-            </div>
-          </div>,
-              );
-      }
       return (null);
     },
 
   ),
   );
+    }
+    if (inprogress === 0 || this.state.sessionList === undefined) {
+      element.push(
+        <div className="inProgress" key={`startSession${1}`}>
+          <div className="row">
+            <div className="col-md-9">
+              <h5>New session</h5>
+              <h5>{}</h5>
+            </div>
+            <div className="col-md-3 rightSection">
+              <Button onClick={() => this.props.handleStartButton()}>Start</Button>
+            </div>
+          </div>
+        </div>,
+        );
+    }
     return element.reverse();
   }
   render() {
