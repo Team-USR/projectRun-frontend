@@ -5,6 +5,7 @@ import Calendar from 'react-input-calendar';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
 import { SingleChoiceQuizGenerator } from '../../createQuizzes/SingleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
+import { MixQuizGenerator } from '../../createQuizzes/Mix';
 import { ClozeGenerator } from '../../createQuizzes/Cloze';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
@@ -106,6 +107,7 @@ export default class QuizCreatorMainPage extends Component {
     } if (type === 'single_choice') {
       quiz = { question, type, answers_attributes: answersAttributes };
     }
+    //  console.log('QUIZ POST', quiz);
     inputQ.quiz.questions_attributes[questionID] = quiz;
     this.setState({ submitedQuestions: inputQ });
   }
@@ -122,6 +124,19 @@ export default class QuizCreatorMainPage extends Component {
     const inputQ = this.state.submitedQuestions;
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
     this.setState({ submitedQuestions: inputQ });
+  }
+
+  collectMixObject(data, questionTitle, questionID) {
+    const questionObject = {
+      question: questionTitle,
+      type: 'mix',
+      sentences_attributes: data,
+    };
+    const inputQ = this.state.submitedQuestions;
+    inputQ.quiz.questions_attributes[questionID] = questionObject;
+    this.setState({ submitedQuestions: inputQ });
+    //  console.log(inputQ);
+    // console.log(questionObject);
   }
 
   addQuiz(quizType) {
@@ -196,6 +211,17 @@ export default class QuizCreatorMainPage extends Component {
       questionObject = { id, question, buttonGroup };
     }
 
+    if (quizType === 'mix') {
+      const question = (
+        <MixQuizGenerator
+          index={id}
+          key={`mix${id}`}
+          updateParent={(answersAttributes, qObject, ind) =>
+          this.collectMixObject(answersAttributes, qObject, ind)}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+
     inputQuestionList.push(inputQuestion);
     questionList.push(questionObject);
     this.setState({ questions: questionList, inputQuestions: inputQuestionList });
@@ -215,7 +241,6 @@ export default class QuizCreatorMainPage extends Component {
     this.setState({ submitedQuestions: attempted });
   }
   changeReleaseDate(value) {
-    console.log(value);
     const releaseDate = this.state.submitedQuestions;
     releaseDate.quiz.release_date = value;
     this.setState({ submitedQuestions: releaseDate, defaultDate: value });
@@ -318,7 +343,6 @@ export default class QuizCreatorMainPage extends Component {
             </div>
           </label>
           <br /><br />
-
           {this.renderQuestions()}
           <br /><br /><br />
           { this.renderSubmitPanel() }
@@ -329,6 +353,7 @@ export default class QuizCreatorMainPage extends Component {
             <Button onClick={() => this.addQuiz('single_choice')}> Single Choice</Button>
             <Button onClick={() => this.addQuiz('match')}>Match</Button>
             <Button onClick={() => this.addQuiz('cloze')}>Cloze</Button>
+            <Button onClick={() => this.addQuiz('mix')}>Mix</Button>
           </div>
           <div
             style={{ float: 'left', clear: 'both' }}
