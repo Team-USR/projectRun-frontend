@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
+import { SingleChoiceQuiz } from '../../quizzes/SingleChoice';
 import { ClozeQuestion } from '../../quizzes/Cloze';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
@@ -119,6 +120,21 @@ export default class QuizCreatorReviewer extends Component {
           creatorAnswers={answersAttributes}
           callbackParent={() => {}}
           key={`multiple_choice_quiz_${question.id}`}
+        />
+      );
+    }
+    if (question.type === 'single_choice') {
+      return (
+        <SingleChoiceQuiz
+          id={question.id}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          question={question}
+          index={index}
+          correctAnswer={{}}
+          creatorAnswers={answersAttributes}
+          callbackParent={() => {}}
+          key={`single_choice_quiz_${question.id}`}
         />
       );
     }

@@ -2,7 +2,9 @@ import React from 'react';
 import { NavBarContainer } from './containers';
 import './App.css';
 
+
 require('react-toggle/style.css');
+require('react-input-calendar/style/index.css');
 
 export default function App(props) {
   return (
