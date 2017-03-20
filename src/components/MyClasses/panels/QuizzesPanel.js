@@ -23,6 +23,7 @@ export default class QuizzesPanel extends Component {
       allQuizzes: this.props.allQuizzes,
       availableQuizzes: this.getAvailableQuizzes(this.props.allQuizzes),
     });
+    console.log("AVAILABLE", this.props.quizzes);
     this.filterItems('');
   }
   getAvailableQuizzes(all) {
@@ -46,7 +47,8 @@ export default class QuizzesPanel extends Component {
       if (item.title.toLowerCase() === value.toLowerCase() ||
           item.title.toLowerCase().includes(value.toLowerCase())) {
         found = true;
-        return (item);
+        const result = { id: item.id, published:item.published, title: item.title };
+        return (result);
       }
       return (null);
     });
@@ -54,9 +56,9 @@ export default class QuizzesPanel extends Component {
       filter = [];
     } else
     if (filter.length === 0 || value === '') {
-      filter = this.props.allQuizzes;
+      filter = this.props.allQuizzes.map(item => {return {id: item.id,published:item.published, title:item.title}});
     }
-
+    console.log("FIlter",filter);
     let foundSelected = false;
     let filterSelected = this.props.quizzes.filter((item) => {
       if (item.title.toLowerCase() === value.toLowerCase() ||
@@ -84,9 +86,8 @@ export default class QuizzesPanel extends Component {
     this.setState({ currentSearched: event.target.value });
   }
   addQuiz(id) {
-
     let newIndex = -1;
-    this.state.selectedQuizzes.map((item, index) => {
+    this.state.availableQuizzes.map((item, index) => {
       if (item.id === id) {
         newIndex = index;
       }
@@ -106,7 +107,7 @@ export default class QuizzesPanel extends Component {
   }
   removeQuiz(id) {
     let newIndex = -1;
-    this.state.availableQuizzes.map((item, index) => {
+    this.state.selectedQuizzes.map((item, index) => {
       if (item.id === id) {
         newIndex = index;
       }
@@ -172,6 +173,7 @@ export default class QuizzesPanel extends Component {
   }
 
   render() {
+    console.log("SELECTED",this.state.selectedQuizzes);
     return (
       <div className="quizPanelWrapper">
         <Col md={12}>
