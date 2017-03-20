@@ -16,8 +16,7 @@ class QuestionWrapper extends Component {
     this.state = { results: [] };
   }
   onChildChanged(newState, id, index) {
-    console.log("CHANGED MCQ");
-    const newArray = this.state.results.slice();
+    const newArray = this.state.results;
     if (newState === true) newArray.push(id);
     else newArray.splice(index, 1);
     this.setState({ results: newArray });
@@ -33,12 +32,15 @@ class QuestionWrapper extends Component {
       if (this.props.sessionAnswers.answer_ids !== null
         && this.props.sessionAnswers.answer_ids !== undefined) {
         const ids = this.props.sessionAnswers.answer_ids;
-        defaultAnswer = ids.map((element) => {
-          if (element === choices.id) return true;
+        ids.map((element) => {
+          if (element === choices.id) {
+            defaultAnswer = true;
+          }
           return (null);
-        })[0];
+        });
       }
     }
+
     // console.log("SESSION",this.props.sessionAnswers);
     return (
       <Choice

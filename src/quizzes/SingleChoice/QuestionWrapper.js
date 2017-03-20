@@ -16,7 +16,6 @@ class QuestionWrapper extends Component {
     this.state = { results: [], selected: null };
   }
   onChildChanged(newState, id, index) {
-    console.log("Changed");
     this.setState({ selected: index });
     const newArray = this.state.results;
     if (newState === true) newArray[0] = id;

@@ -38,7 +38,7 @@ export default class SideBarClasses extends Component {
           className="searchBarItem"
           id="searchBar"
           type="text"
-          placeholder="Search for a quiz"
+          placeholder="Search for a class"
           onChange={this.filterItems}
         />
       </NavItem>
