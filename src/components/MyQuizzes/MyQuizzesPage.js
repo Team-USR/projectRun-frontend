@@ -145,8 +145,8 @@ export default class MyQuizzesPage extends Component {
           quizID={this.state.currentID}
           userToken={this.props.userToken}
           handlePublish={() => this.reloadBar()}
-          handleSubmitButton={() => this.updateCurrentQuiz('editor')}
-          deleteQuiz={deletedID => this.deleteThisQUiz(deletedID)}
+          handleSubmitButton={() => { this.reloadBar(); this.updateCurrentQuiz('editor'); }}
+          deleteQuiz={(deletedID) => { this.reloadBar(); this.deleteThisQUiz(deletedID); }}
           handleError={type => this.updateCurrentQuiz(type)}
         />);
       }
@@ -154,7 +154,7 @@ export default class MyQuizzesPage extends Component {
         element = (<QuizEditorMainPage
           quizID={this.state.currentID}
           userToken={this.props.userToken}
-          handleSubmitButton={() => this.updateCurrentQuiz('reviewer')}
+          handleSubmitButton={() => { this.reloadBar(); this.updateCurrentQuiz('reviewer'); }}
           handleError={type => this.updateCurrentQuiz(type)}
         />);
       }

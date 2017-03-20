@@ -9,7 +9,7 @@ export default function SignupForm(props) {
 
   return (
     <div className="loginPage">
-      <h1 className="welcomeTitle" id="title">Welcome!</h1>
+      <h1 className="welcomeTitle" id="title">Welcome to Interactive Language Exercises</h1>
       {error}
       <div className="loginWrapper">
         <form>
