@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
 import axios from 'axios';
+import Calendar from 'react-input-calendar';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
 import { SingleChoiceQuizGenerator } from '../../createQuizzes/SingleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
@@ -34,11 +35,13 @@ export default class QuizEditorMainPage extends Component {
       quizInfo: [],
       loadingQuiz: true,
       error: false,
+      defaultDate: '01-01-2017',
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
     this.changeTitle = this.changeTitle.bind(this);
     this.changeAttempts = this.changeAttempts.bind(this);
+    this.changeReleaseDate = this.changeReleaseDate.bind(this);
   }
   componentWillMount() {
     id = 0;
@@ -51,9 +54,11 @@ export default class QuizEditorMainPage extends Component {
        if (!response || (response && response.status !== 200)) {
          this.setState({ errorState: true });
        }
+       console.log(response.data.release_date);
        const generatedQuiz = this.state.submitedQuestions;
        generatedQuiz.quiz.title = response.data.title;
        generatedQuiz.quiz.attempts = response.data.attempts;
+       generatedQuiz.quiz.release_date = response.data.release_date;
      //  console.log("LOADING FINISHED");
        setTimeout(() => {
          this.setState({
@@ -85,6 +90,7 @@ export default class QuizEditorMainPage extends Component {
         const generatedQuiz = this.state.submitedQuestions;
         generatedQuiz.quiz.title = response.data.title;
         generatedQuiz.quiz.attempts = response.data.attempts;
+        generatedQuiz.quiz.release_date = response.data.release_date;
         setTimeout(() => {
           this.setState({
             loadingQuiz: false,
@@ -96,6 +102,9 @@ export default class QuizEditorMainPage extends Component {
       });
     }
   }
+  // componentDidUpdate() {
+  //   this.scrollToBottom();
+  // }
   removeQuiz(index) {
     displayIndex = 0;
     const remQuestions = this.state.questions;
@@ -248,6 +257,10 @@ export default class QuizEditorMainPage extends Component {
     // console.log(questionList);
     this.setState({ questions: questionList, inputQuestions: inputQuestionList });
     id += 1;
+//    this.scrollToBottom();
+  }
+  scrollToBottom() {
+    this.scroller2.scrollIntoView({ block: 'end', behavior: 'smooth' });
   }
   changeTitle(event) {
     const generatedQuiz = this.state.submitedQuestions;
@@ -259,6 +272,12 @@ export default class QuizEditorMainPage extends Component {
     const attempted = this.state.submitedQuestions;
     attempted.quiz.attempts = event.target.value;
     this.setState({ submitedQuestions: attempted });
+  }
+  changeReleaseDate(value) {
+    console.log(value);
+    const releaseDate = this.state.submitedQuestions;
+    releaseDate.quiz.release_date = value;
+    this.setState({ submitedQuestions: releaseDate, defaultDate: value });
   }
   renderQuestions() {
     displayIndex = 0;
@@ -321,33 +340,65 @@ export default class QuizEditorMainPage extends Component {
     //  console.log("TITLE",submit.quiz.title);
       return (
         <div className="mainQuizGeneratorBlock">
-          <h1> Quiz Editor </h1>
+          <h1> Quiz editor </h1>
           <label htmlFor="titleInput">
-          Title:
-           <input
-             id="titleInput"
-             type="text"
-             placeholder="title"
-             onChange={this.changeTitle}
-             value={submit.quiz.title}
-           />
-            <input
-              id="attemptsInput"
-              type="number"
-              placeholder="attempts"
-              onChange={this.changeAttempts}
-              value={submit.quiz.attempts}
-            />
+            <div className="headingWrapper">
+              <Col md={12}>
+                <Col md={6}>
+                  <h5 className="headingLabel">  Title: </h5>
+                </Col>
+                <Col md={6}>
+                  <input
+                    id="titleInputs"
+                    type="text"
+                    key={'title'}
+                    placeholder="ex: Spanish test"
+                    onChange={this.changeTitle}
+                    value={submit.quiz.title}
+                  />
+                </Col>
+              </Col>
+              <Col md={12}>
+                <Col md={6}>
+                  <h5 className="headingLabel">Number of attempts:</h5>
+                </Col>
+                <Col md={6}>
+                  <input
+                    id="attemptsInput"
+                    type="number"
+                    placeholder="ex: 10"
+                    onChange={this.changeAttempts}
+                    value={submit.quiz.attempts}
+                  />
+                </Col>
+              </Col>
+              <Col md={12}>
+                <Col md={6}>
+                  <h5 className="headingLabel">  Release date: </h5>
+                </Col>
+                <Col md={6}>
+                  <Calendar key={'calendar'} format="DD/MM/YYYY" date={this.state.submitedQuestions.quiz.release_date} onChange={this.changeReleaseDate} computableFormat={'YYYY-MM-DD'} />
+                </Col>
+              </Col>
+            </div>
           </label>
           <br /><br />
-         Select a quiz to be added:
-         <br />
-          <Button onClick={() => this.addQuiz('multiple_choice', null)}> Multiple Choice</Button>
-          <Button onClick={() => this.addQuiz('match', null)}>Match</Button>
-          <Button onClick={() => this.addQuiz('cloze', null)}>Cloze</Button>
+
           {this.renderQuestions()}
           <br /><br /><br />
           { this.renderSubmitPanel() }
+          Select a quiz to be added:
+          <br />
+          <div className="quizButtons">
+            <Button onClick={() => this.addQuiz('multiple_choice', null)}> Multiple Choice</Button>
+            <Button onClick={() => this.addQuiz('single_choice', null)}> Single Choice</Button>
+            <Button onClick={() => this.addQuiz('match', null)}>Match</Button>
+            <Button onClick={() => this.addQuiz('cloze', null)}>Cloze</Button>
+          </div>
+          <div
+            style={{ float: 'left', clear: 'both' }}
+            ref={(input) => { this.scroller2 = input; }}
+          />
         </div>
       );
     } else

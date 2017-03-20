@@ -41,9 +41,6 @@ export default class QuizCreatorMainPage extends Component {
     this.changeAttempts = this.changeAttempts.bind(this);
     this.changeReleaseDate = this.changeReleaseDate.bind(this);
   }
-  componentDidUpdate() {
-    this.scrollToBottom();
-  }
   removeQuiz(index) {
     displayIndex = 0;
     const remQuestions = this.state.questions;
