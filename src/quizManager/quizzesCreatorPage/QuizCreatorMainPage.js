@@ -24,7 +24,7 @@ export default class QuizCreatorMainPage extends Component {
       questions: [],
       inputQuestions: [{
       }],
-      submitedQuestions: { quiz: { title: '', questions_attributes: [] } },
+      submitedQuestions: { quiz: { title: '', questions_attributes: [], release_date: '2017-03-08' } },
       generatedQuizID: 0,
       answers: { quiz: [] },
       reviewState: false,
@@ -116,6 +116,7 @@ export default class QuizCreatorMainPage extends Component {
 
     const inputQ = this.state.submitedQuestions;
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    // console.log(newQuestion);
     // console.log(rowsAttributes);
     // console.log(hintsAttributes);
     this.setState({ submitedQuestions: inputQ });

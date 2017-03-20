@@ -36,11 +36,52 @@ export default class CrossQuizGenerator extends Component {
     this.boardHeight = value;
   }
 
+  updateHintsAttributes() {
+    const newHintsAttributes = [];
+
+    this.state.acrossWords.map((array) => {
+      array.map((obj) => {
+        // console.log(obj);
+        newHintsAttributes.push({
+          // word: obj.word,
+          hint: obj.clue,
+          row: obj.posX,
+          column: obj.posY,
+          across: true,
+        });
+        return obj;
+      });
+      return array;
+    });
+
+    this.state.downWords.map((array) => {
+      array.map((obj) => {
+        // console.log(obj);
+        newHintsAttributes.push({
+          // word: obj.word,
+          hint: obj.clue,
+          row: obj.posX,
+          column: obj.posY,
+          across: false,
+        });
+        return obj;
+      });
+      return array;
+    });
+
+    // console.log('this', newHintsAttributes);
+
+    this.setState({ hintsAttributes: newHintsAttributes });
+  }
+
   /* Function called everytime when user types in Quiz Title Input */
   handleQuestionInputChange(e) {
     const target = e.target;
     const value = target.value;
     this.setState({ crossQuizQuestion: value });
+
+    // Update hintsAttributes Object
+    this.updateHintsAttributes();
 
     const questionTitle = value;
     const metaAtributes = { width: this.state.boardWidth, height: this.state.boardHeight };
@@ -53,6 +94,7 @@ export default class CrossQuizGenerator extends Component {
 
   handleSquareChange(e, i, j) {
     // console.log(this.state.downWords);
+    // console.log(this.state.acrossWords);
 
     const event = e;
     const target = event.target;
@@ -80,6 +122,9 @@ export default class CrossQuizGenerator extends Component {
 
     // Update Across and Down Words
     this.generateWords(i, j);
+
+    // Update hintsAttributes Object
+    this.updateHintsAttributes();
 
     const questionTitle = this.state.crossQuizQuestion;
     const metaAtributes = { width: this.state.boardWidth, height: this.state.boardHeight };
@@ -162,6 +207,10 @@ export default class CrossQuizGenerator extends Component {
         boardHeight: this.boardHeight,
       });
 
+
+      // Update hintsAttributes Object
+      this.updateHintsAttributes();
+
       const questionTitle = this.state.crossQuizQuestion;
       const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
       const rowsAttributes = newBoard;
@@ -196,6 +245,12 @@ export default class CrossQuizGenerator extends Component {
       return false;
     });
 
+    let newRowPosX = row;
+    let newRowPosY = col;
+
+    let newColPosX = row;
+    let newColPosY = col;
+
     // console.log(generatedRowWords);
     // console.log(generatedColWords);
 
@@ -204,26 +259,100 @@ export default class CrossQuizGenerator extends Component {
     newDownWords[col] = generatedColWords.map((value, index) => {
       let obj = {};
       if (newDownWords[col][index] && newDownWords[col][index].clue) {
-        obj = { word: value, clue: newDownWords[col][index].clue };
+        obj = { word: value,
+          clue: newDownWords[col][index].clue,
+          posX: newRowPosX,
+          posY: newRowPosY,
+        };
       } else {
-        obj = { word: value, clue: '' };
+        obj = {
+          word: value,
+          clue: '',
+          posX: newRowPosX,
+          posY: newRowPosY,
+        };
       }
       return obj;
     });
+
+    let actionType = '';
+
+    if (this.state.boardValues[row].row[col] !== '*') {
+      actionType = 'modified';
+    } else {
+      actionType = 'deleted';
+    }
+
+    // console.log(actionType);
+
       // ({ word: value, clue: newDownWords[col][index].clue }));
-
     const newAcrossWords = this.state.acrossWords;
-    newAcrossWords[row] = generatedRowWords.map((value, index) => {
-      let obj = {};
-      if (newAcrossWords[row][index] && newAcrossWords[row][index].clue) {
-        obj = { word: value, clue: newAcrossWords[row][index].clue };
-      } else {
-        obj = { word: value, clue: '' };
+    const newAccrosArray = generatedRowWords.map((value, index) => {
+      // console.log('objes');
+      let obj = {
+        word: value,
+        clue: '',
+        posX: row,
+        posY: col,
+      };
+
+      // if (actionType === 'deleted') {
+      //
+      // } else if (actionType === 'modified') {
+        // newAcrossWords.splice(1, index + 1);
+      if (newAcrossWords[row] && newAcrossWords[row][index]) {
+        if (newAcrossWords[row].length === generatedRowWords.length) {
+          obj = {
+            word: value,
+            clue: newAcrossWords[row][index].clue,
+            posX: newAcrossWords[row][index].posX,
+            posY: newAcrossWords[row][index].posY,
+          };
+        } else if (newAcrossWords[row].length > generatedRowWords.length) {
+          console.log('MERGED');
+        }
       }
+      // }
+
       return obj;
     });
 
-    // console.log(newAcrossWords);
+    if (newAccrosArray.length > 0) {
+      newAcrossWords[row] = newAccrosArray;
+    }
+
+    // if (this.state.boardValues[row].row[col] !== '*') {
+    //   //   console.log('HERE');
+    //   for (let j = col - 1; j >= 0; j -= 1) {
+    //     newColPosY = 0;
+    //     if (this.state.boardValues[row].row[j] === '*') {
+    //       newColPosY = j + 1;
+    //       break;
+    //     }
+    //   }
+    // } else {
+    //
+    // }
+
+    // console.log(newAcrossWords[row].length);
+
+    // if (newAcrossWords[row].length < this.state.acrossWords.length) {
+    //   newAcrossWords.filter((obj, index) => {
+    //     if (
+    //       this.state.acrossWords[row][index] &&
+    //       newAcrossWords[row][index].clue !== this.state.acrossWords[row][index].clue
+    //     ) {
+    //       return {
+    //         word: newAcrossWords[row][index],
+    //         clue: this.state.acrossWords[row][index + 1].clue,
+    //       }
+    //       ;
+    //     }
+    //     return newAcrossWords[row][index];
+    //   });
+    // }
+
+    console.log(newAcrossWords);
     this.setState({ downWords: newDownWords, acrossWords: newAcrossWords });
   }
 
@@ -244,6 +373,17 @@ export default class CrossQuizGenerator extends Component {
       newDownWords[x][y] = wordObject;
       this.setState({ downWords: newDownWords });
     }
+
+    // Update hintsAttributes Object
+    this.updateHintsAttributes();
+
+    const questionTitle = this.state.crossQuizQuestion;
+    const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
+    const rowsAttributes = this.state.boardValues;
+    const hintsAttributes = this.state.hintsAttributes;
+
+    // Send Match Data to MainQuizGenerator
+    this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
 
     // console.log(this.state.acrossWords);
   }
