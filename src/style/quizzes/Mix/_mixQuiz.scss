@@ -1,4 +1,15 @@
 .mixQuizContainer{
+  .mix_label{
+    margin-bottom:10px;
+  }
+  .solutionContainer{
+    margin-bottom: 10px;
+    .sol_container{
+      padding:10px 0;
+      border-top: 2px solid black;
+      border-bottom:2px solid black;
+    }
+  }
   .solution_container{
     .alternative_solutions {
       padding-left: 0;

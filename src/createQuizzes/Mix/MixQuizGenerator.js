@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
 import AlternateSolution from './AlternateSolution';
 
 
@@ -211,23 +211,28 @@ export default class MixQuizGenerator extends Component {
     return (
       <div className="mixQuizGeneratorContainer">
         <h3> Mix Question </h3>
-        <b>Question: </b>
-        <input
-          type="text"
-          name="matchQuizTitle"
-          className="quizTitleInput"
-          value={this.state.mixQuizQuestion}
-          placeholder={'insert a title or question for this quiz'}
-          onChange={e => this.handleQuestionInputChange(e)}
-        />
+        <Col md={12}>
+          <b>Question: </b>
+          <input
+            type="text"
+            name="matchQuizTitle"
+            className="form_input"
+            value={this.state.mixQuizQuestion}
+            placeholder={'ex: Mixed-up sentence exercise'}
+            onChange={e => this.handleQuestionInputChange(e)}
+          />
+        </Col>
         <div className="mixQuizGenerator">
           <div className="mixQuizInput">
-            <input
-              className="form_input"
-              value={this.state.mainSolution}
-              placeholder="Type your sentence"
-              rows="10" cols="30" onChange={this.handleChange}
-            />
+            <Col md={12}>
+              <b>Sentence:</b>
+              <input
+                className="form_input"
+                value={this.state.mainSolution}
+                placeholder="ex: This App is amazing!"
+                rows="10" cols="30" onChange={this.handleChange}
+              />
+            </Col>
             <Button type="button" onClick={this.addSolution}>Add another solution</Button>
           </div>
           {this.renderAlternateSolution()}

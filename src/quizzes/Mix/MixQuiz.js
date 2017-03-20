@@ -1,5 +1,7 @@
 import React, { PropTypes, Component } from 'react';
+import { Col, Row } from 'react-bootstrap';
 import { WordButton } from './index';
+
 
 export default class MixQuiz extends Component {
   constructor(props) {
@@ -73,9 +75,19 @@ export default class MixQuiz extends Component {
     if (!this.props.teacherView) {
       return (<div>
         <div className="solutionContainer" id="solutionContainer">
-          Your solution so far: {this.renderButtons(this.state.topArray)}
+          <Row className="mix_label">
+            <Col md={12}>
+              <b> Your solution so far: </b>
+            </Col>
+          </Row>
+          <div className="sol_container">{this.renderButtons(this.state.topArray)}</div>
         </div>
         <div className="wordsContainer" id="wordsContainer">
+          <Row className="mix_label">
+            <Col md={12}>
+              <b> Reorder the following words: </b>
+            </Col>
+          </Row>
           {this.renderButtons(this.state.bottomArray)}
         </div>
       </div>);

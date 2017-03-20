@@ -263,6 +263,8 @@ export default class QuizViewerMainPage extends Component {
       );
     }
     if (question.type === 'mix') {
+      console.log(question);
+      console.log(sessionAns);
       return (
         <MixQuiz
           question={question}
