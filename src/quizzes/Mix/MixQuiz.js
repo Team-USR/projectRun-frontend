@@ -1,5 +1,7 @@
 import React, { PropTypes, Component } from 'react';
+import { Col, Row } from 'react-bootstrap';
 import { WordButton } from './index';
+
 
 export default class MixQuiz extends Component {
   constructor(props) {
@@ -13,23 +15,43 @@ export default class MixQuiz extends Component {
   componentWillMount() {
     const emptyArray = [];
     const wordArray = [];
+    const sessionArray = [];
     if (!this.props.teacherView) {
-      this.props.question.words.map((word, index) => {
-        emptyArray.push(index);
-        const id = index;
-        wordArray.push(<WordButton
-          key={id} text={word} reviewState={this.props.reviewState}
-          resultsState={this.props.resultsState} onClick={() =>
-          this.handleClick(index)}
-        />);
-        return (' ');
-      },
-      );
+      if (this.props.sessionAnswers === null) {
+        this.props.question.words.map((word, index) => {
+          emptyArray.push(index);
+          const id = index;
+          wordArray.push(<WordButton
+            key={id} text={word} reviewState={this.props.reviewState}
+            resultsState={this.props.resultsState} onClick={() =>
+            this.handleClick(index)}
+          />);
+          return (' ');
+        },
+        );
+      } else {
+        this.props.question.words.map((word, index) => {
+          emptyArray.push(index);
+          const id = index;
+          wordArray.push(<WordButton
+            key={id} text={word} reviewState={this.props.reviewState}
+            resultsState={this.props.resultsState} onClick={() =>
+            this.handleClick(index)}
+          />);
+          return (' ');
+        },
+        );
+        const savedAns = this.props.sessionAnswers.answer;
+        for (let i = 0; i < savedAns.length; i += 1) {
+          sessionArray.push(this.props.question.words.indexOf(savedAns[i]));
+          emptyArray[this.props.question.words.indexOf(savedAns[i])] = null;
+        }
+      }
     }
     this.setState({
       buttonsArray: wordArray,
       bottomArray: emptyArray,
-
+      topArray: sessionArray,
     });
   }
 
@@ -73,9 +95,19 @@ export default class MixQuiz extends Component {
     if (!this.props.teacherView) {
       return (<div>
         <div className="solutionContainer" id="solutionContainer">
-          Your solution so far: {this.renderButtons(this.state.topArray)}
+          <Row className="mix_label">
+            <Col md={12}>
+              <b> Your solution so far: </b>
+            </Col>
+          </Row>
+          <div className="sol_container">{this.renderButtons(this.state.topArray)}</div>
         </div>
         <div className="wordsContainer" id="wordsContainer">
+          <Row className="mix_label">
+            <Col md={12}>
+              <b> Reorder the following words: </b>
+            </Col>
+          </Row>
           {this.renderButtons(this.state.bottomArray)}
         </div>
       </div>);
@@ -132,9 +164,12 @@ MixQuiz.propTypes = {
   index: PropTypes.number.isRequired,
   correctAnswer: PropTypes.shape({
     correct: PropTypes.bool,
-    correct_sentences: PropTypes.arrayOf(PropTypes.number),
+    correct_sentences: PropTypes.arrayOf(PropTypes.string),
   }),
   teacherView: PropTypes.bool,
+  sessionAnswers: PropTypes.shape({
+    answer: PropTypes.arrayOf(PropTypes.string),
+  }),
 };
 
 MixQuiz.defaultProps = {
@@ -144,4 +179,5 @@ MixQuiz.defaultProps = {
   },
   reviewState: false,
   teacherView: false,
+  sessionAnswers: null,
 };

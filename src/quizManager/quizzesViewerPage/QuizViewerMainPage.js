@@ -99,6 +99,11 @@ export default class QuizViewerMainPage extends Component {
           const id = element.id;
           quest[index] = { answer_id: ans, id };
         }
+        if (element.type === 'mix') {
+          ans = this.state.session.metadata[element.id].answer;
+          const id = element.id;
+          questions[index] = { answer: ans, id };
+        }
       }
       return (null);
     });
@@ -267,6 +272,7 @@ export default class QuizViewerMainPage extends Component {
         <MixQuiz
           question={question}
           index={index}
+          sessionAnswers={sessionAns}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
           correctAnswer={this.state.data[question.id]}
