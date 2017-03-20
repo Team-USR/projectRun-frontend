@@ -164,13 +164,15 @@ export default class QuizCreatorReviewer extends Component {
       );
     }
     if (question.type === 'mix') {
+      //  console.log(question);
       return (
         <MixQuiz
           question={question}
           index={index}
           key={question.id}
-          reviewState={this.state.reviewState}
+          teacherView={this.state.reviewState}
           resultsState={this.state.resultsState}
+          callbackParent={() => {}}
         />
       );
     }

@@ -5,6 +5,7 @@ import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice'
 import { SingleChoiceQuizGenerator } from '../../createQuizzes/SingleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { ClozeGenerator } from '../../createQuizzes/Cloze';
+import { MixQuizGenerator } from '../../createQuizzes/Mix';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
@@ -140,6 +141,7 @@ export default class QuizEditorMainPage extends Component {
     const newState = !this.state.resultsState;
     this.setState({ resultsState: newState });
   }
+
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
 
@@ -165,6 +167,19 @@ export default class QuizEditorMainPage extends Component {
     inputQ.quiz.questions_attributes[questionID] = quiz;
     this.setState({ submitedQuestions: inputQ });
   }
+
+  collectMixObject(data, questionTitle, questionID) {
+    const questionObject = {
+      question: questionTitle,
+      type: 'mix',
+      sentences_attributes: data,
+    };
+    const inputQ = this.state.submitedQuestions;
+    inputQ.quiz.questions_attributes[questionID] = questionObject;
+    this.setState({ submitedQuestions: inputQ });
+    // console.log(questionObject);
+  }
+
   addQuiz(quizType, questionObj) {
     displayIndex = 0;
     const buttonGroup = (
@@ -238,6 +253,21 @@ export default class QuizEditorMainPage extends Component {
           resultsState={this.state.resultsState}
           index={id}
           key={`cloze${id}`}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+
+    if (quizType === 'mix') {
+      //  console.log(questionObj);
+      const question = (
+        <MixQuizGenerator
+          content={questionObj}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          index={id}
+          key={`mix${id}`}
+          updateParent={(answersAttributes, qObject, ind) =>
+            this.collectMixObject(answersAttributes, qObject, ind)}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -345,6 +375,7 @@ export default class QuizEditorMainPage extends Component {
           <Button onClick={() => this.addQuiz('multiple_choice', null)}> Multiple Choice</Button>
           <Button onClick={() => this.addQuiz('match', null)}>Match</Button>
           <Button onClick={() => this.addQuiz('cloze', null)}>Cloze</Button>
+          <Button onClick={() => this.addQuiz('mix', null)}>Mix</Button>
           {this.renderQuestions()}
           <br /><br /><br />
           { this.renderSubmitPanel() }
