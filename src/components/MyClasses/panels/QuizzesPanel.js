@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { Button, Col } from 'react-bootstrap';
+import { Button, Col, NavItem } from 'react-bootstrap';
 import { QuizManager } from '../GroupQuizzes';
 
 export default class QuizzesPanel extends Component {
@@ -9,68 +9,146 @@ export default class QuizzesPanel extends Component {
     this.state = {
       selectedQuizzes: [],
       availableQuizzes: [],
+      filteredSelected: [],
+      filteredAvailable: [],
+      filterAllQuizzes: [],
+      currentlySearched: '',
     };
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentWillMount() {
     this.setState({
       selectedQuizzes: this.props.quizzes,
-      availableQuizzes: this.getAvailableQuizzes(),
+      allQuizzes: this.props.allQuizzes,
+      availableQuizzes: this.getAvailableQuizzes(this.props.allQuizzes),
     });
+    this.filterItems('');
   }
-
-  getAvailableQuizzes() {
+  getAvailableQuizzes(all) {
     const newQuizzesObj = {};
     this.props.quizzes.map((obj) => {
       newQuizzesObj[obj.id] = obj.title;
       return 0;
     });
 
-    return this.props.allQuizzes.filter((obj) => {
+    return all.filter((obj) => {
       if (!newQuizzesObj[obj.id]) {
         return true;
       }
       return false;
     });
   }
+  filterItems(value) {
+    this.setState({ currentlySearched: value });
+    let found = false;
+    let filter = this.props.allQuizzes.filter((item) => {
+      if (item.title.toLowerCase() === value.toLowerCase() ||
+          item.title.toLowerCase().includes(value.toLowerCase())) {
+        found = true;
+        return (item);
+      }
+      return (null);
+    });
+    if (!found && value !== '') {
+      filter = [];
+    } else
+    if (filter.length === 0 || value === '') {
+      filter = this.props.allQuizzes;
+    }
 
-  addQuiz(index) {
+    let foundSelected = false;
+    let filterSelected = this.props.quizzes.filter((item) => {
+      if (item.title.toLowerCase() === value.toLowerCase() ||
+          item.title.toLowerCase().includes(value.toLowerCase())) {
+        foundSelected = true;
+        return (item);
+      }
+      return (null);
+    });
+    if (!foundSelected && value !== '') {
+      filterSelected = [];
+    } else
+    if (filterSelected.length === 0 || value === '') {
+      filterSelected = this.props.quizzes;
+    }
+
+    this.setState({
+      allQuizzes: filter,
+      filteredAvailable: this.getAvailableQuizzes(filter),
+      filteredSelected: filterSelected,
+    });
+  }
+  handleSearch(event) {
+    this.filterItems(event.target.value);
+    this.setState({ currentSearched: event.target.value });
+  }
+  addQuiz(id) {
+
+    let newIndex = -1;
+    this.state.selectedQuizzes.map((item, index) => {
+      if (item.id === id) {
+        newIndex = index;
+      }
+      return (-1);
+    });
     const newQuizzesObj = this.state.selectedQuizzes;
-    newQuizzesObj.push(this.state.availableQuizzes[index]);
+    newQuizzesObj.push(this.state.availableQuizzes[newIndex]);
 
     const newAvailableQuizzesObj = this.state.availableQuizzes;
-    newAvailableQuizzesObj.splice(index, 1);
+    newAvailableQuizzesObj.splice(newIndex, 1);
 
     this.setState({
       selectedQuizzes: newQuizzesObj,
       availableQuizzes: newAvailableQuizzesObj,
     });
+    this.filterItems(this.state.currentlySearched);
   }
-  removeQuiz(index) {
+  removeQuiz(id) {
+    let newIndex = -1;
+    this.state.availableQuizzes.map((item, index) => {
+      if (item.id === id) {
+        newIndex = index;
+      }
+      return (-1);
+    });
     const newAvailableQuizzesObj = this.state.availableQuizzes;
-    newAvailableQuizzesObj.push(this.state.selectedQuizzes[index]);
+    newAvailableQuizzesObj.push(this.state.selectedQuizzes[newIndex]);
 
     const newQuizzesObj = this.state.selectedQuizzes;
-    newQuizzesObj.splice(index, 1);
+    newQuizzesObj.splice(newIndex, 1);
 
     this.setState({
       selectedQuizzes: newQuizzesObj,
       availableQuizzes: newAvailableQuizzesObj,
     });
+    this.filterItems(this.state.currentlySearched);
   }
-
+  renderSearchBar() {
+    return (
+      <NavItem key={'searchBar'} >
+        <input
+          className="searchBarItem"
+          id="searchBar"
+          type="text"
+          placeholder="Search for a quiz"
+          onChange={this.handleSearch}
+        />
+      </NavItem>
+    );
+  }
   renderSelectedQuizzes() {
     if (this.state.selectedQuizzes.length === 0) {
       return <h4>There are no quizzes assigned to this class!</h4>;
     }
-    return this.state.selectedQuizzes.map((obj, index) =>
+    return this.state.filteredSelected.map((obj, index) =>
       <li key={`class_selected_quiz_${obj.id}`}>
         <QuizManager
           type={'remove'}
           id={obj.id}
           index={index}
           title={obj.title}
-          removeQuiz={id => this.removeQuiz(id)}
+          removeQuiz={() => this.removeQuiz(obj.id)}
         />
       </li>,
     );
@@ -80,14 +158,14 @@ export default class QuizzesPanel extends Component {
     if (this.state.availableQuizzes.length === 0) {
       return <h4>All your quizzes have been assigned!</h4>;
     }
-    return this.state.availableQuizzes.map((obj, index) =>
+    return this.state.filteredAvailable.map((obj, index) =>
       <li key={`class_available_quiz_${obj.id}`}>
         <QuizManager
           type={'add'}
           id={obj.id}
           index={index}
           title={obj.title}
-          addQuiz={id => this.addQuiz(id)}
+          addQuiz={() => this.addQuiz(obj.id)}
         />
       </li>,
     );
@@ -98,9 +176,9 @@ export default class QuizzesPanel extends Component {
       <div className="quizPanelWrapper">
         <Col md={12}>
           <h3>Manage assigned quizzes</h3>
-          <hr />
         </Col>
         <Col md={12} className="quizzesList">
+          { this.renderSearchBar() }
           <Col md={6}>
             <ul>
               { this.renderSelectedQuizzes() }
@@ -129,4 +207,8 @@ QuizzesPanel.propTypes = {
   quizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   allQuizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   handleSaveAssignedQuizzes: PropTypes.func.isRequired,
+  filterItems: PropTypes.func,
+};
+QuizzesPanel.defaultProps = {
+  filterItems: null,
 };

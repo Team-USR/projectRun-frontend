@@ -91,6 +91,7 @@ export default class MyClassesPanel extends Component {
           best = {
             id: response.data.best_match_name[0].id,
             name: response.data.best_match_name[0].name,
+            email: response.data.best_match_name[0].email,
           };
           retrievedStudents.push(best);
         }
@@ -99,6 +100,7 @@ export default class MyClassesPanel extends Component {
           best2 = {
             id: response.data.best_match_email[0].id,
             name: response.data.best_match_email[0].name,
+            email: response.data.best_match_email[0].email,
           };
           if (retrievedStudents[0].id !== response.data.best_match_email[0].id) {
             retrievedStudents.push(best2);
@@ -113,7 +115,7 @@ export default class MyClassesPanel extends Component {
             return 0;
           });
           if (!duplicate) {
-            const objName = { id: item.id, name: item.name };
+            const objName = { id: item.id, name: item.name, email: item.email };
             retrievedStudents.push(objName);
           }
           return 0;
@@ -127,7 +129,7 @@ export default class MyClassesPanel extends Component {
             return 0;
           });
           if (!duplicate) {
-            const objEmail = { id: item.id, name: item.name };
+            const objEmail = { id: item.id, name: item.name, email: item.email };
             retrievedStudents.push(objEmail);
           }
           return 0;

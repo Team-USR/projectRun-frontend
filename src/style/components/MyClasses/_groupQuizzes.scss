@@ -4,6 +4,26 @@
     .quizzesList {
       min-height: 50vh;
 
+      li {
+        list-style-type: none;
+      }
+      .searchBarItem {
+        margin-top:20px;
+        width:300px;
+        margin-right:15px;
+        background-color:#ffffff;
+        color: black;
+        border:0px;
+        border-bottom:1px solid black;
+        outline: none;
+        font-size: 18px;
+        padding-left: 5vw;
+        text-align: left;
+        margin-bottom:50px;
+
+
+      }
+
       .quizManagerWrapper {
         .classQuizBtn {
           width: 180px;

@@ -148,6 +148,16 @@ export default class SideBarQuizzes extends Component {
         }
         return (null);
       });
+      let unpublished = 0;
+      let published = 0;
+      let maxUnpublished = 12;
+      let maxPublished = 12;
+      if (unpublishedContent.length - maxUnpublished >= 1) {
+        maxUnpublished -= 1;
+      }
+      if (publishedContent.length - maxPublished >= 1) {
+        maxPublished -= 1;
+      }
       return (
         <div>
           {this.renderSearchBar()}
@@ -170,12 +180,19 @@ export default class SideBarQuizzes extends Component {
               <Panel header={`Unpublished (${unpublishedContent.length})`} eventKey="1">
                 {
         unpublishedContent.map((item, index) => {
-          if (index < 5) {
+          if (index < maxUnpublished) {
             return (
               <NavItem key={`unpublished${index + 1}`}>
                 <Button className="sideBarButton" onClick={() => this.props.onQuizClick(item.id)}>
                   {item.title}
                 </Button>
+              </NavItem>
+            );
+          } unpublished += 1;
+          if (index === unpublishedContent.length - 1) {
+            return (
+              <NavItem key={'moreunpublished'}>
+                <h5>and {unpublished} more</h5>
               </NavItem>
             );
           }
@@ -187,12 +204,19 @@ export default class SideBarQuizzes extends Component {
               <Panel header={`Published (${publishedContent.length})`} eventKey="2">
                 {
         publishedContent.map((item, index) => {
-          if (index < 5) {
+          if (index < maxPublished) {
             return (
               <NavItem key={`published${index + 1}`}>
                 <Button className="sideBarButton" onClick={() => this.props.onQuizClick(item.id)}>
                   {item.title}
                 </Button>
+              </NavItem>
+            );
+          } published += 1;
+          if (index === publishedContent.length - 1) {
+            return (
+              <NavItem key={'morepublished'}>
+                <h5>and {published} more</h5>
               </NavItem>
             );
           }
@@ -225,6 +249,21 @@ export default class SideBarQuizzes extends Component {
         }
         return (null);
       });
+      let notstarted = 0;
+      let inprogress = 0;
+      let submitted = 0;
+      let maxNotStarted = 7;
+      let maxInprogress = 7;
+      let maxsubmitted = 7;
+      if (notStartedContent.length - maxNotStarted >= 1) {
+        maxNotStarted -= 1;
+      }
+      if (inprogressContent.length - maxInprogress >= 1) {
+        maxInprogress -= 1;
+      }
+      if (submittedContent.length - maxsubmitted >= 1) {
+        maxsubmitted -= 1;
+      }
       return (
         <div>
           {this.renderSearchBar()}
@@ -234,7 +273,7 @@ export default class SideBarQuizzes extends Component {
               <Panel header={`Not started (${notStartedContent.length})`} eventKey="1" >
                 {
             notStartedContent.map((item, index) => {
-              if (index < 5) {
+              if (index < maxNotStarted) {
                 return (
                   <NavItem key={`notstarted${index + 1}`}>
                     <Button
@@ -243,6 +282,13 @@ export default class SideBarQuizzes extends Component {
                     >
                       {item.title}
                     </Button>
+                  </NavItem>
+                );
+              }notstarted += 1;
+              if (index === notStartedContent.length - 1) {
+                return (
+                  <NavItem key={'nostarted'}>
+                    <h5>and {notstarted} more</h5>
                   </NavItem>
                 );
               }
@@ -255,12 +301,19 @@ export default class SideBarQuizzes extends Component {
               <Panel header={`In progress (${inprogressContent.length})`} eventKey="2">
                 {
           inprogressContent.map((item, index) => {
-            if (index < 5) {
+            if (index < maxInprogress) {
               return (
                 <NavItem key={`inprogrs${index + 1}`}>
                   <Button className="sideBarButton" onClick={() => this.props.onQuizClick(item.id)}>
                     {item.title}
                   </Button>
+                </NavItem>
+              );
+            }inprogress += 1;
+            if (index === inprogressContent.length - 1) {
+              return (
+                <NavItem key={'inprogress'}>
+                  <h5>and {inprogress} more</h5>
                 </NavItem>
               );
             }
@@ -272,7 +325,7 @@ export default class SideBarQuizzes extends Component {
               <Panel header={`Submitted (${submittedContent.length})`} eventKey="3">
                 {
             submittedContent.map((item, index) => {
-              if (index < 5) {
+              if (index < maxsubmitted) {
                 return (
                   <NavItem key={`submitted${index + 1}`}>
                     <Button
@@ -281,6 +334,13 @@ export default class SideBarQuizzes extends Component {
                     >
                       {item.title}
                     </Button>
+                  </NavItem>
+                );
+              }submitted += 1;
+              if (index === submittedContent.length - 1) {
+                return (
+                  <NavItem key={'submitted'}>
+                    <h5>and {submitted} more</h5>
                   </NavItem>
                 );
               }
