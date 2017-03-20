@@ -15,6 +15,9 @@ export default class SideBarQuizzes extends Component {
   componentWillMount() {
     this.setState({ content: this.props.content });
   }
+  componentWillReceiveProps(nextProps) {
+    this.setState({ content: nextProps.content });
+  }
   filterItems(event) {
     let found = false;
     let filteredContent = this.props.content.filter((item) => {

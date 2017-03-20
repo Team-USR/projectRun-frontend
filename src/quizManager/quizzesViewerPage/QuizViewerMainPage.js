@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
+import { SingleChoiceQuiz } from '../../quizzes/SingleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
@@ -44,6 +45,7 @@ export default class QuizViewerMainPage extends Component {
       headers: this.props.userToken,
     })
     .then(response => setTimeout(() => {
+//      console.log(response);
       this.setState({
         loadingQuiz: false,
         quizInfo: response.data.quiz,
@@ -152,6 +154,10 @@ export default class QuizViewerMainPage extends Component {
       const mcqAnswer = { id, answer_ids: answers };
       newAnswer = mcqAnswer;
     }
+    if (type === 'single_choice') {
+      const mcqAnswer = { id, answer_ids: answers };
+      newAnswer = mcqAnswer;
+    }
     if (type === 'match') {
       const matchAnswer = { id, pairs: answers };
       newAnswer = matchAnswer;
@@ -222,6 +228,22 @@ export default class QuizViewerMainPage extends Component {
           callbackParent={(questionId, answers) =>
           this.collectAnswers(questionId, answers, question.type, index)}
           key={`multiple_choice_quiz_${question.id}`}
+        />
+      );
+    }
+    if (question.type === 'single_choice') {
+      return (
+        <SingleChoiceQuiz
+          id={question.id}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          question={question}
+          index={index}
+          sessionAnswers={sessionAns}
+          correctAnswer={this.state.data[question.id]}
+          callbackParent={(questionId, answers) =>
+          this.collectAnswers(questionId, answers, question.type, index)}
+          key={`single_choice_quiz_${question.id}`}
         />
       );
     }
