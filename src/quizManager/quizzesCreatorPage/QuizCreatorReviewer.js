@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
+import { SingleChoiceQuiz } from '../../quizzes/SingleChoice';
 import { ClozeQuestion } from '../../quizzes/Cloze';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { CrossQuiz } from '../../quizzes/Cross/';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
-import getNOfGaps from '../../helpers/Cloze';
+import { getNOfGaps } from '../../helpers/Cloze';
 
 
 const styles = {
@@ -123,6 +124,21 @@ export default class QuizCreatorReviewer extends Component {
         />
       );
     }
+    if (question.type === 'single_choice') {
+      return (
+        <SingleChoiceQuiz
+          id={question.id}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          question={question}
+          index={index}
+          correctAnswer={{}}
+          creatorAnswers={answersAttributes}
+          callbackParent={() => {}}
+          key={`single_choice_quiz_${question.id}`}
+        />
+      );
+    }
     if (question.type === 'match') {
       const newQuestion = question;
       const pairs = newQuestion.pairs;
@@ -149,13 +165,15 @@ export default class QuizCreatorReviewer extends Component {
       );
     }
     if (question.type === 'mix') {
+      //  console.log(question);
       return (
         <MixQuiz
           question={question}
           index={index}
           key={question.id}
-          reviewState={this.state.reviewState}
+          teacherView={this.state.reviewState}
           resultsState={this.state.resultsState}
+          callbackParent={() => {}}
         />
       );
     }
@@ -214,7 +232,8 @@ export default class QuizCreatorReviewer extends Component {
       return (
         <div className="mainQuizViewerBlock">
           <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
-          <h5 style={styles.quizTitle}>Attempts remaining: {this.state.quizInfo.attempts}</h5>
+          <h5>Attempts remaining: {this.state.quizInfo.attempts}</h5>
+          <h5>Release date: {this.state.quizInfo.release_date}</h5>
           {this.state.quizInfo.questions.map((question, index) =>
           this.renderQuestions(question, index))}
           <div className="submitPanel">

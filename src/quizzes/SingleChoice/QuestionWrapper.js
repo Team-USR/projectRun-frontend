@@ -13,35 +13,28 @@ const styles = {
 class QuestionWrapper extends Component {
   constructor() {
     super();
-    this.state = { results: [] };
+    this.state = { results: [], selected: null };
   }
   onChildChanged(newState, id, index) {
+    this.setState({ selected: index });
     const newArray = this.state.results;
-    if (newState === true) newArray.push(id);
-    else newArray.splice(index, 1);
+    if (newState === true) newArray[0] = id;
+    else newArray.splice(0, 1);
     this.setState({ results: newArray });
-    this.props.callbackParent(newArray, index);
+    this.props.callbackParent(id, index);
   }
   renderChoices(indexQ, choices, inReview) {
     let defaultAnswer = null;
     if (this.props.creatorAnswers !== null && this.props.creatorAnswers[indexQ] != null) {
-    //  console.log("true");
       defaultAnswer = this.props.creatorAnswers[indexQ].is_correct;
     }
     if (this.props.sessionAnswers !== null && this.props.sessionAnswers !== undefined) {
-      if (this.props.sessionAnswers.answer_ids !== null
-        && this.props.sessionAnswers.answer_ids !== undefined) {
-        const ids = this.props.sessionAnswers.answer_ids;
-        ids.map((element) => {
-          if (element === choices.id) {
-            defaultAnswer = true;
-          }
-          return (null);
-        });
+      if (this.props.sessionAnswers.answer_id !== null
+        && this.props.sessionAnswers.answer_id !== undefined) {
+        const ids = this.props.sessionAnswers.answer_id;
+        if (ids === choices.id) defaultAnswer = true;
       }
     }
-
-    // console.log("SESSION",this.props.sessionAnswers);
     return (
       <Choice
         value={indexQ} choiceText={choices.answer}
@@ -49,6 +42,7 @@ class QuestionWrapper extends Component {
         key={choices.id}
         inReview={inReview}
         defaultValue={defaultAnswer}
+        selected={this.state.selected}
         callbackParent={(newState) => { this.onChildChanged(newState, choices.id, indexQ); }}
       />
     );
@@ -127,7 +121,7 @@ QuestionWrapper.propTypes = {
     is_correct: PropTypes.bool,
   })),
   sessionAnswers: PropTypes.shape({
-    answer_ids: PropTypes.arrayOf(PropTypes.number),
+    answer_id: PropTypes.number,
   }),
 };
 
@@ -139,7 +133,7 @@ QuestionWrapper.defaultProps = {
   creatorAnswers: [],
   is_correct: false,
   sessionAnswers: {
-    answer_ids: [],
+    answer_id: null,
   },
 };
 
