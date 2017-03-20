@@ -15,23 +15,43 @@ export default class MixQuiz extends Component {
   componentWillMount() {
     const emptyArray = [];
     const wordArray = [];
+    const sessionArray = [];
     if (!this.props.teacherView) {
-      this.props.question.words.map((word, index) => {
-        emptyArray.push(index);
-        const id = index;
-        wordArray.push(<WordButton
-          key={id} text={word} reviewState={this.props.reviewState}
-          resultsState={this.props.resultsState} onClick={() =>
-          this.handleClick(index)}
-        />);
-        return (' ');
-      },
-      );
+      if (this.props.sessionAnswers === null) {
+        this.props.question.words.map((word, index) => {
+          emptyArray.push(index);
+          const id = index;
+          wordArray.push(<WordButton
+            key={id} text={word} reviewState={this.props.reviewState}
+            resultsState={this.props.resultsState} onClick={() =>
+            this.handleClick(index)}
+          />);
+          return (' ');
+        },
+        );
+      } else {
+        this.props.question.words.map((word, index) => {
+          emptyArray.push(index);
+          const id = index;
+          wordArray.push(<WordButton
+            key={id} text={word} reviewState={this.props.reviewState}
+            resultsState={this.props.resultsState} onClick={() =>
+            this.handleClick(index)}
+          />);
+          return (' ');
+        },
+        );
+        const savedAns = this.props.sessionAnswers.answer;
+        for (let i = 0; i < savedAns.length; i += 1) {
+          sessionArray.push(this.props.question.words.indexOf(savedAns[i]));
+          emptyArray[this.props.question.words.indexOf(savedAns[i])] = null;
+        }
+      }
     }
     this.setState({
       buttonsArray: wordArray,
       bottomArray: emptyArray,
-
+      topArray: sessionArray,
     });
   }
 
@@ -144,9 +164,12 @@ MixQuiz.propTypes = {
   index: PropTypes.number.isRequired,
   correctAnswer: PropTypes.shape({
     correct: PropTypes.bool,
-    correct_sentences: PropTypes.arrayOf(PropTypes.number),
+    correct_sentences: PropTypes.arrayOf(PropTypes.string),
   }),
   teacherView: PropTypes.bool,
+  sessionAnswers: PropTypes.shape({
+    answer: PropTypes.arrayOf(PropTypes.string),
+  }),
 };
 
 MixQuiz.defaultProps = {
@@ -156,4 +179,5 @@ MixQuiz.defaultProps = {
   },
   reviewState: false,
   teacherView: false,
+  sessionAnswers: null,
 };
