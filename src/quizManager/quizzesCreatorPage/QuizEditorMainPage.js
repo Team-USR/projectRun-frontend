@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
+import { SingleChoiceQuizGenerator } from '../../createQuizzes/SingleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { ClozeGenerator } from '../../createQuizzes/Cloze';
 import { MixQuizGenerator } from '../../createQuizzes/Mix';
@@ -157,7 +158,9 @@ export default class QuizEditorMainPage extends Component {
       if (!question.match_default) {
         quiz.match_default_attributes.default_text = 'Choose an option';
       }
-    } else if (type === 'multiple_choice') {
+    } if (type === 'multiple_choice') {
+      quiz = { question, type, answers_attributes: answersAttributes };
+    } if (type === 'single_choice') {
       quiz = { question, type, answers_attributes: answersAttributes };
     }
 
@@ -202,6 +205,18 @@ export default class QuizEditorMainPage extends Component {
           key={`multiple_choice${id}`}
           updateParent={(answersAttributes, qObject, ind) =>
             this.collectObject(answersAttributes, qObject, 'multiple_choice', ind)}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+    if (quizType === 'single_choice') {
+      const question = (
+        <SingleChoiceQuizGenerator
+          handleInput={(questionI, answers) => this.handleInput(questionI, answers, id)}
+          content={questionObj}
+          index={id}
+          key={`single_choice${id}`}
+          updateParent={(answersAttributes, qObject, ind) =>
+          this.collectObject(answersAttributes, qObject, 'single_choice', ind)}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -268,6 +283,7 @@ export default class QuizEditorMainPage extends Component {
     const generatedQuiz = this.state.submitedQuestions;
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
+//    console.log(this.state.submitedQuestions);
   }
   changeAttempts(event) {
     const attempted = this.state.submitedQuestions;
@@ -316,6 +332,7 @@ export default class QuizEditorMainPage extends Component {
     return ('');
   }
   render() {
+  //  console.log(this.state.submitedQuestions);
   //  console.log("start rendering");
 //  console.log("submiteed",this.state.submitedQuestions);
     const submit = this.state.submitedQuestions;

@@ -4,6 +4,19 @@ import { SideBarQuizzes, SideBarClasses } from './index';
 import { STUDENT, TEACHER } from '../../constants';
 
 export default class SideBarWrapper extends Component {
+  constructor() {
+    super();
+    this.state = {
+      sideContent: '',
+    };
+  }
+  componentWillMount() {
+    this.setState({ sideContent: this.props.sideBarContent });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ sideContent: nextProps.sideBarContent });
+  }
 
   renderSideBarContent() {
     let sideBarContent = (<Nav />);
@@ -15,7 +28,7 @@ export default class SideBarWrapper extends Component {
             userType={this.props.userType}
             onQuizClick={id =>
             this.props.onSideBarItemClick(id, 'sessions')}
-            content={this.props.sideBarContent.session}
+            content={this.state.sideContent.session}
           />
         );
       } else if (this.props.userType === TEACHER) {
@@ -25,7 +38,7 @@ export default class SideBarWrapper extends Component {
             userType={this.props.userType}
             onQuizClick={id =>
             this.props.onSideBarItemClick(id, 'reviewer')}
-            content={this.props.sideBarContent.quizzes}
+            content={this.state.sideContent.quizzes}
             onQuizCreatorClick={() => this.props.createQuiz()}
           />
         );
@@ -40,7 +53,7 @@ export default class SideBarWrapper extends Component {
             onCreateClassClick={() => this.props.onCreateClassClick()}
             onClassClick={(currentClassId, classTitle) =>
               this.props.onSideBarItemClick(currentClassId, classTitle)}
-            content={this.props.sideBarContent.classes}
+            content={this.state.sideContent.classes}
           />
         );
       } else if (this.props.userType === STUDENT) {
@@ -49,7 +62,7 @@ export default class SideBarWrapper extends Component {
             userType={this.props.userType}
             onClassClick={(currentClassId, classTitle) =>
               this.props.onSideBarItemClick(currentClassId, classTitle)}
-            content={this.props.sideBarContent.classes}
+            content={this.state.sideContent.classes}
           />
         );
       }

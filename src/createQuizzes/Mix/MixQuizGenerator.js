@@ -75,8 +75,7 @@ export default class MixQuizGenerator extends Component {
 
   componentWillMount() {
     const content = this.props.content;
-    console.log(content);
-    if (content) {
+    if (content !== null) {
       let mainSent = null;
       const altSent = [];
       const questionTitle = content.question;
@@ -241,5 +240,9 @@ export default class MixQuizGenerator extends Component {
 MixQuizGenerator.propTypes = {
   index: PropTypes.number.isRequired,
   updateParent: PropTypes.func.isRequired,
-  content: PropTypes.shape({}).isRequired,
+  content: PropTypes.shape({}),
+};
+
+MixQuizGenerator.defaultProps = {
+  content: null,
 };
