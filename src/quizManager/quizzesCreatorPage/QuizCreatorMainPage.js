@@ -42,9 +42,6 @@ export default class QuizCreatorMainPage extends Component {
     this.changeAttempts = this.changeAttempts.bind(this);
     this.changeReleaseDate = this.changeReleaseDate.bind(this);
   }
-  componentDidUpdate() {
-    this.scrollToBottom();
-  }
   removeQuiz(index) {
     displayIndex = 0;
     const remQuestions = this.state.questions;
@@ -229,7 +226,6 @@ export default class QuizCreatorMainPage extends Component {
     questionList.push(questionObject);
     this.setState({ questions: questionList, inputQuestions: inputQuestionList });
     id += 1;
-    this.scrollToBottom();
   }
   scrollToBottom() {
     this.scroller.scrollIntoView({ block: 'end', behavior: 'smooth' });

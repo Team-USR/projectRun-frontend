@@ -16,6 +16,7 @@ class QuestionWrapper extends Component {
     this.state = { results: [] };
   }
   onChildChanged(newState, id, index) {
+    console.log("CHANGED MCQ");
     const newArray = this.state.results.slice();
     if (newState === true) newArray.push(id);
     else newArray.splice(index, 1);

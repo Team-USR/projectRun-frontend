@@ -88,12 +88,20 @@ export default class QuizViewerMainPage extends Component {
   loadSession() {
  //  console.log("ANSWERS BEFORE", this.state.answers);
     const questions = [];
+
     this.state.quizInfo.questions.map((element, index) => {
       let ans;
       if (this.state.session.metadata && this.state.session.metadata[element.id]) {
-        ans = this.state.session.metadata[element.id].answer_ids;
-        const id = element.id;
-        questions[index] = { answer_ids: ans, id };
+        if (element.type === 'multiple_choice') {
+          ans = this.state.session.metadata[element.id].answer_ids;
+          const id = element.id;
+          questions[index] = { answer_ids: ans, id };
+        }
+        if (element.type === 'single_choice') {
+          ans = this.state.session.metadata[element.id].answer_id;
+          const id = element.id;
+          questions[index] = { answer_id: ans, id };
+        }
       }
       return (null);
     });
@@ -144,7 +152,6 @@ export default class QuizViewerMainPage extends Component {
     });
   }
   collectAnswers(id, answers, type, index) {
-//    console.log(index);
     this.setState({ savedSession: false });
     const tempAnswers = this.state.answers;
     const tempQuestions = this.state.answers.questions.slice();
@@ -155,7 +162,7 @@ export default class QuizViewerMainPage extends Component {
       newAnswer = mcqAnswer;
     }
     if (type === 'single_choice') {
-      const mcqAnswer = { id, answer_ids: answers };
+      const mcqAnswer = { id, answer_id: answers };
       newAnswer = mcqAnswer;
     }
     if (type === 'match') {
