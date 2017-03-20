@@ -88,7 +88,6 @@ export default class QuizViewerMainPage extends Component {
   loadSession() {
  //  console.log("ANSWERS BEFORE", this.state.answers);
     const questions = [];
-
     this.state.quizInfo.questions.map((element, index) => {
       let ans;
       if (this.state.session.metadata && this.state.session.metadata[element.id]) {
@@ -190,9 +189,7 @@ export default class QuizViewerMainPage extends Component {
       return (
         <div className="submitPanel">
           <h5>
-          Saved on: {
-            date.toString()
-          }
+            { this.state.session.last_updated }
           </h5>
           <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
         </div>);

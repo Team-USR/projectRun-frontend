@@ -55,7 +55,7 @@ export default class QuizEditorMainPage extends Component {
        if (!response || (response && response.status !== 200)) {
          this.setState({ errorState: true });
        }
-       console.log(response.data.release_date);
+//       console.log(response.data.release_date);
        const generatedQuiz = this.state.submitedQuestions;
        generatedQuiz.quiz.title = response.data.title;
        generatedQuiz.quiz.attempts = response.data.attempts;
@@ -303,7 +303,7 @@ export default class QuizEditorMainPage extends Component {
     this.setState({ submitedQuestions: attempted });
   }
   changeReleaseDate(value) {
-    console.log(value);
+//    console.log(value);
     const releaseDate = this.state.submitedQuestions;
     releaseDate.quiz.release_date = value;
     this.setState({ submitedQuestions: releaseDate, defaultDate: value });
