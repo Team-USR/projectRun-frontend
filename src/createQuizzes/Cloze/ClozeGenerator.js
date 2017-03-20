@@ -28,7 +28,7 @@ export default class ClozeGenerator extends React.Component {
 
   constructor(props) {
     super(props);
-    if (!props.editorContent) {
+    if (!Object.keys(props.editorContent).length) {
       this.state = {
         current: 0,
         count: 1,
@@ -182,5 +182,5 @@ ClozeGenerator.propTypes = {
 };
 
 ClozeGenerator.defaultProps = {
-  editorContent: [],
+  editorContent: {},
 };
