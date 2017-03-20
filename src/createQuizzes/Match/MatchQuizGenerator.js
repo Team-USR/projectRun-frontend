@@ -17,12 +17,12 @@ export default class MatchQuizGenerator extends Component {
       matchQuizQuestion: '',
       createItems: [
         {
-          left_choice: 'left 1',
-          right_choice: 'right 1',
+          left_choice: '',
+          right_choice: '',
         },
         {
-          left_choice: 'left 2',
-          right_choice: 'right 2',
+          left_choice: '',
+          right_choice: '',
         },
       ],
     };

@@ -177,6 +177,20 @@ export default class QuizEditorMainPage extends Component {
     this.setState({ submitedQuestions: inputQ });
   }
 
+  collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+    const newQuestion = {
+      question: 'Fill in the gaps:',
+      type: 'cloze',
+      cloze_sentence_attributes: {
+        text: sentenceAttributes,
+      },
+      gaps_attributes: gapsAttributes,
+    };
+    const inputQ = this.state.submitedQuestions;
+    inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.setState({ submitedQuestions: inputQ });
+  }
+
   collectMixObject(data, questionTitle, questionID) {
     const questionObject = {
       question: questionTitle,
@@ -260,6 +274,9 @@ export default class QuizEditorMainPage extends Component {
         <ClozeGenerator
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
+          updateParent={(questionID, qSent, sentenceAttributes, gapsAttributes) =>
+            this.collectClozeObject(questionID, qSent, sentenceAttributes, gapsAttributes)}
+          editorContent={questionObj}
           index={id}
           key={`cloze${id}`}
         />);

@@ -56,8 +56,8 @@ export default class SideBarClasses extends Component {
                 <img className="plusIcon" src={plusSign} alt={'+'} />
               </div>
               <div className="col-md-9 createText">
-            Create Class
-            </div>
+                Create Class
+              </div>
             </div>
           </Button>
         </NavItem>
