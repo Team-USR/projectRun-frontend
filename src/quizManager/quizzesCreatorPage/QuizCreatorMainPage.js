@@ -200,7 +200,6 @@ export default class QuizCreatorMainPage extends Component {
     questionList.push(questionObject);
     this.setState({ questions: questionList, inputQuestions: inputQuestionList });
     id += 1;
-    this.scrollToBottom();
   }
   scrollToBottom() {
     this.scroller.scrollIntoView({ block: 'end', behavior: 'smooth' });

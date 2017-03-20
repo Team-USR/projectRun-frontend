@@ -257,7 +257,6 @@ export default class QuizEditorMainPage extends Component {
     // console.log(questionList);
     this.setState({ questions: questionList, inputQuestions: inputQuestionList });
     id += 1;
-//    this.scrollToBottom();
   }
   scrollToBottom() {
     this.scroller2.scrollIntoView({ block: 'end', behavior: 'smooth' });
