@@ -335,29 +335,6 @@ export default class QuizCreatorMainPage extends Component {
         <div className="mainQuizGeneratorBlock">
           <h1> Quiz creator </h1>
           <label htmlFor="titleInput">
-<<<<<<< HEAD
-          Title:
-            <input
-              id="titleInput"
-              type="text"
-              placeholder="title"
-              onChange={this.changeTitle}
-            />
-            <input
-              id="attemptsInput"
-              type="number"
-              placeholder="Number of attempts"
-              onChange={this.changeAttempts}
-            />
-          </label>
-          <br /><br />
-          Select a quiz to be added:
-          <br />
-          <Button onClick={() => this.addQuiz('multiple_choice')}> Multiple Choice</Button>
-          <Button onClick={() => this.addQuiz('match')}>Match</Button>
-          <Button onClick={() => this.addQuiz('cloze')}>Cloze</Button>
-          <Button onClick={() => this.addQuiz('cross')}>Cross</Button>
-=======
             <div className="headingWrapper">
               <Col md={12}>
                 <Col md={6}>
@@ -397,7 +374,6 @@ export default class QuizCreatorMainPage extends Component {
             </div>
           </label>
           <br /><br />
->>>>>>> origin/develop
           {this.renderQuestions()}
           <br /><br /><br />
           { this.renderSubmitPanel() }
@@ -409,6 +385,7 @@ export default class QuizCreatorMainPage extends Component {
             <Button onClick={() => this.addQuiz('match')}>Match</Button>
             <Button onClick={() => this.addQuiz('cloze')}>Cloze</Button>
             <Button onClick={() => this.addQuiz('mix')}>Mix</Button>
+            <Button onClick={() => this.addQuiz('cross')}>Cross</Button>
           </div>
           <div
             style={{ float: 'left', clear: 'both' }}
