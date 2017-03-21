@@ -235,9 +235,10 @@ export default class MyClassesPage extends Component {
   }
 
   handleSaveAssignedQuizzes(newQuizzesArray) {
+//    console.log("NEW quizzes ARRAY", newQuizzesArray);
     this.setState({ loading: true });
     this.newQuizzesArray = [];
-    const quizzesIdArray = newQuizzesArray.map(obj => obj.email);
+    const quizzesIdArray = newQuizzesArray.map(obj => obj.id);
     const postObject = { quizzes: quizzesIdArray };
     const groupId = this.state.currentClassId.toString();
     axios({

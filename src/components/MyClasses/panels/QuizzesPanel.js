@@ -23,7 +23,7 @@ export default class QuizzesPanel extends Component {
       allQuizzes: this.props.allQuizzes,
       availableQuizzes: this.getAvailableQuizzes(this.props.allQuizzes),
     });
-    console.log("AVAILABLE", this.props.quizzes);
+//    console.log("AVAILABLE", this.props.quizzes);
     this.filterItems('');
   }
   getAvailableQuizzes(all) {
@@ -43,12 +43,13 @@ export default class QuizzesPanel extends Component {
   filterItems(value) {
     this.setState({ currentlySearched: value });
     let found = false;
-    let filter = this.props.allQuizzes.filter((item) => {
+    let filter = [];
+    this.props.allQuizzes.map((item) => {
       if (item.title.toLowerCase() === value.toLowerCase() ||
           item.title.toLowerCase().includes(value.toLowerCase())) {
         found = true;
-        const result = { id: item.id, published:item.published, title: item.title };
-        return (result);
+        const result = { id: item.id, title: item.title };
+        filter.push(result);
       }
       return (null);
     });
@@ -56,9 +57,11 @@ export default class QuizzesPanel extends Component {
       filter = [];
     } else
     if (filter.length === 0 || value === '') {
-      filter = this.props.allQuizzes.map(item => {return {id: item.id,published:item.published, title:item.title}});
+      filter = this.props.allQuizzes.map((item) => {
+        const result = { id: item.id, title: item.title };
+        return result;
+      });
     }
-    console.log("FIlter",filter);
     let foundSelected = false;
     let filterSelected = this.props.quizzes.filter((item) => {
       if (item.title.toLowerCase() === value.toLowerCase() ||
@@ -173,7 +176,6 @@ export default class QuizzesPanel extends Component {
   }
 
   render() {
-    console.log("SELECTED",this.state.selectedQuizzes);
     return (
       <div className="quizPanelWrapper">
         <Col md={12}>
@@ -209,8 +211,4 @@ QuizzesPanel.propTypes = {
   quizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   allQuizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   handleSaveAssignedQuizzes: PropTypes.func.isRequired,
-  filterItems: PropTypes.func,
-};
-QuizzesPanel.defaultProps = {
-  filterItems: null,
 };
