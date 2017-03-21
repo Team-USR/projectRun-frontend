@@ -102,7 +102,7 @@ export default class QuizViewerMainPage extends Component {
         if (element.type === 'mix') {
           ans = this.state.session.metadata[element.id].answer;
           const id = element.id;
-          questions[index] = { answer: ans, id };
+          quest[index] = { answer: ans, id };
         }
       }
       return (null);
