@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Button, Col } from 'react-bootstrap';
+import { Button, Col, ButtonGroup, FormControl, FormGroup, ControlLabel, Form, Row } from 'react-bootstrap';
 import axios from 'axios';
 import Calendar from 'react-input-calendar';
 import { MultipleChoiceQuizGenerator } from '../../createQuizzes/MultipleChoice';
@@ -249,11 +249,13 @@ export default class QuizCreatorMainPage extends Component {
     if (this.state.questions[index]) {
       displayIndex += 1;
       return (
-        <div className="generatorQuizContainer" key={`generatorQuizContainer${displayIndex}`}>
-          <h2>{displayIndex}</h2>
-          {this.state.questions[index].question}
-          {this.state.questions[index].buttonGroup}
-        </div>
+        <Row>
+          <div className="generatorQuizContainer" key={`generatorQuizContainer${displayIndex}`}>
+            <h2>Question {displayIndex}: </h2>
+            {this.state.questions[index].question}
+            {this.state.questions[index].buttonGroup}
+          </div>
+        </Row>
       );
     }
     return ('');
@@ -301,59 +303,62 @@ export default class QuizCreatorMainPage extends Component {
     }
     if (!this.state.reviewState && this.state.loading === false) {
       return (
-        <div className="mainQuizGeneratorBlock">
+        <div className="mainQuizGeneratorBlock container">
           <h1> Quiz creator </h1>
-          <label htmlFor="titleInput">
-            <div className="headingWrapper">
-              <Col md={12}>
-                <Col md={6}>
-                  <h5 className="headingLabel">  Title: </h5>
-                </Col>
-                <Col md={6}>
-                  <input
-                    id="titleInputs"
-                    type="text"
-                    key={'title'}
-                    placeholder="ex: Spanish test"
-                    onChange={this.changeTitle}
-                  />
-                </Col>
+          <Row bsClass="row small-margin-top">
+            <Form horizontal>
+              <Col md={10} mdPush={1}>
+                <FormGroup controlId="title">
+                  <Col md={3}>
+                    <ControlLabel>Title</ControlLabel>
+                  </Col>
+                  <Col md={9}>
+                    <FormControl
+                      key="title"
+                      type="text"
+                      placeholder="ex: Spanish test"
+                      onChange={this.changeTitle}
+                    />
+                  </Col>
+                </FormGroup>
+                <FormGroup controlId="attempts">
+                  <Col md={3}>
+                    <ControlLabel>Number of attempts</ControlLabel>
+                  </Col>
+                  <Col md={9}>
+                    <FormControl
+                      type="number"
+                      placeholder="ex: 10"
+                      onChange={this.changeAttempts}
+                    />
+                  </Col>
+                </FormGroup>
+                <FormGroup controlId="releaseDate">
+                  <Col md={3}>
+                    <ControlLabel>ReleaseDate</ControlLabel>
+                  </Col>
+                  <Col md={9}>
+                    <Calendar key={'calendar'} format="DD/MM/YYYY" date={this.state.defaultDate} onChange={this.changeReleaseDate} computableFormat={'YYYY-MM-DD'} />
+                  </Col>
+                </FormGroup>
               </Col>
-              <Col md={12}>
-                <Col md={6}>
-                  <h5 className="headingLabel">Number of attempts:</h5>
-                </Col>
-                <Col md={6}>
-                  <input
-                    id="attemptsInput"
-                    type="number"
-                    placeholder="ex: 10"
-                    onChange={this.changeAttempts}
-                  />
-                </Col>
-              </Col>
-              <Col md={12}>
-                <Col md={6}>
-                  <h5 className="headingLabel">  Release date: </h5>
-                </Col>
-                <Col md={6}>
-                  <Calendar key={'calendar'} format="DD/MM/YYYY" date={this.state.defaultDate} onChange={this.changeReleaseDate} computableFormat={'YYYY-MM-DD'} />
-                </Col>
-              </Col>
-            </div>
-          </label>
+            </Form>
+          </Row>
           <br /><br />
           {this.renderQuestions()}
           <br /><br /><br />
           { this.renderSubmitPanel() }
-          Select a quiz to be added:
-          <br />
+          <Row>
+            Add a question:
+          </Row>
           <div className="quizButtons">
-            <Button onClick={() => this.addQuiz('multiple_choice')}> Multiple Choice</Button>
-            <Button onClick={() => this.addQuiz('single_choice')}> Single Choice</Button>
-            <Button onClick={() => this.addQuiz('match')}>Match</Button>
-            <Button onClick={() => this.addQuiz('cloze')}>Cloze</Button>
-            <Button onClick={() => this.addQuiz('mix')}>Mix</Button>
+            <ButtonGroup>
+              <Button onClick={() => this.addQuiz('multiple_choice')}> Multiple Choice</Button>
+              <Button onClick={() => this.addQuiz('single_choice')}> Single Choice</Button>
+              <Button onClick={() => this.addQuiz('match')}>Match</Button>
+              <Button onClick={() => this.addQuiz('cloze')}>Cloze</Button>
+              <Button onClick={() => this.addQuiz('mix')}>Mix</Button>
+            </ButtonGroup>
           </div>
           <div
             style={{ float: 'left', clear: 'both' }}

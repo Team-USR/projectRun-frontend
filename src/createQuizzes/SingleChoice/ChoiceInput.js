@@ -44,20 +44,34 @@ export default class ChoiceInput extends Component {
     const { displayedIndex } = this.props;
   //  console.log(this.props.ind, this.state.selected);
     return (
-      <div >
-        <label htmlFor="choiceInput">
-        Choice:{displayedIndex}
-          {this.props.text}
-          <input
-            id="choiceInput"type="text" defaultValue={answer} onChange={this.handleChange}
-          />
-        </label>
-          Answer: <input
+      <div className="form-group small-margin-top">
+        <div className="col-md-9">
+          <div className="form-group">
+            <div className="col-md-3">
+              <label htmlFor="choiceInput" className="control-label">
+              Choice: {displayedIndex}
+                {this.props.text}
+              </label>
+            </div>
+            <div className="col-md-9">
+              <input
+                id="choiceInput"type="text" defaultValue={answer} onChange={this.handleChange} className="form-control"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="col-md-2">
+          <label htmlFor="isCorrect">
+            <input
             type="radio"
             name="group"
             onChange={this.handleAnswerChange} checked={this.props.ind === this.state.selected}
-          />
-        <Button onClick={this.onDelete}>X</Button>
+          /> Is Correct
+          </label>
+        </div>
+        <div className="col-md-1">
+          <Button onClick={this.onDelete}>X</Button>
+        </div>
       </div>
     );
   }
