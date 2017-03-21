@@ -2,6 +2,7 @@
 
   .quizPanelWrapper {
     .quizzesList {
+
       min-height: 50vh;
 
       li {
@@ -17,14 +18,26 @@
         border-bottom:1px solid black;
         outline: none;
         font-size: 18px;
-        padding-left: 5vw;
+        padding-left: 70px;
         text-align: left;
         margin-bottom:50px;
 
 
       }
+      .expandCollapseButtonsPanel{
+        text-align: center;
+        float:center;
+        margin-top:20px;
+        .leftButton{
+          text-align: right;
 
+        }
+        .rightButton {
+          text-align: left;
+        }
+      }
       .quizManagerWrapper {
+
         .classQuizBtn {
           width: 180px;
           margin: 5px 0;

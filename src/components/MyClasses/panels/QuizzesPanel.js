@@ -2,8 +2,8 @@ import React, { PropTypes, Component } from 'react';
 import { Button, Col, NavItem } from 'react-bootstrap';
 import { QuizManager } from '../GroupQuizzes';
 
-export default class QuizzesPanel extends Component {
 
+export default class QuizzesPanel extends Component {
   constructor() {
     super();
     this.state = {
@@ -13,6 +13,8 @@ export default class QuizzesPanel extends Component {
       filteredAvailable: [],
       filterAllQuizzes: [],
       currentlySearched: '',
+      maxselected: 10,
+      maxavailable: 10,
     };
     this.handleSearch = this.handleSearch.bind(this);
   }
@@ -128,6 +130,163 @@ export default class QuizzesPanel extends Component {
     });
     this.filterItems(this.state.currentlySearched);
   }
+
+  showMore(listType) {
+    this.listType = listType;
+    if (listType === 'selected') {
+      if (this.state.maxavailable < this.state.filteredSelected.length) {
+        const newValue = this.state.maxselected + 5;
+        this.setState({ maxselected: newValue });
+      }
+    }
+    if (listType === 'available') {
+      if (this.state.maxavailable < this.state.filteredAvailable.length) {
+        const newValue = this.state.maxavailable + 5;
+        this.setState({ maxavailable: newValue });
+      }
+    }
+  }
+  showLess(listType) {
+    this.listType = listType;
+    if (listType === 'selected') {
+      if (this.state.maxselected > 10) {
+        const newValue = this.state.maxselected - 5;
+        this.setState({ maxselected: newValue });
+      }
+    }
+    if (listType === 'available') {
+      if (this.state.maxavailable > 10) {
+        const newValue = this.state.maxavailable - 5;
+        this.setState({ maxavailable: newValue });
+      }
+    }
+  }
+  handleListButton(listType) {
+    this.listType = listType;
+    const element = [];
+    const nullelement = (
+      <div key={`null${listType}`}>
+        <Col md={6} />
+      </div>
+    );
+    const showLess = (
+      <div key={`sbu${listType}`} className="leftButton">
+        <Col md={6}>
+          <Button
+            key={`selectedButton${listType}`}
+            className="enjoy-css"
+            onClick={() =>
+                this.showLess(listType)}
+          >
+            <span className="glyphicon glyphicon-chevron-up" aria-hidden="true" />
+          </Button>
+        </Col>
+      </div>
+    );
+    const showMore = (
+      <div key={`abu${listType}`} className="rightButton">
+        <Col md={6}>
+          <Button
+            key={`availablebutton${listType}`}
+            className="enjoy-css"
+            onClick={() =>
+            this.showMore(listType)}
+          >
+            <span className="glyphicon glyphicon-chevron-down" aria-hidden="true" />
+          </Button>
+        </Col>
+      </div>
+    );
+
+    if (listType === 'selected') {
+      if (this.state.filteredSelected.length >= 10) {
+        if (this.state.filteredSelected.length > 0) {
+          if (this.state.filteredSelected.length > this.state.maxselected) {
+            if (this.state.maxselected === 10) {
+              element.push(nullelement);
+              element.push(showMore);
+            } else {
+              element.push(showLess);
+              element.push(showMore);
+            }
+          }
+          if (this.state.filteredSelected.length < this.state.maxselected) {
+            element.push(showLess);
+            element.push(nullelement);
+          }
+        }
+      }
+    }
+    if (listType === 'available') {
+      if (this.state.filteredAvailable.length >= 10) {
+        if (this.state.filteredAvailable.length > this.state.maxavailable) {
+          if (this.state.maxavailable === 10) {
+            element.push(nullelement);
+            element.push(showMore);
+          } else {
+            element.push(showLess);
+            element.push(showMore);
+          }
+        }
+        if (this.state.filteredAvailable.length < this.state.maxavailable) {
+          element.push(showLess);
+          element.push(nullelement);
+        }
+      }
+    }
+    return element;
+  }
+  renderAvailableQuizzes() {
+    if (this.state.availableQuizzes.length === 0) {
+      return <h4>All your quizzes have been assigned!</h4>;
+    }
+    let counter = 0;
+    return this.state.filteredAvailable.map((obj, index) => {
+      if (index < this.state.maxavailable) {
+        return (
+          <li key={`class_available_quiz_${obj.id}`}>
+            <QuizManager
+              type={'add'}
+              id={obj.id}
+              index={index}
+              title={obj.title}
+              addQuiz={() => this.addQuiz(obj.id)}
+            />
+          </li>);
+      }
+      counter += 1;
+      if (index === this.state.filteredAvailable.length - 1) {
+        return (<h5 key={'counteravailable'}> and {counter} more</h5>);
+      }
+      return (null);
+    },
+    );
+  }
+  renderSelectedQuizzes() {
+    if (this.state.selectedQuizzes.length === 0) {
+      return <h4>There are no quizzes assigned to this class!</h4>;
+    }
+    let counter = 0;
+    return this.state.filteredSelected.map((obj, index) => {
+      if (index < this.state.maxselected) {
+        return (
+          <li key={`class_selected_quiz_${obj.id}`}>
+            <QuizManager
+              type={'remove'}
+              id={obj.id}
+              index={index}
+              title={obj.title}
+              removeQuiz={() => this.removeQuiz(obj.id)}
+            />
+          </li>);
+      }counter += 1;
+      if (index === this.state.filteredSelected.length - 1) {
+        return (<h5 key={'counterselected'}> and {counter} more</h5>);
+      }
+      return (null);
+    },
+    );
+  }
   renderSearchBar() {
     return (
       <NavItem key={'searchBar'} >
@@ -141,40 +300,6 @@ export default class QuizzesPanel extends Component {
       </NavItem>
     );
   }
-  renderSelectedQuizzes() {
-    if (this.state.selectedQuizzes.length === 0) {
-      return <h4>There are no quizzes assigned to this class!</h4>;
-    }
-    return this.state.filteredSelected.map((obj, index) =>
-      <li key={`class_selected_quiz_${obj.id}`}>
-        <QuizManager
-          type={'remove'}
-          id={obj.id}
-          index={index}
-          title={obj.title}
-          removeQuiz={() => this.removeQuiz(obj.id)}
-        />
-      </li>,
-    );
-  }
-
-  renderAvailableQuizzes() {
-    if (this.state.availableQuizzes.length === 0) {
-      return <h4>All your quizzes have been assigned!</h4>;
-    }
-    return this.state.filteredAvailable.map((obj, index) =>
-      <li key={`class_available_quiz_${obj.id}`}>
-        <QuizManager
-          type={'add'}
-          id={obj.id}
-          index={index}
-          title={obj.title}
-          addQuiz={() => this.addQuiz(obj.id)}
-        />
-      </li>,
-    );
-  }
-
   render() {
     return (
       <div className="quizPanelWrapper">
@@ -186,11 +311,17 @@ export default class QuizzesPanel extends Component {
           <Col md={6}>
             <ul>
               { this.renderSelectedQuizzes() }
+              <li className="expandCollapseButtonsPanel">
+                { this.handleListButton('selected') }
+              </li>
             </ul>
           </Col>
           <Col md={6}>
             <ul>
               { this.renderAvailableQuizzes() }
+              <li className="expandCollapseButtonsPanel">
+                { this.handleListButton('available') }
+              </li>
             </ul>
           </Col>
         </Col>
