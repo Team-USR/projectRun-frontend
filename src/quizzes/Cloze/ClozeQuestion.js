@@ -1,26 +1,64 @@
 import React from 'react';
 import { ClozeSentence } from './index';
 
+
 export default class ClozeQuestion extends React.Component {
 
   constructor(props) {
     super(props);
+    const gaps = props.sentences.map(sentence => sentence.gaps.map(() => ''));
     this.state = {
-      reviewState: true,
-      resultsState: false,
+      answers: [].concat(...gaps),
     };
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
+    const newAnswers = this.state.answers;
+    newAnswers[e.target.id - 1] = e.target.value;
+    this.setState({ answers: newAnswers });
+  }
+
+  renderReview() {
+    return (
+      this.props.sentences.map((sentence, ind) =>
+        <ClozeSentence
+          key={sentence.text}
+          index={ind}
+          sentence={sentence.text}
+          gaps={sentence.gaps.map(gap => gap.gap)}
+          hints={sentence.gaps.map(gap => gap.hint)}
+          handleChange={this.handleChange}
+        />,
+      )
+    );
+  }
+
+  renderView() {
+    return (
+      this.props.sentences.map((sentence, ind) =>
+        <ClozeSentence
+          key={sentence.text}
+          index={ind}
+          sentence={sentence.text}
+          hints={sentence.gaps.map(gap => gap.hint)}
+          sessionAnswers={this.props.sessionAnswers}
+          reviewer={false}
+          handleChange={this.handleChange}
+        />,
+      )
+    );
   }
 
   render() {
     return (
       <div className="clozeQuizContainer">
-        <div className="questionPanel">
-          <h3>{this.props.index}. {this.props.req}</h3>
-        </div>
+        <h3 className="questionPanel">
+          {this.props.index}. {this.props.request}
+        </h3>
         <ol>
-          {this.props.questions.map(q =>
-            <ClozeSentence key={q.no} index={q.no} question={q.question} gaps={q.gaps} />)
-          }
+          {this.props.reviewer ? this.renderReview() : this.renderView()}
         </ol>
       </div>
     );
@@ -29,17 +67,20 @@ export default class ClozeQuestion extends React.Component {
 
 ClozeQuestion.propTypes = {
   index: React.PropTypes.number.isRequired,
-  req: React.PropTypes.string.isRequired,
-  questions: React.PropTypes.arrayOf(React.PropTypes.shape({
-    no: React.PropTypes.number,
-    question: React.PropTypes.string,
+  request: React.PropTypes.string.isRequired,
+  sentences: React.PropTypes.arrayOf(React.PropTypes.shape({
+    text: React.PropTypes.string,
     gaps: React.PropTypes.arrayOf(React.PropTypes.shape({
-      id: React.PropTypes.number,
-      gap_text: React.PropTypes.string,
-      hint: React.PropTypes.shape({
-        id: React.PropTypes.number,
-        hint_text: React.PropTypes.string,
-      }),
+      gap: React.PropTypes.string,
+      hint: React.PropTypes.string,
     })),
   })).isRequired,
+  sessionAnswers: React.PropTypes.arrayOf(React.PropTypes.string),
+  reviewer: React.PropTypes.bool,
+};
+
+ClozeQuestion.defaultProps = {
+  gaps: [],
+  sessionAnswers: [],
+  reviewer: true,
 };

@@ -4,9 +4,11 @@ import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { SingleChoiceQuiz } from '../../quizzes/SingleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
+import { ClozeQuestion } from '../../quizzes/Cloze';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
+import { getNOfGaps } from '../../helpers/Cloze';
 
 const styles = {
   quizTitle: {
@@ -45,7 +47,7 @@ export default class QuizViewerMainPage extends Component {
       headers: this.props.userToken,
     })
     .then(response => setTimeout(() => {
-//      console.log(response);
+      // console.log(response);
       this.setState({
         loadingQuiz: false,
         quizInfo: response.data.quiz,
@@ -280,6 +282,26 @@ export default class QuizViewerMainPage extends Component {
           callbackParent={(questionId, answers) =>
           this.collectAnswers(questionId, answers, question.type, index)}
           key={`mix_quiz_${question.id}`}
+        />
+      );
+    }
+
+    if (question.type === 'cloze') {
+      const hints = question.hints.map(h => ({
+        gap: '',
+        hint: h,
+      }));
+      const sentencesInEx = question.sentence.split('\n').map(sentence => ({
+        text: sentence,
+        gaps: hints.splice(0, getNOfGaps(sentence)),
+      }));
+
+      return (
+        <ClozeQuestion
+          index={index}
+          reviewer={false}
+          request={question.question}
+          sentences={sentencesInEx}
         />
       );
     }
