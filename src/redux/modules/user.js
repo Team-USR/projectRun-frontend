@@ -22,6 +22,7 @@ if (cookie.load('access-token') != null) {
       'token-type': cookie.load('token-type'),
       uid: cookie.load('uid'),
     },
+    name: cookie.load('username'),
   };
 }
 
@@ -82,6 +83,8 @@ export function loginUser(user) {
         await cookie.save('client', res.headers.client);
         await cookie.save('token-type', res.headers['token-type']);
         await cookie.save('uid', res.headers.uid);
+        await cookie.save('username', res.data.data.name);
+
 
         dispatch(userLoginSuccesful(
           {
@@ -140,11 +143,13 @@ export function signupUser(user) {
   };
 }
 
-export async function logoutUser() {
+export function logoutUser() {
   cookie.remove('access-token');
   cookie.remove('client');
   cookie.remove('token-type');
+  cookie.remove('userType');
   cookie.remove('uid');
+  cookie.remove('username');
   cookie.remove('current-class-id');
   cookie.remove('current-class-title');
   cookie.remove('current-session-type');

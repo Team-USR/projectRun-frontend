@@ -1,17 +1,18 @@
 .mixQuizGeneratorContainer{
+  .form_input{
+    outline:none;
+    border:none;
+    border-bottom:2px solid black;
+    margin:10px 0;
+    width:60%;
+    padding-left:20px;
+  }
   .quizTitleInput {
     width:80%;
     margin:10px 0;
   }
   .mixQuizGenerator{
-    .form_input{
-      outline:none;
-      border:none;
-      border-bottom:2px solid black;
-      margin:10px 0;
-      width:100%;
-      text-align: center;
-    }
+
     .form_alternate_input{
       outline:none;
       border:none;
