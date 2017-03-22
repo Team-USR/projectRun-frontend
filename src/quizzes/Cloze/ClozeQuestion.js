@@ -8,7 +8,7 @@ export default class ClozeQuestion extends React.Component {
     super(props);
     const gaps = props.sentences.map(sentence => sentence.gaps.map(() => ''));
     this.state = {
-      answers: [].concat(...gaps),
+      answers: props.sessionAnswers.length ? props.sessionAnswers : [].concat(...gaps),
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -17,6 +17,7 @@ export default class ClozeQuestion extends React.Component {
   handleChange(e) {
     const newAnswers = this.state.answers;
     newAnswers[e.target.id - 1] = e.target.value;
+    this.props.callbackParent(newAnswers);
     this.setState({ answers: newAnswers });
   }
 
@@ -46,6 +47,7 @@ export default class ClozeQuestion extends React.Component {
           sessionAnswers={this.props.sessionAnswers}
           reviewer={false}
           handleChange={this.handleChange}
+          studentReview={this.props.studentReview}
         />,
       )
     );
@@ -77,10 +79,14 @@ ClozeQuestion.propTypes = {
   })).isRequired,
   sessionAnswers: React.PropTypes.arrayOf(React.PropTypes.string),
   reviewer: React.PropTypes.bool,
+  studentReview: React.PropTypes.bool,
+  callbackParent: React.PropTypes.func,
 };
 
 ClozeQuestion.defaultProps = {
   gaps: [],
   sessionAnswers: [],
   reviewer: true,
+  studentReview: false,
+  callbackParent: () => {},
 };

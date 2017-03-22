@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { GAP_MATCHER } from '../../constants';
+import { stripGapNo } from '../../helpers/Cloze';
 
 function addPeriod(words) {
   const last = words.pop();
@@ -15,6 +16,18 @@ function addPeriod(words) {
 
 export default class ClozeSentence extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      studentReview: props.studentReview,
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ studentReview: nextProps.studentReview });
+  }
+
   renderReview() {
     const words = addPeriod(this.props.sentence.split(/\s/));
     const hintsCopy = this.props.hints;
@@ -25,13 +38,13 @@ export default class ClozeSentence extends React.Component {
         if (!word.match(GAP_MATCHER)) return `${word} `;
         const tooltip = <Tooltip key={`tooltip-${word}-${hintsCopy.length}`}>{hintsCopy.pop() || 'No hints!'}</Tooltip>;
         return (
-          <OverlayTrigger key={`overlay-${word}-${hintsCopy.length}`} placement="top" overlay={tooltip}>
+          <OverlayTrigger id="tooltip" key={`overlay-${word}-${hintsCopy.length}`} placement="top" overlay={tooltip}>
             <input
               key={`input-${word}-${hintsCopy.length}`}
               className="cloze-gap"
               type="text" maxLength="12"
               value={gapsCopy.pop()}
-              readOnly={this.props.reviewer}
+              disabeled={this.props.reviewer}
             />
           </OverlayTrigger>
         );
@@ -44,19 +57,21 @@ export default class ClozeSentence extends React.Component {
     const hintsCopy = this.props.hints;
 
     return (
-      words.map((word, ind) => {
+      words.map((word) => {
         if (!word.match(GAP_MATCHER)) return `${word} `;
         const tooltip = <Tooltip id={word} key={`tooltip-${word}-${hintsCopy.length}`}>{hintsCopy.pop() || 'No hint!'}</Tooltip>;
+        const gapNo = stripGapNo(word);
         return (
-          <OverlayTrigger key={`overlay-${word}-${hintsCopy.length}`} placement="top" overlay={tooltip}>
+          <OverlayTrigger id="tooltip" key={`overlay-${word}-${hintsCopy.length}`} placement="top" overlay={tooltip}>
             <input
-              id={word.split(/[{}]/)[1]}
+              id={gapNo}
               key={`input-${word}-${hintsCopy.length}`}
               className="cloze-gap"
               type="text"
               maxLength="12"
-              value={this.props.sessionAnswers[ind]}
+              value={this.props.sessionAnswers[gapNo - 1]}
               onChange={e => this.props.handleChange(e)}
+              disabled={this.state.studentReview}
             />
           </OverlayTrigger>
         );
@@ -81,11 +96,13 @@ ClozeSentence.propTypes = {
   sessionAnswers: React.PropTypes.arrayOf(React.PropTypes.string),
   handleChange: React.PropTypes.func,
   reviewer: React.PropTypes.bool,
+  studentReview: React.PropTypes.bool,
 };
 
 ClozeSentence.defaultProps = {
   gaps: [],
   sessionAnswers: [],
   reviewer: true,
+  studentReview: false,
   handleChange: () => {},
 };

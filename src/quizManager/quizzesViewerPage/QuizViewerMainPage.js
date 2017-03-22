@@ -176,6 +176,10 @@ export default class QuizViewerMainPage extends Component {
       const mixQuizAnswer = { id, answer: answers };
       newAnswer = mixQuizAnswer;
     }
+    if (type === 'cloze') {
+      const clozeAnswer = { id, answer_gaps: answers };
+      newAnswer = clozeAnswer;
+    }
     tempQuestions[index] = newAnswer;
     tempAnswers.questions = tempQuestions;
     this.setState({ answers: tempAnswers });
@@ -297,10 +301,15 @@ export default class QuizViewerMainPage extends Component {
 
       return (
         <ClozeQuestion
+          id={question.id}
           index={index}
           reviewer={false}
           request={question.question}
           sentences={sentencesInEx}
+          sessionAnswers={sessionAns ? sessionAns.answer_gaps : []}
+          callbackParent={answers =>
+            this.collectAnswers(question.id, answers, question.type, index)}
+          studentReview={this.state.reviewState}
         />
       );
     }
