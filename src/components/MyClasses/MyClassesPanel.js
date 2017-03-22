@@ -13,13 +13,18 @@ import {
 } from './panels';
 
 let timeout = null;
+let classesTimeout = null;
 export default class MyClassesPanel extends Component {
   constructor() {
     super();
     this.state = {
       filteredStudents: [],
       filteredAllStudents: [],
+      pendingClasssesRequests: [],
+      searchedClasses: [],
+      loadingClassesSearch: false,
       loadingSearch: false,
+      moveToPendingError: false,
     };
   }
   componentWillMount() {
@@ -147,6 +152,73 @@ export default class MyClassesPanel extends Component {
       this.setState({ loadingSearch: false });
     }
   }
+  moveToRequests(item) {
+    const pendingList = this.state.pendingClasssesRequests;
+    let duplicate = false;
+    this.setState({ moveToPendingError: false });
+    if (pendingList !== undefined && pendingList !== null && pendingList.length !== 0) {
+      pendingList.map((existingItem) => {
+        if (existingItem.id === item.id) {
+          duplicate = true;
+          this.setState({ moveToPendingError: true });
+        }
+        return 0;
+      });
+    }
+    if (duplicate === false) {
+      pendingList.push(item);
+      this.setState({ pendingClasssesRequests: pendingList, moveToPendingError: false });
+    }
+  }
+  searchClassForInvite(className) {
+    if (classesTimeout !== null) {
+      clearTimeout(classesTimeout);
+    }
+    if (className.length > 0) {
+      this.setState({ loadingClassesSearch: true });
+      classesTimeout = setTimeout(() => {
+        const searchedItem = { input: className };
+        axios({
+          url: `${API_URL}/groups/search`,
+          headers: this.props.userToken,
+          method: 'post',
+          data: searchedItem,
+        })
+      .then((response) => {
+        const retrievedClasses = [];
+        let best = {};
+        if (response.data.best_match_name[0]) {
+          best = {
+            id: response.data.best_match_name[0].id,
+            name: response.data.best_match_name[0].name,
+          };
+          retrievedClasses.push(best);
+        }
+        response.data.alternative_match_name.map((item) => {
+          let duplicate = false;
+          retrievedClasses.map((duplicateItem) => {
+            if (item.id === duplicateItem.id) {
+              duplicate = true;
+            }
+            return 0;
+          });
+          if (!duplicate) {
+            const objName = { id: item.id, name: item.name };
+            retrievedClasses.push(objName);
+          }
+          return 0;
+        });
+        this.setState({ searchedClasses: retrievedClasses });
+      });
+        this.setState({
+          loadingClassesSearch: false,
+        });
+      }, 2000);
+    }
+    if (className.length === 0) {
+      this.setState({ loadingClassesSearch: false });
+    }
+  }
   renderPanel() {
     let element = (
       <DefaultClassesPanel
@@ -249,8 +321,12 @@ export default class MyClassesPanel extends Component {
         element = (
           <div>
             <ClassSearchPanel
-              getAllClasses={this.props.getAllClasses}
-              allClasses={this.props.allClasses}
+              pendingClasssesRequests={this.state.pendingClasssesRequests}
+              searchedClasses={this.state.searchedClasses}
+              searchClassForInvite={className => this.searchClassForInvite(className)}
+              loadingClassesSearch={this.state.loadingClassesSearch}
+              moveToPendingError={this.state.moveToPendingError}
+              moveToRequests={item => this.moveToRequests(item)}
             />
           </div>
         );
@@ -279,7 +355,6 @@ MyClassesPanel.propTypes = {
   }).isRequired,
   allQuizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   allStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  allClasses: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   numberOfClasses: PropTypes.number.isRequired,
   handleSaveNewClassClick: PropTypes.func.isRequired,
   handleSaveAssignedQuizzes: PropTypes.func.isRequired,
@@ -287,7 +362,6 @@ MyClassesPanel.propTypes = {
   handleManageQuizzesFromClass: PropTypes.func.isRequired,
   handleManageStudentsFromClass: PropTypes.func.isRequired,
   handleDeleteClass: PropTypes.func.isRequired,
-  getAllClasses: PropTypes.func.isRequired,
   userToken: React.PropTypes.shape({}).isRequired,
   updateAllStudents: React.PropTypes.func.isRequired,
 };

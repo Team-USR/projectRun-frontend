@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { Nav, NavItem, Button } from 'react-bootstrap';
 import plusSign from '../../assets/images/plus.svg';
+import { TEACHER, STUDENT } from '../../constants';
 
 export default class SideBarClasses extends Component {
   constructor() {
@@ -49,18 +50,21 @@ export default class SideBarClasses extends Component {
   }
 
   renderSearchButton() {
-    return (
-      <div>
-        <Button onClick={() => this.props.handleSearchClassForRequestInvite() }>
-          Find a new Class
-        </Button>
-      </div>
-    );
+    if (this.props.userType === STUDENT) {
+      return (
+        <div>
+          <Button onClick={() => this.props.handleSearchClassForRequestInvite()}>
+            Find a new Class
+            </Button>
+        </div>
+      );
+    }
+    return (null);
   }
 
   render() {
     let createClassButton = (null);
-    if (this.props.userType === 'teacher') {
+    if (this.props.userType === TEACHER) {
       createClassButton =
       (
         <NavItem>

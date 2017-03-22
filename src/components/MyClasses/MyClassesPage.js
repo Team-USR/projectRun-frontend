@@ -57,11 +57,11 @@ export default class MyClassesPage extends Component {
 
       if (this.state.userT === TEACHER) {
         axios({
-          url: `${API_URL}/groups/${currentClassId}/students`,
+          url: `${API_URL}/groups/${currentClassId}/edit`,
           headers: this.props.userToken,
         })
         .then((studentsResponse) => {
-          newContent.students = studentsResponse.data;
+          newContent.students = studentsResponse.data.students;
           this.setState({ panelType: 'show_selected_class', content: newContent });
         });
       } else if (this.state.userT === STUDENT) {
@@ -69,17 +69,6 @@ export default class MyClassesPage extends Component {
       }
     });
   }
-
-  getAllClasses() {
-    this.todo = 'TO DO';
-    // TODO: Replace this Request with Customised Search Class
-
-    // axios({
-    //   url: `${API_URL}/groups`,
-    //   headers: this.props.userToken,
-    // }).then(res => this.setState({ allClasses: res.data }));
-  }
-
   updateAllStudents(object) {
 //    console.log("ALMOST UDPATED", object);
     this.setState({ allStudents: object });
