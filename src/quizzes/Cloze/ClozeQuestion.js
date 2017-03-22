@@ -1,6 +1,7 @@
 import React from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { ClozeSentence } from './index';
+import { getNOfGaps } from '../../helpers/Cloze';
 
 
 export default class ClozeQuestion extends React.Component {
@@ -27,8 +28,8 @@ export default class ClozeQuestion extends React.Component {
 
   answersState() {
     if (this.state.correctAnswer.correct) return 'green';
-    const matches = this.state.correctAnswer.filter((gap, ind) =>
-      gap !== this.state.answers[ind]);
+    const matches = this.state.correctAnswer.correct_gaps.filter((gap, ind) =>
+      gap === this.state.answers[ind]);
     if (matches.length === 0) return 'red';
     return 'orange';
   }
@@ -56,13 +57,20 @@ export default class ClozeQuestion extends React.Component {
   }
 
   renderView() {
+    let correctGapsCopy = [];
+    if (this.props.resultsState) {
+      correctGapsCopy = this.props.correctAnswer.correct_gaps.slice();
+    }
+
     return (
       this.props.sentences.map((sentence, ind) =>
         <ClozeSentence
           key={sentence.text}
           index={ind}
           sentence={sentence.text}
-          hints={sentence.gaps.map(gap => gap.hint)}
+          hints={this.props.resultsState ?
+            correctGapsCopy.splice(0, getNOfGaps(sentence.text))
+            : sentence.gaps.map(gap => gap.hint)}
           sessionAnswers={this.props.sessionAnswers}
           reviewer={false}
           handleChange={this.handleChange}
