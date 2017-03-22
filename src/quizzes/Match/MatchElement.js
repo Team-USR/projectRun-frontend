@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 
-const answers = [];
+let answers = [];
 let leftElements = [];
 let rightElements = [];
 
 /* Function used for displaying the elements from the left Column */
 export default function MatchLeftElement(props) {
+  // console.log(props.index);
   return (
     <div className="matchLeftElementWrapper">
       <div className="matchLeftElement">
@@ -27,6 +28,7 @@ function onChange(e, props) {
 
   // nth Select tag
   const indexOfElement = target.id;
+  console.log(indexOfElement);
   const leftMatchID = leftElements[indexOfElement].id;
 
   answers[indexOfElement] =
@@ -35,15 +37,15 @@ function onChange(e, props) {
 }
 
 /* Function used in order to get the 'answers' array */
-export function getAnswersArray() {
-  return answers;
+export function setAnswersArray(answerSession) {
+  console.log("SET", answerSession);
+  answers = answerSession;
 }
 
 /* Function used for displaying the elements from the right Column */
 export function MatchRightElement(props) {
   leftElements = props.leftElements;
   rightElements = props.rightElements;
-  console.log(props.sessionAnswers);
 
   return (
     <div className="matchRightElementWrapper">
@@ -52,6 +54,7 @@ export function MatchRightElement(props) {
           id={props.index}
           disabled={props.inReview || props.inResult}
           onChange={e => onChange(e, props)}
+          defaultValue={props.defaultAnswer.answer}
         >
           <option
             id={props.defaultValue.id}
@@ -59,7 +62,11 @@ export function MatchRightElement(props) {
             key={props.defaultValue.id}
           >{props.defaultValue.answer}</option>
           {rightElements.map(obj =>
-            <option id={obj.id} value={obj.answer} key={obj.id}> {obj.answer} </option>)}
+            <option
+              id={obj.id}
+              value={obj.answer}
+              key={obj.id}
+            > {obj.answer} </option>)}
         </select>
 
       </div>

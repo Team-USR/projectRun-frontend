@@ -117,6 +117,7 @@ export default class QuizViewerMainPage extends Component {
   }
   saveSession() {
   //  this.setState({ loadingQuiz: true });
+    // console.log(this.state.answers);
     this.setState({ savedSession: true });
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}/save`,
@@ -174,6 +175,7 @@ export default class QuizViewerMainPage extends Component {
     if (type === 'match') {
       const matchAnswer = { id, pairs: answers };
       newAnswer = matchAnswer;
+      console.log(matchAnswer);
     }
     if (type === 'mix') {
       const mixQuizAnswer = { id, answer: answers };
