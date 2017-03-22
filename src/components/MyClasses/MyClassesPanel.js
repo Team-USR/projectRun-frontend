@@ -210,7 +210,9 @@ export default class MyClassesPanel extends Component {
             <Button
               onClick={() =>
               this.props.handleDeleteClass(this.props.classId)}
-            >Delete Class</Button>
+            >
+              Delete Class
+            </Button>
           </div>
         );
       }
@@ -232,7 +234,11 @@ export default class MyClassesPanel extends Component {
               userType={this.props.userType}
               quizzes={this.props.content.quizzes}
             />
-            <hr />
+          </div>
+        );
+      } else if (this.props.panelType === 'show_search_class_panel') {
+        element = (
+          <div>
             <ClassSearchPanel
               getAllClasses={this.props.getAllClasses}
               allClasses={this.props.allClasses}

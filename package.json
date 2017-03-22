@@ -21,7 +21,6 @@
     "react-router-redux": "^4.0.8",
     "react-scripts": "0.8.5",
     "react-search": "^2.0.5",
-    "react-search-input": "^0.10.4",
     "react-spinkit": "^2.1.1",
     "react-toggle": "^3.0.1",
     "recharts": "^0.21.2",

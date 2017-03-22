@@ -49,6 +49,7 @@ export default class SideBarWrapper extends Component {
             userType={this.props.userType}
             onClassClick={(currentClassId, classTitle) =>
               this.props.onSideBarItemClick(currentClassId, classTitle)}
+            handleSearchClassForRequestInvite={() => this.props.handleSearchClassForRequestInvite()}
             content={this.props.sideBarContent.classes}
           />
         );
@@ -94,9 +95,11 @@ SideBarWrapper.propTypes = {
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   userType: PropTypes.string.isRequired,
+  handleSearchClassForRequestInvite: PropTypes.func,
 };
 
 SideBarWrapper.defaultProps = {
   onCreateClassClick: null,
   createQuiz: null,
+  handleSearchClassForRequestInvite: null,
 };

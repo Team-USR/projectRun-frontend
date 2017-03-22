@@ -1,5 +1,4 @@
 import React from 'react';
-import SearchInput, { createFilter } from 'react-search-input';
 
 export default class ClassSearchPanel extends React.Component {
 
@@ -22,10 +21,15 @@ export default class ClassSearchPanel extends React.Component {
   }
 
   render() {
-    const allClasses = this.props.allClasses.filter(createFilter(this.state.searchTerm, 'name'));
+    const allClasses = this.props.allClasses;
     return (
       <div>
-        <SearchInput onChange={this.updateSearch} />
+        <div>
+          <h1><b>Request Class Invitation</b></h1>
+          <hr />
+        </div>
+
+        <input onChange={this.updateSearch} />
         {allClasses.map(cl => (
           <div className="class-panel" key={cl.id}>
             <div className="class-name">{cl.name}</div>
