@@ -1,4 +1,5 @@
 import React from 'react';
+import { ListGroup } from 'react-bootstrap';
 import { ClozeSentence } from './index';
 
 
@@ -9,14 +10,32 @@ export default class ClozeQuestion extends React.Component {
     const gaps = props.sentences.map(sentence => sentence.gaps.map(() => ''));
     this.state = {
       answers: props.sessionAnswers.length ? props.sessionAnswers : [].concat(...gaps),
+      resultsState: props.resultsState,
+      correctAnswer: props.resultsState ? props.correctAnswer : {},
     };
 
     this.handleChange = this.handleChange.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.resultsState) {
+      const copy = nextProps.correctAnswer;
+      this.setState({ correctAnswer: copy });
+    }
+    this.setState({ resultsState: nextProps.resultsState });
+  }
+
+  answersState() {
+    if (this.state.correctAnswer.correct) return 'green';
+    const matches = this.state.correctAnswer.filter((gap, ind) =>
+      gap !== this.state.answers[ind]);
+    if (matches.length === 0) return 'red';
+    return 'orange';
+  }
+
   handleChange(e) {
     const newAnswers = this.state.answers;
-    newAnswers[e.target.id - 1] = e.target.value;
+    newAnswers[e.target.id - 1] = e.target.value.trim();
     this.props.callbackParent(newAnswers);
     this.setState({ answers: newAnswers });
   }
@@ -48,6 +67,7 @@ export default class ClozeQuestion extends React.Component {
           reviewer={false}
           handleChange={this.handleChange}
           studentReview={this.props.studentReview}
+          resultsState={this.props.resultsState}
         />,
       )
     );
@@ -59,9 +79,9 @@ export default class ClozeQuestion extends React.Component {
         <h3 className="questionPanel">
           {this.props.index}. {this.props.request}
         </h3>
-        <ol>
+        <ListGroup style={this.state.resultsState ? { color: this.answersState() } : {}}>
           {this.props.reviewer ? this.renderReview() : this.renderView()}
-        </ol>
+        </ListGroup>
       </div>
     );
   }
@@ -80,7 +100,13 @@ ClozeQuestion.propTypes = {
   sessionAnswers: React.PropTypes.arrayOf(React.PropTypes.string),
   reviewer: React.PropTypes.bool,
   studentReview: React.PropTypes.bool,
+  resultsState: React.PropTypes.bool,
   callbackParent: React.PropTypes.func,
+  correctAnswer: React.PropTypes.shape({
+    id: React.PropTypes.number,
+    correct: React.PropTypes.bool,
+    correct_gaps: React.PropTypes.arrayOf(React.PropTypes.string),
+  }),
 };
 
 ClozeQuestion.defaultProps = {
@@ -88,5 +114,7 @@ ClozeQuestion.defaultProps = {
   sessionAnswers: [],
   reviewer: true,
   studentReview: false,
+  resultsState: false,
   callbackParent: () => {},
+  correctAnswer: {},
 };

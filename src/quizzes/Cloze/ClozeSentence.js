@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Tooltip, OverlayTrigger, ListGroupItem } from 'react-bootstrap';
 import { GAP_MATCHER } from '../../constants';
 import { stripGapNo } from '../../helpers/Cloze';
 
@@ -30,8 +30,8 @@ export default class ClozeSentence extends React.Component {
 
   renderReview() {
     const words = addPeriod(this.props.sentence.split(/\s/));
-    const hintsCopy = this.props.hints;
-    const gapsCopy = this.props.gaps;
+    const hintsCopy = this.props.hints.reverse();
+    const gapsCopy = this.props.gaps.reverse();
 
     return (
       words.map((word) => {
@@ -44,7 +44,7 @@ export default class ClozeSentence extends React.Component {
               className="cloze-gap"
               type="text" maxLength="12"
               value={gapsCopy.pop()}
-              disabeled={this.props.reviewer}
+              readOnly={this.props.reviewer}
             />
           </OverlayTrigger>
         );
@@ -54,7 +54,7 @@ export default class ClozeSentence extends React.Component {
 
   renderView() {
     const words = addPeriod(this.props.sentence.split(/\s/));
-    const hintsCopy = this.props.hints;
+    const hintsCopy = this.props.hints.map(x => x).reverse();
 
     return (
       words.map((word) => {
@@ -71,7 +71,7 @@ export default class ClozeSentence extends React.Component {
               maxLength="12"
               value={this.props.sessionAnswers[gapNo - 1]}
               onChange={e => this.props.handleChange(e)}
-              disabled={this.state.studentReview}
+              readOnly={this.state.studentReview}
             />
           </OverlayTrigger>
         );
@@ -81,9 +81,9 @@ export default class ClozeSentence extends React.Component {
 
   render() {
     return (
-      <li key={this.props.index} style={{ marginTop: '8px' }}>
+      <ListGroupItem key={this.props.index} style={{ marginTop: '8px' }}>
         {this.props.reviewer ? this.renderReview() : this.renderView()}
-      </li>
+      </ListGroupItem>
     );
   }
 }

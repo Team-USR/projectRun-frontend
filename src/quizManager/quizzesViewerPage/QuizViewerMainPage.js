@@ -106,6 +106,11 @@ export default class QuizViewerMainPage extends Component {
           const id = element.id;
           quest[index] = { answer: ans, id };
         }
+        if (element.type === 'cloze') {
+          ans = this.state.session.metadata[element.id].answer_gaps;
+          const id = element.id;
+          quest[index] = { answer_gaps: ans, id };
+        }
       }
       return (null);
     });
@@ -310,6 +315,8 @@ export default class QuizViewerMainPage extends Component {
           callbackParent={answers =>
             this.collectAnswers(question.id, answers, question.type, index)}
           studentReview={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          correctAnswer={this.state.data[question.id]}
         />
       );
     }
