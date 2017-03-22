@@ -5,6 +5,7 @@ import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { SideBarWrapper } from '../SideBar';
 import { MyClassesPanel } from './index';
 import { BrandSpinner } from '../utils';
+import findHighestMark from '../../helpers';
 
 export default class MyClassesPage extends Component {
 
@@ -13,6 +14,8 @@ export default class MyClassesPage extends Component {
 
     this.state = {
       panelType: 'my_classes_default_panel',
+      averagePerCreatedClass: [],
+      marksPerQuizPerClass: [],
       loadingSideBar: true,
       currentClassTitle: '',
       currentClassId: '',
@@ -35,9 +38,11 @@ export default class MyClassesPage extends Component {
     if (settingUserType) {
       if (settingUserType === TEACHER) {
         this.requestTeacherData();
+        this.requestTeacherStatistics();
       }
       if (settingUserType === STUDENT) {
         this.requestStudentData();
+        this.requestStudentStatistics();
       }
       this.setState({ userT: settingUserType });
     } else {
@@ -113,6 +118,17 @@ export default class MyClassesPage extends Component {
     });
   }
 
+  requestTeacherStatistics() {
+    axios({
+      url: `${API_URL}/statistics/average_marks_groups`,
+      headers: this.props.userToken,
+    }).then((response) => {
+      this.setState({
+        averagePerCreatedClass: response.data,
+      });
+    });
+  }
+
   requestStudentData() {
     axios({
       url: `${API_URL}/users/mine/groups`,
@@ -145,6 +161,17 @@ export default class MyClassesPage extends Component {
           });
         }, 1200);
       }
+    });
+  }
+
+  requestStudentStatistics() {
+    axios({
+      url: `${API_URL}/statistics/marks_groups_quizzes`,
+      headers: this.props.userToken,
+    }).then((response) => {
+      this.setState({
+        marksPerQuizPerClass: response.data,
+      });
     });
   }
 
@@ -290,6 +317,17 @@ export default class MyClassesPage extends Component {
         content={this.state.content}
         allQuizzes={this.state.allQuizzes}
         allStudents={this.state.allStudents}
+        averagePerCreatedClass={this.state.averagePerCreatedClass.map(average => ({
+          name: average.group_name,
+          value: average.average,
+        }))}
+        marksPerQuizPerClass={this.state.marksPerQuizPerClass.map(myClass => ({
+          className: myClass.group_name,
+          marks: Object.keys(myClass.marks).map(quizId => ({
+            name: quizId,
+            value: findHighestMark(myClass.marks[quizId]).score,
+          })),
+        }))}
         numberOfClasses={this.state.sideBarContent.classes.length}
         updateAllStudents={object => this.updateAllStudents(object)}
         handleSaveNewClassClick={newClassTitle =>

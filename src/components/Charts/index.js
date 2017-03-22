@@ -7,14 +7,16 @@ import { CHART_COLOR } from '../../constants';
 export function LineCh(props) {
   LineCh.propTypes = {
     data: React.PropTypes.arrayOf(React.PropTypes.shape({
-      quiz: React.PropTypes.string,
+      name: React.PropTypes.string,
       score: React.PropTypes.number,
     })).isRequired,
     color: React.PropTypes.string,
+    placeholder: React.PropTypes.string,
   };
 
   LineCh.defaultProps = {
     color: CHART_COLOR,
+    placeholder: 'You have no quizzes submited yet.',
   };
   return props.data.length > 0 ? (
     <LineChart width={800} height={400} data={props.data}>
@@ -32,7 +34,7 @@ export function LineCh(props) {
       <Tooltip />
       <Line type="monotone" dataKey="score" fillOpacity={0.8} dot={<QuizDot />} strokeWidth={3} />
     </LineChart>
-  ) : <h2 style={{ color: props.color }}>You have no quizzes submited yet!</h2>;
+  ) : <h3>{props.placeholder}</h3>;
 }
 
 function renderLabel(pie) {
