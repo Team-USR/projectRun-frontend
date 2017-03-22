@@ -13,6 +13,9 @@ export default class SideBarClasses extends Component {
   componentWillMount() {
     this.setState({ content: this.props.content });
   }
+  componentsWillReceiveProps(nextProps) {
+    this.setState({ content: nextProps.content });
+  }
   filterItems(event) {
     let found = false;
     let filteredContent = this.props.content.filter((item) => {
@@ -63,6 +66,11 @@ export default class SideBarClasses extends Component {
         </NavItem>
           );
     }
+    let classesCounter = 0;
+    let maxDisplayed = 15;
+    if (this.state.content.length - maxDisplayed >= 1) {
+      maxDisplayed -= 1;
+    }
     return (
       <div>
         {this.renderSearchBar()}
@@ -70,7 +78,7 @@ export default class SideBarClasses extends Component {
           { createClassButton }
           {
          this.state.content.map((obj, index) => {
-           if (index < 8) {
+           if (index < maxDisplayed) {
              return (
                <NavItem className="classesNav" key={`class_${obj.id}`}>
                  <Button
@@ -79,6 +87,13 @@ export default class SideBarClasses extends Component {
                  >
                    {obj.name}
                  </Button>
+               </NavItem>
+             );
+           } classesCounter += 1;
+           if (index === this.state.content.length - 1) {
+             return (
+               <NavItem className="classesNav" key={'moreClasses'}>
+                 <h5> and {classesCounter} more...</h5>
                </NavItem>
              );
            }
