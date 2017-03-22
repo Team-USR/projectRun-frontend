@@ -27,12 +27,12 @@ export function LineCh(props) {
       />
       <YAxis
         tickCount={12}
-        dataKey="score"
+        dataKey="value"
         domain={[0, 100]} fontWeight={700}
         stroke={props.color}
       />
       <Tooltip />
-      <Line type="monotone" dataKey="score" fillOpacity={0.8} dot={<QuizDot />} strokeWidth={3} />
+      <Line type="monotone" dataKey="value" fillOpacity={0.8} dot={<QuizDot />} strokeWidth={3} />
     </LineChart>
   ) : <h3>{props.placeholder}</h3>;
 }
