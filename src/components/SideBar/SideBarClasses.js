@@ -53,8 +53,10 @@ export default class SideBarClasses extends Component {
     if (this.props.userType === STUDENT) {
       return (
         <div>
-          <Button onClick={() => this.props.handleSearchClassForRequestInvite()}>
-            Find a new Class
+          <Button
+            className="titleButton"
+            onClick={() => this.props.handleSearchClassForRequestInvite()}>
+            Join a class
             </Button>
         </div>
       );

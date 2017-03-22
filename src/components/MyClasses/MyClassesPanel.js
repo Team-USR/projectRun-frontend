@@ -21,6 +21,7 @@ export default class MyClassesPanel extends Component {
       filteredStudents: [],
       filteredAllStudents: [],
       pendingClasssesRequests: [],
+      sentClasses: [],
       searchedClasses: [],
       loadingClassesSearch: false,
       loadingSearch: false,
@@ -169,6 +170,20 @@ export default class MyClassesPanel extends Component {
       pendingList.push(item);
       this.setState({ pendingClasssesRequests: pendingList, moveToPendingError: false });
     }
+  }
+  sendInvitation(classId) {
+    console.log("OK");
+    axios({
+      url: `${API_URL}/groups/${classId}/request_join`,
+      method: 'post',
+      headers: this.props.userToken,
+    })
+    .then((reponse) => {
+      console.log(reponse);
+      const sent = this.state.sentClasses;
+      sent.push(classId);
+      this.setState({ sentClasses: sent });
+    });
   }
   searchClassForInvite(className) {
     if (classesTimeout !== null) {
@@ -327,6 +342,8 @@ export default class MyClassesPanel extends Component {
               loadingClassesSearch={this.state.loadingClassesSearch}
               moveToPendingError={this.state.moveToPendingError}
               moveToRequests={item => this.moveToRequests(item)}
+              sendInvitation={id => this.sendInvitation(id)}
+              sentClasses={this.state.sentClasses}
             />
           </div>
         );

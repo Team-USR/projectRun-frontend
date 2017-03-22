@@ -14,6 +14,7 @@ export default class ClassSearchPanel extends React.Component {
       pendingClasses: [],
       loadingClassesSearch: false,
       moveToPendingError: false,
+      sentClasses: [],
     };
 
     this.updateSearch = this.updateSearch.bind(this);
@@ -25,6 +26,7 @@ export default class ClassSearchPanel extends React.Component {
       loadingClassesSearch: this.props.loadingClassesSearch,
       pendingClasses: this.props.pendingClasssesRequests,
       moveToPendingError: this.props.moveToPendingError,
+      sentClasses: this.props.sentClasses,
 
     });
   }
@@ -34,11 +36,12 @@ export default class ClassSearchPanel extends React.Component {
       loadingClassesSearch: nextProps.loadingClassesSearch,
       pendingClasses: nextProps.pendingClasssesRequests,
       moveToPendingError: nextProps.moveToPendingError,
+      sentClasses: nextProps.sentClasses,
     });
   }
 
   updateSearch(event) {
-    const searchedTerm = event.target.value.toLowerCase();
+    const searchedTerm = event.target.value;
     this.props.searchClassForInvite(searchedTerm);
     this.setState({ searchTerm: event.target.value });
   }
@@ -49,6 +52,14 @@ export default class ClassSearchPanel extends React.Component {
     }
     if (this.state.pendingClasses !== undefined && this.state.pendingClasses !== null) {
       this.state.pendingClasses.map((cl) => {
+        let col = '';
+        this.state.sentClasses.map((item) => {
+          if (item === cl.id) {
+            col = 'green';
+          }
+          return 0;
+        });
+
         element.push(
           <li
             className="pendingButtons"
@@ -62,9 +73,10 @@ export default class ClassSearchPanel extends React.Component {
               </Col>
               <Col md={6}>
                 <Button
+                  style={{ color: col }}
                   className="inviteButton"
                   key={`invitation${cl.id}`}
-                  onClick={() => null}
+                  onClick={() => this.props.sendInvitation(cl.id)}
                 >
                   <span className="glyphicon glyphicon-log-in" />
                 </Button>
@@ -153,14 +165,18 @@ ClassSearchPanel.propTypes = {
   searchClassForInvite: React.PropTypes.func,
   loadingClassesSearch: React.PropTypes.bool,
   pendingClasssesRequests: React.PropTypes.arrayOf(React.PropTypes.shape({})),
+  sentClasses: React.PropTypes.arrayOf(React.PropTypes.number),
   moveToPendingError: React.PropTypes.bool,
   moveToRequests: React.PropTypes.func,
+  sendInvitation: React.PropTypes.func,
 };
 ClassSearchPanel.defaultProps = {
   searchedClasses: {},
+  sentClasses: {},
   searchClassForInvite: null,
   loadingClassesSearch: false,
   pendingClasssesRequests: {},
   moveToPendingError: false,
   moveToRequests: null,
+  sendInvitation: null,
 };

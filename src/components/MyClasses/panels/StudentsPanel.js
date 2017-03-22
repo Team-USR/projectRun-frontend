@@ -283,6 +283,21 @@ export default class StudentsPanel extends Component {
       </div>
     );
   }
+  renderRequestsPanel() {
+    return (
+      <div>
+        <Col md={12}>
+          <div className="form_container">
+            <div className="form_section">
+              <div className="inside">
+              <h1>REQUESTS</h1>
+              </div>
+            </div>
+          </div>
+        </Col>
+      </div>
+    );
+  }
   renderImportStudents() {
     return (
       <div>
@@ -309,11 +324,14 @@ export default class StudentsPanel extends Component {
   render() {
     return (
       <div className="studentsPanelWrapper">
-        <Tabs defaultActiveKey={1} id="uncontrolled-tab-example" className="tabsWrapper">
-          <Tab eventKey={1} title="Manage enrolled students">
+        <Tabs defaultActiveKey={0} id="uncontrolled-tab-example" className="tabsWrapper">
+          <Tab eventKey={0} title="Manage enrolled students">
             {this.renderSearchStudent() }
           </Tab>
-          <Tab eventKey={2} title="Invite student">
+          <Tab eventKey={1} title="Approve requests">
+            {this.renderRequestsPanel() }
+          </Tab>
+          <Tab eventKey={2} title="Invite students">
             { this.renderInviteStudent() }
           </Tab>
           <Tab eventKey={3} title="Import students">

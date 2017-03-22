@@ -61,6 +61,7 @@ export default class MyClassesPage extends Component {
           headers: this.props.userToken,
         })
         .then((studentsResponse) => {
+          console.log(studentsResponse);
           newContent.students = studentsResponse.data.students;
           this.setState({ panelType: 'show_selected_class', content: newContent });
         });
