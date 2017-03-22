@@ -27,7 +27,7 @@ export default class MatchQuiz extends Component {
       matchQuizQuestions: {
         leftElements: this.props.question.left,
         rightElements: this.props.question.right,
-        defaultValue: { id: '000', answer: 'Choose a value!' },
+        defaultValue: { id: '000', answer: this.props.question.match_default },
       },
 
       // TEST Input state object for Match Quiz
@@ -98,13 +98,12 @@ export default class MatchQuiz extends Component {
 
   renderRightElement(obj, index) {
     this.obj = obj;
-    let defaultOption = this.state.matchQuizQuestions.defaultValue;
+    const defaultOption = this.state.matchQuizQuestions.defaultValue;
     let rightElements = this.rightColumnShuffled;
     let leftElements = this.leftColumnShuffled;
     if (this.props.reviewState) {
       rightElements = this.props.question.right;
       leftElements = this.props.question.left;
-      defaultOption = rightElements[index];
     }
     const rightElement = (
       <MatchRightElement
@@ -170,6 +169,7 @@ MatchQuiz.propTypes = {
   question: PropTypes.shape({
     id: PropTypes.number.isRequired,
     question: PropTypes.string.isRequired,
+    match_default: PropTypes.string.isRequired,
     left: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       answer: PropTypes.string.isRequired,
