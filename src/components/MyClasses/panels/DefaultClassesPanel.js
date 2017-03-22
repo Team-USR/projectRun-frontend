@@ -16,14 +16,18 @@ export default class DefaultClassesPanel extends Component {
 
   renderCharts() {
     if (this.props.userType === TEACHER) {
-      return (
-        <div className="col-md-12">
-          <LineCh
-            data={this.props.averagePerCreatedClass}
-            placeholder="You either have no classes created or no quizzes published."
-          />
-        </div>
-      );
+      if (this.props.averagePerCreatedClass.length > 0) {
+        return (
+          <div className="col-md-9">
+            <LineCh
+              data={this.props.averagePerCreatedClass.filter(myClass =>
+                myClass.value !== null)}
+              color="grey"
+            />
+          </div>
+        );
+      }
+      return <h3>You either have no classes created or no quizzes published.</h3>;
     }
     return '';
   }

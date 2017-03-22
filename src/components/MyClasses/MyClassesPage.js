@@ -47,6 +47,7 @@ export default class MyClassesPage extends Component {
       this.setState({ userT: settingUserType });
     } else {
       this.requestStudentData();
+      this.requestStudentStatistics();
     }
   }
 
@@ -323,10 +324,10 @@ export default class MyClassesPage extends Component {
         }))}
         marksPerQuizPerClass={this.state.marksPerQuizPerClass.map(myClass => ({
           className: myClass.group_name,
-          marks: Object.keys(myClass.marks).map(quizId => ({
+          marks: myClass.marks ? Object.keys(myClass.marks).map(quizId => ({
             name: quizId,
             value: findHighestMark(myClass.marks[quizId]).score,
-          })),
+          })) : [],
         }))}
         numberOfClasses={this.state.sideBarContent.classes.length}
         updateAllStudents={object => this.updateAllStudents(object)}

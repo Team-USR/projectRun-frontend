@@ -235,7 +235,7 @@ export default class MyClassesPanel extends Component {
       }
     } else if (this.props.userType === STUDENT) {
       const data = this.props.marksPerQuizPerClass.filter(myClass =>
-        myClass.className !== classTitle);
+        myClass.className === this.props.classTitle);
       if (this.props.panelType === 'show_selected_class') {
         element = (
           <div>
@@ -245,10 +245,9 @@ export default class MyClassesPanel extends Component {
               quizzes={this.props.content.quizzes}
             />
             <hr />
-            <LineCh
-              data={data[0].marks}
-              placeholder="You have no submitted quizzes."
-            />
+            {data[0].marks.length > 0 ?
+              <div className="col-md-9"><LineCh color="grey" data={data[0].marks} /></div>
+              : <h3>You have no submitted quiz for this class.</h3>}
           </div>
         );
       }
