@@ -172,14 +172,12 @@ export default class MyClassesPanel extends Component {
     }
   }
   sendInvitation(classId) {
-    console.log("OK");
     axios({
       url: `${API_URL}/groups/${classId}/request_join`,
       method: 'post',
       headers: this.props.userToken,
     })
-    .then((reponse) => {
-      console.log(reponse);
+    .then(() => {
       const sent = this.state.sentClasses;
       sent.push(classId);
       this.setState({ sentClasses: sent });
@@ -275,6 +273,9 @@ export default class MyClassesPanel extends Component {
               manageSearch={value => this.manageSearch(value)}
               forceFilter={value => this.filterItems(value)}
               loadingSearch={this.state.loadingSearch}
+              requestsList={this.props.requestsList}
+              classId={this.props.classId}
+              userToken={this.props.userToken}
             />
           </div>
         );
@@ -291,7 +292,6 @@ export default class MyClassesPanel extends Component {
                   quizzes={this.props.content.quizzes}
                   handleManageQuizzesFromClass={() => this.props.handleManageQuizzesFromClass()}
                 />
-                <hr />
               </Col>
               <Col md={6}>
                 <GroupStudents
@@ -299,7 +299,6 @@ export default class MyClassesPanel extends Component {
                   students={this.props.content.students}
                   handleManageStudentsFromClass={() => this.props.handleManageStudentsFromClass()}
                 />
-                <hr />
               </Col>
             </Col>
             <Button
@@ -381,4 +380,5 @@ MyClassesPanel.propTypes = {
   handleDeleteClass: PropTypes.func.isRequired,
   userToken: React.PropTypes.shape({}).isRequired,
   updateAllStudents: React.PropTypes.func.isRequired,
+  requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };

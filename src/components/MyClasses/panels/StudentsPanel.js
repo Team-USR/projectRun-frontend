@@ -1,8 +1,11 @@
 import Papa from 'papaparse';
 import React, { PropTypes, Component } from 'react';
+import axios from 'axios';
 import { Button, Col, NavItem, Tabs, Tab } from 'react-bootstrap';
 import { StudentManager } from '../GroupStudents';
 import { SearchSpinner } from '../../../components/utils';
+import { API_URL } from '../../../constants';
+
 
 export default class StudentsPanel extends Component {
   constructor() {
@@ -14,6 +17,7 @@ export default class StudentsPanel extends Component {
       enrolledStudents: [],
       unenrolledStudents: [],
       currentSearched: '',
+      userToken: null,
     };
     this.changeInput = this.changeInput.bind(this);
     this.importCSV = this.importCSV.bind(this);
@@ -27,6 +31,8 @@ export default class StudentsPanel extends Component {
       enrolledStudents: this.props.students,
       filteredALl: this.props.filteredAllStudents,
       unenrolledStudents: this.getUnenrolledStudents(this.props.filteredAllStudents),
+      requestsList: this.props.requestsList,
+      userToken: this.props.userToken,
     });
   }
   componentWillReceiveProps(nextProps) {
@@ -38,6 +44,7 @@ export default class StudentsPanel extends Component {
       enrolledStudents: nextProps.students,
       filteredALl: nextProps.filteredAllStudents,
       unenrolledStudents: this.getUnenrolledStudents(nextProps.filteredAllStudents),
+      requestsList: nextProps.requestsList,
     });
   }
   getUnenrolledStudents(allStudents) {
@@ -171,6 +178,25 @@ export default class StudentsPanel extends Component {
       this.props.forceFilter(this.state.currentSearched);
     }
   }
+  approveStudent(object) {
+    const sendObject = { users: [object.email] };
+    axios({
+      url: `${API_URL}/groups/${this.props.classId}/add_users`,
+      method: 'post',
+      data: sendObject,
+      headers: this.state.userToken,
+    })
+    .then(() => {
+      const requests = this.state.requestsList;
+      this.state.requestsList.map((item, index) => {
+        if (item.id === object.id) {
+          requests.splice(index, 1);
+        }
+        return 0;
+      });
+      this.setState({ requestsList: requests });
+    });
+  }
   handleSearch(event) {
     this.props.manageSearch(event.target.value);
     this.setState({ currentSearched: event.target.value });
@@ -285,15 +311,42 @@ export default class StudentsPanel extends Component {
   }
   renderRequestsPanel() {
     return (
-      <div>
+      <div key={'manageRequests'}>
         <Col md={12}>
-          <div className="form_container">
-            <div className="form_section">
-              <div className="inside">
-              <h1>REQUESTS</h1>
-              </div>
-            </div>
-          </div>
+          {
+          this.state.requestsList.map(item =>
+            (
+              <Col md={4} key={`student${item.id}`}>
+                <div className="requestStudentGroup">
+                  <Col md={12}>
+                    <Col md={8} sm={9}>
+                      <Button
+                        className="requestStudentName"
+                        onClick={() => null}
+                      >
+                        {item.name}
+                      </Button>
+                    </Col>
+                    <Col md={4} sm={3} className="respondButtons">
+                      <Button
+                        className="accept"
+                        onClick={() => null}
+                      >
+                        <span className="glyphicon glyphicon-remove" style={{ color: 'red' }} />
+                      </Button>
+                      <Button
+                        className="decline"
+                        onClick={() => this.approveStudent(item)}
+                      >
+                        <span className="glyphicon glyphicon-ok" style={{ color: 'green' }} />
+                      </Button>
+                    </Col>
+                  </Col>
+                </div>
+              </Col>
+            ),
+          )
+        }
         </Col>
       </div>
     );
@@ -351,4 +404,7 @@ StudentsPanel.propTypes = {
   forceFilter: PropTypes.func.isRequired,
   filteredStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   loadingSearch: PropTypes.bool.isRequired,
+  requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  userToken: PropTypes.shape({}).isRequired,
+  classId: PropTypes.string.isRequired,
 };

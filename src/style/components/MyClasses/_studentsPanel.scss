@@ -1,5 +1,16 @@
 .studentsPanelWrapper{
 
+  .requestStudentGroup{
+    margin:10px;
+    .requestStudentName{
+      width: 100%;
+    }
+    .respondButtons{
+      text-align: left;
+    }
+  }
+
+
   .tabsWrapper {
     float:center;
   }

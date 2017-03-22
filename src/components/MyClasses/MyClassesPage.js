@@ -24,6 +24,7 @@ export default class MyClassesPage extends Component {
         // { id: 11, name: 'Jlaba' },
         // { id: 12, name: 'Blercu' },
       ],
+      requestsList: [],
       sideBarContent: { classes: [] },
       content: { quizzes: [], students: [] },
       userT: STUDENT,
@@ -61,9 +62,11 @@ export default class MyClassesPage extends Component {
           headers: this.props.userToken,
         })
         .then((studentsResponse) => {
-          console.log(studentsResponse);
           newContent.students = studentsResponse.data.students;
-          this.setState({ panelType: 'show_selected_class', content: newContent });
+          this.setState({
+            panelType: 'show_selected_class',
+            content: newContent,
+            requestsList: studentsResponse.data.pending_requests_users });
         });
       } else if (this.state.userT === STUDENT) {
         this.setState({ panelType: 'show_selected_class', content: newContent });
@@ -311,6 +314,7 @@ export default class MyClassesPage extends Component {
         handleManageQuizzesFromClass={() => this.handleManageQuizzesFromClass()}
         handleDeleteClass={id => this.handleDeleteClass(id)}
         manageSearch={value => this.manageSearch(value)}
+        requestsList={this.state.requestsList}
       />);
     return element;
   }
