@@ -1,22 +1,23 @@
 import React, { Component, PropTypes } from 'react';
 
 class Choice extends Component {
+
   constructor() {
     super();
     this.state = { checked: false };
   }
   componentWillMount() {
-    if (this.props.defaultValue !== null) {
+    if (this.props.defaultValue !== null && this.props.defaultValue !== undefined) {
     //  console.log("wtf",this.props.defaultValue);
       this.setState({ checked: this.props.defaultValue });
     }
+    this.props.callbackParent(this.props.defaultValue);
   }
   onStateChanged() {
   //  console.log('changed',this.state.checked);
     const newState = !this.state.checked;
-    const index = this.state.index;
     this.setState({ checked: newState });
-    this.props.callbackParent(newState, this.props.id, index);
+    this.props.callbackParent(newState);
   }
   renderLabel(value, choiceText, inReview) {
     if (inReview) {
@@ -58,7 +59,6 @@ Choice.propTypes = {
   value: PropTypes.number.isRequired,
   choiceText: PropTypes.string.isRequired,
   inReview: PropTypes.bool.isRequired,
-  id: PropTypes.number.isRequired,
   defaultValue: PropTypes.bool,
 };
 Choice.defaultProps = {

@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import axios from 'axios';
-import { Button } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
 import { GroupQuizzes } from './GroupQuizzes';
 import { GroupStudents } from './GroupStudents';
 import { STUDENT, TEACHER, API_URL } from '../../constants';
@@ -195,19 +195,26 @@ export default class MyClassesPanel extends Component {
         element = (
           <div>
             { classTitle }
-            <GroupQuizzes
-              userType={this.props.userType}
-              quizzes={this.props.content.quizzes}
-              handleManageQuizzesFromClass={() => this.props.handleManageQuizzesFromClass()}
-            />
-            <hr />
-            <GroupStudents
-              userType={this.props.userType}
-              students={this.props.content.students}
-              handleManageStudentsFromClass={() => this.props.handleManageStudentsFromClass()}
-            />
-            <hr />
+            <Col md={12}>
+              <Col md={6}>
+                <GroupQuizzes
+                  userType={this.props.userType}
+                  quizzes={this.props.content.quizzes}
+                  handleManageQuizzesFromClass={() => this.props.handleManageQuizzesFromClass()}
+                />
+                <hr />
+              </Col>
+              <Col md={6}>
+                <GroupStudents
+                  userType={this.props.userType}
+                  students={this.props.content.students}
+                  handleManageStudentsFromClass={() => this.props.handleManageStudentsFromClass()}
+                />
+                <hr />
+              </Col>
+            </Col>
             <Button
+              className="deleteButton"
               onClick={() =>
               this.props.handleDeleteClass(this.props.classId)}
             >

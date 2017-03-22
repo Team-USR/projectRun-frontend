@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
+import { SingleChoiceQuiz } from '../../quizzes/SingleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
@@ -44,6 +45,7 @@ export default class QuizViewerMainPage extends Component {
       headers: this.props.userToken,
     })
     .then(response => setTimeout(() => {
+//      console.log(response);
       this.setState({
         loadingQuiz: false,
         quizInfo: response.data.quiz,
@@ -51,7 +53,6 @@ export default class QuizViewerMainPage extends Component {
       //  answers: response.data.quiz_session,
       });
       this.loadSession();
-    //   console.log("SESSSION", this.state.quizInfo);
     }, 510))
     .catch(() => {
       this.setState({ error: true });
@@ -84,20 +85,30 @@ export default class QuizViewerMainPage extends Component {
     this.setState({ reviewState: newState });
   }
   loadSession() {
- //  console.log("ANSWERS BEFORE", this.state.answers);
-    const questions = [];
+    const quest = [];
     this.state.quizInfo.questions.map((element, index) => {
       let ans;
       if (this.state.session.metadata && this.state.session.metadata[element.id]) {
-        ans = this.state.session.metadata[element.id].answer_ids;
-        const id = element.id;
-        questions[index] = { answer_ids: ans, id };
+        if (element.type === 'multiple_choice') {
+          ans = this.state.session.metadata[element.id].answer_ids;
+          const id = element.id;
+          quest[index] = { answer_ids: ans, id };
+        }
+        if (element.type === 'single_choice') {
+          ans = this.state.session.metadata[element.id].answer_id;
+          const id = element.id;
+          quest[index] = { answer_id: ans, id };
+        }
+        if (element.type === 'mix') {
+          ans = this.state.session.metadata[element.id].answer;
+          const id = element.id;
+          quest[index] = { answer: ans, id };
+        }
       }
       return (null);
     });
-    const q = { questions };
+    const q = { questions: quest };
     this.setState({ answers: q });
-    // console.log("ANSWERS AFTER",this.state.answers);
   }
   saveSession() {
   //  this.setState({ loadingQuiz: true });
@@ -142,14 +153,17 @@ export default class QuizViewerMainPage extends Component {
     });
   }
   collectAnswers(id, answers, type, index) {
-//    console.log(index);
     this.setState({ savedSession: false });
     const tempAnswers = this.state.answers;
-    const tempQuestions = this.state.answers.questions.slice();
+    const tempQuestions = this.state.answers.questions;
     let newAnswer = {};
 
     if (type === 'multiple_choice') {
       const mcqAnswer = { id, answer_ids: answers };
+      newAnswer = mcqAnswer;
+    }
+    if (type === 'single_choice') {
+      const mcqAnswer = { id, answer_id: answers };
       newAnswer = mcqAnswer;
     }
     if (type === 'match') {
@@ -173,13 +187,10 @@ export default class QuizViewerMainPage extends Component {
         </div>);
     }
     if (this.state.savedSession && !this.state.reviewState && !this.state.resultsState) {
-      const date = new Date();
       return (
         <div className="submitPanel">
           <h5>
-          Saved on: {
-            date.toString()
-          }
+            { this.state.session.last_updated }
           </h5>
           <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
         </div>);
@@ -225,6 +236,22 @@ export default class QuizViewerMainPage extends Component {
         />
       );
     }
+    if (question.type === 'single_choice') {
+      return (
+        <SingleChoiceQuiz
+          id={question.id}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          question={question}
+          index={index}
+          sessionAnswers={sessionAns}
+          correctAnswer={this.state.data[question.id]}
+          callbackParent={(questionId, answers) =>
+          this.collectAnswers(questionId, answers, question.type, index)}
+          key={`single_choice_quiz_${question.id}`}
+        />
+      );
+    }
     if (question.type === 'match') {
       return (
         <MatchQuiz
@@ -245,6 +272,7 @@ export default class QuizViewerMainPage extends Component {
         <MixQuiz
           question={question}
           index={index}
+          sessionAnswers={sessionAns}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
           correctAnswer={this.state.data[question.id]}
