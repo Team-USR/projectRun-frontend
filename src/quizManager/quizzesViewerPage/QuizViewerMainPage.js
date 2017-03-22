@@ -104,6 +104,11 @@ export default class QuizViewerMainPage extends Component {
           const id = element.id;
           quest[index] = { answer: ans, id };
         }
+        if (element.type === 'match') {
+          ans = this.state.session.metadata[element.id].answer;
+          const id = element.id;
+          quest[index] = { answer: ans, id };
+        }
       }
       return (null);
     });
@@ -260,6 +265,7 @@ export default class QuizViewerMainPage extends Component {
           resultsState={this.state.resultsState}
           question={question}
           index={index}
+          sessionAnswers={sessionAns}
           correctAnswer={this.state.data[question.id]}
           callbackParent={(questionId, answers) =>
           this.collectAnswers(questionId, answers, question.type, index)}

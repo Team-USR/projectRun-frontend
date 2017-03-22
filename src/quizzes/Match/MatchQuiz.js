@@ -29,6 +29,7 @@ export default class MatchQuiz extends Component {
         rightElements: this.props.question.right,
         defaultValue: { id: '000', answer: this.props.question.match_default },
       },
+      sessionAnswers: {},
 
       // TEST Input state object for Match Quiz
       matchQuizQuestionsTest:
@@ -70,6 +71,21 @@ export default class MatchQuiz extends Component {
     }
   }
 
+  componentWillMount() {
+    console.log(this.props);
+    const newSessionAnswersObj = {};
+    const sessionAnswersArray = this.props.sessionAnswers;
+    console.log(newSessionAnswersObj);
+    sessionAnswersArray.map((obj) => {
+      newSessionAnswersObj[obj.left_choice_id] = obj.right_choice_id;
+      return obj;
+    });
+
+    console.log(newSessionAnswersObj);
+
+    this.setState({ sessionAnswers: newSessionAnswersObj });
+  }
+
   checkAnswers(answers) {
     let correct = 0;
     for (let i = 0; i < answers.length; i += 1) {
@@ -104,12 +120,15 @@ export default class MatchQuiz extends Component {
     if (this.props.reviewState) {
       rightElements = this.props.question.right;
       leftElements = this.props.question.left;
+      // console.log(this.props.sessionAnswers);
+      defaultOption.answer = 'Test';
     }
     const rightElement = (
       <MatchRightElement
         rightElements={rightElements}
         leftElements={leftElements}
         defaultValue={defaultOption}
+        sessionAnswers={this.state.sessionAnswers}
         inReview={this.props.reviewState}
         inResult={this.props.resultsState}
         onChange={

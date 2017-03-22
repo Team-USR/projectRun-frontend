@@ -43,6 +43,7 @@ export function getAnswersArray() {
 export function MatchRightElement(props) {
   leftElements = props.leftElements;
   rightElements = props.rightElements;
+  console.log(props.sessionAnswers);
 
   return (
     <div className="matchRightElementWrapper">
