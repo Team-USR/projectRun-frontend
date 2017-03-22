@@ -47,6 +47,17 @@ export default class SideBarClasses extends Component {
       </NavItem>
     );
   }
+
+  renderSearchButton() {
+    return (
+      <div>
+        <Button onClick={() => this.props.handleSearchClassForRequestInvite() }>
+          Find a new Class
+        </Button>
+      </div>
+    );
+  }
+
   render() {
     let createClassButton = (null);
     if (this.props.userType === 'teacher') {
@@ -64,7 +75,7 @@ export default class SideBarClasses extends Component {
             </div>
           </Button>
         </NavItem>
-          );
+      );
     }
     let classesCounter = 0;
     let maxDisplayed = 15;
@@ -73,7 +84,8 @@ export default class SideBarClasses extends Component {
     }
     return (
       <div>
-        {this.renderSearchBar()}
+        { this.renderSearchButton() }
+        { this.renderSearchBar() }
         <Nav>
           { createClassButton }
           {
@@ -112,8 +124,10 @@ SideBarClasses.propTypes = {
   onCreateClassClick: PropTypes.func,
   content: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   onClassClick: PropTypes.func,
+  handleSearchClassForRequestInvite: PropTypes.func,
 };
 SideBarClasses.defaultProps = {
   onCreateClassClick: null,
   onClassClick: null,
+  handleSearchClassForRequestInvite: null,
 };

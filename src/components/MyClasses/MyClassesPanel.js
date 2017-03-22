@@ -9,6 +9,7 @@ import {
   QuizzesPanel,
   DefaultClassesPanel,
   CreateClassPanel,
+  ClassSearchPanel,
 } from './panels';
 
 let timeout = null;
@@ -218,7 +219,9 @@ export default class MyClassesPanel extends Component {
               className="deleteButton"
               onClick={() =>
               this.props.handleDeleteClass(this.props.classId)}
-            >Delete Class</Button>
+            >
+              Delete Class
+            </Button>
           </div>
         );
       }
@@ -240,7 +243,15 @@ export default class MyClassesPanel extends Component {
               userType={this.props.userType}
               quizzes={this.props.content.quizzes}
             />
-            <hr />
+          </div>
+        );
+      } else if (this.props.panelType === 'show_search_class_panel') {
+        element = (
+          <div>
+            <ClassSearchPanel
+              getAllClasses={this.props.getAllClasses}
+              allClasses={this.props.allClasses}
+            />
           </div>
         );
       }
@@ -268,6 +279,7 @@ MyClassesPanel.propTypes = {
   }).isRequired,
   allQuizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   allStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  allClasses: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   numberOfClasses: PropTypes.number.isRequired,
   handleSaveNewClassClick: PropTypes.func.isRequired,
   handleSaveAssignedQuizzes: PropTypes.func.isRequired,
@@ -275,6 +287,7 @@ MyClassesPanel.propTypes = {
   handleManageQuizzesFromClass: PropTypes.func.isRequired,
   handleManageStudentsFromClass: PropTypes.func.isRequired,
   handleDeleteClass: PropTypes.func.isRequired,
+  getAllClasses: PropTypes.func.isRequired,
   userToken: React.PropTypes.shape({}).isRequired,
   updateAllStudents: React.PropTypes.func.isRequired,
 };

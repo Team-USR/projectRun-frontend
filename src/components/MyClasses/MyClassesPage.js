@@ -14,6 +14,7 @@ export default class MyClassesPage extends Component {
     this.state = {
       panelType: 'my_classes_default_panel',
       loadingSideBar: true,
+      allClasses: [],
       currentClassTitle: '',
       currentClassId: '',
       allQuizzes: [],
@@ -68,10 +69,22 @@ export default class MyClassesPage extends Component {
       }
     });
   }
+
+  getAllClasses() {
+    this.todo = 'TO DO';
+    // TODO: Replace this Request with Customised Search Class
+
+    // axios({
+    //   url: `${API_URL}/groups`,
+    //   headers: this.props.userToken,
+    // }).then(res => this.setState({ allClasses: res.data }));
+  }
+
   updateAllStudents(object) {
 //    console.log("ALMOST UDPATED", object);
     this.setState({ allStudents: object });
   }
+
   requestTeacherData() {
     axios({
       url: `${API_URL}/users/mine/groups`,
@@ -185,6 +198,10 @@ export default class MyClassesPage extends Component {
     this.setState({ panelType: 'my_classes_default_panel' });
   }
 
+  handleSearchClassForRequestInvite() {
+    this.setState({ panelType: 'show_search_class_panel' });
+  }
+
   handleManageStudentsFromClass() {
     this.setState({ panelType: 'manage_studens_panel' });
   }
@@ -288,9 +305,11 @@ export default class MyClassesPage extends Component {
         classTitle={this.state.currentClassTitle}
         panelType={this.state.panelType}
         content={this.state.content}
+        allClasses={this.state.allClasses}
         allQuizzes={this.state.allQuizzes}
         allStudents={this.state.allStudents}
         numberOfClasses={this.state.sideBarContent.classes.length}
+        getAllClasses={() => this.getAllClasses()}
         updateAllStudents={object => this.updateAllStudents(object)}
         handleSaveNewClassClick={newClassTitle =>
           this.handleSaveNewClassClick(newClassTitle)}
@@ -312,6 +331,7 @@ export default class MyClassesPage extends Component {
         onSideBarTitleClick={() => this.handleSideBarTitleClick()}
         onCreateClassClick={() => this.handleCreateClassClick()}
         sideBarContent={this.state.sideBarContent}
+        handleSearchClassForRequestInvite={() => this.handleSearchClassForRequestInvite()}
         onSideBarItemClick={(currentClassId, classTitle) =>
           this.handleSideBarClassClick(currentClassId, classTitle)}
         title={'My Classes'}
