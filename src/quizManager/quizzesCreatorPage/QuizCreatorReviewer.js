@@ -224,11 +224,15 @@ export default class QuizCreatorReviewer extends Component {
             <Button
               className="submitButton"
               onClick={() => this.props.handleSubmitButton()}
-            >EDIT QUIZ</Button>
+            >
+              EDIT QUIZ
+            </Button>
             <Button
               className="submitButton"
               onClick={() => this.publishQuiz()}
-            >Publish quiz</Button>
+            >
+              Publish quiz
+            </Button>
           </div>
         </div>
       );
@@ -243,7 +247,9 @@ export default class QuizCreatorReviewer extends Component {
             <Button
               className="submitButton"
               onClick={() => this.props.deleteQuiz(this.state.quizInfo.id)}
-            >DELETE QUIZ</Button>
+            >
+              DELETE QUIZ
+            </Button>
           </div>
         </div>
       );
@@ -257,7 +263,9 @@ export default class QuizCreatorReviewer extends Component {
           <Button
             className="submitButton"
             onClick={() => this.props.handleSubmitButton()}
-          >EDIT QUIZ</Button>
+          >
+            EDIT QUIZ
+          </Button>
         </div>
       </div>
     );

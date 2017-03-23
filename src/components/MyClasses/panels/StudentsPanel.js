@@ -19,6 +19,7 @@ export default class StudentsPanel extends Component {
       enrolledStudents: [],
       unenrolledStudents: [],
       currentSearched: '',
+      userToken: null,
       studentInviteMessage: '',
       studentsAdded: [],
       studentsInvited: [],
@@ -40,6 +41,8 @@ export default class StudentsPanel extends Component {
       enrolledStudents: this.props.students,
       filteredALl: this.props.filteredAllStudents,
       unenrolledStudents: this.getUnenrolledStudents(this.props.filteredAllStudents),
+      requestsList: this.props.requestsList,
+      userToken: this.props.userToken,
     });
   }
 
@@ -52,6 +55,7 @@ export default class StudentsPanel extends Component {
       enrolledStudents: nextProps.students,
       filteredALl: nextProps.filteredAllStudents,
       unenrolledStudents: this.getUnenrolledStudents(nextProps.filteredAllStudents),
+      requestsList: nextProps.requestsList,
     });
   }
 
@@ -129,7 +133,10 @@ export default class StudentsPanel extends Component {
       if (this.state.csvData.length - this.state.partialCSVData.length > 0) {
         emptyArray.push(<Col md={12} key={'see_all'} className="see_more">
           <Button key={'see_all_students'} onClick={this.seeAll}>
-        Show {this.state.csvData.length - this.state.partialCSVData.length} more</Button></Col>);
+            Show
+            {this.state.csvData.length - this.state.partialCSVData.length}
+            more
+          </Button></Col>);
       }
       return emptyArray;
     }
@@ -137,7 +144,10 @@ export default class StudentsPanel extends Component {
     if (this.state.csvRows.length - this.state.partialCSVRows.length > 0) {
       toReturn.push(<Col md={12} key={'see_all1'} className="see_more">
         <Button key={'see_all_students'} onClick={this.seeAll}>
-      Show {this.state.csvRows.length - this.state.partialCSVRows.length} more</Button></Col>);
+          Show
+          {this.state.csvRows.length - this.state.partialCSVRows.length}
+          more
+        </Button></Col>);
     }
     return toReturn;
   }
@@ -210,6 +220,57 @@ export default class StudentsPanel extends Component {
       });
       this.props.forceFilter(this.state.currentSearched);
     }
+  }
+
+  approveStudent(object) {
+    const sendObject = { email: object.email };
+    axios({
+      url: `${API_URL}/groups/${this.props.classId}/accept_join`,
+      method: 'post',
+      data: sendObject,
+      headers: this.state.userToken,
+    })
+    .then(() => {
+      const requests = this.state.requestsList;
+    //  const newEnrolledObj = this.state.enrolledStudents;
+      this.state.requestsList.map((item, index) => {
+        if (item.id === object.id) {
+          requests.splice(index, 1);
+        //  newEnrolledObj.push(this.state.requestsList[index]);
+        }
+        return 0;
+      });
+      this.setState({
+        requestsList: requests,
+      //  enrolledStudents: newEnrolledObj
+      });
+      this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
+    });
+  }
+  declineStudents(object) {
+    const sendObject = { email: object.email };
+    axios({
+      url: `${API_URL}/groups/${this.props.classId}/decline_join`,
+      method: 'post',
+      data: sendObject,
+      headers: this.state.userToken,
+    })
+    .then(() => {
+      const requests = this.state.requestsList;
+    //  const newEnrolledObj = this.state.enrolledStudents;
+      this.state.requestsList.map((item, index) => {
+        if (item.id === object.id) {
+          requests.splice(index, 1);
+        //  newEnrolledObj.push(this.state.requestsList[index]);
+        }
+        return 0;
+      });
+      this.setState({
+        requestsList: requests,
+      //  enrolledStudents: newEnrolledObj
+      });
+      this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
+    });
   }
 
   handleSearch(event) {
@@ -355,7 +416,7 @@ export default class StudentsPanel extends Component {
       <div>
         {this.renderSearchBar()}
         <Col md={12} className="studentsList">
-          <Col md={6}>
+          <Col md={6} key={'renderSearchStudent'}>
             <ul>
               { this.renderEnrolledStudents() }
             </ul>
@@ -371,7 +432,9 @@ export default class StudentsPanel extends Component {
             className="enjoy-css"
             onClick={() =>
             this.props.handleSaveEnrolledStudents(this.state.enrolledStudents)}
-          > Save </Button>
+          >
+            Save
+          </Button>
           <hr />
         </Col>
       </div>
@@ -396,6 +459,49 @@ export default class StudentsPanel extends Component {
             {this.renderStudentInvite()}
           </div>
         </div>
+      </div>
+    );
+  }
+
+  renderRequestsPanel() {
+    return (
+      <div key={'manageRequests'}>
+        <Col md={12}>
+          {
+          this.state.requestsList.map(item =>
+            (
+              <Col md={4} key={`student${item.id}`}>
+                <div className="requestStudentGroup">
+                  <Col md={12}>
+                    <Col md={8} sm={9}>
+                      <Button
+                        className="requestStudentName"
+                        onClick={() => null}
+                      >
+                        {item.name}
+                      </Button>
+                    </Col>
+                    <Col md={4} sm={3} className="respondButtons">
+                      <Button
+                        className="decline"
+                        onClick={() => this.declineStudents(item)}
+                      >
+                        <span className="glyphicon glyphicon-remove" style={{ color: 'red' }} />
+                      </Button>
+                      <Button
+                        className="accept"
+                        onClick={() => this.approveStudent(item)}
+                      >
+                        <span className="glyphicon glyphicon-ok" style={{ color: 'green' }} />
+                      </Button>
+                    </Col>
+                  </Col>
+                </div>
+              </Col>
+            ),
+          )
+        }
+        </Col>
       </div>
     );
   }
@@ -428,11 +534,14 @@ export default class StudentsPanel extends Component {
   render() {
     return (
       <div className="studentsPanelWrapper">
-        <Tabs defaultActiveKey={1} id="uncontrolled-tab-example" className="tabsWrapper">
-          <Tab eventKey={1} title="Manage enrolled students">
+        <Tabs defaultActiveKey={0} id="uncontrolled-tab-example" className="tabsWrapper">
+          <Tab eventKey={0} title="Manage enrolled students">
             {this.renderSearchStudent() }
           </Tab>
-          <Tab eventKey={2} title="Invite student">
+          <Tab eventKey={1} title="Approve requests">
+            {this.renderRequestsPanel() }
+          </Tab>
+          <Tab eventKey={2} title="Invite students">
             { this.renderInviteStudent() }
           </Tab>
           <Tab eventKey={3} title="Import students">
@@ -452,6 +561,8 @@ StudentsPanel.propTypes = {
   forceFilter: PropTypes.func.isRequired,
   filteredStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   loadingSearch: PropTypes.bool.isRequired,
+  requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  userToken: PropTypes.shape({}).isRequired,
   classId: PropTypes.string.isRequired,
-  userToken: React.PropTypes.shape({}).isRequired,
+  refreshStudents: PropTypes.func.isRequired,
 };
