@@ -24,9 +24,11 @@ export default class SettingsPage extends Component {
     if (this.state.isTeacher) {
       cookie.save('userType', STUDENT);
       this.setState({ isTeacher: false });
+      this.props.changeUserType(STUDENT);
     } else {
       cookie.save('userType', TEACHER);
       this.setState({ isTeacher: true });
+      this.props.changeUserType(TEACHER);
     }
     cookie.remove('current-class-id');
     cookie.remove('current-class-title');
@@ -102,3 +104,7 @@ export default class SettingsPage extends Component {
     );
   }
 }
+
+SettingsPage.propTypes = {
+  changeUserType: React.PropTypes.func.isRequired,
+};

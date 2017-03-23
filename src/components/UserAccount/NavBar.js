@@ -9,7 +9,10 @@ export default function NavBar(props) {
       <Navbar.Header>
         <Navbar.Brand>
           <Link to="/" className="navbar-brand">
-            Interactive Language
+            <div className="BrandTitleWrapper">
+              <span> Interactive Language </span>
+              <span className={`glyphicon ${props.userTypeClass} userTypeIcon`} />
+            </div>
           </Link>
         </Navbar.Brand>
         <Navbar.Toggle />
@@ -46,4 +49,5 @@ export default function NavBar(props) {
 
 NavBar.propTypes = {
   onLogout: React.PropTypes.func.isRequired,
+  userTypeClass: React.PropTypes.string.isRequired,
 };
