@@ -276,6 +276,7 @@ export default class MyClassesPanel extends Component {
               requestsList={this.props.requestsList}
               classId={this.props.classId}
               userToken={this.props.userToken}
+              refreshStudents={(classId, panelType) => this.props.refreshStudents(classId, panelType)}
             />
           </div>
         );

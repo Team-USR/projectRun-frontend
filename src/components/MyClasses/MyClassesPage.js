@@ -73,6 +73,32 @@ export default class MyClassesPage extends Component {
       }
     });
   }
+  refreshStudents(currentClassId, ptyp) {
+    axios({
+      url: `${API_URL}/groups/${currentClassId}/quizzes`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      const newContent = this.state.content;
+      newContent.quizzes = response.data;
+
+      if (this.state.userT === TEACHER) {
+        axios({
+          url: `${API_URL}/groups/${currentClassId}/edit`,
+          headers: this.props.userToken,
+        })
+        .then((studentsResponse) => {
+          newContent.students = studentsResponse.data.students;
+          this.setState({
+            panelType: ptyp,
+            content: newContent,
+            requestsList: studentsResponse.data.pending_requests_users });
+        });
+      } else if (this.state.userT === STUDENT) {
+        this.setState({ panelType: ptyp, content: newContent });
+      }
+    });
+  }
   updateAllStudents(object) {
 //    console.log("ALMOST UDPATED", object);
     this.setState({ allStudents: object });
@@ -315,6 +341,7 @@ export default class MyClassesPage extends Component {
         handleDeleteClass={id => this.handleDeleteClass(id)}
         manageSearch={value => this.manageSearch(value)}
         requestsList={this.state.requestsList}
+        refreshStudents={(classID, ptype) => this.refreshStudents(classID, ptype)}
       />);
     return element;
   }

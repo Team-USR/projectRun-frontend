@@ -179,22 +179,55 @@ export default class StudentsPanel extends Component {
     }
   }
   approveStudent(object) {
-    const sendObject = { users: [object.email] };
+    const sendObject = { email: object.email };
     axios({
-      url: `${API_URL}/groups/${this.props.classId}/add_users`,
+      url: `${API_URL}/groups/${this.props.classId}/accept_join`,
       method: 'post',
       data: sendObject,
       headers: this.state.userToken,
     })
-    .then(() => {
+    .then((response) => {
+      console.log("APPROVE", response);
       const requests = this.state.requestsList;
+    //  const newEnrolledObj = this.state.enrolledStudents;
       this.state.requestsList.map((item, index) => {
         if (item.id === object.id) {
           requests.splice(index, 1);
+        //  newEnrolledObj.push(this.state.requestsList[index]);
         }
         return 0;
       });
-      this.setState({ requestsList: requests });
+      this.setState({
+        requestsList: requests,
+      //  enrolledStudents: newEnrolledObj
+      });
+      this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
+    });
+  }
+  declineStudents(object) {
+    const sendObject = { email: object.email };
+    axios({
+      url: `${API_URL}/groups/${this.props.classId}/decline_join`,
+      method: 'post',
+      data: sendObject,
+      headers: this.state.userToken,
+    })
+    .then((response) => {
+      console.log("DECLINE", response);
+      const requests = this.state.requestsList;
+    //  const newEnrolledObj = this.state.enrolledStudents;
+      this.state.requestsList.map((item, index) => {
+        if (item.id === object.id) {
+          requests.splice(index, 1);
+        //  newEnrolledObj.push(this.state.requestsList[index]);
+        }
+        return 0;
+      });
+      this.setState({
+        requestsList: requests,
+      //  enrolledStudents: newEnrolledObj
+      });
+      this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
     });
   }
   handleSearch(event) {
@@ -267,7 +300,7 @@ export default class StudentsPanel extends Component {
       <div>
         {this.renderSearchBar()}
         <Col md={12} className="studentsList">
-          <Col md={6}>
+          <Col md={6} key={'renderSearchStudent'}>
             <ul>
               { this.renderEnrolledStudents() }
             </ul>
@@ -329,13 +362,13 @@ export default class StudentsPanel extends Component {
                     </Col>
                     <Col md={4} sm={3} className="respondButtons">
                       <Button
-                        className="accept"
-                        onClick={() => null}
+                        className="decline"
+                        onClick={() => this.declineStudents(item)}
                       >
                         <span className="glyphicon glyphicon-remove" style={{ color: 'red' }} />
                       </Button>
                       <Button
-                        className="decline"
+                        className="accept"
                         onClick={() => this.approveStudent(item)}
                       >
                         <span className="glyphicon glyphicon-ok" style={{ color: 'green' }} />
