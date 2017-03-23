@@ -55,9 +55,10 @@ export default class SideBarClasses extends Component {
         <div>
           <Button
             className="titleButton"
-            onClick={() => this.props.handleSearchClassForRequestInvite()}>
+            onClick={() => this.props.handleSearchClassForRequestInvite()}
+          >
             Join a class
-            </Button>
+          </Button>
         </div>
       );
     }
@@ -88,11 +89,11 @@ export default class SideBarClasses extends Component {
     if (this.state.content.length - maxDisplayed >= 1) {
       maxDisplayed -= 1;
     }
-    let classesCounter = 0;
-    let maxDisplayed = 15;
-    if (this.state.content.length - maxDisplayed >= 1) {
-      maxDisplayed -= 1;
-    }
+    // let classesCounter = 0;
+    // let maxDisplayed = 15;
+    // if (this.state.content.length - maxDisplayed >= 1) {
+    //   maxDisplayed -= 1;
+    // }
     return (
       <div>
         { this.renderSearchButton() }

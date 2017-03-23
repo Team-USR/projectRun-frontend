@@ -133,7 +133,10 @@ export default class StudentsPanel extends Component {
       if (this.state.csvData.length - this.state.partialCSVData.length > 0) {
         emptyArray.push(<Col md={12} key={'see_all'} className="see_more">
           <Button key={'see_all_students'} onClick={this.seeAll}>
-        Show {this.state.csvData.length - this.state.partialCSVData.length} more</Button></Col>);
+            Show
+            {this.state.csvData.length - this.state.partialCSVData.length}
+            more
+          </Button></Col>);
       }
       return emptyArray;
     }
@@ -141,7 +144,10 @@ export default class StudentsPanel extends Component {
     if (this.state.csvRows.length - this.state.partialCSVRows.length > 0) {
       toReturn.push(<Col md={12} key={'see_all1'} className="see_more">
         <Button key={'see_all_students'} onClick={this.seeAll}>
-      Show {this.state.csvRows.length - this.state.partialCSVRows.length} more</Button></Col>);
+          Show
+          {this.state.csvRows.length - this.state.partialCSVRows.length}
+          more
+        </Button></Col>);
     }
     return toReturn;
   }
@@ -426,7 +432,9 @@ export default class StudentsPanel extends Component {
             className="enjoy-css"
             onClick={() =>
             this.props.handleSaveEnrolledStudents(this.state.enrolledStudents)}
-          > Save </Button>
+          >
+            Save
+          </Button>
           <hr />
         </Col>
       </div>
@@ -556,8 +564,5 @@ StudentsPanel.propTypes = {
   requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   userToken: PropTypes.shape({}).isRequired,
   classId: PropTypes.string.isRequired,
-  refreshStudents: PropTypes.func,
-};
-StudentsPanel.defaultProps = {
-  refreshStudents: null,
+  refreshStudents: PropTypes.func.isRequired,
 };
