@@ -12,6 +12,7 @@ export default class QuizSessionViewer extends Component {
       error: false,
       sessionsList: [],
       quizInfo: {},
+      displayedAttempts: null,
     };
   }
   componentWillMount() {
@@ -24,6 +25,7 @@ export default class QuizSessionViewer extends Component {
         loading: false,
         sessionsList: response.data.sessions,
         quizInfo: response.data.quiz,
+        displayedAttempts: (response.data.quiz.attempts - response.data.sessions.length),
       });
     }, 510))
     .catch(() => {
@@ -43,6 +45,7 @@ export default class QuizSessionViewer extends Component {
           loading: false,
           sessionsList: response.data.sessions,
           quizInfo: response.data.quiz,
+          displayedAttempts: (response.data.quiz.attempts - response.data.sessions.length),
         });
       }, 510))
       .catch(() => {
@@ -98,7 +101,9 @@ export default class QuizSessionViewer extends Component {
   ),
   );
     }
-    if (inprogress === 0 || this.state.sessionList === undefined) {
+    if ((inprogress === 0 ||
+       this.state.sessionList === undefined) &&
+       this.state.displayedAttempts !== 0) {
       element.push(
         <div className="inProgress" key={`startSession${1}`}>
           <div className="row">
@@ -119,13 +124,23 @@ export default class QuizSessionViewer extends Component {
     if (this.state.loading) {
       return <BrandSpinner />;
     }
+    let attemptsRemaining = this.state.quizInfo.attempts;
+    if (attemptsRemaining > 0) {
+      attemptsRemaining = `Attempts remaining:   ${this.state.displayedAttempts}`;
+      if (this.state.displayedAttempts === 0) {
+        attemptsRemaining = 'No more attempts remaining';
+      }
+    }
+    if (attemptsRemaining === 0) {
+      attemptsRemaining = 'You have unlimited attempts for this quiz';
+    }
     return (
       <div>
         <div className="mainQuizSessionBlock">
           <div className="mainHeading">
             <h1>{this.state.quizInfo.title}</h1>
             <h5>Created by {this.state.quizInfo.creator_name}</h5>
-            <h5>Attempts remaining: {this.state.quizInfo.attempts}</h5>
+            <h5>{attemptsRemaining}</h5>
           </div>
           <div className="sessionWrapper">
             {this.renderSessionCards()}
