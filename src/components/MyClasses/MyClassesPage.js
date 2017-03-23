@@ -70,10 +70,18 @@ export default class MyClassesPage extends Component {
             requestsList: studentsResponse.data.pending_requests_users,
             invitedList: studentsResponse.data.pending_invite_users,
           });
+        })
+        .catch(() => {
+          this.setState({ panelType: 'my_classes_default_panel' });
         });
       } else if (this.state.userT === STUDENT) {
         this.setState({ panelType: 'show_selected_class', content: newContent });
       }
+    })
+    .catch(() => {
+      cookie.remove('current-class-id');
+      cookie.remove('current-class-title');
+      this.setState({ panelType: 'my_classes_default_panel' });
     });
   }
   refreshStudents(currentClassId, ptyp) {
@@ -102,6 +110,9 @@ export default class MyClassesPage extends Component {
       } else if (this.state.userT === STUDENT) {
         this.setState({ panelType: ptyp, content: newContent });
       }
+    })
+    .catch(() => {
+      this.setState({ panelType: 'my_classes_default_panel' });
     });
   }
   updateAllStudents(object) {
