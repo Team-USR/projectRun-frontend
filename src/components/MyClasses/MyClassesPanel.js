@@ -383,8 +383,5 @@ MyClassesPanel.propTypes = {
   userToken: React.PropTypes.shape({}).isRequired,
   updateAllStudents: React.PropTypes.func.isRequired,
   requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  refreshStudents: PropTypes.func,
-};
-MyClassesPanel.defaultProps = {
-  refreshStudents: null,
+  refreshStudents: PropTypes.func.isRequired,
 };

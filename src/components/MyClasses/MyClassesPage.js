@@ -67,10 +67,18 @@ export default class MyClassesPage extends Component {
             panelType: 'show_selected_class',
             content: newContent,
             requestsList: studentsResponse.data.pending_requests_users });
+        })
+        .catch(() => {
+          this.setState({ panelType: 'my_classes_default_panel' });
         });
       } else if (this.state.userT === STUDENT) {
         this.setState({ panelType: 'show_selected_class', content: newContent });
       }
+    })
+    .catch(() => {
+      cookie.remove('current-class-id');
+      cookie.remove('current-class-title');
+      this.setState({ panelType: 'my_classes_default_panel' });
     });
   }
   refreshStudents(currentClassId, ptyp) {
@@ -97,6 +105,9 @@ export default class MyClassesPage extends Component {
       } else if (this.state.userT === STUDENT) {
         this.setState({ panelType: ptyp, content: newContent });
       }
+    })
+    .catch(() => {
+      this.setState({ panelType: 'my_classes_default_panel' });
     });
   }
   updateAllStudents(object) {
@@ -181,12 +192,14 @@ export default class MyClassesPage extends Component {
   }
 
   reloadBar() {
+    console.log("RELOAD BAR");
     this.setState({ loading: true });
     axios({
       url: `${API_URL}/users/mine/groups`,
       headers: this.props.userToken,
     })
     .then((response) => {
+      console.log("CONSOLE OK");
       let responseClasses = response.data.reverse();
       if (this.state.userT === TEACHER) {
         responseClasses = responseClasses.filter(obj => obj.role === 'admin');

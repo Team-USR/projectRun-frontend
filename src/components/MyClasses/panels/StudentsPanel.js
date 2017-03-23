@@ -438,8 +438,5 @@ StudentsPanel.propTypes = {
   requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   userToken: PropTypes.shape({}).isRequired,
   classId: PropTypes.string.isRequired,
-  refreshStudents: PropTypes.func,
-};
-StudentsPanel.defaultProps = {
-  refreshStudents: null,
+  refreshStudents: PropTypes.func.isRequired,
 };
