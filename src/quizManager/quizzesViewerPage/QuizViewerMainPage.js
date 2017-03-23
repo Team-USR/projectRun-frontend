@@ -118,7 +118,7 @@ export default class QuizViewerMainPage extends Component {
   }
   saveSession() {
   //  this.setState({ loadingQuiz: true });
-    console.log(this.state.answers);
+    // console.log(this.state.answers);
     this.setState({ savedSession: true });
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}/save`,
