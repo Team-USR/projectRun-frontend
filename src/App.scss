@@ -1,4 +1,11 @@
 $bootstrap-sass-asset-helper: true;
+$icon-font-path: '../node_modules/bootstrap-sass/assets/fonts/bootstrap/';
+
+@function font-path($path) {
+  @return $path;
+}
+
+@import "../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap-sprockets.scss";
 @import "../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 /* Main Style File */
 @import './style/_main';

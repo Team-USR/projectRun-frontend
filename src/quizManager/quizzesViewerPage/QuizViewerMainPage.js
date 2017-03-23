@@ -111,14 +111,21 @@ export default class QuizViewerMainPage extends Component {
           const id = element.id;
           quest[index] = { answer_gaps: ans, id };
         }
+        if (element.type === 'match') {
+          ans = this.state.session.metadata[element.id].pairs;
+          const id = element.id;
+          quest[index] = { pairs: ans, id };
+        }
       }
       return (null);
     });
+
     const q = { questions: quest };
     this.setState({ answers: q });
   }
   saveSession() {
   //  this.setState({ loadingQuiz: true });
+    // console.log(this.state.answers);
     this.setState({ savedSession: true });
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}/save`,
@@ -142,7 +149,7 @@ export default class QuizViewerMainPage extends Component {
       method: 'post',
     })
     .then((response) => {
-//      console.log(response);
+      // console.log(response);
       const newState = !this.state.resultsState;
       const dataSet = response.data.feedback;
       const newData = {};
@@ -156,7 +163,7 @@ export default class QuizViewerMainPage extends Component {
         data: newData,
         score: response.data.points });
       this.props.reloadSideBar();
-//      console.log(this.state.score);
+      // console.log(this.state.score);
     });
   }
   collectAnswers(id, answers, type, index) {
@@ -224,8 +231,8 @@ export default class QuizViewerMainPage extends Component {
     return ('');
   }
   renderQuestions(question, index) {
-//    console.log(this.state.data[question.id]);
-//    console.log(this.state.answers);
+  //  console.log(this.state.data[question.id]);
+  //  console.log(this.state.answers);
   // console.log(this.state.session);
     let sessionAns = null;
     if (this.state.session.metadata !== null && this.state.session.metadata[question.id] !== null) {
@@ -271,6 +278,7 @@ export default class QuizViewerMainPage extends Component {
           resultsState={this.state.resultsState}
           question={question}
           index={index}
+          sessionAnswers={sessionAns}
           correctAnswer={this.state.data[question.id]}
           callbackParent={(questionId, answers) =>
           this.collectAnswers(questionId, answers, question.type, index)}

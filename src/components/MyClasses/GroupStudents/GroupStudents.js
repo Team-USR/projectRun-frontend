@@ -31,7 +31,7 @@ export default class GroupStudents extends Component {
     return (
       <div className="groupSectionWrapper">
         <div className="titleSection">
-          <h1>Enrolled Students</h1>
+          <h1>Students</h1>
         </div>
         <ul>
           { this.renderStudents() }
