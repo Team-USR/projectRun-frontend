@@ -1,7 +1,7 @@
 import Papa from 'papaparse';
 import React, { PropTypes, Component } from 'react';
 import axios from 'axios';
-import { Button, Col, NavItem, Tabs, Tab } from 'react-bootstrap';
+import { Button, Col, NavItem, Tabs, Tab, Clearfix } from 'react-bootstrap';
 import { StudentManager } from '../GroupStudents';
 import { SearchSpinner } from '../../../components/utils';
 import { API_URL } from '../../../constants';
@@ -13,18 +13,17 @@ export default class StudentsPanel extends Component {
       file: {},
       errorMessage: '',
       csvData: [],
-      partialCSVData: [],
       csvRows: [],
-      partialCSVRows: [],
       enrolledStudents: [],
       unenrolledStudents: [],
       currentSearched: '',
       userToken: null,
       studentInviteMessage: '',
-      studentsAdded: [],
       studentsInvited: [],
       send: false,
       showSpecial: false,
+      showContainer: false,
+      loadedMessage: '',
     };
     this.changeInput = this.changeInput.bind(this);
     this.importCSV = this.importCSV.bind(this);
@@ -32,7 +31,6 @@ export default class StudentsPanel extends Component {
     this.handleSearch = this.handleSearch.bind(this);
     this.sendInvite = this.sendInvite.bind(this);
     this.inviteStudents = this.inviteStudents.bind(this);
-    this.seeAll = this.seeAll.bind(this);
   }
 
   componentWillMount() {
@@ -43,19 +41,18 @@ export default class StudentsPanel extends Component {
       unenrolledStudents: this.getUnenrolledStudents(this.props.filteredAllStudents),
       requestsList: this.props.requestsList,
       userToken: this.props.userToken,
+      studentsInvited: this.props.invitedList,
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    //  console.log('ENROLED: ', nextProps.students);
-   //    console.log('UNENROLED', nextProps.filteredAllStudents);
-   //    console.log('UNENROLLED', this.getUnenrolledStudents(nextProps.filteredAllStudents));
     this.setState({
       loadingSearch: nextProps.loadingSearch,
       enrolledStudents: nextProps.students,
       filteredALl: nextProps.filteredAllStudents,
       unenrolledStudents: this.getUnenrolledStudents(nextProps.filteredAllStudents),
       requestsList: nextProps.requestsList,
+      studentsInvited: nextProps.invitedList,
     });
   }
 
@@ -78,13 +75,13 @@ export default class StudentsPanel extends Component {
   }
 
   importCSV() {
-    this.setState({ csvData: [], partialCSVData: [], showSpecial: false });
+    this.setState({ csvData: [], showSpecial: false, showContainer: false });
     let fileToParse = this.csv.files[0];
     if (fileToParse === undefined) {
       fileToParse = {};
       this.setState({ csvData: [] });
     }
-    this.setState({ file: fileToParse, errorMessage: '' });
+    this.setState({ file: fileToParse, errorMessage: '', loadedMessage: '' });
     // console.log(fileToParse);
   }
 
@@ -113,7 +110,11 @@ export default class StudentsPanel extends Component {
           return ('');
         },
         );
-        this.setState({ csvData: emptyArray, partialCSVData: partialArray, send: true });
+        this.setState({
+          csvData: emptyArray,
+          send: true,
+          showContainer: true,
+        });
       },
     });
   }
@@ -121,43 +122,19 @@ export default class StudentsPanel extends Component {
   showCsvData() {
     const emptyArray = [];
     if (!this.state.showSpecial) {
-      this.state.partialCSVData.map((email, index) => {
+      this.state.csvData.map((email, index) => {
         const ind = index;
         emptyArray.push(
-          <Col md={4} sm={6} key={`student_email_${ind}`} className="email">
+          <div key={`student_email_${ind}`} className="invited">
             <div>{email}</div>
-          </Col>,
+          </div>,
         );
         return ('');
       });
-      if (this.state.csvData.length - this.state.partialCSVData.length > 0) {
-        emptyArray.push(<Col md={12} key={'see_all'} className="see_more">
-          <Button key={'see_all_students'} onClick={this.seeAll}>
-            Show
-            {this.state.csvData.length - this.state.partialCSVData.length}
-            more
-          </Button></Col>);
-      }
       return emptyArray;
     }
-    const toReturn = this.state.partialCSVRows;
-    if (this.state.csvRows.length - this.state.partialCSVRows.length > 0) {
-      toReturn.push(<Col md={12} key={'see_all1'} className="see_more">
-        <Button key={'see_all_students'} onClick={this.seeAll}>
-          Show
-          {this.state.csvRows.length - this.state.partialCSVRows.length}
-          more
-        </Button></Col>);
-    }
+    const toReturn = this.state.csvRows;
     return toReturn;
-  }
-
-  seeAll() {
-    if (!this.state.showSpecial) {
-      this.setState({ partialCSVData: this.state.csvData });
-    } else {
-      this.setState({ partialCSVRows: this.state.csvRows });
-    }
   }
 
   showLabel() {
@@ -247,6 +224,7 @@ export default class StudentsPanel extends Component {
       this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
     });
   }
+
   declineStudents(object) {
     const sendObject = { email: object.email };
     axios({
@@ -296,6 +274,7 @@ export default class StudentsPanel extends Component {
         }
       }
     });
+    this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
   }
 
   inviteStudents() {
@@ -304,7 +283,7 @@ export default class StudentsPanel extends Component {
     const added = [];
     const partial = [];
     axios({
-      url: `${API_URL}/groups/${this.props.classId}/users_update`,
+      url: `${API_URL}/groups/${this.props.classId}/add_users`,
       headers: this.props.userToken,
       method: 'post',
       data: myObject,
@@ -313,19 +292,19 @@ export default class StudentsPanel extends Component {
       if (response.status === 200 && response.statusText === 'OK') {
         for (let i = 0; i < response.data.length; i += 1) {
           if (response.data[i].status === 'added') {
-            added.push(<Col md={4} sm={6} key={`email_${i}`} className="email">
-              <div>{response.data[i].email}
-                <span
-                  className="ok_sign glyphicon glyphicon-ok"
-                  title="User has been added!"
-                /></div></Col>);
+            added.push(<div key={`email_${i}`} className="invited">
+              <div><span
+                className="ok_sign glyphicon glyphicon-ok"
+                title="User has been added!"
+              />{response.data[i].email}
+              </div></div>);
           } else {
-            added.push(<Col md={4} sm={6} key={`email_${i}`} className="email">
-              <div>{response.data[i].email}
-                <span
-                  className="env_sign glyphicon glyphicon-envelope"
-                  title="User has been invited!"
-                /></div></Col>);
+            added.push(<div key={`email_${i}`} className="invited">
+              <div><span
+                className="env_sign glyphicon glyphicon-envelope"
+                title="User has been invited!"
+              />{response.data[i].email}
+              </div></div>);
           }
         }
       }
@@ -336,17 +315,27 @@ export default class StudentsPanel extends Component {
       }
       this.setState({
         csvRows: added,
-        partialCSVRows: partial,
         send: false,
         showSpecial: true,
+        loadedMessage: 'Students have been added/invited. The invitations list will update shortly!',
       });
     });
+    this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
+  }
+
+  renderInvitedStudents() {
+    const arrayToRet = [];
+    this.state.studentsInvited.map((element, index) => {
+      const ind = index;
+      arrayToRet.push(<div key={`invited_${ind}`} className="invited">{element}</div>);
+      return '';
+    });
+    return arrayToRet;
   }
 
   renderStudentInvite() {
     return (<h4 className="invite_message">{this.state.studentInviteMessage}</h4>);
   }
-
 
   renderEnrolledStudents() {
     if (this.state.loadingSearch === true) {
@@ -459,6 +448,14 @@ export default class StudentsPanel extends Component {
             {this.renderStudentInvite()}
           </div>
         </div>
+        <div className="invited_container">
+          <div className="invited_inside">
+            <div className="invited_margin">
+              {this.renderInvitedStudents()}
+              <Clearfix />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -507,6 +504,16 @@ export default class StudentsPanel extends Component {
   }
 
   renderImportStudents() {
+    let myStyle;
+    if (this.state.showContainer) {
+      myStyle = {
+        display: 'block',
+      };
+    } else {
+      myStyle = {
+        display: 'none',
+      };
+    }
     return (
       <div className="main_container">
         <div className="form_container">
@@ -524,8 +531,16 @@ export default class StudentsPanel extends Component {
 
           </div>
           {this.showLabel()}
-          <div className="emails_list">{this.showCsvData()}</div>
+          <div className="invited_containerCSV" style={myStyle}>
+            <div className="invited_inside">
+              <div className="invited_margin">
+                {this.showCsvData()}
+                <Clearfix />
+              </div>
+            </div>
+          </div>
           {this.showAddButton()}
+          <h4 className="confirmation_message">{this.state.loadedMessage}</h4>
         </div>
       </div>
     );
@@ -565,4 +580,5 @@ StudentsPanel.propTypes = {
   userToken: PropTypes.shape({}).isRequired,
   classId: PropTypes.string.isRequired,
   refreshStudents: PropTypes.func.isRequired,
+  invitedList: PropTypes.arrayOf(PropTypes.string).isRequired,
 };

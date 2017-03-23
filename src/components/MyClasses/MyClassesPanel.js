@@ -276,6 +276,7 @@ export default class MyClassesPanel extends Component {
               forceFilter={value => this.filterItems(value)}
               loadingSearch={this.state.loadingSearch}
               requestsList={this.props.requestsList}
+              invitedList={this.props.invitedList}
               refreshStudents={(classId, panelType) =>
                 this.props.refreshStudents(classId, panelType)}
             />
@@ -384,4 +385,5 @@ MyClassesPanel.propTypes = {
   updateAllStudents: React.PropTypes.func.isRequired,
   requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   refreshStudents: PropTypes.func.isRequired,
+  invitedList: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
