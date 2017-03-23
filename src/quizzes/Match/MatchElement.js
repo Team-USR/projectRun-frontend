@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 
-const answers = [];
+let answers = [];
 let leftElements = [];
 let rightElements = [];
 
 /* Function used for displaying the elements from the left Column */
 export default function MatchLeftElement(props) {
+  // console.log(props.index);
   return (
     <div className="matchLeftElementWrapper">
       <div className="matchLeftElement">
@@ -34,9 +35,9 @@ function onChange(e, props) {
   props.onChange(answers);
 }
 
-/* Function used in order to get the 'answers' array */
-export function getAnswersArray() {
-  return answers;
+/* Function used in order to set the 'answers' array from a previos session*/
+export function setAnswersArray(answerSession) {
+  answers = answerSession;
 }
 
 /* Function used for displaying the elements from the right Column */
@@ -51,6 +52,7 @@ export function MatchRightElement(props) {
           id={props.index}
           disabled={props.inReview || props.inResult}
           onChange={e => onChange(e, props)}
+          defaultValue={props.defaultAnswer.answer}
         >
           <option
             id={props.defaultValue.id}
@@ -58,7 +60,11 @@ export function MatchRightElement(props) {
             key={props.defaultValue.id}
           >{props.defaultValue.answer}</option>
           {rightElements.map(obj =>
-            <option id={obj.id} value={obj.answer} key={obj.id}> {obj.answer} </option>)}
+            <option
+              id={obj.id}
+              value={obj.answer}
+              key={obj.id}
+            > {obj.answer} </option>)}
         </select>
 
       </div>
@@ -81,6 +87,10 @@ MatchRightElement.propTypes = {
     answer: PropTypes.string.isRequired,
   })).isRequired,
   defaultValue: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    answer: PropTypes.string.isRequired,
+  }).isRequired,
+  defaultAnswer: PropTypes.shape({
     id: PropTypes.string.isRequired,
     answer: PropTypes.string.isRequired,
   }).isRequired,

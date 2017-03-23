@@ -6,7 +6,6 @@ import { StudentManager } from '../GroupStudents';
 import { SearchSpinner } from '../../../components/utils';
 import { API_URL } from '../../../constants';
 
-
 export default class StudentsPanel extends Component {
   constructor() {
     super();
@@ -14,15 +13,26 @@ export default class StudentsPanel extends Component {
       file: {},
       errorMessage: '',
       csvData: [],
+      partialCSVData: [],
+      csvRows: [],
+      partialCSVRows: [],
       enrolledStudents: [],
       unenrolledStudents: [],
       currentSearched: '',
       userToken: null,
+      studentInviteMessage: '',
+      studentsAdded: [],
+      studentsInvited: [],
+      send: false,
+      showSpecial: false,
     };
     this.changeInput = this.changeInput.bind(this);
     this.importCSV = this.importCSV.bind(this);
     this.parseFile = this.parseFile.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+    this.sendInvite = this.sendInvite.bind(this);
+    this.inviteStudents = this.inviteStudents.bind(this);
+    this.seeAll = this.seeAll.bind(this);
   }
 
   componentWillMount() {
@@ -35,10 +45,11 @@ export default class StudentsPanel extends Component {
       userToken: this.props.userToken,
     });
   }
+
   componentWillReceiveProps(nextProps) {
-//    console.log('ENROLED: ', nextProps.students);
-//    console.log('UNENROLED', nextProps.filteredAllStudents);
-//    console.log('UNENROLLED', this.getUnenrolledStudents(nextProps.filteredAllStudents));
+    //  console.log('ENROLED: ', nextProps.students);
+   //    console.log('UNENROLED', nextProps.filteredAllStudents);
+   //    console.log('UNENROLLED', this.getUnenrolledStudents(nextProps.filteredAllStudents));
     this.setState({
       loadingSearch: nextProps.loadingSearch,
       enrolledStudents: nextProps.students,
@@ -47,6 +58,7 @@ export default class StudentsPanel extends Component {
       requestsList: nextProps.requestsList,
     });
   }
+
   getUnenrolledStudents(allStudents) {
     const newStudentsObj = {};
     this.props.students.map((obj) => {
@@ -66,6 +78,7 @@ export default class StudentsPanel extends Component {
   }
 
   importCSV() {
+    this.setState({ csvData: [], partialCSVData: [], showSpecial: false });
     let fileToParse = this.csv.files[0];
     if (fileToParse === undefined) {
       fileToParse = {};
@@ -76,6 +89,7 @@ export default class StudentsPanel extends Component {
   }
 
   parseFile() {
+    this.setState({ showSpecial: false });
     if (Object.keys(this.state.file).length === 0 && this.state.file.constructor === Object) {
       this.setState({ errorMessage: 'File input cannot be empty!' });
       // console.log('empty object');
@@ -88,35 +102,62 @@ export default class StudentsPanel extends Component {
       complete: (results) => {
         // console.log(results.data[0].email);
         const emptyArray = [];
-        results.data.map(object =>
-          emptyArray.push(object.email),
+        const partialArray = [];
+        results.data.map((object, index) => {
+          if (object.email !== undefined) {
+            emptyArray.push(object.email.replace(/\s+/g, ''));
+            if (index < 10) {
+              partialArray.push(object.email.replace(/\s+/g, ''));
+            }
+          }
+          return ('');
+        },
         );
-        this.setState({ csvData: emptyArray });
+        this.setState({ csvData: emptyArray, partialCSVData: partialArray, send: true });
       },
     });
   }
 
   showCsvData() {
     const emptyArray = [];
-    this.state.csvData.map((email, index) => {
-      const ind = index;
-      emptyArray.push(
-        <li key={`student_email_${ind}`}>
-          {email}
-        </li>,
-      );
-      return ('');
-    });
-    const arrayToRet = [];
-    if (emptyArray.length > 12) {
-      for (let i = 0; i < 10; i += 1) {
-        arrayToRet.push(emptyArray[i]);
+    if (!this.state.showSpecial) {
+      this.state.partialCSVData.map((email, index) => {
+        const ind = index;
+        emptyArray.push(
+          <Col md={4} sm={6} key={`student_email_${ind}`} className="email">
+            <div>{email}</div>
+          </Col>,
+        );
+        return ('');
+      });
+      if (this.state.csvData.length - this.state.partialCSVData.length > 0) {
+        emptyArray.push(<Col md={12} key={'see_all'} className="see_more">
+          <Button key={'see_all_students'} onClick={this.seeAll}>
+            Show
+            {this.state.csvData.length - this.state.partialCSVData.length}
+            more
+          </Button></Col>);
       }
-      arrayToRet.push(<li>And {emptyArray.length - 11} more</li>);
-    } else {
       return emptyArray;
     }
-    return arrayToRet;
+    const toReturn = this.state.partialCSVRows;
+    if (this.state.csvRows.length - this.state.partialCSVRows.length > 0) {
+      toReturn.push(<Col md={12} key={'see_all1'} className="see_more">
+        <Button key={'see_all_students'} onClick={this.seeAll}>
+          Show
+          {this.state.csvRows.length - this.state.partialCSVRows.length}
+          more
+        </Button></Col>);
+    }
+    return toReturn;
+  }
+
+  seeAll() {
+    if (!this.state.showSpecial) {
+      this.setState({ partialCSVData: this.state.csvData });
+    } else {
+      this.setState({ partialCSVRows: this.state.csvRows });
+    }
   }
 
   showLabel() {
@@ -127,15 +168,16 @@ export default class StudentsPanel extends Component {
   }
 
   showAddButton() {
-    if (this.state.csvData.length !== 0) {
-      return (<Button> Add students to class</Button>);
+    if (this.state.csvData.length !== 0 && this.state.send) {
+      return (<Col md={12} className="invite_students">
+        <Button onClick={this.inviteStudents}> Invite students </Button></Col>);
     }
     return ('');
   }
 
   addStudent(id) {
-//    console.log(id);
-//    console.log('ADD', this.state.unenrolledStudents);
+    //    console.log(id);
+    //    console.log('ADD', this.state.unenrolledStudents);
     let newIndex = -1;
     this.state.unenrolledStudents.map((item, index) => {
       if (item.id === id) {
@@ -157,6 +199,7 @@ export default class StudentsPanel extends Component {
       this.props.forceFilter(this.state.currentSearched);
     }
   }
+
   removeStudent(id) {
     let newIndex = -1;
     this.state.enrolledStudents.map((item, index) => {
@@ -178,6 +221,7 @@ export default class StudentsPanel extends Component {
       this.props.forceFilter(this.state.currentSearched);
     }
   }
+
   approveStudent(object) {
     const sendObject = { email: object.email };
     axios({
@@ -228,10 +272,82 @@ export default class StudentsPanel extends Component {
       this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
     });
   }
+
   handleSearch(event) {
     this.props.manageSearch(event.target.value);
     this.setState({ currentSearched: event.target.value });
   }
+
+  sendInvite() {
+    const inputValue = this.state.value;
+    const myObject = { users: [inputValue] };
+    axios({
+      url: `${API_URL}/groups/${this.props.classId}/add_users`,
+      headers: this.props.userToken,
+      method: 'post',
+      data: myObject,
+    })
+    .then((response) => {
+      if (response.status === 200 && response.statusText === 'OK') {
+        if (response.data[0].status === 'added') {
+          this.setState({ studentInviteMessage: `${response.data[0].email} has been added to this class!` });
+        } else {
+          this.setState({ studentInviteMessage: `${response.data[0].email} has been invited to join this class!` });
+        }
+      }
+    });
+  }
+
+  inviteStudents() {
+    const userEmails = this.state.csvData;
+    const myObject = { users: userEmails };
+    const added = [];
+    const partial = [];
+    axios({
+      url: `${API_URL}/groups/${this.props.classId}/users_update`,
+      headers: this.props.userToken,
+      method: 'post',
+      data: myObject,
+    })
+    .then((response) => {
+      if (response.status === 200 && response.statusText === 'OK') {
+        for (let i = 0; i < response.data.length; i += 1) {
+          if (response.data[i].status === 'added') {
+            added.push(<Col md={4} sm={6} key={`email_${i}`} className="email">
+              <div>{response.data[i].email}
+                <span
+                  className="ok_sign glyphicon glyphicon-ok"
+                  title="User has been added!"
+                /></div></Col>);
+          } else {
+            added.push(<Col md={4} sm={6} key={`email_${i}`} className="email">
+              <div>{response.data[i].email}
+                <span
+                  className="env_sign glyphicon glyphicon-envelope"
+                  title="User has been invited!"
+                /></div></Col>);
+          }
+        }
+      }
+      for (let i = 0; i < 10; i += 1) {
+        if (added[i] !== undefined) {
+          partial.push(added[i]);
+        }
+      }
+      this.setState({
+        csvRows: added,
+        partialCSVRows: partial,
+        send: false,
+        showSpecial: true,
+      });
+    });
+  }
+
+  renderStudentInvite() {
+    return (<h4 className="invite_message">{this.state.studentInviteMessage}</h4>);
+  }
+
+
   renderEnrolledStudents() {
     if (this.state.loadingSearch === true) {
       return <SearchSpinner />;
@@ -280,6 +396,7 @@ export default class StudentsPanel extends Component {
     }
     return (null);
   }
+
   renderSearchBar() {
     return (
       <NavItem key={'searchBar'} >
@@ -293,6 +410,7 @@ export default class StudentsPanel extends Component {
       </NavItem>
     );
   }
+
   renderSearchStudent() {
     return (
       <div>
@@ -314,32 +432,37 @@ export default class StudentsPanel extends Component {
             className="enjoy-css"
             onClick={() =>
             this.props.handleSaveEnrolledStudents(this.state.enrolledStudents)}
-          > Save </Button>
+          >
+            Save
+          </Button>
           <hr />
         </Col>
       </div>
     );
   }
+
   renderInviteStudent() {
     return (
-      <div>
-        <Col md={12} >
-          <div className="form_container">
-            <div className="form_section">
-              <div className="inside">
-                <p>Enter email to invite student to class:</p>
-                <input
-                  className="student_input"
-                  value={this.state.value} placeholder="Student email"onChange={this.changeInput}
-                />
-                <Button >Invite student</Button>
-              </div>
+      <div className="main_container">
+        <div className="form_container">
+          <div className="inside">
+            <h4 className="header_title">Enter email to invite student to class:</h4>
+            <div className="input_container">
+              <input
+                className="student_input"
+                value={this.state.value}
+                size={30}
+                placeholder="Student email" onChange={this.changeInput}
+              />
+              <Button onClick={this.sendInvite} >Invite student</Button>
             </div>
+            {this.renderStudentInvite()}
           </div>
-        </Col>
+        </div>
       </div>
     );
   }
+
   renderRequestsPanel() {
     return (
       <div key={'manageRequests'}>
@@ -382,29 +505,32 @@ export default class StudentsPanel extends Component {
       </div>
     );
   }
+
   renderImportStudents() {
     return (
-      <div>
-        <Col md={12}>
-          <div className="form_container">
-            <div className="form_section">
-              <div className="inside">
-                <p>Select a .csv file to retrieve the emails.</p><input
-                  type="file"
-                  ref={(csvfile) => { this.csv = csvfile; }} accept=".csv" onChange={this.importCSV}
-                />
-                <p style={{ color: 'red' }}>{this.state.errorMessage}</p>
-                <Button onClick={this.parseFile}>Read file</Button>
-                {this.showLabel()}
-                <ul>{this.showCsvData()}</ul>
-                {this.showAddButton()}
-              </div>
+      <div className="main_container">
+        <div className="form_container">
+          <div className="inside">
+            <h4 className="header_title">Select a .csv file to retrieve the emails.</h4>
+            <div className="input_container">
+              <input
+                type="file"
+                ref={(csvfile) => { this.csv = csvfile; }}
+                accept=".csv" onChange={this.importCSV}
+              />
+              <Button onClick={this.parseFile}>Read file</Button>
+              <p style={{ color: 'red' }}>{this.state.errorMessage}</p>
             </div>
+
           </div>
-        </Col>
+          {this.showLabel()}
+          <div className="emails_list">{this.showCsvData()}</div>
+          {this.showAddButton()}
+        </div>
       </div>
     );
   }
+
   render() {
     return (
       <div className="studentsPanelWrapper">

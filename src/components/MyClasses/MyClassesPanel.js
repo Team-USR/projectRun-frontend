@@ -264,6 +264,8 @@ export default class MyClassesPanel extends Component {
           <div className="manageStudentsWrapper">
             { classTitle }
             <StudentsPanel
+              classId={this.props.classId}
+              userToken={this.props.userToken}
               handleSaveEnrolledStudents={newStudentsArray =>
                 this.props.handleSaveEnrolledStudents(newStudentsArray)}
               students={this.props.content.students}
@@ -274,8 +276,6 @@ export default class MyClassesPanel extends Component {
               forceFilter={value => this.filterItems(value)}
               loadingSearch={this.state.loadingSearch}
               requestsList={this.props.requestsList}
-              classId={this.props.classId}
-              userToken={this.props.userToken}
               refreshStudents={(classId, panelType) =>
                 this.props.refreshStudents(classId, panelType)}
             />
