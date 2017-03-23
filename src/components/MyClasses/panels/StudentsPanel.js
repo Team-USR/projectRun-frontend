@@ -127,7 +127,7 @@ export default class StudentsPanel extends Component {
         return ('');
       });
       if (this.state.csvData.length - this.state.partialCSVData.length > 0) {
-        emptyArray.push(<Col md={12} className="see_more">
+        emptyArray.push(<Col md={12} key={'see_all'} className="see_more">
           <Button key={'see_all_students'} onClick={this.seeAll}>
         Show {this.state.csvData.length - this.state.partialCSVData.length} more</Button></Col>);
       }
@@ -135,7 +135,7 @@ export default class StudentsPanel extends Component {
     }
     const toReturn = this.state.partialCSVRows;
     if (this.state.csvRows.length - this.state.partialCSVRows.length > 0) {
-      toReturn.push(<Col md={12} className="see_more">
+      toReturn.push(<Col md={12} key={'see_all1'} className="see_more">
         <Button key={'see_all_students'} onClick={this.seeAll}>
       Show {this.state.csvRows.length - this.state.partialCSVRows.length} more</Button></Col>);
     }
