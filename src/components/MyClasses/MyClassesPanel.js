@@ -178,6 +178,8 @@ export default class MyClassesPanel extends Component {
           <div className="manageStudentsWrapper">
             { classTitle }
             <StudentsPanel
+              classId={this.props.classId}
+              userToken={this.props.userToken}
               handleSaveEnrolledStudents={newStudentsArray =>
                 this.props.handleSaveEnrolledStudents(newStudentsArray)}
               students={this.props.content.students}
