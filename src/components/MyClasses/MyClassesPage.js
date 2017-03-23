@@ -192,14 +192,12 @@ export default class MyClassesPage extends Component {
   }
 
   reloadBar() {
-    console.log("RELOAD BAR");
     this.setState({ loading: true });
     axios({
       url: `${API_URL}/users/mine/groups`,
       headers: this.props.userToken,
     })
     .then((response) => {
-      console.log("CONSOLE OK");
       let responseClasses = response.data.reverse();
       if (this.state.userT === TEACHER) {
         responseClasses = responseClasses.filter(obj => obj.role === 'admin');
