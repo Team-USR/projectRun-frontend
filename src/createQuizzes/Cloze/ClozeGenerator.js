@@ -47,7 +47,7 @@ export default class ClozeGenerator extends React.Component {
         no: ind,
         gap_text: gap.gap_text,
         hint_attributes: {
-          hint_text: gap.hint.hint_text,
+          hint_text: gap.hint ? gap.hint.hint_text : '',
         },
       }));
       const questions = props.editorContent.cloze_sentence.text

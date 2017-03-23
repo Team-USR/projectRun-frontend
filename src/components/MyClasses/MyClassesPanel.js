@@ -9,16 +9,23 @@ import {
   QuizzesPanel,
   DefaultClassesPanel,
   CreateClassPanel,
+  ClassSearchPanel,
 } from './panels';
 
 let timeout = null;
+let classesTimeout = null;
 export default class MyClassesPanel extends Component {
   constructor() {
     super();
     this.state = {
       filteredStudents: [],
       filteredAllStudents: [],
+      pendingClasssesRequests: [],
+      sentClasses: [],
+      searchedClasses: [],
+      loadingClassesSearch: false,
       loadingSearch: false,
+      moveToPendingError: false,
     };
   }
   componentWillMount() {
@@ -91,6 +98,7 @@ export default class MyClassesPanel extends Component {
           best = {
             id: response.data.best_match_name[0].id,
             name: response.data.best_match_name[0].name,
+            email: response.data.best_match_name[0].email,
           };
           retrievedStudents.push(best);
         }
@@ -99,6 +107,7 @@ export default class MyClassesPanel extends Component {
           best2 = {
             id: response.data.best_match_email[0].id,
             name: response.data.best_match_email[0].name,
+            email: response.data.best_match_email[0].email,
           };
           if (retrievedStudents[0].id !== response.data.best_match_email[0].id) {
             retrievedStudents.push(best2);
@@ -113,7 +122,7 @@ export default class MyClassesPanel extends Component {
             return 0;
           });
           if (!duplicate) {
-            const objName = { id: item.id, name: item.name };
+            const objName = { id: item.id, name: item.name, email: item.email };
             retrievedStudents.push(objName);
           }
           return 0;
@@ -127,7 +136,7 @@ export default class MyClassesPanel extends Component {
             return 0;
           });
           if (!duplicate) {
-            const objEmail = { id: item.id, name: item.name };
+            const objEmail = { id: item.id, name: item.name, email: item.email };
             retrievedStudents.push(objEmail);
           }
           return 0;
@@ -142,6 +151,85 @@ export default class MyClassesPanel extends Component {
     }
     if (value.length === 0) {
       this.setState({ loadingSearch: false });
+    }
+  }
+  moveToRequests(item) {
+    const pendingList = this.state.pendingClasssesRequests;
+    let duplicate = false;
+    this.setState({ moveToPendingError: false });
+    if (pendingList !== undefined && pendingList !== null && pendingList.length !== 0) {
+      pendingList.map((existingItem) => {
+        if (existingItem.id === item.id) {
+          duplicate = true;
+          this.setState({ moveToPendingError: true });
+        }
+        return 0;
+      });
+    }
+    if (duplicate === false) {
+      pendingList.push(item);
+      this.setState({ pendingClasssesRequests: pendingList, moveToPendingError: false });
+    }
+  }
+  sendInvitation(classId) {
+    axios({
+      url: `${API_URL}/groups/${classId}/request_join`,
+      method: 'post',
+      headers: this.props.userToken,
+    })
+    .then(() => {
+      const sent = this.state.sentClasses;
+      sent.push(classId);
+      this.setState({ sentClasses: sent });
+    });
+  }
+  searchClassForInvite(className) {
+    if (classesTimeout !== null) {
+      clearTimeout(classesTimeout);
+    }
+    if (className.length > 0) {
+      this.setState({ loadingClassesSearch: true });
+      classesTimeout = setTimeout(() => {
+        const searchedItem = { input: className };
+        axios({
+          url: `${API_URL}/groups/search`,
+          headers: this.props.userToken,
+          method: 'post',
+          data: searchedItem,
+        })
+      .then((response) => {
+        const retrievedClasses = [];
+        let best = {};
+        if (response.data.best_match_name[0]) {
+          best = {
+            id: response.data.best_match_name[0].id,
+            name: response.data.best_match_name[0].name,
+          };
+          retrievedClasses.push(best);
+        }
+        response.data.alternative_match_name.map((item) => {
+          let duplicate = false;
+          retrievedClasses.map((duplicateItem) => {
+            if (item.id === duplicateItem.id) {
+              duplicate = true;
+            }
+            return 0;
+          });
+          if (!duplicate) {
+            const objName = { id: item.id, name: item.name };
+            retrievedClasses.push(objName);
+          }
+          return 0;
+        });
+        this.setState({ searchedClasses: retrievedClasses });
+      });
+        this.setState({
+          loadingClassesSearch: false,
+        });
+      }, 2000);
+    }
+    if (className.length === 0) {
+      this.setState({ loadingClassesSearch: false });
     }
   }
   renderPanel() {
@@ -176,6 +264,8 @@ export default class MyClassesPanel extends Component {
           <div className="manageStudentsWrapper">
             { classTitle }
             <StudentsPanel
+              classId={this.props.classId}
+              userToken={this.props.userToken}
               handleSaveEnrolledStudents={newStudentsArray =>
                 this.props.handleSaveEnrolledStudents(newStudentsArray)}
               students={this.props.content.students}
@@ -185,6 +275,9 @@ export default class MyClassesPanel extends Component {
               manageSearch={value => this.manageSearch(value)}
               forceFilter={value => this.filterItems(value)}
               loadingSearch={this.state.loadingSearch}
+              requestsList={this.props.requestsList}
+              refreshStudents={(classId, panelType) =>
+                this.props.refreshStudents(classId, panelType)}
             />
           </div>
         );
@@ -201,7 +294,6 @@ export default class MyClassesPanel extends Component {
                   quizzes={this.props.content.quizzes}
                   handleManageQuizzesFromClass={() => this.props.handleManageQuizzesFromClass()}
                 />
-                <hr />
               </Col>
               <Col md={6}>
                 <GroupStudents
@@ -209,14 +301,15 @@ export default class MyClassesPanel extends Component {
                   students={this.props.content.students}
                   handleManageStudentsFromClass={() => this.props.handleManageStudentsFromClass()}
                 />
-                <hr />
               </Col>
             </Col>
             <Button
               className="deleteButton"
               onClick={() =>
               this.props.handleDeleteClass(this.props.classId)}
-            >Delete Class</Button>
+            >
+              Delete Class
+            </Button>
           </div>
         );
       }
@@ -238,7 +331,21 @@ export default class MyClassesPanel extends Component {
               userType={this.props.userType}
               quizzes={this.props.content.quizzes}
             />
-            <hr />
+          </div>
+        );
+      } else if (this.props.panelType === 'show_search_class_panel') {
+        element = (
+          <div>
+            <ClassSearchPanel
+              pendingClasssesRequests={this.state.pendingClasssesRequests}
+              searchedClasses={this.state.searchedClasses}
+              searchClassForInvite={className => this.searchClassForInvite(className)}
+              loadingClassesSearch={this.state.loadingClassesSearch}
+              moveToPendingError={this.state.moveToPendingError}
+              moveToRequests={item => this.moveToRequests(item)}
+              sendInvitation={id => this.sendInvitation(id)}
+              sentClasses={this.state.sentClasses}
+            />
           </div>
         );
       }
@@ -275,4 +382,6 @@ MyClassesPanel.propTypes = {
   handleDeleteClass: PropTypes.func.isRequired,
   userToken: React.PropTypes.shape({}).isRequired,
   updateAllStudents: React.PropTypes.func.isRequired,
+  requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  refreshStudents: PropTypes.func.isRequired,
 };

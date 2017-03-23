@@ -1,114 +1,327 @@
 import React, { PropTypes, Component } from 'react';
-import { Button, Col } from 'react-bootstrap';
+import { Button, Col, NavItem } from 'react-bootstrap';
 import { QuizManager } from '../GroupQuizzes';
 
-export default class QuizzesPanel extends Component {
 
+export default class QuizzesPanel extends Component {
   constructor() {
     super();
     this.state = {
       selectedQuizzes: [],
       availableQuizzes: [],
+      filteredSelected: [],
+      filteredAvailable: [],
+      filterAllQuizzes: [],
+      currentlySearched: '',
+      maxselected: 10,
+      maxavailable: 10,
     };
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentWillMount() {
     this.setState({
       selectedQuizzes: this.props.quizzes,
-      availableQuizzes: this.getAvailableQuizzes(),
+      allQuizzes: this.props.allQuizzes,
+      availableQuizzes: this.getAvailableQuizzes(this.props.allQuizzes),
     });
+//    console.log("AVAILABLE", this.props.quizzes);
+    this.filterItems('');
   }
-
-  getAvailableQuizzes() {
+  getAvailableQuizzes(all) {
     const newQuizzesObj = {};
     this.props.quizzes.map((obj) => {
       newQuizzesObj[obj.id] = obj.title;
       return 0;
     });
 
-    return this.props.allQuizzes.filter((obj) => {
+    return all.filter((obj) => {
       if (!newQuizzesObj[obj.id]) {
         return true;
       }
       return false;
     });
   }
-
-  addQuiz(index) {
-    const newQuizzesObj = this.state.selectedQuizzes;
-    newQuizzesObj.push(this.state.availableQuizzes[index]);
-
-    const newAvailableQuizzesObj = this.state.availableQuizzes;
-    newAvailableQuizzesObj.splice(index, 1);
-
-    this.setState({
-      selectedQuizzes: newQuizzesObj,
-      availableQuizzes: newAvailableQuizzesObj,
+  filterItems(value) {
+    this.setState({ currentlySearched: value });
+    let found = false;
+    let filter = [];
+    this.props.allQuizzes.map((item) => {
+      if (item.title.toLowerCase() === value.toLowerCase() ||
+          item.title.toLowerCase().includes(value.toLowerCase())) {
+        found = true;
+        const result = { id: item.id, title: item.title };
+        filter.push(result);
+      }
+      return (null);
     });
-  }
-  removeQuiz(index) {
-    const newAvailableQuizzesObj = this.state.availableQuizzes;
-    newAvailableQuizzesObj.push(this.state.selectedQuizzes[index]);
-
-    const newQuizzesObj = this.state.selectedQuizzes;
-    newQuizzesObj.splice(index, 1);
-
-    this.setState({
-      selectedQuizzes: newQuizzesObj,
-      availableQuizzes: newAvailableQuizzesObj,
-    });
-  }
-
-  renderSelectedQuizzes() {
-    if (this.state.selectedQuizzes.length === 0) {
-      return <h4>There are no quizzes assigned to this class!</h4>;
+    if (!found && value !== '') {
+      filter = [];
+    } else
+    if (filter.length === 0 || value === '') {
+      filter = this.props.allQuizzes.map((item) => {
+        const result = { id: item.id, title: item.title };
+        return result;
+      });
     }
-    return this.state.selectedQuizzes.map((obj, index) =>
-      <li key={`class_selected_quiz_${obj.id}`}>
-        <QuizManager
-          type={'remove'}
-          id={obj.id}
-          index={index}
-          title={obj.title}
-          removeQuiz={id => this.removeQuiz(id)}
-        />
-      </li>,
-    );
+    let foundSelected = false;
+    let filterSelected = this.props.quizzes.filter((item) => {
+      if (item.title.toLowerCase() === value.toLowerCase() ||
+          item.title.toLowerCase().includes(value.toLowerCase())) {
+        foundSelected = true;
+        return (item);
+      }
+      return (null);
+    });
+    if (!foundSelected && value !== '') {
+      filterSelected = [];
+    } else
+    if (filterSelected.length === 0 || value === '') {
+      filterSelected = this.props.quizzes;
+    }
+
+    this.setState({
+      allQuizzes: filter,
+      filteredAvailable: this.getAvailableQuizzes(filter),
+      filteredSelected: filterSelected,
+    });
+  }
+  handleSearch(event) {
+    this.filterItems(event.target.value);
+    this.setState({ currentSearched: event.target.value });
+  }
+  addQuiz(id) {
+    let newIndex = -1;
+    this.state.availableQuizzes.map((item, index) => {
+      if (item.id === id) {
+        newIndex = index;
+      }
+      return (-1);
+    });
+    const newQuizzesObj = this.state.selectedQuizzes;
+    newQuizzesObj.push(this.state.availableQuizzes[newIndex]);
+
+    const newAvailableQuizzesObj = this.state.availableQuizzes;
+    newAvailableQuizzesObj.splice(newIndex, 1);
+
+    this.setState({
+      selectedQuizzes: newQuizzesObj,
+      availableQuizzes: newAvailableQuizzesObj,
+    });
+    this.filterItems(this.state.currentlySearched);
+  }
+  removeQuiz(id) {
+    let newIndex = -1;
+    this.state.selectedQuizzes.map((item, index) => {
+      if (item.id === id) {
+        newIndex = index;
+      }
+      return (-1);
+    });
+    const newAvailableQuizzesObj = this.state.availableQuizzes;
+    newAvailableQuizzesObj.push(this.state.selectedQuizzes[newIndex]);
+
+    const newQuizzesObj = this.state.selectedQuizzes;
+    newQuizzesObj.splice(newIndex, 1);
+
+    this.setState({
+      selectedQuizzes: newQuizzesObj,
+      availableQuizzes: newAvailableQuizzesObj,
+    });
+    this.filterItems(this.state.currentlySearched);
   }
 
+  showMore(listType) {
+    this.listType = listType;
+    if (listType === 'selected') {
+      if (this.state.maxavailable < this.state.filteredSelected.length) {
+        const newValue = this.state.maxselected + 5;
+        this.setState({ maxselected: newValue });
+      }
+    }
+    if (listType === 'available') {
+      if (this.state.maxavailable < this.state.filteredAvailable.length) {
+        const newValue = this.state.maxavailable + 5;
+        this.setState({ maxavailable: newValue });
+      }
+    }
+  }
+  showLess(listType) {
+    this.listType = listType;
+    if (listType === 'selected') {
+      if (this.state.maxselected > 10) {
+        const newValue = this.state.maxselected - 5;
+        this.setState({ maxselected: newValue });
+      }
+    }
+    if (listType === 'available') {
+      if (this.state.maxavailable > 10) {
+        const newValue = this.state.maxavailable - 5;
+        this.setState({ maxavailable: newValue });
+      }
+    }
+  }
+  handleListButton(listType) {
+    this.listType = listType;
+    const element = [];
+    const nullelement = (
+      <div key={`null${listType}`}>
+        <Col md={6} />
+      </div>
+    );
+    const showLess = (
+      <div key={`sbu${listType}`} className="leftButton">
+        <Col md={6}>
+          <Button
+            key={`selectedButton${listType}`}
+            className="enjoy-css"
+            onClick={() =>
+                this.showLess(listType)}
+          >
+            <span className="glyphicon glyphicon-chevron-up" aria-hidden="true" />
+          </Button>
+        </Col>
+      </div>
+    );
+    const showMore = (
+      <div key={`abu${listType}`} className="rightButton">
+        <Col md={6}>
+          <Button
+            key={`availablebutton${listType}`}
+            className="enjoy-css"
+            onClick={() =>
+            this.showMore(listType)}
+          >
+            <span className="glyphicon glyphicon-chevron-down" aria-hidden="true" />
+          </Button>
+        </Col>
+      </div>
+    );
+
+    if (listType === 'selected') {
+      if (this.state.filteredSelected.length >= 10) {
+        if (this.state.filteredSelected.length > 0) {
+          if (this.state.filteredSelected.length > this.state.maxselected) {
+            if (this.state.maxselected === 10) {
+              element.push(nullelement);
+              element.push(showMore);
+            } else {
+              element.push(showLess);
+              element.push(showMore);
+            }
+          }
+          if (this.state.filteredSelected.length < this.state.maxselected) {
+            element.push(showLess);
+            element.push(nullelement);
+          }
+        }
+      }
+    }
+    if (listType === 'available') {
+      if (this.state.filteredAvailable.length >= 10) {
+        if (this.state.filteredAvailable.length > this.state.maxavailable) {
+          if (this.state.maxavailable === 10) {
+            element.push(nullelement);
+            element.push(showMore);
+          } else {
+            element.push(showLess);
+            element.push(showMore);
+          }
+        }
+        if (this.state.filteredAvailable.length < this.state.maxavailable) {
+          element.push(showLess);
+          element.push(nullelement);
+        }
+      }
+    }
+    return element;
+  }
   renderAvailableQuizzes() {
     if (this.state.availableQuizzes.length === 0) {
       return <h4>All your quizzes have been assigned!</h4>;
     }
-    return this.state.availableQuizzes.map((obj, index) =>
-      <li key={`class_available_quiz_${obj.id}`}>
-        <QuizManager
-          type={'add'}
-          id={obj.id}
-          index={index}
-          title={obj.title}
-          addQuiz={id => this.addQuiz(id)}
-        />
-      </li>,
+    let counter = 0;
+    return this.state.filteredAvailable.map((obj, index) => {
+      if (index < this.state.maxavailable) {
+        return (
+          <li key={`class_available_quiz_${obj.id}`}>
+            <QuizManager
+              type={'add'}
+              id={obj.id}
+              index={index}
+              title={obj.title}
+              addQuiz={() => this.addQuiz(obj.id)}
+            />
+          </li>);
+      }
+      counter += 1;
+      if (index === this.state.filteredAvailable.length - 1) {
+        return (<h5 key={'counteravailable'}> and {counter} more</h5>);
+      }
+      return (null);
+    },
     );
   }
-
+  renderSelectedQuizzes() {
+    if (this.state.selectedQuizzes.length === 0) {
+      return <h4>There are no quizzes assigned to this class!</h4>;
+    }
+    let counter = 0;
+    return this.state.filteredSelected.map((obj, index) => {
+      if (index < this.state.maxselected) {
+        return (
+          <li key={`class_selected_quiz_${obj.id}`}>
+            <QuizManager
+              type={'remove'}
+              id={obj.id}
+              index={index}
+              title={obj.title}
+              removeQuiz={() => this.removeQuiz(obj.id)}
+            />
+          </li>);
+      }counter += 1;
+      if (index === this.state.filteredSelected.length - 1) {
+        return (<h5 key={'counterselected'}> and {counter} more</h5>);
+      }
+      return (null);
+    },
+    );
+  }
+  renderSearchBar() {
+    return (
+      <NavItem key={'searchBar'} >
+        <input
+          className="searchBarItem"
+          id="searchBar"
+          type="text"
+          placeholder="Search for a quiz"
+          onChange={this.handleSearch}
+        />
+      </NavItem>
+    );
+  }
   render() {
     return (
       <div className="quizPanelWrapper">
         <Col md={12}>
           <h3>Manage assigned quizzes</h3>
-          <hr />
         </Col>
         <Col md={12} className="quizzesList">
+          { this.renderSearchBar() }
           <Col md={6}>
             <ul>
               { this.renderSelectedQuizzes() }
+              <li className="expandCollapseButtonsPanel">
+                { this.handleListButton('selected') }
+              </li>
             </ul>
           </Col>
           <Col md={6}>
             <ul>
               { this.renderAvailableQuizzes() }
+              <li className="expandCollapseButtonsPanel">
+                { this.handleListButton('available') }
+              </li>
             </ul>
           </Col>
         </Col>

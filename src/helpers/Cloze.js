@@ -5,6 +5,10 @@ export function getNOfGaps(sentence) {
   return sentence.match(new RegExp(GAP_MATCHER, 'g')).length;
 }
 
+export function stripGapNo(word) {
+  return word.split(/[{}]/)[1];
+}
+
 export function buildRawSentence(formated, gaps) {
   return formated.replace(GAP_MATCHER, () => {
     const gap = gaps.splice(0, 1)[0];

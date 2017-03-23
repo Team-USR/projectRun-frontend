@@ -1,5 +1,16 @@
 .studentsPanelWrapper{
 
+  .requestStudentGroup{
+    margin:10px;
+    .requestStudentName{
+      width: 100%;
+    }
+    .respondButtons{
+      text-align: left;
+    }
+  }
+
+
   .tabsWrapper {
     float:center;
   }
@@ -32,34 +43,69 @@
     border-bottom:1px solid black;
     outline: none;
     font-size: 18px;
-    padding-left: 5vw;
+    padding-left: 70px;
     text-align: left;
     margin-bottom:50px;
 
 
   }
-  .form_container {
-    text-align: center;
-    width: 500px;
-    margin: auto;
-    .form_section {
-      h2{
-        text-align: left;
-      }
-      margin-bottom:10px;
-      .inside{
-        padding: 30px;
-        .student_input {
-          margin-right:10px;
+  .main_container{
+    margin-top:25px;
+    padding-left:0;
+    .header_title{
+      margin-bottom:20px;
+    }
+    .inside{
+      text-align:left;
+      display:inline-block;
+      .input_container{
+        margin-bottom:30px;
+        input{
+          display:initial;
+        }
+        .student_input{
           outline:none;
           border:none;
-          border-bottom: 1px solid black;
-          padding: 6px 12px;
-        }
-        label{
-          margin: 0 auto;
+          border-bottom:2px solid black;
+          padding:0 10px;
+          margin-right:10px;
+
         }
       }
     }
+    .emails_list{
+      overflow: auto;
+      margin-bottom: 20px;
+      .email{
+        margin: 3px 0;
+        div{
+          padding: 4px 20px 6px;
+          border:1px solid grey;
+          border-radius: 4px;
+          display:inline-block;
+        }
+        .ok_sign{
+          color:green;
+          top: 5px;
+          left:5px;
+          font-size:20px;
+        }
+        .env_sign{
+          color:darkorange;
+          top: 5px;
+          left:5px;
+          font-size:20px;
+        }
+      }
+    }
+    .invite_message{
+      margin-top:30px;
+      text-align: left;
+      color:green;
+    }
+    .invite_students{
+      margin-bottom:20px;
+    }
   }
+
 }

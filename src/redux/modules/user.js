@@ -33,7 +33,7 @@ export default function reducer(state = initialState, action) {
     case USER_LOGIN_FAILED:
       return Object.assign({}, { error: action.error });
     case USER_LOGIN_SUCCESFUL:
-      return Object.assign({}, { token: action.auth });
+      return Object.assign({}, { token: action.auth, name: action.user.name });
     case USER_LOGOUT:
       return Object.assign({});
     case USER_SIGNUP_IN_PROGRESS:
@@ -53,10 +53,11 @@ function userLoginInProgress() {
   };
 }
 
-function userLoginSuccesful(auth) {
+function userLoginSuccesful(auth, user) {
   return {
     type: USER_LOGIN_SUCCESFUL,
     auth,
+    user,
   };
 }
 
@@ -92,6 +93,8 @@ export function loginUser(user) {
             client: res.headers.client,
             'token-type': res.headers['token-type'],
             uid: res.headers.uid,
+          }, {
+            name: res.data.data.name,
           },
         ));
         dispatch(push('/'));
