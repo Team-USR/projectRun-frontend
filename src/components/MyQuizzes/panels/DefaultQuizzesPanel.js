@@ -28,7 +28,7 @@ export default class DefaultQuizzesPanel extends Component {
           (<Col xs={8} xsOffset={2}>
             <PieCh data={data} />
           </Col>)
-          : <h3>You have no {this.props.userT === STUDENT ? 'assigned' : 'created'} quizzes.</h3>
+          : <h3>You have {this.props.userT === STUDENT ? 'no assigned' : 'not created any'} quizzes.</h3>
         }
       </div>
     );
