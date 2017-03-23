@@ -178,21 +178,21 @@ export default class QuizCreatorReviewer extends Component {
     }
     if (question.type === 'cloze') {
       const sentencesInExercise = question.cloze_sentence.text.split('\n');
-      const reversedGaps = question.gaps.slice().reverse();
-      const questionsArray = sentencesInExercise.map((sentence, ind) => ({
-        no: ind + 1,
-        question: sentence,
+      const reversedGaps = question.gaps.map(gap => ({
+        gap: gap.gap_text,
+        hint: gap.hint ? gap.hint.hint_text : '',
+      }));
+      const questionsArray = sentencesInExercise.map(sentence => ({
+        text: sentence,
         gaps: reversedGaps.splice(0, getNOfGaps(sentence)),
       }));
 
       return (
         <ClozeQuestion
-          req={question.question}
-          index={index}
-          questions={questionsArray}
           key={question.id}
-          reviewState={this.state.reviewState}
-          resultsState={this.state.resultsState}
+          index={index}
+          request={question.question}
+          sentences={questionsArray}
         />
       );
     }

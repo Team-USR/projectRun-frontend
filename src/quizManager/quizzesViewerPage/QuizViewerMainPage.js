@@ -4,9 +4,11 @@ import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
 import { SingleChoiceQuiz } from '../../quizzes/SingleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
+import { ClozeQuestion } from '../../quizzes/Cloze';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
+import { getNOfGaps } from '../../helpers/Cloze';
 
 const styles = {
   quizTitle: {
@@ -45,7 +47,7 @@ export default class QuizViewerMainPage extends Component {
       headers: this.props.userToken,
     })
     .then(response => setTimeout(() => {
-//      console.log(response);
+      // console.log(response);
       this.setState({
         loadingQuiz: false,
         quizInfo: response.data.quiz,
@@ -103,6 +105,11 @@ export default class QuizViewerMainPage extends Component {
           ans = this.state.session.metadata[element.id].answer;
           const id = element.id;
           quest[index] = { answer: ans, id };
+        }
+        if (element.type === 'cloze') {
+          ans = this.state.session.metadata[element.id].answer_gaps;
+          const id = element.id;
+          quest[index] = { answer_gaps: ans, id };
         }
         if (element.type === 'match') {
           ans = this.state.session.metadata[element.id].pairs;
@@ -180,6 +187,10 @@ export default class QuizViewerMainPage extends Component {
     if (type === 'mix') {
       const mixQuizAnswer = { id, answer: answers };
       newAnswer = mixQuizAnswer;
+    }
+    if (type === 'cloze') {
+      const clozeAnswer = { id, answer_gaps: answers };
+      newAnswer = clozeAnswer;
     }
     tempQuestions[index] = newAnswer;
     tempAnswers.questions = tempQuestions;
@@ -287,6 +298,33 @@ export default class QuizViewerMainPage extends Component {
           callbackParent={(questionId, answers) =>
           this.collectAnswers(questionId, answers, question.type, index)}
           key={`mix_quiz_${question.id}`}
+        />
+      );
+    }
+
+    if (question.type === 'cloze') {
+      const hints = question.hints.map(h => ({
+        gap: '',
+        hint: h,
+      }));
+      const sentencesInEx = question.sentence.split('\n').map(sentence => ({
+        text: sentence,
+        gaps: hints.splice(0, getNOfGaps(sentence)),
+      }));
+
+      return (
+        <ClozeQuestion
+          id={question.id}
+          index={index}
+          reviewer={false}
+          request={question.question}
+          sentences={sentencesInEx}
+          sessionAnswers={sessionAns ? sessionAns.answer_gaps : []}
+          callbackParent={answers =>
+            this.collectAnswers(question.id, answers, question.type, index)}
+          studentReview={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          correctAnswer={this.state.data[question.id]}
         />
       );
     }
