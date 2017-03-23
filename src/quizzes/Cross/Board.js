@@ -29,6 +29,7 @@ export default class Board extends Component {
       <Square
         squareType={sqType}
         value={squareValue}
+        hintNumber={this.props.hintsNumbers[i][j]}
         handleSquareChange={e => this.props.handleSquareChange(e, i, j)}
         key={`square${i}${j}`}
       />
@@ -89,7 +90,6 @@ Board.propTypes = {
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   content: PropTypes.arrayOf(PropTypes.string).isRequired,
-  // squares: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleSquareChange: PropTypes.func,
 };
 

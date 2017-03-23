@@ -12,9 +12,22 @@
     display: inline-block;
     border: 3px solid #000000;
     box-shadow: 5px 5px 5px #888888;
-  }
-  .blackSquare {
-    background-color: black;
+    .blackSquare {
+      background-color: black;
+    }
+
+    .squareContent {
+      position: relative;
+
+      .hintNumber {
+        font-size: 10px;
+        line-height: 10px;
+        position: absolute;
+        font-weight: bold;
+        top: 1px;
+        left: 1px;
+      }
+    }
   }
 
   td {

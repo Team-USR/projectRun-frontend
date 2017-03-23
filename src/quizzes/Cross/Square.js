@@ -1,6 +1,10 @@
 import React, { PropTypes } from 'react';
 
 export default function Square(props) {
+  let hintNo = '';
+  if (props.hintNumber !== 0) {
+    hintNo = props.hintNumber;
+  }
   let square = (<td />);
 
   if (props.squareType === 'clickable') {
@@ -15,8 +19,13 @@ export default function Square(props) {
 
   if (props.squareType === 'static') {
     square = (
-      <td className="square">
-        <b> {props.value} </b>
+      <td className="squareContent">
+        <div className="hintNumber">
+          { hintNo }
+        </div>
+        <div>
+          <b>{ props.value }</b>
+        </div>
       </td>);
   }
 
