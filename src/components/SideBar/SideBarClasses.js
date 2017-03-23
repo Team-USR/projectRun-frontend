@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { Nav, NavItem, Button } from 'react-bootstrap';
 import plusSign from '../../assets/images/plus.svg';
+import { TEACHER, STUDENT } from '../../constants';
 
 export default class SideBarClasses extends Component {
   constructor() {
@@ -13,7 +14,7 @@ export default class SideBarClasses extends Component {
   componentWillMount() {
     this.setState({ content: this.props.content });
   }
-  componentsWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.setState({ content: nextProps.content });
   }
   filterItems(event) {
@@ -47,9 +48,26 @@ export default class SideBarClasses extends Component {
       </NavItem>
     );
   }
+
+  renderSearchButton() {
+    if (this.props.userType === STUDENT) {
+      return (
+        <div>
+          <Button
+            className="titleButton"
+            onClick={() => this.props.handleSearchClassForRequestInvite()}
+          >
+            Join a class
+          </Button>
+        </div>
+      );
+    }
+    return (null);
+  }
+
   render() {
     let createClassButton = (null);
-    if (this.props.userType === 'teacher') {
+    if (this.props.userType === TEACHER) {
       createClassButton =
       (
         <NavItem>
@@ -64,7 +82,7 @@ export default class SideBarClasses extends Component {
             </div>
           </Button>
         </NavItem>
-          );
+      );
     }
     let classesCounter = 0;
     let maxDisplayed = 15;
@@ -73,7 +91,8 @@ export default class SideBarClasses extends Component {
     }
     return (
       <div>
-        {this.renderSearchBar()}
+        { this.renderSearchButton() }
+        { this.renderSearchBar() }
         <Nav>
           { createClassButton }
           {
@@ -112,8 +131,10 @@ SideBarClasses.propTypes = {
   onCreateClassClick: PropTypes.func,
   content: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   onClassClick: PropTypes.func,
+  handleSearchClassForRequestInvite: PropTypes.func,
 };
 SideBarClasses.defaultProps = {
   onCreateClassClick: null,
   onClassClick: null,
+  handleSearchClassForRequestInvite: null,
 };

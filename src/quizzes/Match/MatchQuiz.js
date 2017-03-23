@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { MatchLeftElement, MatchRightElement } from './index';
+import { MatchLeftElement, MatchRightElement, setAnswersArray } from './index';
 
 export default class MatchQuiz extends Component {
 
@@ -27,8 +27,10 @@ export default class MatchQuiz extends Component {
       matchQuizQuestions: {
         leftElements: this.props.question.left,
         rightElements: this.props.question.right,
-        defaultValue: { id: '000', answer: 'Choose a value!' },
+        defaultValue: { id: '000', answer: this.props.question.match_default },
       },
+      sessionAnswers: {},
+      sessionAnswersRL: {},
 
       // TEST Input state object for Match Quiz
       matchQuizQuestionsTest:
@@ -62,11 +64,50 @@ export default class MatchQuiz extends Component {
     const leftElements = matchQuizQuestions.leftElements;
     const rightElements = matchQuizQuestions.rightElements;
 
+    this.rightAnswers = {};
+
     this.leftColumnShuffled = leftElements;
     this.rightColumnShuffled = rightElements;
     if (!this.props.reviewState) {
       this.leftColumnShuffled = MatchQuiz.shuffleArray(leftElements);
       this.rightColumnShuffled = MatchQuiz.shuffleArray(rightElements);
+    }
+
+    this.findRightElement = this.findRightElement.bind(this);
+  }
+
+  componentWillMount() {
+    if (this.props.sessionAnswers) {
+      const newSessionAnswersObj = {};
+      const newAnsRL = {};
+      const sessionAnswersArray = this.props.sessionAnswers.pairs;
+      sessionAnswersArray.map((obj) => {
+        newSessionAnswersObj[obj.left_choice_id] = obj.right_choice_id;
+        newAnsRL[obj.right_choice_id] = obj.left_choice_id;
+        return obj;
+      });
+
+      this.props.callbackParent(this.props.id, this.props.sessionAnswers.pairs);
+      this.setState({ sessionAnswers: newSessionAnswersObj, sessionAnswersRL: newAnsRL });
+    }
+  }
+
+
+  componentDidMount() {
+    if (this.props.sessionAnswers) {
+      const answerSession = [];
+      for (const key in this.rightAnswers) {
+        if ({}.hasOwnProperty.call(this.rightAnswers, key)) {
+          const rightId = this.rightAnswers[key].id;
+          answerSession[key] = {
+            left_choice_id: this.state.sessionAnswersRL[rightId],
+            right_choice_id: rightId,
+          };
+        }
+      }
+
+      // console.log(answerSession);
+      setAnswersArray(answerSession);
     }
   }
 
@@ -84,10 +125,32 @@ export default class MatchQuiz extends Component {
     return percentage;
   }
 
-  renderLeftElement(obj) {
-    this.obj = obj;
+
+  findRightElement(id) {
+    const right = this.state.matchQuizQuestions.rightElements;
+    for (let i = 0; i < right.length; i += 1) {
+      if (right[i].id === id) {
+        return right[i];
+      }
+    }
+    return -1;
+  }
+
+  renderLeftElement(obj, index) {
+    if (this.props.sessionAnswers) {
+      if (this.state.sessionAnswers[obj.id]) {
+        const rightId = this.state.sessionAnswers[obj.id];
+        const rightElem = this.findRightElement(rightId);
+
+        if (rightElem !== -1) {
+          this.rightAnswers[index] = rightElem;
+        }
+      }
+    }
+
     const leftElement = (
       <MatchLeftElement
+        index={index}
         id={obj.id}
         answer={obj.answer}
         key={obj.id}
@@ -97,20 +160,28 @@ export default class MatchQuiz extends Component {
   }
 
   renderRightElement(obj, index) {
-    this.obj = obj;
-    let defaultOption = this.state.matchQuizQuestions.defaultValue;
+    const defaultOption = this.state.matchQuizQuestions.defaultValue;
+    let defAnswer = defaultOption;
+
+    if (this.props.sessionAnswers && this.rightAnswers[index]) {
+      defAnswer = this.rightAnswers[index];
+    }
+
     let rightElements = this.rightColumnShuffled;
     let leftElements = this.leftColumnShuffled;
     if (this.props.reviewState) {
       rightElements = this.props.question.right;
       leftElements = this.props.question.left;
-      defaultOption = rightElements[index];
+      defAnswer = rightElements[index];
     }
     const rightElement = (
       <MatchRightElement
+        id={obj.id}
         rightElements={rightElements}
         leftElements={leftElements}
         defaultValue={defaultOption}
+        defaultAnswer={defAnswer}
+        sessionAnswers={this.state.sessionAnswers}
         inReview={this.props.reviewState}
         inResult={this.props.resultsState}
         onChange={
@@ -128,6 +199,7 @@ export default class MatchQuiz extends Component {
     const rightElements = this.rightColumnShuffled;
     const matchQuizTitle = this.state.matchQuizTitle;
     const quizIndex = this.state.matchQuizIndex;
+
     this.answerClass = '';
 
     if (this.props.resultsState) {
@@ -149,7 +221,7 @@ export default class MatchQuiz extends Component {
 
         { /* Display Left Column */ }
         <div className="leftColumn">
-          { leftElements.map(obj => this.renderLeftElement(obj)) }
+          { leftElements.map((obj, index) => this.renderLeftElement(obj, index)) }
         </div>
 
         { /* Display Right Column */ }
@@ -165,11 +237,16 @@ export default class MatchQuiz extends Component {
 }
 
 MatchQuiz.propTypes = {
+  id: PropTypes.number.isRequired,
   reviewState: PropTypes.bool.isRequired,
   resultsState: PropTypes.bool.isRequired,
+  sessionAnswers: PropTypes.shape({
+    pairs: PropTypes.arrayOf(PropTypes.shape({})),
+  }),
   question: PropTypes.shape({
     id: PropTypes.number.isRequired,
     question: PropTypes.string.isRequired,
+    match_default: PropTypes.string.isRequired,
     left: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       answer: PropTypes.string.isRequired,
@@ -193,4 +270,5 @@ MatchQuiz.defaultProps = {
     correct: false,
     correct_answers: [],
   },
+  sessionAnswers: null,
 };

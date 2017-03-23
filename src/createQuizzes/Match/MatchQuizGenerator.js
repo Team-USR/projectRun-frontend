@@ -27,8 +27,6 @@ export default class MatchQuizGenerator extends Component {
       ],
     };
 
-    this.isReviewMode = this.isReviewMode.bind(this);
-    this.isResultsMode = this.isResultsMode.bind(this);
     this.addMatchElement = this.addMatchElement.bind(this);
     this.deleteMatchElement = this.deleteMatchElement.bind(this);
   }
@@ -56,16 +54,6 @@ export default class MatchQuizGenerator extends Component {
       // Send Match Data to MainQuizGenerator
       this.props.updateParent(this.props.content.pairs, questionAndDefault, this.props.index);
     }
-  }
-
-  isReviewMode() {
-    const newState = !this.state.reviewState;
-    this.setState({ reviewState: newState });
-  }
-
-  isResultsMode() {
-    const newState = !this.state.resultsState;
-    this.setState({ resultsState: newState });
   }
 
   /* Function called everytime when user types in Quiz Title Input */

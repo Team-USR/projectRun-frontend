@@ -1,0 +1,84 @@
+.classSearchPanelWrapper{
+   text-align: center;
+
+  .searchBarItem {
+    margin-top:20px;
+    width:300px;
+    margin-right:15px;
+    background-color:#ffffff;
+    color: black;
+    border:0px;
+    border-bottom:1px solid black;
+    outline: none;
+    font-size: 18px;
+    padding-left: 70px;
+    text-align: left;
+    margin-bottom:50px;
+
+
+  }
+  .classSearchResultsPanel{
+
+
+    .searchSpinner{
+      text-align: center;
+      width: 180px;
+      margin: 5px 0;
+    }
+    .classStudentBtn {
+      text-align: center;
+      width: 180px;
+      margin: 5px 0;
+
+      .glyphicon {
+        float: right;
+      }
+
+      .glyphicon-remove {
+        color: $brand-red-color;
+      }
+
+      .glyphicon-plus {
+        color: $brand-green-color;
+      }
+    }
+
+  }
+
+  .pendingClasses{
+    display:inline-block;
+    margin-top:100px;
+    .inviteButton{
+      width:35px;
+      margin-left:20px;
+      margin-top: 5px;
+
+    }
+
+    .pendingButtons {
+      text-align: left;
+      width: auto;
+      margin-top: 1px;
+      .className{
+        padding-top:8px;
+        min-width: 200px;
+        text-align: center;
+      }
+      li {
+        padding-top:10px;
+      }
+
+      .glyphicon {
+        float: right;
+      }
+
+      .glyphicon-remove {
+        color: $brand-red-color;
+      }
+
+      .glyphicon-plus {
+        color: $brand-green-color;
+      }
+    }
+  }
+}
