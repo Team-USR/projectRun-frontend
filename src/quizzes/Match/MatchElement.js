@@ -28,7 +28,6 @@ function onChange(e, props) {
 
   // nth Select tag
   const indexOfElement = target.id;
-  console.log(indexOfElement);
   const leftMatchID = leftElements[indexOfElement].id;
 
   answers[indexOfElement] =
@@ -36,9 +35,8 @@ function onChange(e, props) {
   props.onChange(answers);
 }
 
-/* Function used in order to get the 'answers' array */
+/* Function used in order to set the 'answers' array from a previos session*/
 export function setAnswersArray(answerSession) {
-  console.log("SET", answerSession);
   answers = answerSession;
 }
 
@@ -89,6 +87,10 @@ MatchRightElement.propTypes = {
     answer: PropTypes.string.isRequired,
   })).isRequired,
   defaultValue: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    answer: PropTypes.string.isRequired,
+  }).isRequired,
+  defaultAnswer: PropTypes.shape({
     id: PropTypes.string.isRequired,
     answer: PropTypes.string.isRequired,
   }).isRequired,
