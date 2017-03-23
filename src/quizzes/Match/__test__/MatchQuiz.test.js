@@ -7,6 +7,7 @@ const questionToBeSent = {
   id: 0,
   type: 'match',
   question: 'title',
+  match_default: 'Choose an option',
   left: [{ id: 'abc', answer: 'left1' }],
   right: [{ id: '123', answer: 'right1' }],
 };
@@ -42,6 +43,7 @@ const matchRightElement = (
     rightElements={questionToBeSent.right}
     leftElements={questionToBeSent.left}
     defaultValue={{ id: '', answer: 'default' }}
+    defaultAnswer={{ id: '', answer: 'option 1' }}
     inReview={false}
     inResult={false}
     onChange={() => true}

@@ -25,6 +25,7 @@ const rightObj = {
   rightElements: questionToBeSent.right,
   leftElements: questionToBeSent.left,
   defaultValue: { id: '', answer: 'default' },
+  defaultAnswer: { id: '', answer: 'option 1' },
   inReview: false,
   inResult: false,
   onChange: () => true,
@@ -38,6 +39,7 @@ const matchRightElement = (
     rightElements={questionToBeSent.right}
     leftElements={questionToBeSent.left}
     defaultValue={{ id: '', answer: 'default' }}
+    defaultAnswer={{ id: '', answer: 'option 1' }}
     inReview={false}
     inResult={false}
     onChange={() => true}
