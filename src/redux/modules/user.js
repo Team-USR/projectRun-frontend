@@ -22,6 +22,7 @@ if (cookie.load('access-token') != null) {
       'token-type': cookie.load('token-type'),
       uid: cookie.load('uid'),
     },
+    name: cookie.load('username'),
   };
 }
 
@@ -32,7 +33,7 @@ export default function reducer(state = initialState, action) {
     case USER_LOGIN_FAILED:
       return Object.assign({}, { error: action.error });
     case USER_LOGIN_SUCCESFUL:
-      return Object.assign({}, { token: action.auth });
+      return Object.assign({}, { token: action.auth, name: action.user.name });
     case USER_LOGOUT:
       return Object.assign({});
     case USER_SIGNUP_IN_PROGRESS:
@@ -52,10 +53,11 @@ function userLoginInProgress() {
   };
 }
 
-function userLoginSuccesful(auth) {
+function userLoginSuccesful(auth, user) {
   return {
     type: USER_LOGIN_SUCCESFUL,
     auth,
+    user,
   };
 }
 
@@ -82,6 +84,8 @@ export function loginUser(user) {
         await cookie.save('client', res.headers.client);
         await cookie.save('token-type', res.headers['token-type']);
         await cookie.save('uid', res.headers.uid);
+        await cookie.save('username', res.data.data.name);
+
 
         dispatch(userLoginSuccesful(
           {
@@ -89,6 +93,8 @@ export function loginUser(user) {
             client: res.headers.client,
             'token-type': res.headers['token-type'],
             uid: res.headers.uid,
+          }, {
+            name: res.data.data.name,
           },
         ));
         dispatch(push('/'));
@@ -140,11 +146,13 @@ export function signupUser(user) {
   };
 }
 
-export async function logoutUser() {
+export function logoutUser() {
   cookie.remove('access-token');
   cookie.remove('client');
   cookie.remove('token-type');
+  cookie.remove('userType');
   cookie.remove('uid');
+  cookie.remove('username');
   cookie.remove('current-class-id');
   cookie.remove('current-class-title');
   cookie.remove('current-session-type');

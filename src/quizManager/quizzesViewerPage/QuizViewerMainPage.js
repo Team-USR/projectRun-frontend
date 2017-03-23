@@ -53,7 +53,6 @@ export default class QuizViewerMainPage extends Component {
       //  answers: response.data.quiz_session,
       });
       this.loadSession();
-    //   console.log("SESSSION", this.state.quizInfo);
     }, 510))
     .catch(() => {
       this.setState({ error: true });
@@ -86,33 +85,30 @@ export default class QuizViewerMainPage extends Component {
     this.setState({ reviewState: newState });
   }
   loadSession() {
- //  console.log("ANSWERS BEFORE", this.state.answers);
-    const questions = [];
-
+    const quest = [];
     this.state.quizInfo.questions.map((element, index) => {
       let ans;
       if (this.state.session.metadata && this.state.session.metadata[element.id]) {
         if (element.type === 'multiple_choice') {
           ans = this.state.session.metadata[element.id].answer_ids;
           const id = element.id;
-          questions[index] = { answer_ids: ans, id };
+          quest[index] = { answer_ids: ans, id };
         }
         if (element.type === 'single_choice') {
           ans = this.state.session.metadata[element.id].answer_id;
           const id = element.id;
-          questions[index] = { answer_id: ans, id };
+          quest[index] = { answer_id: ans, id };
         }
         if (element.type === 'mix') {
           ans = this.state.session.metadata[element.id].answer;
           const id = element.id;
-          questions[index] = { answer: ans, id };
+          quest[index] = { answer: ans, id };
         }
       }
       return (null);
     });
-    const q = { questions };
+    const q = { questions: quest };
     this.setState({ answers: q });
-    // console.log("ANSWERS AFTER",this.state.answers);
   }
   saveSession() {
   //  this.setState({ loadingQuiz: true });
@@ -159,7 +155,7 @@ export default class QuizViewerMainPage extends Component {
   collectAnswers(id, answers, type, index) {
     this.setState({ savedSession: false });
     const tempAnswers = this.state.answers;
-    const tempQuestions = this.state.answers.questions.slice();
+    const tempQuestions = this.state.answers.questions;
     let newAnswer = {};
 
     if (type === 'multiple_choice') {
@@ -191,13 +187,10 @@ export default class QuizViewerMainPage extends Component {
         </div>);
     }
     if (this.state.savedSession && !this.state.reviewState && !this.state.resultsState) {
-      const date = new Date();
       return (
         <div className="submitPanel">
           <h5>
-          Saved on: {
-            date.toString()
-          }
+            { this.state.session.last_updated }
           </h5>
           <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
         </div>);

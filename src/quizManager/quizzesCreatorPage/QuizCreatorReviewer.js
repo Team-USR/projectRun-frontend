@@ -8,7 +8,7 @@ import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
-import getNOfGaps from '../../helpers/Cloze';
+import { getNOfGaps } from '../../helpers/Cloze';
 
 
 const styles = {

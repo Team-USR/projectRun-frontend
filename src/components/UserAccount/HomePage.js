@@ -1,9 +1,29 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-export default function HomePage() {
+const mapStateToProps = state => ({
+  name: state.auth.name,
+});
+
+function HomePageComp(props) {
   return (
     <div className="homePageWrapper">
-      <h1><b> Welcome back!</b></h1>
+      <h1><b> Welcome back, {props.name}!</b></h1>
     </div>
   );
 }
+
+HomePageComp.propTypes = {
+  name: React.PropTypes.string,
+};
+
+HomePageComp.defaultProps = {
+  name: 'Student',
+};
+
+const HomePage = connect(
+  mapStateToProps,
+  null,
+)(HomePageComp);
+
+export default HomePage;

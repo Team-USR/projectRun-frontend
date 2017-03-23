@@ -21,13 +21,13 @@ export default class ClozeSentence extends React.Component {
     }
 
     return (
-      <li key={this.props.index}>
+      <li key={this.props.index} style={{ marginTop: '8px' }}>
         {words.map((w) => {
           if (!w.match(GAP_MATCHER)) {
             return `${w} `;
           }
-          const gap = gapsCopy.slice(0, 1)[0];
-          const tooltip = <Tooltip id={`tooltip-${gap.id}`}>{gap.hint.hint_text || 'No hints!'}</Tooltip>;
+          const gap = gapsCopy.splice(0, 1)[0];
+          const tooltip = <Tooltip id={`tooltip-${gap.id}`}>{gap.hint ? gap.hint.hint_text : 'No hints!'}</Tooltip>;
           return (
             <OverlayTrigger key={`gap-${gap.id}`} placement="top" overlay={tooltip}>
               <input type="text" maxLength="12" value={this.state.resultsState ? gap.gap_text : ''} readOnly={this.state.resultsState} />

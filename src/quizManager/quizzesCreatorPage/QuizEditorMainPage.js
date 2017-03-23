@@ -55,7 +55,7 @@ export default class QuizEditorMainPage extends Component {
        if (!response || (response && response.status !== 200)) {
          this.setState({ errorState: true });
        }
-       console.log(response.data.release_date);
+//       console.log(response.data.release_date);
        const generatedQuiz = this.state.submitedQuestions;
        generatedQuiz.quiz.title = response.data.title;
        generatedQuiz.quiz.attempts = response.data.attempts;
@@ -177,6 +177,20 @@ export default class QuizEditorMainPage extends Component {
     this.setState({ submitedQuestions: inputQ });
   }
 
+  collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+    const newQuestion = {
+      question: 'Fill in the gaps:',
+      type: 'cloze',
+      cloze_sentence_attributes: {
+        text: sentenceAttributes,
+      },
+      gaps_attributes: gapsAttributes,
+    };
+    const inputQ = this.state.submitedQuestions;
+    inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.setState({ submitedQuestions: inputQ });
+  }
+
   collectMixObject(data, questionTitle, questionID) {
     const questionObject = {
       question: questionTitle,
@@ -260,6 +274,9 @@ export default class QuizEditorMainPage extends Component {
         <ClozeGenerator
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
+          updateParent={(questionID, qSent, sentenceAttributes, gapsAttributes) =>
+            this.collectClozeObject(questionID, qSent, sentenceAttributes, gapsAttributes)}
+          editorContent={questionObj}
           index={id}
           key={`cloze${id}`}
         />);
@@ -303,7 +320,7 @@ export default class QuizEditorMainPage extends Component {
     this.setState({ submitedQuestions: attempted });
   }
   changeReleaseDate(value) {
-    console.log(value);
+//    console.log(value);
     const releaseDate = this.state.submitedQuestions;
     releaseDate.quiz.release_date = value;
     this.setState({ submitedQuestions: releaseDate, defaultDate: value });

@@ -20,7 +20,11 @@ export default class ClozeForm extends React.Component {
       <form>
         <FormGroup>
           <InputGroup>
-            <FormControl inputRef={(input) => { this.content = input; }} type="text" />
+            <FormControl
+              inputRef={(input) => { this.content = input; }}
+              type="text"
+              placeholder="This is a {gap}*hint* sentence example."
+            />
             <InputGroup.Button>
               <Button onClick={this.renderQuestion}>+</Button>
             </InputGroup.Button>

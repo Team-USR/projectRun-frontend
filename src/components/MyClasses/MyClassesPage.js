@@ -26,7 +26,7 @@ export default class MyClassesPage extends Component {
       sideBarContent: { classes: [] },
       content: { quizzes: [], students: [] },
       userT: STUDENT,
-      loadingSearch: false,
+      loading: false,
     };
   }
 
@@ -149,6 +149,7 @@ export default class MyClassesPage extends Component {
   }
 
   reloadBar() {
+    this.setState({ loading: true });
     axios({
       url: `${API_URL}/users/mine/groups`,
       headers: this.props.userToken,
@@ -166,6 +167,7 @@ export default class MyClassesPage extends Component {
         this.setState({
           sideBarContent: newSideBarContent,
           panelType: 'my_classes_default_panel',
+          loading: false,
         });
       }, 1200);
     });
@@ -204,6 +206,7 @@ export default class MyClassesPage extends Component {
   }
 
   handleSaveNewClassClick(newClassTitle) {
+    this.setState({ loading: true });
     const newClassObj = { name: newClassTitle };
     axios({
       url: `${API_URL}/groups`,
@@ -217,6 +220,7 @@ export default class MyClassesPage extends Component {
   }
 
   handleDeleteClass(classId) {
+    this.setState({ loading: true });
     axios({
       url: `${API_URL}/groups/${classId}`,
       method: 'delete',
@@ -231,6 +235,8 @@ export default class MyClassesPage extends Component {
   }
 
   handleSaveAssignedQuizzes(newQuizzesArray) {
+//    console.log("NEW quizzes ARRAY", newQuizzesArray);
+    this.setState({ loading: true });
     this.newQuizzesArray = [];
     const quizzesIdArray = newQuizzesArray.map(obj => obj.id);
     const postObject = { quizzes: quizzesIdArray };
@@ -241,12 +247,20 @@ export default class MyClassesPage extends Component {
       data: postObject,
       headers: this.props.userToken,
     })
-    .then(() => this.setState({ panelType: 'show_selected_class' }));
+    .then(() => {
+      setTimeout(() => {
+        this.setState({
+          panelType: 'show_selected_class',
+          loading: false,
+        });
+      }, 1200);
+    });
   }
 
   handleSaveEnrolledStudents(newStundentsArray) {
+    this.setState({ loading: true });
     this.newStundentsArray = newStundentsArray;
-    const studentsIdArray = newStundentsArray.map(obj => obj.id);
+    const studentsIdArray = newStundentsArray.map(obj => obj.email);
     const postObject = { users: studentsIdArray };
     const groupId = this.state.currentClassId.toString();
 
@@ -256,7 +270,14 @@ export default class MyClassesPage extends Component {
       data: postObject,
       headers: this.props.userToken,
     })
-    .then(() => this.setState({ panelType: 'show_selected_class' }));
+    .then(() => {
+      setTimeout(() => {
+        this.setState({
+          panelType: 'show_selected_class',
+          loading: false,
+        });
+      }, 1200);
+    });
   }
   renderClassesPanel() {
     const element = (
@@ -306,7 +327,16 @@ export default class MyClassesPage extends Component {
     if (this.state.loadingSideBar) {
       return <BrandSpinner />;
     }
-    return (
+    if (this.state.loading === true) {
+      return (
+        <div className="myClassesPageWrapper">
+          { this.renderSideBar() }
+          <div className="contentWrapper">
+            <BrandSpinner />;
+          </div>
+        </div>
+      );
+    } return (
       <div className="myClassesPageWrapper">
         { this.renderSideBar() }
         <div className="contentWrapper">
