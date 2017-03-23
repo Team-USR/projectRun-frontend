@@ -5,7 +5,7 @@ import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { SideBarWrapper } from '../SideBar';
 import { MyClassesPanel } from './index';
 import { BrandSpinner } from '../utils';
-import findHighestMark from '../../helpers';
+import { findHighestMark } from '../../helpers';
 
 export default class MyClassesPage extends Component {
 

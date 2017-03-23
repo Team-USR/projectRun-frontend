@@ -137,7 +137,11 @@ export default class MyQuizzesPage extends Component {
 //    console.log("rendering",this.state.currentID);
     let element = <h1><b> My Quizzes</b></h1>;
     if (this.state.panelType === 'default') {
-      element = (<DefaultQuizzesPanel />);
+      element = (<DefaultQuizzesPanel
+        userT={this.state.userT}
+        quizzes={this.state.userT === STUDENT ?
+          this.state.sideBarContent.session : this.state.sideBarContent.quizzes}
+      />);
     }
     if (this.state.userT === TEACHER) {
       if (this.state.panelType === 'reviewer') {
