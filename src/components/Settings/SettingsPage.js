@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import cookie from 'react-cookie';
 import Toggle from 'react-toggle';
-import { Tabs, Tab, Grid, Col, Row } from 'react-bootstrap';
+import { Tabs, Tab, Grid, Col, Row, FormControl,
+  Form, FormGroup, ControlLabel, Button } from 'react-bootstrap';
 import { STUDENT, TEACHER } from '../../constants';
 
 
@@ -58,7 +59,43 @@ export default class SettingsPage extends Component {
     this.password = [];
     return (
       <div>
-        <h1><b>Password</b></h1>
+        <h1><b>Reset password</b></h1>
+        <br />
+        <Form horizontal>
+          <FormGroup controlId="formCurrentPassword">
+            <Col componentClass={ControlLabel} sm={2}>
+              Current password
+            </Col>
+            <Col sm={6}>
+              <FormControl type="password" placeholder="Current password" />
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="formNewPassword">
+            <Col componentClass={ControlLabel} sm={2}>
+              New password
+            </Col>
+            <Col sm={6}>
+              <FormControl type="password" placeholder="New password" />
+            </Col>
+          </FormGroup>
+          <FormGroup controlId="formConfirmPassword">
+            <Col componentClass={ControlLabel} sm={2}>
+              Confirm password
+            </Col>
+            <Col sm={6}>
+              <FormControl type="password" placeholder="Confirm new password" />
+            </Col>
+          </FormGroup>
+
+          <FormGroup>
+            <Col smOffset={4} sm={3}>
+              <Button type="submit" onClick={() => {}}>
+                Change password
+              </Button>
+            </Col>
+          </FormGroup>
+        </Form>
       </div>
     );
   }

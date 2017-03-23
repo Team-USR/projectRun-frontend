@@ -25,7 +25,7 @@ export default class CreateClassPanel extends Component {
               <label htmlFor="name">Name of group</label>
               <input
                 type="text"
-                className = "form-control"
+                className="form-control"
                 placeholder="Name of the new group"
                 onChange={e => this.handleInputChange(e)}
               />
