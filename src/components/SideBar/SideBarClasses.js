@@ -14,7 +14,7 @@ export default class SideBarClasses extends Component {
   componentWillMount() {
     this.setState({ content: this.props.content });
   }
-  componentsWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.setState({ content: nextProps.content });
   }
   filterItems(event) {
@@ -89,11 +89,6 @@ export default class SideBarClasses extends Component {
     if (this.state.content.length - maxDisplayed >= 1) {
       maxDisplayed -= 1;
     }
-    // let classesCounter = 0;
-    // let maxDisplayed = 15;
-    // if (this.state.content.length - maxDisplayed >= 1) {
-    //   maxDisplayed -= 1;
-    // }
     return (
       <div>
         { this.renderSearchButton() }
