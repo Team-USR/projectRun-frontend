@@ -186,8 +186,7 @@ export default class StudentsPanel extends Component {
       data: sendObject,
       headers: this.state.userToken,
     })
-    .then((response) => {
-      console.log("APPROVE", response);
+    .then(() => {
       const requests = this.state.requestsList;
     //  const newEnrolledObj = this.state.enrolledStudents;
       this.state.requestsList.map((item, index) => {
@@ -212,8 +211,7 @@ export default class StudentsPanel extends Component {
       data: sendObject,
       headers: this.state.userToken,
     })
-    .then((response) => {
-      console.log("DECLINE", response);
+    .then(() => {
       const requests = this.state.requestsList;
     //  const newEnrolledObj = this.state.enrolledStudents;
       this.state.requestsList.map((item, index) => {
@@ -440,4 +438,8 @@ StudentsPanel.propTypes = {
   requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   userToken: PropTypes.shape({}).isRequired,
   classId: PropTypes.string.isRequired,
+  refreshStudents: PropTypes.func,
+};
+StudentsPanel.defaultProps = {
+  refreshStudents: null,
 };
