@@ -27,7 +27,7 @@ export default class QuizCreatorMainPage extends Component {
       questions: [],
       inputQuestions: [{
       }],
-      submitedQuestions: { quiz: { title: '', questions_attributes: [], release_date: '' } },
+      submitedQuestions: { quiz: { title: '', questions_attributes: [], release_date: '01-01-2017' } },
       generatedQuizID: 0,
       answers: { quiz: [] },
       reviewState: false,
