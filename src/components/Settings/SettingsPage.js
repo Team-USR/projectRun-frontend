@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import cookie from 'react-cookie';
 import Toggle from 'react-toggle';
 import { Tabs, Tab, Grid, Col, Row } from 'react-bootstrap';
-import { STUDENT, TEACHER } from '../../constants';
+import { STUDENT, TEACHER, API_URL } from '../../constants';
+import { PasswordManager } from './';
 
 
 export default class SettingsPage extends Component {
@@ -10,6 +12,10 @@ export default class SettingsPage extends Component {
     super(props);
     this.state = {
       isTeacher: false,
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+      statusText: '',
     };
   }
 
@@ -18,6 +24,35 @@ export default class SettingsPage extends Component {
     if (settingUserType === TEACHER) {
       this.setState({ isTeacher: true });
     }
+  }
+
+  changePassword() {
+    axios({
+      url: `${API_URL}/users/password`,
+      headers: this.props.userToken,
+      method: 'put',
+      data: {
+        password: this.state.newPassword,
+        password_confirmation: this.state.confirmPassword,
+      },
+    }).then(res => this.setState({
+      statusText: res.statusText,
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    }));
+  }
+
+  handleCurrentPassword(e) {
+    this.setState({ currentPassword: e.target.value });
+  }
+
+  handleNewPassword(e) {
+    this.setState({ newPassword: e.target.value });
+  }
+
+  handleConfirmPassword(e) {
+    this.setState({ confirmPassword: e.target.value });
   }
 
   changeUserType() {
@@ -55,11 +90,18 @@ export default class SettingsPage extends Component {
   }
 
   renderPasswordTab() {
-    this.password = [];
     return (
-      <div>
-        <h1><b>Password</b></h1>
-      </div>
+      <PasswordManager
+        currentPassword={this.state.currentPassword}
+        newPassword={this.state.newPassword}
+        confirmPassword={this.state.confirmPassword}
+        handleCurrentPassword={e => this.handleCurrentPassword(e)}
+        handleNewPassword={e => this.handleNewPassword(e)}
+        handleConfirmPassword={e => this.handleConfirmPassword(e)}
+        updateNewValidation={status => this.updateNewValidation(status)}
+        updateConfirmValidation={status => this.updateConfirmValidation(status)}
+        changePassword={() => this.changePassword()}
+      />
     );
   }
 
@@ -90,7 +132,9 @@ export default class SettingsPage extends Component {
                 { profileTab }
               </Tab>
               <Tab eventKey={2} title="Password">
-                { passwordTab }
+                { this.state.statusText === 'OK' ?
+                  <h3>Password updated!</h3>
+                  : passwordTab }
               </Tab>
               <Tab eventKey={3} title="Preferences">
                 { prefTab }
@@ -102,3 +146,7 @@ export default class SettingsPage extends Component {
     );
   }
 }
+
+SettingsPage.propTypes = {
+  userToken: React.PropTypes.shape({}).isRequired,
+};
