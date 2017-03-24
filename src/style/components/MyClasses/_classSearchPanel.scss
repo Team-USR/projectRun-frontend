@@ -47,7 +47,11 @@
 
   .pendingClasses{
     display:inline-block;
+    width: 50%;
     margin-top:100px;
+    @media (max-width: 767px) {
+      width: 100%;
+    }
     .inviteButton{
       width:35px;
       margin-left:20px;
@@ -56,13 +60,18 @@
     }
 
     .pendingButtons {
-      text-align: left;
+      text-align: center;
       width: auto;
       margin-top: 1px;
       .className{
+        text-align: right;
+        max-width: 300px;
+
+      }
+      .classInfo{
         padding-top:8px;
-        min-width: 200px;
-        text-align: center;
+        text-align: left;
+          max-width: 300px;
       }
       li {
         padding-top:10px;

@@ -76,7 +76,6 @@ export default class QuizCreatorMainPage extends Component {
   //  console.log("----------");
   //  console.log(this.state.submitedQuestions);
 //  console.log("----------");
-  console.log("POST ", this.state.submitedQuestions);
     axios({
       url: `${API_URL}/quizzes`,
       headers: this.props.userToken,

@@ -1,6 +1,8 @@
 import React from 'react';
+import axios from 'axios';
 import { Button, Col } from 'react-bootstrap';
 import { SearchSpinner } from '../../../components/utils';
+import { API_URL } from '../../../constants';
 
 let timeout = null;
 export default class ClassSearchPanel extends React.Component {
@@ -15,6 +17,7 @@ export default class ClassSearchPanel extends React.Component {
       loadingClassesSearch: false,
       moveToPendingError: false,
       sentClasses: [],
+      sentClassesInfo: [],
     };
 
     this.updateSearch = this.updateSearch.bind(this);
@@ -29,6 +32,7 @@ export default class ClassSearchPanel extends React.Component {
       sentClasses: this.props.sentClasses,
 
     });
+    this.loadPendingRequests();
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -37,6 +41,25 @@ export default class ClassSearchPanel extends React.Component {
       pendingClasses: nextProps.pendingClasssesRequests,
       moveToPendingError: nextProps.moveToPendingError,
       sentClasses: nextProps.sentClasses,
+    });
+  }
+  loadPendingRequests() {
+    axios({
+      url: `${API_URL}/users/mine/requests`,
+      headers: this.props.userToken,
+    })
+    .then((response) => {
+      console.log(response.data);
+      const classes = this.state.pendingClasses;
+      const sentClassesBools = this.state.sentClasses;
+      const classesInfo = this.state.sentClassesInfo;
+      response.data.map((item) => {
+        classes.push({ id: item.group.id, name: item.group.name });
+        sentClassesBools.push(item.group.id);
+        classesInfo.push(item.requested_at);
+        return 0;
+      });
+      this.setState({ pendingClasses: classes, sentClasses: sentClassesBools });
     });
   }
 
@@ -53,9 +76,11 @@ export default class ClassSearchPanel extends React.Component {
     if (this.state.pendingClasses !== undefined && this.state.pendingClasses !== null) {
       this.state.pendingClasses.map((cl) => {
         let col = '';
-        this.state.sentClasses.map((item) => {
+        let createdAt = ''
+        this.state.sentClasses.map((item, index) => {
           if (item === cl.id) {
             col = 'green';
+            createdAt = this.state.sentClassesInfo[index];
           }
           return 0;
         });
@@ -69,9 +94,8 @@ export default class ClassSearchPanel extends React.Component {
               <Col md={6}>
                 <div className="className">
                   {cl.name}
-                </div>
-              </Col>
-              <Col md={6}>
+
+
                 <Button
                   style={{ color: col }}
                   className="inviteButton"
@@ -80,6 +104,12 @@ export default class ClassSearchPanel extends React.Component {
                 >
                   <span className="glyphicon glyphicon-log-in" />
                 </Button>
+                </div>
+              </Col>
+              <Col md={6} key={`info${cl.id + 1}`}>
+                <div className="classInfo">
+                { createdAt }
+                </div>
               </Col>
             </Col>
           </li>,
@@ -169,6 +199,7 @@ ClassSearchPanel.propTypes = {
   moveToPendingError: React.PropTypes.bool,
   moveToRequests: React.PropTypes.func,
   sendInvitation: React.PropTypes.func,
+  userToken: React.PropTypes.shape({}).isRequired,
 };
 ClassSearchPanel.defaultProps = {
   searchedClasses: {},

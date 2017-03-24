@@ -148,7 +148,6 @@ export default class QuizEditorMainPage extends Component {
 //    console.log("----------");
 //    console.log(filteredQuestions);
 //    console.log("----------");
-console.log("SUBMIT",this.state.submitedQuestions);
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}`,
       data: this.state.submitedQuestions,
@@ -169,7 +168,6 @@ console.log("SUBMIT",this.state.submitedQuestions);
   }
 
   collectObject(answersAttributes, question, type, questionID) {
-    console.log("COLLECT", this.state.submitedQuestions);
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
     if (inputQ.quiz.questions_attributes[questionID] &&
