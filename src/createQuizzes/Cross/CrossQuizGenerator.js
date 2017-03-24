@@ -57,12 +57,67 @@ export default class CrossQuizGenerator extends Component {
     // console.log(this.state);
   }
 
+
+  getHintByCoordintes(x, y) {
+    this.toReplace = 'toReplace';
+    // const hints = this.props.content.hints;
+    const hints = [
+      { row: 0,
+        column: 0,
+        hint: ' Why AB?',
+        across: true,
+      },
+      { row: 0,
+        column: 1,
+        hint: ' Why BC?',
+        across: false,
+      },
+      { row: 1,
+        column: 1,
+        hint: ' Why CD?',
+        across: true,
+      },
+      { row: 1,
+        column: 2,
+        hint: ' Why DE?',
+        across: false,
+      },
+      { row: 2,
+        column: 2,
+        hint: ' Why EF?',
+        across: true,
+      },
+      { row: 2,
+        column: 3,
+        hint: ' Why FG?',
+        across: false,
+      },
+      { row: 3,
+        column: 3,
+        hint: ' Why GH?',
+        across: true,
+      },
+      { row: 3,
+        column: 4,
+        hint: ' Why HI?',
+        across: false,
+      },
+    ];
+    for (let i = 0; i < hints.length; i += 1) {
+      if (hints[i].row === x && hints[i].column === y) {
+        return hints[i];
+      }
+    }
+    return -1;
+  }
+
   generateWordsForEditor(board) {
     // console.log(board);
 
     const newAcrossWords = [];
     const newDownWords = [];
 
+    // Store the positions for Rows - Across Words
     for (let i = 0; i < this.props.content.height; i += 1) {
       const rowString = board[i].row;
       const rowSplitArray = rowString.split('*');
@@ -81,6 +136,7 @@ export default class CrossQuizGenerator extends Component {
               value: element,
               row: i,
               column: pos,
+              hintObj: this.getHintByCoordintes(i, pos),
             });
           }
           pos += element.length;
@@ -94,6 +150,7 @@ export default class CrossQuizGenerator extends Component {
               value: element,
               row: i,
               column: pos + 1,
+              hintObj: this.getHintByCoordintes(i, pos + 1),
             });
           }
           pos += element.length + 1;
@@ -102,11 +159,11 @@ export default class CrossQuizGenerator extends Component {
       },
       );
 
-      console.log(generatedRowWords);
+      // console.log(generatedRowWords);
       newAcrossWords.push(generatedRowWords);
     }
 
-
+    // Store the positions for Columns - Down Words
     for (let j = 0; j < this.props.content.width; j += 1) {
       let colString = '';
       for (let i = 0; i < this.props.content.height; i += 1) {
@@ -114,13 +171,10 @@ export default class CrossQuizGenerator extends Component {
       }
 
       const generatedColWords = [];
-
       const colSplitArray = colString.split('*');
-      console.log(colSplitArray);
 
       let pos = 0;
       let wordFound = false;
-      //
       colSplitArray.map((element) => {
         if (!wordFound && element === '') {
           pos += 1;
@@ -131,6 +185,7 @@ export default class CrossQuizGenerator extends Component {
               value: element,
               row: pos,
               column: j,
+              hintObj: this.getHintByCoordintes(pos, j),
             });
           }
           pos += element.length;
@@ -144,6 +199,7 @@ export default class CrossQuizGenerator extends Component {
               value: element,
               row: pos + 1,
               column: j,
+              hintObj: this.getHintByCoordintes(pos + 1, j),
             });
           }
           pos += element.length + 1;
@@ -158,6 +214,7 @@ export default class CrossQuizGenerator extends Component {
     console.log(newAcrossWords, newDownWords);
     this.setState({ acrossWords: newAcrossWords, downWords: newDownWords });
   }
+
 
   handleWidthChange(e) {
     const target = e.target;
@@ -385,12 +442,9 @@ export default class CrossQuizGenerator extends Component {
       }
       return false;
     });
-
+/*
     const newRowPosX = row;
     const newRowPosY = col;
-
-    // const newColPosX = row;
-    // const newColPosY = col;
 
     // console.log(generatedRowWords);
     // console.log(generatedColWords);
@@ -493,11 +547,12 @@ export default class CrossQuizGenerator extends Component {
     //     return newAcrossWords[row][index];
     //   });
     // }
-
-    console.log(generatedColWords, generatedRowWords);
+*/
+    // console.log(generatedColWords, generatedRowWords);
     // this.setState({ downWords: newDownWords, acrossWords: newAcrossWords });
     this.setState({ downWords: generatedColWords, acrossWords: generatedRowWords });
   }
+
 
   handleClueChange(e, x, y, clueType) {
     const target = e.target;
@@ -551,14 +606,16 @@ export default class CrossQuizGenerator extends Component {
   }
 
   renderClue(obj, x, y, clueType) {
+    console.log(x, y);
+
     return (
       <div>
-        <label htmlFor="boardClue">{obj.word}</label>
+        <label htmlFor="boardClue">{obj.value.toUpperCase()} </label>
         <input
           id="boardClue"
           type="text"
           onChange={e => this.handleClueChange(e, x, y, clueType)}
-          value={obj.clue}
+          value={obj.hintObj.hint}
         />
       </div>
     );
@@ -596,6 +653,7 @@ export default class CrossQuizGenerator extends Component {
   }
 
   render() {
+    console.log('render', this.state);
     return (
       <div className="crossQuizGenerator">
         <Popup
