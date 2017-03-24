@@ -128,7 +128,7 @@ export default class QuizEditorMainPage extends Component {
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(
       element => element !== null,
     );
-    console.log('filtered', filteredQuestions, 'finishfiltered');
+    // console.log('filtered', filteredQuestions, 'finishfiltered');
     this.setState({ loading: true, submitedQuestions: filteredQuestions });
 //    console.log("----------");
 //    console.log(filteredQuestions);
@@ -313,7 +313,6 @@ export default class QuizEditorMainPage extends Component {
     }
 
     if (quizType === 'cross') {
-      console.log(questionObj);
       const question = (
         <CrossQuizGenerator
           content={questionObj}

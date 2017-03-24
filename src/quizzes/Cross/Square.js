@@ -7,12 +7,18 @@ export default function Square(props) {
   }
   let square = (<td />);
 
-  if (props.squareType === 'clickable') {
+  if (props.squareType === 'editable') {
     square = (
-      <td>
-        <button className="square" onClick={() => props.onClick()}>
-          {props.value}
-        </button>
+      <td className="squareContent">
+        <div className="hintNumber">
+          { hintNo }
+        </div>
+        <input
+          className="crossSquareInput"
+          type="text"
+          defaultValue={props.value}
+          onChange={e => props.handleSquareChange(e)}
+        />
       </td>
     );
   }

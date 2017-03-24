@@ -22,16 +22,11 @@ export default class CrossQuiz extends Component {
   }
 
   componentWillMount() {
-    console.log(this.props);
-
     const hints = this.props.question.hints;
-
-    console.log(hints);
     const width = this.props.question.width;
     const height = this.props.question.height;
     const newDownHints = [];
     const newAcrossHints = [];
-
 
     // Split Down and Accross Hints into 2 arrays
     hints.map((obj) => {
@@ -43,8 +38,7 @@ export default class CrossQuiz extends Component {
       return obj;
     });
 
-
-    // Generate a MAtrix of 0's
+    // Generate a Matrix of 0's
     const matrix = [];
     for (let i = 0; i < width; i += 1) {
       const row = [];
@@ -57,24 +51,47 @@ export default class CrossQuiz extends Component {
     this.setState({
       acrossHints: newAcrossHints,
       downHints: newDownHints,
-      // hintsNumbers: matrix,
     });
 
-    // if (this.props.reviewState) {
-    //   this.setState({
-    //     width: this.props.question.width,
-    //     height: this.props.question.height,
-    //     boardValues: this.props.question.rows,
-    //   });
-    // }
     this.generateHintsNumbers(matrix, hints);
+
+    if (this.props.sessionAnswers && this.props.sessionAnswers.rows) {
+      this.setState({
+        boardValues: this.props.sessionAnswers.rows,
+      });
+    }
   }
 
-  handleClick(i) {
-    const newSquares = this.state.squares.slice();
-    newSquares[i] = 'X';
-    this.setState({ squares: newSquares });
+  handleSquareChange(e, i, j) {
+    const event = e;
+    const target = event.target;
+    const value = target.value;
+    if (value.length > 1) {
+      event.target.value = value[1];
+    }
+    event.target.value = event.target.value.toLowerCase();
+
+    // Replace the Changed Letter and Update the Board
+    const newBoard = this.state.boardValues;
+    let changedRow = newBoard[i];
+
+
+    // Check if the value of square was deleted or is a space
+    //  replace it with '*' in boardValues
+    let newSquareValue = event.target.value;
+    if (newSquareValue === '' || newSquareValue === ' ') {
+      newSquareValue = '_';
+    }
+
+    // Update the board
+    changedRow = changedRow.substr(0, j) + newSquareValue + changedRow.substr(j + 1);
+    newBoard[i] = changedRow;
+    this.setState({ boardValues: newBoard });
+
+    // Send Match Data to MainQuizGenerator
+    this.props.callbackParent(this.props.id, newBoard);
   }
+
 
   findWordByPosition(hints, x, y) {
     this.h = this.props.question.hints;
@@ -88,8 +105,6 @@ export default class CrossQuiz extends Component {
 
   generateHintsNumbers(matrix, hints) {
     const hintsNoMatrix = matrix;
-    console.log();
-    // const hintsNoMatrix = [];
 
     let currentNo = 1;
     const width = this.state.width;
@@ -98,20 +113,11 @@ export default class CrossQuiz extends Component {
       for (let j = 0; j < height; j += 1) {
         const myWord = this.findWordByPosition(hints, i, j);
         if (myWord !== -1) {
-          // console.log(myWord.hint);
           hintsNoMatrix[i][j] = currentNo;
           currentNo += 1;
         }
       }
     }
-    // hintsNoMatrix = [
-    //   [1, 2, 0, 0, 0],
-    //   [0, 3, 4, 0, 0],
-    //   [0, 0, 5, 6, 0],
-    //   [0, 0, 0, 7, 8],
-    //   [0, 0, 0, 0, 0],
-    // ];
-    console.log(hintsNoMatrix);
     this.setState({ hintsNumbers: hintsNoMatrix });
   }
 
@@ -175,9 +181,9 @@ export default class CrossQuiz extends Component {
           height={this.props.question.height}
           width={this.props.question.width}
           hintsNumbers={this.state.hintsNumbers}
+          sessionAnswers={this.props.sessionAnswers}
           content={this.props.question.rows}
-          squares={this.state.squares}
-          onClick={i => this.handleClick(i)}
+          handleSquareChange={(e, i, j) => this.handleSquareChange(e, i, j)}
           onChange={answers =>
             this.props.callbackParent(this.state.matchQuizId, answers)
           }
@@ -190,8 +196,22 @@ export default class CrossQuiz extends Component {
     const crossQuizQuestion = this.state.crossQuizQuestion;
     const quizIndex = this.state.crossQuizIndex;
 
+
+    this.answerClass = '';
+
+    if (this.props.resultsState) {
+      const correctAnswer = this.props.correctAnswer;
+      if (correctAnswer && correctAnswer.correct) {
+        this.answerClass = 'correctAnswerWrapper';
+      } else {
+        this.answerClass = 'wrongAnswerWrapper';
+      }
+    }
+
+    const styleClasses = `crossQuizContainer ${this.answerClass}`;
+
     return (
-      <div className="crossQuizContainer">
+      <div className={styleClasses}>
 
         <div className="matchQuizTitle">
           <h3> { quizIndex }. { crossQuizQuestion } </h3>
@@ -218,6 +238,7 @@ export default class CrossQuiz extends Component {
 }
 
 CrossQuiz.propTypes = {
+  id: PropTypes.number.isRequired,
   reviewState: PropTypes.bool.isRequired,
   resultsState: PropTypes.bool.isRequired,
   question: PropTypes.shape({
@@ -231,4 +252,19 @@ CrossQuiz.propTypes = {
   }).isRequired,
   index: PropTypes.number.isRequired,
   callbackParent: PropTypes.func.isRequired,
+  sessionAnswers: PropTypes.shape({
+    rows: PropTypes.arrayOf(PropTypes.string),
+  }),
+  correctAnswer: PropTypes.shape({
+    correct: PropTypes.bool,
+    correct_answers: PropTypes.arrayOf(PropTypes.number),
+  }),
+};
+
+CrossQuiz.defaultProps = {
+  sessionAnswers: null,
+  correctAnswer: {
+    correct: false,
+    correct_answers: [],
+  },
 };

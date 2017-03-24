@@ -202,13 +202,13 @@ export default class QuizCreatorReviewer extends Component {
       return (
         <CrossQuiz
           id={question.id}
+          index={index}
+          question={question}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
-          question={question}
-          index={index}
           correctAnswer={{}}
           callbackParent={() => {}}
-          key={`match_quiz_${question.id}`}
+          key={`cross_quiz_${question.id}`}
         />
       );
     }

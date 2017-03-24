@@ -2,28 +2,33 @@ import React, { Component, PropTypes } from 'react';
 import { Square } from './index';
 
 export default class Board extends Component {
-  // renderSquare2(i) {
-  //   this.i = i;
-  //   return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
-  // }
-  // renderSq(i, j) {
-  //   return (
-  //     <Square
-  //       value={this.props.squares[i][j].value}
-  //       squareType={this.props.squares[i][j].type}
-  //       onClick={() => this.props.onClick()}
-  //     />
-  //   );
-  // }
 
   renderSquare(i, j) {
-    // console.log(this.props.content);
-    const board = this.props.content;
+    let board = this.props.content;
+
+    if (this.props.sessionAnswers && this.props.sessionAnswers.rows) {
+      board = this.props.sessionAnswers.rows;
+    }
+
     let squareValue = '';
     let sqType = 'black';
-    if (board[i][j] && board[i][j] !== '*') {
-      squareValue = board[i][j].toUpperCase();
-      sqType = 'static';
+
+    if (board[i][j] && board[i][j] === '*') {
+      sqType = 'black';
+    } else if (board[i][j] && board[i][j] !== '*') {
+      if (this.props.inReview) {
+        squareValue = board[i][j].toUpperCase();
+        if (board[i][j] === '_') {
+          squareValue = '';
+        }
+        sqType = 'static';
+      } else if (board[i][j] === '_') {
+        squareValue = '';
+        sqType = 'editable';
+      } else {
+        squareValue = board[i][j].toUpperCase();
+        sqType = 'editable';
+      }
     }
     return (
       <Square
@@ -46,7 +51,6 @@ export default class Board extends Component {
   }
 
   renderBoard() {
-    // console.log(this.props.height);
     const height = this.props.height;
     const board = [];
 
@@ -55,7 +59,6 @@ export default class Board extends Component {
       board.push(row);
     }
 
-    // console.log(board);
     return (
       <div>
         <table className="crossBoardTable">
@@ -89,10 +92,18 @@ export default class Board extends Component {
 Board.propTypes = {
   height: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
+  inReview: PropTypes.bool.isRequired,
+  sessionAnswers: PropTypes.shape({
+    rows: PropTypes.arrayOf(PropTypes.string),
+  }),
   content: PropTypes.arrayOf(PropTypes.string).isRequired,
   handleSquareChange: PropTypes.func,
+  hintsNumbers: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
 };
 
 Board.defaultProps = {
   handleSquareChange: null,
+  sessionAnswers: {
+    rows: null,
+  },
 };
