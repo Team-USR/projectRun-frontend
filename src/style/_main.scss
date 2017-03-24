@@ -1,10 +1,8 @@
 $brand-green-color: #0e8c16;
 $brand-red-color: #b22121;
 
-html {
-  font: normal 16px/1.2 "Open Sans", sans-serif !important;
-  color: #646666;
-
+html,body {
+  font-family: Open Sans, sans-serif !important;
 }
 
 .appContent {

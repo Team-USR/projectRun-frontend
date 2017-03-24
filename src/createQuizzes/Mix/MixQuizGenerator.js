@@ -18,6 +18,7 @@ export default class MixQuizGenerator extends Component {
 
   static formatSolution(solution) {
     let wordsArray = this.splitSentence(solution);
+    //  console.log('arrayOfWords', wordsArray);
     wordsArray = this.createWordsArray(wordsArray);
     let formatedSolution = '';
     wordsArray.map((element) => {
@@ -38,17 +39,19 @@ export default class MixQuizGenerator extends Component {
       goodSolution.push(finalDataArray[i]);
       for (let j = 0; j < punctuations.length; j += 1) {
         if (finalDataArray[i].indexOf(punctuations[j]) !== -1) {
-          if (punctuations[j] === '...') {
+          if (punctuations[j] === '...' && finalDataArray[i].length !== 3) {
             goodSolution.push('...');
             goodSolution[goodSolution.length - 2] =
             finalDataArray[i].slice(0, finalDataArray[i].length - 3);
             break;
-          } else if (punctuations[j] === '..') {
+          } else if (punctuations[j] === '..' && finalDataArray[i].length !== 2) {
             goodSolution.push('..');
             goodSolution[goodSolution.length - 2] =
             finalDataArray[i].slice(0, finalDataArray[i].length - 2);
             break;
-          } else {
+          } else if (punctuations[j] === finalDataArray[i]) {
+            break;
+          } else if (finalDataArray[i].length !== punctuations[j].length) {
             goodSolution.push(finalDataArray[i][finalDataArray[i].length - 1]);
             goodSolution[goodSolution.length - 2] =
             finalDataArray[i].slice(0, finalDataArray[i].length - 1);
