@@ -92,6 +92,7 @@ class QuestionWrapper extends Component {
       <div className={styleClasses}>
         <div className="questionPanel">
           <Question question={question.question} index={index} key={question.id} />
+          <h4>Points: {question.points}</h4>
         </div>
         <div style={styles.choiceContainer}>
           <div style={styles.choicePanel}>

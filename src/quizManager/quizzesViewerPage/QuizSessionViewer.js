@@ -103,7 +103,7 @@ export default class QuizSessionViewer extends Component {
     }
     if ((inprogress === 0 ||
        this.state.sessionList === undefined) &&
-       this.state.displayedAttempts !== 0) {
+       (this.state.displayedAttempts !== 0 || this.state.quizInfo.attempts === 0)) {
       element.push(
         <div className="inProgress" key={`startSession${1}`}>
           <div className="row">

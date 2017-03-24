@@ -60,7 +60,10 @@ export default class QuizEditorMainPage extends Component {
        generatedQuiz.quiz.title = response.data.title;
        generatedQuiz.quiz.attempts = response.data.attempts;
        generatedQuiz.quiz.release_date = response.data.release_date;
-     //  console.log("LOADING FINISHED");
+       response.data.questions.map((item, index) => {
+         item.points = response.data.questions[index].points;
+         return 0;
+       });
        setTimeout(() => {
          this.setState({
            loadingQuiz: false,
@@ -92,6 +95,10 @@ export default class QuizEditorMainPage extends Component {
         generatedQuiz.quiz.title = response.data.title;
         generatedQuiz.quiz.attempts = response.data.attempts;
         generatedQuiz.quiz.release_date = response.data.release_date;
+        response.data.questions.map((item, index) => {
+          item.points = response.data.questions[index].points;
+          return 0;
+        });
         setTimeout(() => {
           this.setState({
             loadingQuiz: false,
@@ -106,6 +113,15 @@ export default class QuizEditorMainPage extends Component {
   // componentDidUpdate() {
   //   this.scrollToBottom();
   // }
+  setPoints(event, index) {
+    const inputQ = this.state.submitedQuestions;
+    if (inputQ.quiz.questions_attributes && inputQ.quiz.questions_attributes[index] &&
+    inputQ.quiz.questions_attributes[index].points) {
+      inputQ.quiz.questions_attributes[index].points = event.target.value;
+    } else inputQ.quiz.questions_attributes[index] = { points: event.target.value };
+
+    this.setState({ submitedQuestions: inputQ });
+  }
   removeQuiz(index) {
     displayIndex = 0;
     const remQuestions = this.state.questions;
@@ -132,6 +148,7 @@ export default class QuizEditorMainPage extends Component {
 //    console.log("----------");
 //    console.log(filteredQuestions);
 //    console.log("----------");
+console.log("SUBMIT",this.state.submitedQuestions);
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}`,
       data: this.state.submitedQuestions,
@@ -152,12 +169,21 @@ export default class QuizEditorMainPage extends Component {
   }
 
   collectObject(answersAttributes, question, type, questionID) {
+    console.log("COLLECT", this.state.submitedQuestions);
     const inputQ = this.state.submitedQuestions;
-
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+      pointsAssigned = this.state.quizInfo.questions[questionID].points;
+    }
     let quiz = {};
     if (type === 'match') {
       quiz = {
         question: question.question,
+        points: pointsAssigned,
         match_default_attributes: {
           default_text: question.match_default,
         },
@@ -168,36 +194,54 @@ export default class QuizEditorMainPage extends Component {
         quiz.match_default_attributes.default_text = 'Choose an option';
       }
     } if (type === 'multiple_choice') {
-      quiz = { question, type, answers_attributes: answersAttributes };
+      quiz = { question, type, points: pointsAssigned, answers_attributes: answersAttributes };
     } if (type === 'single_choice') {
-      quiz = { question, type, answers_attributes: answersAttributes };
+      quiz = { question, type, points: pointsAssigned, answers_attributes: answersAttributes };
     }
-
     inputQ.quiz.questions_attributes[questionID] = quiz;
     this.setState({ submitedQuestions: inputQ });
   }
 
   collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+    const inputQ = this.state.submitedQuestions;
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+      pointsAssigned = this.state.quizInfo.questions[questionID].points;
+    }
     const newQuestion = {
       question: 'Fill in the gaps:',
       type: 'cloze',
+      points: pointsAssigned,
       cloze_sentence_attributes: {
         text: sentenceAttributes,
       },
       gaps_attributes: gapsAttributes,
     };
-    const inputQ = this.state.submitedQuestions;
+
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
     this.setState({ submitedQuestions: inputQ });
   }
 
   collectMixObject(data, questionTitle, questionID) {
+    const inputQ = this.state.submitedQuestions;
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+      pointsAssigned = this.state.quizInfo.questions[questionID].points;
+    }
     const questionObject = {
       question: questionTitle,
       type: 'mix',
+      points: pointsAssigned,
       sentences_attributes: data,
     };
-    const inputQ = this.state.submitedQuestions;
     inputQ.quiz.questions_attributes[questionID] = questionObject;
     this.setState({ submitedQuestions: inputQ });
     // console.log(questionObject);
@@ -312,7 +356,6 @@ export default class QuizEditorMainPage extends Component {
     const generatedQuiz = this.state.submitedQuestions;
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
-//    console.log(this.state.submitedQuestions);
   }
   changeAttempts(event) {
     const attempted = this.state.submitedQuestions;
@@ -335,9 +378,19 @@ export default class QuizEditorMainPage extends Component {
   renderGroup(object, index) {
     if (this.state.questions[index]) {
       displayIndex += 1;
+      let points = 0;
+      if (this.state.quizInfo.questions && this.state.quizInfo.questions[index]) {
+        points = this.state.quizInfo.questions[index].points;
+      }
       return (
         <div className="generatorQuizContainer" key={`generator${displayIndex}`}>
           <h2>{displayIndex}</h2>
+          <h5>Points:</h5>
+          <input
+            type="number"
+            onChange={event => this.setPoints(event, index)}
+            defaultValue={points}
+          />
           {this.state.questions[index].question}
           {this.state.questions[index].buttonGroup}
         </div>

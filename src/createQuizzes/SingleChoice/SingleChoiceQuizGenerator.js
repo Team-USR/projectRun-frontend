@@ -27,7 +27,9 @@ export default class SingleChoiceQuizGenerator extends Component {
     },
   );
     this.setState({ answers_choices: newArray, answers_attributes: filteredArray });
-    this.props.updateParent(filteredArray, this.state.question, this.props.index);
+    this.props.updateParent(filteredArray,
+       this.state.question,
+       this.props.index);
   }
   onChildChangedText(index, answer, isCorrect) {
     const newAnswer = { answer, is_correct: isCorrect };
@@ -50,11 +52,15 @@ export default class SingleChoiceQuizGenerator extends Component {
     },
   );
     this.setState({ answers_choices: newArray, answers_attributes: filteredArray });
-    this.props.updateParent(filteredArray, this.state.question, this.props.index);
+    this.props.updateParent(filteredArray,
+      this.state.question,
+      this.props.index);
   }
   setQuestion(event) {
     this.setState({ question: event.target.value });
-    this.props.updateParent(this.state.answers_attributes, event.target.value, this.props.index);
+    this.props.updateParent(this.state.answers_attributes,
+       event.target.value,
+       this.props.index);
   }
   addAnswers() {
     const choicesTemp = this.state.answers_choices;
@@ -104,7 +110,7 @@ export default class SingleChoiceQuizGenerator extends Component {
     displayIndex = 0;
     return (
       <div className="questionBlock">
-        <h3>Single choice question</h3>
+        <h4>Single choice question</h4>
         <div className="">
           <label htmlFor="textInput">
             Question

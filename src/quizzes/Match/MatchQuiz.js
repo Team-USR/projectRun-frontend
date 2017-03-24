@@ -211,12 +211,13 @@ export default class MatchQuiz extends Component {
       }
     }
 
-    const styleClasses = `matchQuizContainer ${this.answerClass}`;
+    const styleClasses = `matchQuizContainer clearfix ${this.answerClass}`;
     const matchQuiz = (
       <div className={styleClasses}>
 
         <div className="matchQuizTitle">
           <h3> { quizIndex }. { matchQuizTitle } </h3>
+          <h4>Points: {this.props.question.points}</h4>
         </div>
 
         { /* Display Left Column */ }
@@ -247,6 +248,7 @@ MatchQuiz.propTypes = {
     id: PropTypes.number.isRequired,
     question: PropTypes.string.isRequired,
     match_default: PropTypes.string.isRequired,
+    points: PropTypes.number.isRequired,
     left: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       answer: PropTypes.string.isRequired,

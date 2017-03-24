@@ -145,6 +145,7 @@ export default class MixQuiz extends Component {
     return (
       <div className={styleClasses}>
         <h3>{this.props.index}. {this.props.question.question}</h3>
+        <h4>Points: {this.props.question.points}</h4>
         {this.renderBody()}
       </div>
     );
@@ -157,6 +158,7 @@ MixQuiz.propTypes = {
     id: PropTypes.number.isRequired,
     question: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
+    points: PropTypes.number.isRequired,
     sentences: PropTypes.arrayOf(PropTypes.object.isRequired),
     words: PropTypes.arrayOf(PropTypes.string.isRequired) }).isRequired,
   reviewState: PropTypes.bool,
