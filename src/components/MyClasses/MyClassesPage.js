@@ -374,7 +374,7 @@ export default class MyClassesPage extends Component {
           className: myClass.group_name,
           marks: myClass.marks ? Object.keys(myClass.marks).map(quizId => ({
             name: myClass.marks[quizId][0].quiz_title,
-            value: findHighestMark(myClass.marks[quizId]).score,
+            score: findHighestMark(myClass.marks[quizId]).score,
           })) : [],
         }))}
         numberOfClasses={this.state.sideBarContent.classes.length}

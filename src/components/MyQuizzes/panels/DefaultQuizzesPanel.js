@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Col } from 'react-bootstrap';
-import { PieCh } from '../../Charts';
+import { PieCh, LineCh } from '../../Charts';
 import { STUDENT, TEACHER } from '../../../constants';
 import { formatDataForStudentQuizPie,
-  formatDataForTeacherQuizPie } from '../../../helpers';
+  formatDataForTeacherQuizPie, compareSubmitDates } from '../../../helpers';
 
 export default class DefaultQuizzesPanel extends Component {
 
@@ -25,12 +25,20 @@ export default class DefaultQuizzesPanel extends Component {
         <h1><b>My Quizzes</b></h1>
         <hr />
         {this.props.quizzes.length > 0 ?
-          (<Col xs={8} xsOffset={2}>
+          (<Col sm={8} smOffset={2}>
             <PieCh data={data} />
           </Col>)
           : <h3>You have {this.props.userT === STUDENT ? 'no assigned' : 'not created any'} quizzes.</h3>
         }
-        <hr />
+        <br />
+        { this.props.userT === STUDENT &&
+          (<Col sm={8} smOffset={1}>
+            <LineCh
+              data={this.props.submittedQuizzes.sort((a, b) => compareSubmitDates(a.date, b.date))}
+              color="grey"
+            />
+          </Col>)
+        }
       </div>
     );
   }
@@ -42,6 +50,11 @@ DefaultQuizzesPanel.propTypes = {
     id: React.PropTypes.number,
     status: React.PropTypes.string,
     title: React.PropTypes.String,
+  })).isRequired,
+  submittedQuizzes: React.PropTypes.arrayOf(React.PropTypes.shape({
+    name: React.PropTypes.string,
+    date: React.PropTypes.string,
+    score: React.PropTypes.number,
   })).isRequired,
   userT: React.PropTypes.string.isRequired,
 };

@@ -72,7 +72,6 @@ export default class MyQuizzesPage extends Component {
     })
     .then((res) => {
       const highestGradeSessions = getLastHighestGrades(res.data);
-      console.log(highestGradeSessions);
       this.setState({ submittedQuizzes: highestGradeSessions });
     });
   }
@@ -152,6 +151,7 @@ export default class MyQuizzesPage extends Component {
         userT={this.state.userT}
         quizzes={this.state.userT === STUDENT ?
           this.state.sideBarContent.session : this.state.sideBarContent.quizzes}
+        submittedQuizzes={this.state.submittedQuizzes}
       />);
     }
     if (this.state.userT === TEACHER) {
