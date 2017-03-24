@@ -30,6 +30,7 @@ export default class DefaultQuizzesPanel extends Component {
           </Col>)
           : <h3>You have {this.props.userT === STUDENT ? 'no assigned' : 'not created any'} quizzes.</h3>
         }
+        <hr />
       </div>
     );
   }

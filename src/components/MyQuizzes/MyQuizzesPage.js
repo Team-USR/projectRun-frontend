@@ -7,6 +7,7 @@ import { SideBarWrapper } from '../SideBar/index';
 import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { BrandSpinner } from '../utils';
 import { DefaultQuizzesPanel } from './panels';
+import { getLastHighestGrades } from '../../helpers';
 
 export default class MyQuizzesPage extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ export default class MyQuizzesPage extends Component {
       sideBarContent: {},
       loadingSideBar: true,
       contentLoading: true,
+      submittedQuizzes: [],
       userT: STUDENT,
     };
   }
@@ -63,6 +65,15 @@ export default class MyQuizzesPage extends Component {
       const newSideBarContent = { session: [] };
       this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
       this.updateCurrentQuiz('default');
+    });
+    axios({
+      url: `${API_URL}/users/mine/submitted`,
+      headers: this.props.userToken,
+    })
+    .then((res) => {
+      const highestGradeSessions = getLastHighestGrades(res.data);
+      console.log(highestGradeSessions);
+      this.setState({ submittedQuizzes: highestGradeSessions });
     });
   }
   requestTeacherData() {
