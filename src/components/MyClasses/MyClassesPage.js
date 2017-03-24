@@ -69,7 +69,8 @@ export default class MyClassesPage extends Component {
             content: newContent,
             requestsList: studentsResponse.data.pending_requests_users,
             invitedList: studentsResponse.data.pending_invite_users,
-          })
+          });
+        })
         .catch(() => {
           this.setState({ panelType: 'my_classes_default_panel' });
         });
