@@ -11,6 +11,7 @@ import {
   CreateClassPanel,
   ClassSearchPanel,
 } from './panels';
+import { LineCh } from '../Charts';
 
 let timeout = null;
 let classesTimeout = null;
@@ -237,6 +238,7 @@ export default class MyClassesPanel extends Component {
       <DefaultClassesPanel
         userType={this.props.userType}
         numberOfClasses={this.props.numberOfClasses}
+        averagePerCreatedClass={this.props.averagePerCreatedClass}
       />
     );
     const classTitle = (
@@ -324,6 +326,8 @@ export default class MyClassesPanel extends Component {
         );
       }
     } else if (this.props.userType === STUDENT) {
+      const data = this.props.marksPerQuizPerClass.filter(myClass =>
+        myClass.className === this.props.classTitle);
       if (this.props.panelType === 'show_selected_class') {
         element = (
           <div>
@@ -332,6 +336,10 @@ export default class MyClassesPanel extends Component {
               userType={this.props.userType}
               quizzes={this.props.content.quizzes}
             />
+            <hr />
+            {data[0].marks.length > 0 ?
+              <div className="col-md-9"><LineCh color="grey" data={data[0].marks} /></div>
+              : <h3>You have no submitted quiz for this class.</h3>}
           </div>
         );
       } else if (this.props.panelType === 'show_search_class_panel') {
@@ -376,6 +384,17 @@ MyClassesPanel.propTypes = {
   allQuizzes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   allStudents: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   numberOfClasses: PropTypes.number.isRequired,
+  averagePerCreatedClass: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string,
+    value: PropTypes.number,
+  })),
+  marksPerQuizPerClass: PropTypes.arrayOf(PropTypes.shape({
+    className: PropTypes.string,
+    marks: PropTypes.arrayOf(PropTypes.shape({
+      name: PropTypes.string,
+      value: PropTypes.number,
+    })),
+  })),
   handleSaveNewClassClick: PropTypes.func.isRequired,
   handleSaveAssignedQuizzes: PropTypes.func.isRequired,
   handleSaveEnrolledStudents: PropTypes.func.isRequired,
@@ -387,4 +406,9 @@ MyClassesPanel.propTypes = {
   requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   refreshStudents: PropTypes.func.isRequired,
   invitedList: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
+
+MyClassesPanel.defaultProps = {
+  averagePerCreatedClass: [],
+  marksPerQuizPerClass: [],
 };

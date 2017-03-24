@@ -7,6 +7,7 @@ import { SideBarWrapper } from '../SideBar/index';
 import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { BrandSpinner } from '../utils';
 import { DefaultQuizzesPanel } from './panels';
+import { getLastHighestGrades } from '../../helpers';
 
 export default class MyQuizzesPage extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ export default class MyQuizzesPage extends Component {
       sideBarContent: {},
       loadingSideBar: true,
       contentLoading: true,
+      submittedQuizzes: [],
       userT: STUDENT,
     };
   }
@@ -63,6 +65,14 @@ export default class MyQuizzesPage extends Component {
       const newSideBarContent = { session: [] };
       this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
       this.updateCurrentQuiz('default');
+    });
+    axios({
+      url: `${API_URL}/users/mine/submitted`,
+      headers: this.props.userToken,
+    })
+    .then((res) => {
+      const highestGradeSessions = getLastHighestGrades(res.data);
+      this.setState({ submittedQuizzes: highestGradeSessions });
     });
   }
   requestTeacherData() {
@@ -137,7 +147,12 @@ export default class MyQuizzesPage extends Component {
 //    console.log("rendering",this.state.currentID);
     let element = <h1><b> My Quizzes</b></h1>;
     if (this.state.panelType === 'default') {
-      element = (<DefaultQuizzesPanel />);
+      element = (<DefaultQuizzesPanel
+        userT={this.state.userT}
+        quizzes={this.state.userT === STUDENT ?
+          this.state.sideBarContent.session : this.state.sideBarContent.quizzes}
+        submittedQuizzes={this.state.submittedQuizzes}
+      />);
     }
     if (this.state.userT === TEACHER) {
       if (this.state.panelType === 'reviewer') {

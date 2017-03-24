@@ -177,7 +177,7 @@ export default class SideBarQuizzes extends Component {
           </Nav>
           <Nav key={'teacher'} >
             <Accordion defaultActiveKey={this.state.activePanel}>
-              <Panel header={`Unpublished (${unpublishedContent.length})`} eventKey="1">
+              <Panel header={`Not published (${unpublishedContent.length})`} eventKey="1">
                 {
         unpublishedContent.map((item, index) => {
           if (index < maxUnpublished) {
