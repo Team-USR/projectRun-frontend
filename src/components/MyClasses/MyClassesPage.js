@@ -25,6 +25,7 @@ export default class MyClassesPage extends Component {
         // { id: 12, name: 'Blercu' },
       ],
       requestsList: [],
+      invitedList: [],
       sideBarContent: { classes: [] },
       content: { quizzes: [], students: [] },
       userT: STUDENT,
@@ -66,11 +67,21 @@ export default class MyClassesPage extends Component {
           this.setState({
             panelType: 'show_selected_class',
             content: newContent,
-            requestsList: studentsResponse.data.pending_requests_users });
+            requestsList: studentsResponse.data.pending_requests_users,
+            invitedList: studentsResponse.data.pending_invite_users,
+          });
+        })
+        .catch(() => {
+          this.setState({ panelType: 'my_classes_default_panel' });
         });
       } else if (this.state.userT === STUDENT) {
         this.setState({ panelType: 'show_selected_class', content: newContent });
       }
+    })
+    .catch(() => {
+      cookie.remove('current-class-id');
+      cookie.remove('current-class-title');
+      this.setState({ panelType: 'my_classes_default_panel' });
     });
   }
   refreshStudents(currentClassId, ptyp) {
@@ -92,11 +103,16 @@ export default class MyClassesPage extends Component {
           this.setState({
             panelType: ptyp,
             content: newContent,
-            requestsList: studentsResponse.data.pending_requests_users });
+            requestsList: studentsResponse.data.pending_requests_users,
+            invitedList: studentsResponse.data.pending_invite_users,
+          });
         });
       } else if (this.state.userT === STUDENT) {
         this.setState({ panelType: ptyp, content: newContent });
       }
+    })
+    .catch(() => {
+      this.setState({ panelType: 'my_classes_default_panel' });
     });
   }
   updateAllStudents(object) {
@@ -341,6 +357,7 @@ export default class MyClassesPage extends Component {
         handleDeleteClass={id => this.handleDeleteClass(id)}
         manageSearch={value => this.manageSearch(value)}
         requestsList={this.state.requestsList}
+        invitedList={this.state.invitedList}
         refreshStudents={(classID, ptype) => this.refreshStudents(classID, ptype)}
       />);
     return element;
