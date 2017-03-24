@@ -128,7 +128,7 @@ export default class QuizEditorMainPage extends Component {
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(
       element => element !== null,
     );
-    // console.log('filtered', filteredQuestions, 'finishfiltered');
+    console.log('filtered', filteredQuestions, 'finishfiltered');
     this.setState({ loading: true, submitedQuestions: filteredQuestions });
 //    console.log("----------");
 //    console.log(filteredQuestions);
@@ -204,16 +204,18 @@ export default class QuizEditorMainPage extends Component {
     // console.log(questionObject);
   }
 
-  collectCrossObject(data, questionTitle, questionID) {
-    // const questionObject = {
-    //   question: questionTitle,
-    //   type: 'cross',
-    //   sentences_attributes: data,
-    // };
-    // const inputQ = this.state.submitedQuestions;
-    // inputQ.quiz.questions_attributes[questionID] = questionObject;
-    // this.setState({ submitedQuestions: inputQ });
-    // console.log(questionObject);
+  collectCrossObject(question, metaAtributes, rowsAttributes, hintsAttributes, questionID) {
+    const newQuestion = {
+      question,
+      type: 'cross',
+      metadata_attributes: metaAtributes,
+      rows_attributes: rowsAttributes,
+      hints_attributes: hintsAttributes,
+    };
+
+    const inputQ = this.state.submitedQuestions;
+    inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.setState({ submitedQuestions: inputQ });
   }
 
   addQuiz(quizType, questionObj) {
@@ -319,8 +321,10 @@ export default class QuizEditorMainPage extends Component {
           resultsState={this.state.resultsState}
           index={id}
           key={`cross${id}`}
-          updateParent={(answersAttributes, qObject, ind) =>
-            this.collectCrossObject(answersAttributes, qObject, ind)}
+          updateParent={(questionTitle, metaAtributes, rowsAttributes, hintsAttributes) =>
+            this.collectCrossObject(
+              questionTitle, metaAtributes, rowsAttributes, hintsAttributes, id,
+            )}
         />);
       questionObject = { id, question, buttonGroup };
     }

@@ -13,10 +13,13 @@
     border: 3px solid #000000;
     box-shadow: 5px 5px 5px #888888;
     .blackSquare {
+      height: 32px;
+      width: 32px;
       background-color: black;
     }
 
     .squareContent {
+      width: 32px;
       position: relative;
 
       .hintNumber {
@@ -30,15 +33,10 @@
     }
   }
 
-  td {
-
-    border-color: black !important;
-  }
 
   table {
     border-collapse: collapse;
     table-layout: fixed;
-    width: 160px;
   }
 
   tr {
@@ -56,12 +54,6 @@
 
   td:first-child {
     border-left: 0px !important;
-  }
-
-  .rightColumn, .leftColumn {
-    width: 50%;
-    float: left;
-    height: 350px;
   }
 
 }

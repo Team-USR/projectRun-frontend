@@ -26,235 +26,152 @@ export default class CrossQuizGenerator extends Component {
   }
 
   componentWillMount() {
-    console.log('Will Mount');
+    // console.log('Will Mount');
 
     const content = this.props.content;
 
-    const board = content.rows.map(value => ({ row: value }));
-
     if (content) {
-      console.log('reviewState');
-      // this.handleGenerateBoard();
+      // console.log('reviewState');
+      const board = content.rows.map(value => ({ row: value }));
       this.generateWordsForEditor(board);
-
-      const reversedHints = content.hints.reverse();
 
       this.setState({
         showBoard: true,
         boardWidth: content.width,
         boardHeight: content.height,
         crossQuizQuestion: content.question,
-        hintsAttributes: reversedHints,
         boardValues: board,
       });
+
+      const questionTitle = content.question;
+      const metaAtributes = { width: content.width, height: content.height };
+      const rowsAttributes = board;
+      const hintsAttributes = content.hints;
+
+      // Send Match Data to MainQuizGenerator
+      this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
     }
   }
 
-  componentDidMount() {
-    // console.log('DID MOUNT');
-    // this.updateHintsAttributes();
-
-    // console.log(this.state);
-  }
-
-
-  getHintByCoordintes(x, y) {
-    this.toReplace = 'toReplace';
-    // const hints = this.props.content.hints;
-    const hints = [
-      { row: 0,
-        column: 0,
-        hint: ' Why AB?',
-        across: true,
-      },
-      { row: 0,
-        column: 1,
-        hint: ' Why BC?',
-        across: false,
-      },
-      { row: 1,
-        column: 1,
-        hint: ' Why CD?',
-        across: true,
-      },
-      { row: 1,
-        column: 2,
-        hint: ' Why DE?',
-        across: false,
-      },
-      { row: 2,
-        column: 2,
-        hint: ' Why EF?',
-        across: true,
-      },
-      { row: 2,
-        column: 3,
-        hint: ' Why FG?',
-        across: false,
-      },
-      { row: 3,
-        column: 3,
-        hint: ' Why GH?',
-        across: true,
-      },
-      { row: 3,
-        column: 4,
-        hint: ' Why HI?',
-        across: false,
-      },
-    ];
-    for (let i = 0; i < hints.length; i += 1) {
-      if (hints[i].row === x && hints[i].column === y) {
-        return hints[i];
+  getHintByCoordintes(x, y, isAcross) {
+    if (this.props.content) {
+      const hints = this.props.content.hints;
+      for (let i = 0; i < hints.length; i += 1) {
+        if (hints[i].row === x && hints[i].column === y && isAcross === hints[i].across) {
+          return hints[i];
+        }
       }
     }
     return -1;
   }
 
-  generateWordsForEditor(board) {
-    // console.log(board);
-
-    const newAcrossWords = [];
-    const newDownWords = [];
-
-    // Store the positions for Rows - Across Words
-    for (let i = 0; i < this.props.content.height; i += 1) {
-      const rowString = board[i].row;
-      const rowSplitArray = rowString.split('*');
-
-      const generatedRowWords = [];
-      let pos = 0;
-      let wordFound = false;
-
-      rowSplitArray.map((element) => {
-        if (!wordFound && element === '') {
-          pos += 1;
-        } else if (!wordFound && element !== '') {
-          if (element.length > 1) {
-            generatedRowWords.push({
-              across: true,
-              value: element,
-              row: i,
-              column: pos,
-              hintObj: this.getHintByCoordintes(i, pos),
-            });
-          }
-          pos += element.length;
-          wordFound = true;
-        } else if (wordFound && element === '') {
-          pos += 1;
-        } else if (wordFound && element !== '') {
-          if (element.length > 1) {
-            generatedRowWords.push({
-              across: true,
-              value: element,
-              row: i,
-              column: pos + 1,
-              hintObj: this.getHintByCoordintes(i, pos + 1),
-            });
-          }
-          pos += element.length + 1;
-        }
-        return element;
-      },
-      );
-
-      // console.log(generatedRowWords);
-      newAcrossWords.push(generatedRowWords);
+  getWordsAndPositions(myString, x, y, type) {
+    let isAcross = true;
+    if (type === 'down') {
+      isAcross = false;
     }
 
-    // Store the positions for Columns - Down Words
-    for (let j = 0; j < this.props.content.width; j += 1) {
-      let colString = '';
-      for (let i = 0; i < this.props.content.height; i += 1) {
-        colString += board[i].row[j];
-      }
+    const rowString = myString;
+    const rowSplitArray = rowString.split('*');
 
-      const generatedColWords = [];
-      const colSplitArray = colString.split('*');
+    const generatedWords = [];
+    let pos = 0;
+    let wordFound = false;
 
-      let pos = 0;
-      let wordFound = false;
-      colSplitArray.map((element) => {
-        if (!wordFound && element === '') {
-          pos += 1;
-        } else if (!wordFound && element !== '') {
-          if (element.length > 1) {
-            generatedColWords.push({
-              across: true,
+    rowSplitArray.map((element) => {
+      if (!wordFound && element === '') {
+        pos += 1;
+      } else if (!wordFound && element !== '') {
+        if (element.length > 1) {
+          let newWordObj = {};
+          if (type === 'across') {
+            newWordObj = {
+              across: isAcross,
+              value: element,
+              row: x,
+              column: pos,
+              hintObj: this.getHintByCoordintes(x, pos, isAcross),
+            };
+          } else if (type === 'down') {
+            newWordObj = {
+              across: isAcross,
               value: element,
               row: pos,
-              column: j,
-              hintObj: this.getHintByCoordintes(pos, j),
-            });
+              column: y,
+              hintObj: this.getHintByCoordintes(pos, y, isAcross),
+            };
           }
-          pos += element.length;
-          wordFound = true;
-        } else if (wordFound && element === '') {
-          pos += 1;
-        } else if (wordFound && element !== '') {
-          if (element.length > 1) {
-            generatedColWords.push({
-              across: true,
+          generatedWords.push(newWordObj);
+        }
+
+        pos += element.length;
+        wordFound = true;
+      } else if (wordFound && element === '') {
+        pos += 1;
+      } else if (wordFound && element !== '') {
+        if (element.length > 1) {
+          let newWordObj = {};
+          if (type === 'across') {
+            newWordObj = {
+              across: isAcross,
+              value: element,
+              row: x,
+              column: pos + 1,
+              hintObj: this.getHintByCoordintes(x, pos + 1, isAcross),
+            };
+          } else if (type === 'down') {
+            newWordObj = {
+              across: isAcross,
               value: element,
               row: pos + 1,
-              column: j,
-              hintObj: this.getHintByCoordintes(pos + 1, j),
-            });
+              column: y,
+              hintObj: this.getHintByCoordintes(pos + 1, y, isAcross),
+            };
           }
-          pos += element.length + 1;
+          generatedWords.push(newWordObj);
         }
-        return element;
-      },
-      );
+        pos += element.length + 1;
+      }
+      return element;
+    },
+    );
 
-      newDownWords.push(generatedColWords);
-    }
-
-    console.log(newAcrossWords, newDownWords);
-    this.setState({ acrossWords: newAcrossWords, downWords: newDownWords });
+    return generatedWords;
   }
 
-
-  handleWidthChange(e) {
-    const target = e.target;
-    const value = parseInt(target.value, 10);
-    this.boardWidth = value;
-  }
-
-  handleHeightChange(e) {
-    const target = e.target;
-    const value = parseInt(target.value, 10);
-    this.boardHeight = value;
-  }
-
-  updateHintsAttributes() {
+  updateHintsAttributes(acrossWords, downWords) {
     const newHintsAttributes = [];
 
-    this.state.acrossWords.map((array) => {
+
+    acrossWords.map((array) => {
       array.map((obj) => {
-        // console.log(obj);
+        let hintValue = '';
+        if (obj.hintObj !== -1) {
+          hintValue = obj.hintObj.hint;
+        }
+
         newHintsAttributes.push({
-          // word: obj.word,
-          hint: obj.clue,
-          row: obj.posX,
-          column: obj.posY,
-          across: true,
+          across: obj.across,
+          hint: hintValue,
+          row: obj.row,
+          column: obj.column,
         });
         return obj;
       });
       return array;
     });
 
-    this.state.downWords.map((array) => {
+    downWords.map((array) => {
       array.map((obj) => {
-        // console.log(obj);
+        let hintValue = '';
+        if (obj.hintObj !== -1) {
+          hintValue = obj.hintObj.hint;
+        }
         newHintsAttributes.push({
-          // word: obj.word,
-          hint: obj.clue,
-          row: obj.posX,
-          column: obj.posY,
-          across: false,
+          across: obj.across,
+          hint: hintValue,
+          row: obj.row,
+          column: obj.column,
         });
         return obj;
       });
@@ -262,7 +179,7 @@ export default class CrossQuizGenerator extends Component {
     });
 
     // console.log('this', newHintsAttributes);
-
+    // console.log(this.state);
     this.setState({ hintsAttributes: newHintsAttributes });
   }
 
@@ -273,7 +190,7 @@ export default class CrossQuizGenerator extends Component {
     this.setState({ crossQuizQuestion: value });
 
     // Update hintsAttributes Object
-    this.updateHintsAttributes();
+    this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
 
     const questionTitle = value;
     const metaAtributes = { width: this.state.boardWidth, height: this.state.boardHeight };
@@ -316,7 +233,7 @@ export default class CrossQuizGenerator extends Component {
     this.generateWords(this.state.boardValues, i, j);
 
     // Update hintsAttributes Object
-    this.updateHintsAttributes();
+    this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
 
     const questionTitle = this.state.crossQuizQuestion;
     const metaAtributes = { width: this.state.boardWidth, height: this.state.boardHeight };
@@ -401,7 +318,7 @@ export default class CrossQuizGenerator extends Component {
 
 
       // Update hintsAttributes Object
-      this.updateHintsAttributes();
+      this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
 
       const questionTitle = this.state.crossQuizQuestion;
       const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
@@ -414,145 +331,17 @@ export default class CrossQuizGenerator extends Component {
     }
   }
 
-  generateWords(board, row, col) {
-    // const rowString = this.state.boardValues[row].row;
-
-    console.log(board);
-
-    const rowString = board[row].row;
-    const rowSplitArray = rowString.split('*');
-
-    const generatedRowWords = rowSplitArray.filter((word) => {
-      if (word.length > 1) {
-        return true;
-      }
-      return false;
-    });
-
-    let colString = '';
-    for (let i = 0; i < this.state.boardHeight; i += 1) {
-      // colString += this.state.boardValues[i].row[col];
-      colString += board[i].row[col];
-    }
-
-    const colSplitArray = colString.split('*');
-    const generatedColWords = colSplitArray.filter((word) => {
-      if (word.length > 1) {
-        return true;
-      }
-      return false;
-    });
-/*
-    const newRowPosX = row;
-    const newRowPosY = col;
-
-    // console.log(generatedRowWords);
-    // console.log(generatedColWords);
-
-    // Update generatedWords Arrays
-    const newDownWords = this.state.downWords;
-
-    newDownWords[col] = generatedColWords.map((value, index) => {
-      let obj = {};
-      if (newDownWords[col][index] && newDownWords[col][index].clue) {
-        obj = { word: value,
-          clue: newDownWords[col][index].clue,
-          posX: newRowPosX,
-          posY: newRowPosY,
-        };
-      } else {
-        obj = {
-          word: value,
-          clue: '',
-          posX: newRowPosX,
-          posY: newRowPosY,
-        };
-      }
-      return obj;
-    });
-
-    // let actionType = '';
-    //
-    // if (this.state.boardValues[row].row[col] !== '*') {
-    //   actionType = 'modified';
-    // } else {
-    //   actionType = 'deleted';
-    // }
-
-    // console.log(actionType);
-
-      // ({ word: value, clue: newDownWords[col][index].clue }));
-    const newAcrossWords = this.state.acrossWords;
-    const newAccrosArray = generatedRowWords.map((value, index) => {
-      // console.log('objes');
-      let obj = {
-        word: value,
-        clue: '',
-        posX: row,
-        posY: col,
-      };
-
-      // if (actionType === 'deleted') {
-      //
-      // } else if (actionType === 'modified') {
-        // newAcrossWords.splice(1, index + 1);
-      if (newAcrossWords[row] && newAcrossWords[row][index]) {
-        if (newAcrossWords[row].length === generatedRowWords.length) {
-          obj = {
-            word: value,
-            clue: newAcrossWords[row][index].clue,
-            posX: newAcrossWords[row][index].posX,
-            posY: newAcrossWords[row][index].posY,
-          };
-        } else if (newAcrossWords[row].length > generatedRowWords.length) {
-          console.log('MERGED');
-        }
-      }
-      // }
-
-      return obj;
-    });
-
-    if (newAccrosArray.length > 0) {
-      newAcrossWords[row] = newAccrosArray;
-    }
-
-    // if (this.state.boardValues[row].row[col] !== '*') {
-    //   //   console.log('HERE');
-    //   for (let j = col - 1; j >= 0; j -= 1) {
-    //     newColPosY = 0;
-    //     if (this.state.boardValues[row].row[j] === '*') {
-    //       newColPosY = j + 1;
-    //       break;
-    //     }
-    //   }
-    // } else {
-    //
-    // }
-
-    // console.log(newAcrossWords[row].length);
-
-    // if (newAcrossWords[row].length < this.state.acrossWords.length) {
-    //   newAcrossWords.filter((obj, index) => {
-    //     if (
-    //       this.state.acrossWords[row][index] &&
-    //       newAcrossWords[row][index].clue !== this.state.acrossWords[row][index].clue
-    //     ) {
-    //       return {
-    //         word: newAcrossWords[row][index],
-    //         clue: this.state.acrossWords[row][index + 1].clue,
-    //       }
-    //       ;
-    //     }
-    //     return newAcrossWords[row][index];
-    //   });
-    // }
-*/
-    // console.log(generatedColWords, generatedRowWords);
-    // this.setState({ downWords: newDownWords, acrossWords: newAcrossWords });
-    this.setState({ downWords: generatedColWords, acrossWords: generatedRowWords });
+  handleHeightChange(e) {
+    const target = e.target;
+    const value = parseInt(target.value, 10);
+    this.boardHeight = value;
   }
 
+  handleWidthChange(e) {
+    const target = e.target;
+    const value = parseInt(target.value, 10);
+    this.boardWidth = value;
+  }
 
   handleClueChange(e, x, y, clueType) {
     const target = e.target;
@@ -562,18 +351,18 @@ export default class CrossQuizGenerator extends Component {
 
     if (clueType === 'across') {
       const wordObject = newAcrossWords[x][y];
-      wordObject.clue = value;
+      wordObject.hintObj = { hint: value };
       newAcrossWords[x][y] = wordObject;
       this.setState({ acrossWords: newAcrossWords });
     } else if (clueType === 'down') {
       const wordObject = newDownWords[x][y];
-      wordObject.clue = value;
+      wordObject.hintObj = { hint: value };
       newDownWords[x][y] = wordObject;
       this.setState({ downWords: newDownWords });
     }
 
     // Update hintsAttributes Object
-    this.updateHintsAttributes();
+    this.updateHintsAttributes(newAcrossWords, newDownWords);
 
     const questionTitle = this.state.crossQuizQuestion;
     const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
@@ -584,6 +373,53 @@ export default class CrossQuizGenerator extends Component {
     this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
 
     // console.log(this.state.acrossWords);
+  }
+
+  generateWordsForEditor(board) {
+    const newAcrossWords = [];
+    const newDownWords = [];
+
+    // Store the positions for Rows - Across Words
+    for (let i = 0; i < this.props.content.height; i += 1) {
+      const rowString = board[i].row;
+      const generatedRowWords = this.getWordsAndPositions(rowString, i, 0, 'across');
+      newAcrossWords.push(generatedRowWords);
+    }
+
+    // Store the positions for Columns - Down Words
+    for (let j = 0; j < this.props.content.width; j += 1) {
+      let colString = '';
+      for (let i = 0; i < this.props.content.height; i += 1) {
+        colString += board[i].row[j];
+      }
+
+      const generatedColWords = this.getWordsAndPositions(colString, 0, j, 'down');
+      newDownWords.push(generatedColWords);
+    }
+
+    this.updateHintsAttributes(newAcrossWords, newDownWords);
+    this.setState({ acrossWords: newAcrossWords, downWords: newDownWords });
+  }
+
+  generateWords(board, row, col) {
+    // console.log('generateWords - BOARD', board);
+
+    const rowString = board[row].row;
+    const newAcrossWords = this.state.acrossWords;
+    newAcrossWords[row] = this.getWordsAndPositions(rowString, row, col, 'across');
+
+
+    let colString = '';
+    for (let i = 0; i < this.state.boardHeight; i += 1) {
+      colString += board[i].row[col];
+    }
+
+    const newDownWords = this.state.downWords;
+    newDownWords[col] = this.getWordsAndPositions(colString, row, col, 'down');
+
+    // console.log(newAcrossWords, newDownWords);
+
+    this.setState({ downWords: newDownWords, acrossWords: newAcrossWords });
   }
 
   renderBoard() {
@@ -606,7 +442,11 @@ export default class CrossQuizGenerator extends Component {
   }
 
   renderClue(obj, x, y, clueType) {
-    console.log(x, y);
+    let hintValue = '';
+
+    if (obj.hintObj.hint) {
+      hintValue = obj.hintObj.hint;
+    }
 
     return (
       <div>
@@ -615,7 +455,7 @@ export default class CrossQuizGenerator extends Component {
           id="boardClue"
           type="text"
           onChange={e => this.handleClueChange(e, x, y, clueType)}
-          value={obj.hintObj.hint}
+          defaultValue={hintValue}
         />
       </div>
     );
@@ -653,7 +493,7 @@ export default class CrossQuizGenerator extends Component {
   }
 
   render() {
-    console.log('render', this.state);
+    // console.log('render', this.state);
     return (
       <div className="crossQuizGenerator">
         <Popup
@@ -710,6 +550,11 @@ CrossQuizGenerator.propTypes = {
   content: PropTypes.shape({
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-  }).isRequired,
+    hints: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  }),
   updateParent: PropTypes.func.isRequired,
+};
+
+CrossQuizGenerator.defaultProps = {
+  content: null,
 };

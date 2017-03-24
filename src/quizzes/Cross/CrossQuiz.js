@@ -24,49 +24,9 @@ export default class CrossQuiz extends Component {
   componentWillMount() {
     console.log(this.props);
 
-    // const hints = this.props.question.hints;
-    const hints = [
-      { row: 0,
-        column: 0,
-        hint: ' Why AB?',
-        across: true,
-      },
-      { row: 0,
-        column: 1,
-        hint: ' Why BC?',
-        across: false,
-      },
-      { row: 1,
-        column: 1,
-        hint: ' Why CD?',
-        across: true,
-      },
-      { row: 1,
-        column: 2,
-        hint: ' Why DE?',
-        across: false,
-      },
-      { row: 2,
-        column: 2,
-        hint: ' Why EF?',
-        across: true,
-      },
-      { row: 2,
-        column: 3,
-        hint: ' Why FG?',
-        across: false,
-      },
-      { row: 3,
-        column: 3,
-        hint: ' Why GH?',
-        across: true,
-      },
-      { row: 3,
-        column: 4,
-        hint: ' Why HI?',
-        across: false,
-      },
-    ];
+    const hints = this.props.question.hints;
+
+    console.log(hints);
     const width = this.props.question.width;
     const height = this.props.question.height;
     const newDownHints = [];
