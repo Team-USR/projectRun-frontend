@@ -66,8 +66,10 @@ class Choice extends Component {
     return (
       <div>
         <label htmlFor="0">
-          {this.renderLabel(value, choiceText, inReview)}
-          {choiceText}
+          <div className="singleMultipleChoice">
+            {this.renderLabel(value, choiceText, inReview)}
+            {choiceText}
+          </div>
         </label>
         <br />
       </div>

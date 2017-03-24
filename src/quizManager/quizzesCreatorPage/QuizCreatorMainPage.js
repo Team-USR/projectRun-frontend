@@ -285,10 +285,20 @@ export default class QuizCreatorMainPage extends Component {
     if (this.state.questions[index]) {
       displayIndex += 1;
       return (
-        <div className="generatorQuizContainer" key={`generatorQuizContainer${displayIndex}`}>
+        <div className="cardSection" key={`generatorQuizContainer${displayIndex}`}>
           <h3>{displayIndex}</h3>
-          <h5>Points:</h5><input type="number" onChange={event => this.setPoints(event, index)} />
           {this.state.questions[index].question}
+          <div style={{ textAlign: 'center' }}>
+            <label htmlFor="pointIn" style={{ marginRight: 10 }}>
+              <h5>Score:</h5>
+            </label>
+            <input
+              id="pointIn"
+              placeholder="ex: 10"
+              type="number"
+              onChange={event => this.setPoints(event, index)}
+            />
+          </div>
           {this.state.questions[index].buttonGroup}
         </div>
       );
@@ -300,13 +310,13 @@ export default class QuizCreatorMainPage extends Component {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>EDIT QUIZ</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}>Edit</Button>
         </div>);
     }
     if (!this.state.reviewState && !this.state.resultsState && this.state.questions.length > 0) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>Save</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}>Save</Button>
         </div>);
     } if (this.state.resultsState) {
       return (
@@ -348,6 +358,7 @@ export default class QuizCreatorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <input
+                    className="form-control"
                     id="titleInputs"
                     type="text"
                     key={'title'}
@@ -362,6 +373,7 @@ export default class QuizCreatorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <input
+                    className="form-control"
                     id="attemptsInput"
                     type="number"
                     placeholder="ex: 10"

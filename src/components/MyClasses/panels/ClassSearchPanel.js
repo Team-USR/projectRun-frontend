@@ -49,7 +49,6 @@ export default class ClassSearchPanel extends React.Component {
       headers: this.props.userToken,
     })
     .then((response) => {
-      console.log(response.data);
       const classes = this.state.pendingClasses;
       const sentClassesBools = this.state.sentClasses;
       const classesInfo = this.state.sentClassesInfo;
@@ -76,7 +75,7 @@ export default class ClassSearchPanel extends React.Component {
     if (this.state.pendingClasses !== undefined && this.state.pendingClasses !== null) {
       this.state.pendingClasses.map((cl) => {
         let col = '';
-        let createdAt = ''
+        let createdAt = '';
         this.state.sentClasses.map((item, index) => {
           if (item === cl.id) {
             col = 'green';
@@ -94,21 +93,19 @@ export default class ClassSearchPanel extends React.Component {
               <Col md={6}>
                 <div className="className">
                   {cl.name}
-
-
-                <Button
-                  style={{ color: col }}
-                  className="inviteButton"
-                  key={`invitation${cl.id}`}
-                  onClick={() => this.props.sendInvitation(cl.id)}
-                >
-                  <span className="glyphicon glyphicon-log-in" />
-                </Button>
+                  <Button
+                    style={{ color: col }}
+                    className="inviteButton"
+                    key={`invitation${cl.id}`}
+                    onClick={() => this.props.sendInvitation(cl.id)}
+                  >
+                    <span className="glyphicon glyphicon-log-in" />
+                  </Button>
                 </div>
               </Col>
               <Col md={6} key={`info${cl.id + 1}`}>
                 <div className="classInfo">
-                { createdAt }
+                  { createdAt }
                 </div>
               </Col>
             </Col>

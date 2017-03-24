@@ -381,15 +381,22 @@ export default class QuizEditorMainPage extends Component {
         points = this.state.quizInfo.questions[index].points;
       }
       return (
-        <div className="generatorQuizContainer" key={`generator${displayIndex}`}>
+        <div className="cardSection" key={`generator${displayIndex}`}>
           <h2>{displayIndex}</h2>
-          <h5>Points:</h5>
-          <input
-            type="number"
-            onChange={event => this.setPoints(event, index)}
-            defaultValue={points}
-          />
           {this.state.questions[index].question}
+
+          <div style={{ textAlign: 'center' }}>
+            <label htmlFor="pointIn" style={{ marginRight: 10 }}>
+              <h5>Score:</h5>
+            </label>
+            <input
+              id="pointIn"
+              placeholder="ex: 10"
+              type="number"
+              onChange={event => this.setPoints(event, index)}
+              defaultValue={points}
+            />
+          </div>
           {this.state.questions[index].buttonGroup}
         </div>
       );
@@ -401,13 +408,13 @@ export default class QuizEditorMainPage extends Component {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>EDIT QUIZ</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}>Edit</Button>
         </div>);
     }
     if (!this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}> Save</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}> Save</Button>
         </div>);
     } if (this.state.resultsState) {
       return (
@@ -446,6 +453,7 @@ export default class QuizEditorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <input
+                    className="form-control"
                     id="titleInputs"
                     type="text"
                     key={'title'}
@@ -461,6 +469,7 @@ export default class QuizEditorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <input
+                    className="form-control"
                     id="attemptsInput"
                     type="number"
                     placeholder="ex: 10"

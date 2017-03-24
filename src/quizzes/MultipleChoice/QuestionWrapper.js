@@ -86,16 +86,16 @@ class QuestionWrapper extends Component {
       }
     }
 
-    const styleClasses = `multipleChoiceContainer ${this.answerClass}`;
+    const styleClasses = `cardSection ${this.answerClass}`;
 
     return (
       <div className={styleClasses}>
         <div className="questionPanel">
           <Question question={question.question} index={index} key={question.id} />
-          <h4>Points: {question.points}</h4>
+          <h5>Points: {question.points}</h5>
         </div>
         <div style={styles.choiceContainer}>
-          <div style={styles.choicePanel}>
+          <div className="choicesListMultipleChoice">
             <form>
               { question.answers.map((choice, indexQ) =>
                 this.renderChoices(indexQ, choice, inReview))}

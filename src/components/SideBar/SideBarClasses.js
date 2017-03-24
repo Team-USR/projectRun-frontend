@@ -54,7 +54,7 @@ export default class SideBarClasses extends Component {
       return (
         <div>
           <Button
-            className="titleButton"
+            className="mainButton"
             onClick={() => this.props.handleSearchClassForRequestInvite()}
           >
             Join a class

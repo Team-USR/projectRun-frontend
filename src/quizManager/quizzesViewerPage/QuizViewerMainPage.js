@@ -199,8 +199,8 @@ export default class QuizViewerMainPage extends Component {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>BACK</Button>
-          <Button className="submitButton" onClick={this.isResultsMode}>SUBMIT</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}>BACK</Button>
+          <Button className="enjoy-css" onClick={this.isResultsMode}>SUBMIT</Button>
         </div>);
     }
     if (this.state.savedSession && !this.state.reviewState && !this.state.resultsState) {
@@ -209,16 +209,16 @@ export default class QuizViewerMainPage extends Component {
           <h5>
             { this.state.session.last_updated }
           </h5>
-          <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}> FINISH</Button>
         </div>);
     }
     if (!this.state.reviewState && !this.state.resultsState && !this.state.savedSession) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.saveSession}>
+          <Button className="enjoy-css" onClick={this.saveSession}>
             SAVE
           </Button>
-          <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}> FINISH</Button>
         </div>);
     } if (this.state.resultsState) {
       return (
@@ -341,7 +341,8 @@ export default class QuizViewerMainPage extends Component {
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         <h5 style={styles.quizTile}>Created by: {this.state.quizInfo.creator}</h5>
         {this.state.quizInfo.questions.map((question, index) =>
-        this.renderQuestions(question, index))}
+        this.renderQuestions(question, index))
+        }
         {this.renderSubmitPanel()}
       </div>
     );
