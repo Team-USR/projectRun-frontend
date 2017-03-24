@@ -35,7 +35,7 @@ class SingleChoiceQuiz extends Component {
   render() {
     const { index, question, reviewState, resultsState } = this.props;
     return (
-      <div className="questionBlock">
+      <div className="">
         {this.renderQuestion(question, index, reviewState, resultsState)}
       </div>
     );

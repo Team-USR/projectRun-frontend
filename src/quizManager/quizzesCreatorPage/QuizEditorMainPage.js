@@ -27,7 +27,7 @@ export default class QuizEditorMainPage extends Component {
       questions: [],
       inputQuestions: [{
       }],
-      submitedQuestions: { quiz: { title: '', questions_attributes: [] } },
+      submitedQuestions: { quiz: { title: '', negative_marking: false, questions_attributes: [] } },
       generatedQuizID: 0,
       answers: { quiz: [] },
       reviewState: false,
@@ -43,6 +43,7 @@ export default class QuizEditorMainPage extends Component {
     this.changeTitle = this.changeTitle.bind(this);
     this.changeAttempts = this.changeAttempts.bind(this);
     this.changeReleaseDate = this.changeReleaseDate.bind(this);
+    this.setNegativeMarking = this.setNegativeMarking.bind(this);
   }
   componentWillMount() {
     id = 0;
@@ -55,12 +56,16 @@ export default class QuizEditorMainPage extends Component {
        if (!response || (response && response.status !== 200)) {
          this.setState({ errorState: true });
        }
-      //  console.log(response.data.release_date);
+       console.log(response.data);
        const generatedQuiz = this.state.submitedQuestions;
        generatedQuiz.quiz.title = response.data.title;
        generatedQuiz.quiz.attempts = response.data.attempts;
        generatedQuiz.quiz.release_date = response.data.release_date;
-     //  console.log("LOADING FINISHED");
+       generatedQuiz.quiz.negative_marking = response.data.negative_marking;
+       response.data.questions.map((item, index) => {
+         item.points = response.data.questions[index].points;
+         return 0;
+       });
        setTimeout(() => {
          this.setState({
            loadingQuiz: false,
@@ -92,6 +97,11 @@ export default class QuizEditorMainPage extends Component {
         generatedQuiz.quiz.title = response.data.title;
         generatedQuiz.quiz.attempts = response.data.attempts;
         generatedQuiz.quiz.release_date = response.data.release_date;
+        generatedQuiz.quiz.negative_marking = response.data.negative_marking;
+        response.data.questions.map((item, index) => {
+          item.points = response.data.questions[index].points;
+          return 0;
+        });
         setTimeout(() => {
           this.setState({
             loadingQuiz: false,
@@ -103,9 +113,23 @@ export default class QuizEditorMainPage extends Component {
       });
     }
   }
-  // componentDidUpdate() {
-  //   this.scrollToBottom();
-  // }
+  setNegativeMarking() {
+    const value = this.state.submitedQuestions.quiz.negative_marking;
+    const newValue = !value;
+    const generatedQuiz = this.state.submitedQuestions;
+    generatedQuiz.quiz.negative_marking = newValue;
+    this.setState({ submitedQuestions: generatedQuiz });
+  }
+  setPoints(event, index) {
+    const inputQ = this.state.submitedQuestions;
+    if (inputQ.quiz.questions_attributes && inputQ.quiz.questions_attributes[index] &&
+    inputQ.quiz.questions_attributes[index].points !== undefined) {
+      inputQ.quiz.questions_attributes[index].points = event.target.value;
+    } else {
+      inputQ.quiz.questions_attributes[index] = { points: event.target.value };
+    }
+    this.setState({ submitedQuestions: inputQ });
+  }
   removeQuiz(index) {
     displayIndex = 0;
     const remQuestions = this.state.questions;
@@ -153,11 +177,19 @@ export default class QuizEditorMainPage extends Component {
 
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
-
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+      pointsAssigned = this.state.quizInfo.questions[questionID].points;
+    }
     let quiz = {};
     if (type === 'match') {
       quiz = {
         question: question.question,
+        points: pointsAssigned,
         match_default_attributes: {
           default_text: question.match_default,
         },
@@ -168,36 +200,54 @@ export default class QuizEditorMainPage extends Component {
         quiz.match_default_attributes.default_text = 'Choose an option';
       }
     } if (type === 'multiple_choice') {
-      quiz = { question, type, answers_attributes: answersAttributes };
+      quiz = { question, type, points: pointsAssigned, answers_attributes: answersAttributes };
     } if (type === 'single_choice') {
-      quiz = { question, type, answers_attributes: answersAttributes };
+      quiz = { question, type, points: pointsAssigned, answers_attributes: answersAttributes };
     }
-
     inputQ.quiz.questions_attributes[questionID] = quiz;
     this.setState({ submitedQuestions: inputQ });
   }
 
   collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+    const inputQ = this.state.submitedQuestions;
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+      pointsAssigned = this.state.quizInfo.questions[questionID].points;
+    }
     const newQuestion = {
       question: 'Fill in the gaps:',
       type: 'cloze',
+      points: pointsAssigned,
       cloze_sentence_attributes: {
         text: sentenceAttributes,
       },
       gaps_attributes: gapsAttributes,
     };
-    const inputQ = this.state.submitedQuestions;
+
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
     this.setState({ submitedQuestions: inputQ });
   }
 
   collectMixObject(data, questionTitle, questionID) {
+    const inputQ = this.state.submitedQuestions;
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+      pointsAssigned = this.state.quizInfo.questions[questionID].points;
+    }
     const questionObject = {
       question: questionTitle,
       type: 'mix',
+      points: pointsAssigned,
       sentences_attributes: data,
     };
-    const inputQ = this.state.submitedQuestions;
     inputQ.quiz.questions_attributes[questionID] = questionObject;
     this.setState({ submitedQuestions: inputQ });
     // console.log(questionObject);
@@ -312,7 +362,6 @@ export default class QuizEditorMainPage extends Component {
     const generatedQuiz = this.state.submitedQuestions;
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
-//    console.log(this.state.submitedQuestions);
   }
   changeAttempts(event) {
     const attempted = this.state.submitedQuestions;
@@ -325,6 +374,7 @@ export default class QuizEditorMainPage extends Component {
     releaseDate.quiz.release_date = value;
     this.setState({ submitedQuestions: releaseDate, defaultDate: value });
   }
+
   renderQuestions() {
     displayIndex = 0;
     return (
@@ -335,10 +385,27 @@ export default class QuizEditorMainPage extends Component {
   renderGroup(object, index) {
     if (this.state.questions[index]) {
       displayIndex += 1;
+      let points = 0;
+      if (this.state.quizInfo.questions && this.state.quizInfo.questions[index]) {
+        points = this.state.quizInfo.questions[index].points;
+      }
       return (
-        <div className="generatorQuizContainer" key={`generator${displayIndex}`}>
+        <div className="cardSection" key={`generator${displayIndex}`}>
           <h2>{displayIndex}</h2>
           {this.state.questions[index].question}
+
+          <div style={{ textAlign: 'center' }}>
+            <label htmlFor="pointIn" style={{ marginRight: 10 }}>
+              <h5>Score:</h5>
+            </label>
+            <input
+              id="pointIn"
+              placeholder="ex: 10"
+              type="number"
+              onChange={event => this.setPoints(event, index)}
+              defaultValue={points}
+            />
+          </div>
           {this.state.questions[index].buttonGroup}
         </div>
       );
@@ -350,13 +417,13 @@ export default class QuizEditorMainPage extends Component {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>EDIT QUIZ</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}>Edit</Button>
         </div>);
     }
     if (!this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}> Save</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}> Save</Button>
         </div>);
     } if (this.state.resultsState) {
       return (
@@ -395,6 +462,7 @@ export default class QuizEditorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <input
+                    className="form-control"
                     id="titleInputs"
                     type="text"
                     key={'title'}
@@ -410,6 +478,7 @@ export default class QuizEditorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <input
+                    className="form-control"
                     id="attemptsInput"
                     type="number"
                     placeholder="ex: 10"
@@ -424,6 +493,19 @@ export default class QuizEditorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <Calendar key={'calendar'} format="DD/MM/YYYY" date={this.state.submitedQuestions.quiz.release_date} onChange={this.changeReleaseDate} computableFormat={'YYYY-MM-DD'} />
+                </Col>
+              </Col>
+              <Col md={12}>
+                <Col md={6}>
+                  <h5 className="headingLabel">Negative marking:</h5>
+                </Col>
+                <Col md={6} style={{ textAlign: 'left', marginTop: 5 }}>
+                  <input
+                    id="negativeMarkingBox"
+                    type="checkbox"
+                    defaultValue={this.state.submitedQuestions.quiz.negative_marking}
+                    onChange={this.setNegativeMarking}
+                  />
                 </Col>
               </Col>
             </div>

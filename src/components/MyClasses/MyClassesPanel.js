@@ -346,6 +346,7 @@ export default class MyClassesPanel extends Component {
               moveToRequests={item => this.moveToRequests(item)}
               sendInvitation={id => this.sendInvitation(id)}
               sentClasses={this.state.sentClasses}
+              userToken={this.props.userToken}
             />
           </div>
         );

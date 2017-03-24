@@ -215,23 +215,24 @@ export default class QuizCreatorReviewer extends Component {
     if (!this.state.published) {
       return (
         <div className="mainQuizViewerBlock">
-          <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
+          <h1>{this.state.quizInfo.title}</h1>
           <h5>Attempts remaining: {this.state.quizInfo.attempts}</h5>
           <h5>Release date: {this.state.quizInfo.release_date}</h5>
+          <h5>Negative marking: {this.state.quizInfo.negative_marking}</h5>
           {this.state.quizInfo.questions.map((question, index) =>
           this.renderQuestions(question, index))}
           <div className="submitPanel">
             <Button
-              className="submitButton"
+              className="enjoy-css"
               onClick={() => this.props.handleSubmitButton()}
             >
-              EDIT QUIZ
+              Edit
             </Button>
             <Button
-              className="submitButton"
+              className="enjoy-css"
               onClick={() => this.publishQuiz()}
             >
-              Publish quiz
+              Publish
             </Button>
           </div>
         </div>
@@ -245,10 +246,10 @@ export default class QuizCreatorReviewer extends Component {
           this.renderQuestions(question, index))}
           <div className="submitPanel">
             <Button
-              className="submitButton"
+              className="enjoy-css"
               onClick={() => this.props.deleteQuiz(this.state.quizInfo.id)}
             >
-              DELETE QUIZ
+              Delete
             </Button>
           </div>
         </div>
@@ -256,15 +257,15 @@ export default class QuizCreatorReviewer extends Component {
     }
     return (
       <div className="mainQuizViewerBlock">
-        <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
+        <h1>{this.state.quizInfo.title}</h1>
         {this.state.quizInfo.questions.map((question, index) =>
         this.renderQuestions(question, index))}
         <div className="submitPanel">
           <Button
-            className="submitButton"
+            className="enjoy-css"
             onClick={() => this.props.handleSubmitButton()}
           >
-            EDIT QUIZ
+            Edit
           </Button>
         </div>
       </div>

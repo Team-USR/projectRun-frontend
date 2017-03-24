@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Col } from 'react-bootstrap';
 import { MatchLeftElement, MatchRightElement, setAnswersArray } from './index';
 
 export default class MatchQuiz extends Component {
@@ -211,25 +212,31 @@ export default class MatchQuiz extends Component {
       }
     }
 
-    const styleClasses = `matchQuizContainer ${this.answerClass}`;
+    const styleClasses = `cardSection clearfix ${this.answerClass}`;
     const matchQuiz = (
       <div className={styleClasses}>
 
         <div className="matchQuizTitle">
           <h3> { quizIndex }. { matchQuizTitle } </h3>
+          <h5>Points: {this.props.question.points}</h5>
         </div>
 
         { /* Display Left Column */ }
-        <div className="leftColumn">
-          { leftElements.map((obj, index) => this.renderLeftElement(obj, index)) }
-        </div>
-
-        { /* Display Right Column */ }
-        <div className="rightColumn">
-          { rightElements.map((obj, index) =>
+        <Col md={12}>
+          <Col md={6}>
+            <div className="leftColumn">
+              { leftElements.map((obj, index) => this.renderLeftElement(obj, index)) }
+            </div>
+          </Col>
+          { /* Display Right Column */ }
+          <Col md={6}>
+            <div className="rightColumn">
+              { rightElements.map((obj, index) =>
               this.renderRightElement(obj, index))
           }
-        </div>
+            </div>
+          </Col>
+        </Col>
       </div>
     );
     return matchQuiz;
@@ -247,6 +254,7 @@ MatchQuiz.propTypes = {
     id: PropTypes.number.isRequired,
     question: PropTypes.string.isRequired,
     match_default: PropTypes.string.isRequired,
+    points: PropTypes.number.isRequired,
     left: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       answer: PropTypes.string.isRequired,

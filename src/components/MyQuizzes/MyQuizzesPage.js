@@ -42,7 +42,7 @@ export default class MyQuizzesPage extends Component {
         this.setState({ errorState: true });
       }
 //      console.log(response.data);
-      const newSideBarContent = { session: response.data.reverse() };
+      const newSideBarContent = { session: response.data };
   //  console.log("My quizzes", response.data);
   //  this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
       setTimeout(() => {
@@ -74,7 +74,7 @@ export default class MyQuizzesPage extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
-      const newSideBarContent = { quizzes: response.data.reverse() };
+      const newSideBarContent = { quizzes: response.data };
       setTimeout(() => {
         this.setState({
           sideBarContent: newSideBarContent,

@@ -13,6 +13,8 @@ const USER_SIGNUP_IN_PROGRESS = 'USER_SIGNUP_IN_PROGRESS';
 const USER_SIGNUP_SUCCESFUL = 'USER_SIGNUP_SUCCESFUL';
 const USER_SIGNUP_FAILED = 'USER_SIGNUP_FAILED';
 
+const CHANGE_USER_TYPE = 'CHANGE_USER_TYPE';
+
 let initialState = {};
 if (cookie.load('access-token') != null) {
   initialState = {
@@ -23,6 +25,7 @@ if (cookie.load('access-token') != null) {
       uid: cookie.load('uid'),
     },
     name: cookie.load('username'),
+    userType: cookie.load('userType'),
   };
 }
 
@@ -33,7 +36,7 @@ export default function reducer(state = initialState, action) {
     case USER_LOGIN_FAILED:
       return Object.assign({}, { error: action.error });
     case USER_LOGIN_SUCCESFUL:
-      return Object.assign({}, { token: action.auth, name: action.user.name });
+      return Object.assign({}, { ...state, token: action.auth, name: action.user.name });
     case USER_LOGOUT:
       return Object.assign({});
     case USER_SIGNUP_IN_PROGRESS:
@@ -42,6 +45,8 @@ export default function reducer(state = initialState, action) {
       return Object.assign({}, { error: action.error });
     case USER_SIGNUP_SUCCESFUL:
       return Object.assign({}, { });
+    case CHANGE_USER_TYPE:
+      return Object.assign({}, { ...state, userType: action.userType });
     default:
       return state;
   }
@@ -159,5 +164,12 @@ export function logoutUser() {
   cookie.remove('current-session-id');
   return {
     type: USER_LOGOUT,
+  };
+}
+
+export function changeUserType(userType) {
+  return {
+    type: CHANGE_USER_TYPE,
+    userType,
   };
 }

@@ -27,7 +27,7 @@ export default class QuizCreatorMainPage extends Component {
       questions: [],
       inputQuestions: [{
       }],
-      submitedQuestions: { quiz: { title: '', questions_attributes: [], release_date: '' } },
+      submitedQuestions: { quiz: { title: '', questions_attributes: [], negative_marking: false, release_date: '01-01-2017' } },
       generatedQuizID: 0,
       answers: { quiz: [] },
       reviewState: false,
@@ -41,21 +41,25 @@ export default class QuizCreatorMainPage extends Component {
     this.changeTitle = this.changeTitle.bind(this);
     this.changeAttempts = this.changeAttempts.bind(this);
     this.changeReleaseDate = this.changeReleaseDate.bind(this);
+    this.setNegativeMarking = this.setNegativeMarking.bind(this);
   }
-  removeQuiz(index) {
-    displayIndex = 0;
-    const remQuestions = this.state.questions;
-    remQuestions[index] = null;
-    const sQuestions = this.state.submitedQuestions;
-    sQuestions.quiz.questions_attributes[index] = null;
-    this.setState({ questions: remQuestions, submitedQuestions: sQuestions });
+  setNegativeMarking() {
+    const value = this.state.submitedQuestions.quiz.negative_marking;
+    const newValue = !value;
+    const generatedQuiz = this.state.submitedQuestions;
+    generatedQuiz.quiz.negative_marking = newValue;
+    this.setState({ submitedQuestions: generatedQuiz });
   }
-  handleInput(questionI, answers, i) {
-    if (answers) {
-      const inputQuestion = this.state.inputQuestions;
-      inputQuestion[i].answers = answers;
-      this.setState({ inputQuestions: inputQuestion });
+  setPoints(event, index) {
+    const inputQ = this.state.submitedQuestions;
+    if (inputQ.quiz.questions_attributes && inputQ.quiz.questions_attributes[index] &&
+    inputQ.quiz.questions_attributes[index].points !== undefined) {
+      inputQ.quiz.questions_attributes[index].points = event.target.value;
+    } else {
+      inputQ.quiz.questions_attributes[index] = { points: event.target.value };
     }
+
+    this.setState({ submitedQuestions: inputQ });
   }
   isReviewMode() {
     const sQuestions = this.state.submitedQuestions;
@@ -91,11 +95,20 @@ export default class QuizCreatorMainPage extends Component {
 
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+    // if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    //   pointsAssigned = this.state.quizInfo.questions[questionID].points;
+    // }
 
     let quiz = {};
     if (type === 'match') {
       quiz = {
         question: question.question,
+        points: pointsAssigned,
         match_default_attributes: {
           default_text: question.match_default,
         },
@@ -103,9 +116,9 @@ export default class QuizCreatorMainPage extends Component {
         pairs_attributes: answersAttributes,
       };
     } if (type === 'multiple_choice') {
-      quiz = { question, type, answers_attributes: answersAttributes };
+      quiz = { question, type, points: pointsAssigned, answers_attributes: answersAttributes };
     } if (type === 'single_choice') {
-      quiz = { question, type, answers_attributes: answersAttributes };
+      quiz = { question, type, points: pointsAssigned, answers_attributes: answersAttributes };
     }
     //  console.log('QUIZ POST', quiz);
     inputQ.quiz.questions_attributes[questionID] = quiz;
@@ -113,26 +126,44 @@ export default class QuizCreatorMainPage extends Component {
   }
 
   collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+    const inputQ = this.state.submitedQuestions;
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+    // if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    //   pointsAssigned = this.state.quizInfo.questions[questionID].points;
+    // }
     const newQuestion = {
       question: 'Fill in the gaps:',
       type: 'cloze',
+      points: pointsAssigned,
       cloze_sentence_attributes: {
         text: sentenceAttributes,
       },
       gaps_attributes: gapsAttributes,
     };
-    const inputQ = this.state.submitedQuestions;
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
     this.setState({ submitedQuestions: inputQ });
   }
 
   collectMixObject(data, questionTitle, questionID) {
+    const inputQ = this.state.submitedQuestions;
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+    // if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    //   pointsAssigned = this.state.quizInfo.questions[questionID].points;
+    // }
     const questionObject = {
       question: questionTitle,
       type: 'mix',
+      points: pointsAssigned,
       sentences_attributes: data,
     };
-    const inputQ = this.state.submitedQuestions;
     inputQ.quiz.questions_attributes[questionID] = questionObject;
     this.setState({ submitedQuestions: inputQ });
     //  console.log(inputQ);
@@ -245,13 +276,39 @@ export default class QuizCreatorMainPage extends Component {
     releaseDate.quiz.release_date = value;
     this.setState({ submitedQuestions: releaseDate, defaultDate: value });
   }
+  handleInput(questionI, answers, i) {
+    if (answers) {
+      const inputQuestion = this.state.inputQuestions;
+      inputQuestion[i].answers = answers;
+      this.setState({ inputQuestions: inputQuestion });
+    }
+  }
+  removeQuiz(index) {
+    displayIndex = 0;
+    const remQuestions = this.state.questions;
+    remQuestions[index] = null;
+    const sQuestions = this.state.submitedQuestions;
+    sQuestions.quiz.questions_attributes[index] = null;
+    this.setState({ questions: remQuestions, submitedQuestions: sQuestions });
+  }
   renderGroup(object, index) {
     if (this.state.questions[index]) {
       displayIndex += 1;
       return (
-        <div className="generatorQuizContainer" key={`generatorQuizContainer${displayIndex}`}>
-          <h2>{displayIndex}</h2>
+        <div className="cardSection" key={`generatorQuizContainer${displayIndex}`}>
+          <h3>{displayIndex}</h3>
           {this.state.questions[index].question}
+          <div style={{ textAlign: 'center' }}>
+            <label htmlFor="pointIn" style={{ marginRight: 10 }}>
+              <h5>Score:</h5>
+            </label>
+            <input
+              id="pointIn"
+              placeholder="ex: 10"
+              type="number"
+              onChange={event => this.setPoints(event, index)}
+            />
+          </div>
           {this.state.questions[index].buttonGroup}
         </div>
       );
@@ -263,13 +320,13 @@ export default class QuizCreatorMainPage extends Component {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>EDIT QUIZ</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}>Edit</Button>
         </div>);
     }
     if (!this.state.reviewState && !this.state.resultsState && this.state.questions.length > 0) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>Save</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}>Save</Button>
         </div>);
     } if (this.state.resultsState) {
       return (
@@ -287,10 +344,6 @@ export default class QuizCreatorMainPage extends Component {
     );
   }
   render() {
-  //  console.log("start rendering");
-  //  console.log(this.state.submitedQuestions);
-  //  console.log(this.state.questions);
-  //  console.log("end rendering");
     if (this.state.errorState === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>
@@ -311,6 +364,7 @@ export default class QuizCreatorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <input
+                    className="form-control"
                     id="titleInputs"
                     type="text"
                     key={'title'}
@@ -325,6 +379,7 @@ export default class QuizCreatorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <input
+                    className="form-control"
                     id="attemptsInput"
                     type="number"
                     placeholder="ex: 10"
@@ -338,6 +393,18 @@ export default class QuizCreatorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <Calendar key={'calendar'} format="DD/MM/YYYY" date={this.state.defaultDate} onChange={this.changeReleaseDate} computableFormat={'YYYY-MM-DD'} />
+                </Col>
+              </Col>
+              <Col md={12}>
+                <Col md={6}>
+                  <h5 className="headingLabel">Negative marking:</h5>
+                </Col>
+                <Col md={6} style={{ textAlign: 'left', marginTop: 5 }}>
+                  <input
+                    id="negativeMarkingBox"
+                    type="checkbox"
+                    onChange={this.setNegativeMarking}
+                  />
                 </Col>
               </Col>
             </div>
