@@ -35,6 +35,7 @@ export default class QuizViewerMainPage extends Component {
       savedSession: true,
       score: null,
       error: false,
+      totalScore: null,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -148,7 +149,6 @@ export default class QuizViewerMainPage extends Component {
       method: 'post',
     })
     .then((response) => {
-      // console.log(response);
       const newState = !this.state.resultsState;
       const dataSet = response.data.feedback;
       const newData = {};
@@ -160,7 +160,8 @@ export default class QuizViewerMainPage extends Component {
         resultsState: newState,
         getResponse: response,
         data: newData,
-        score: response.data.points });
+        score: response.data.points,
+        totalScore: response.data.total_points });
       this.props.reloadSideBar();
       // console.log(this.state.score);
     });
@@ -223,7 +224,11 @@ export default class QuizViewerMainPage extends Component {
     } if (this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <h3> MARK : {this.state.score} </h3>
+          <h3>
+           Score :
+           {this.state.score}/{this.state.totalScore}
+            ({ (this.state.score / this.state.totalScore) * 100 }%)
+          </h3>
         </div>
       );
     }

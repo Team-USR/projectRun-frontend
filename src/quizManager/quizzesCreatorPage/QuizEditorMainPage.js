@@ -27,7 +27,7 @@ export default class QuizEditorMainPage extends Component {
       questions: [],
       inputQuestions: [{
       }],
-      submitedQuestions: { quiz: { title: '', questions_attributes: [] } },
+      submitedQuestions: { quiz: { title: '', negative_marking: false, questions_attributes: [] } },
       generatedQuizID: 0,
       answers: { quiz: [] },
       reviewState: false,
@@ -43,6 +43,7 @@ export default class QuizEditorMainPage extends Component {
     this.changeTitle = this.changeTitle.bind(this);
     this.changeAttempts = this.changeAttempts.bind(this);
     this.changeReleaseDate = this.changeReleaseDate.bind(this);
+    this.setNegativeMarking = this.setNegativeMarking.bind(this);
   }
   componentWillMount() {
     id = 0;
@@ -60,6 +61,7 @@ export default class QuizEditorMainPage extends Component {
        generatedQuiz.quiz.title = response.data.title;
        generatedQuiz.quiz.attempts = response.data.attempts;
        generatedQuiz.quiz.release_date = response.data.release_date;
+       generatedQuiz.quiz.negative_marking = response.data.negative_marking;
        response.data.questions.map((item, index) => {
          item.points = response.data.questions[index].points;
          return 0;
@@ -95,6 +97,7 @@ export default class QuizEditorMainPage extends Component {
         generatedQuiz.quiz.title = response.data.title;
         generatedQuiz.quiz.attempts = response.data.attempts;
         generatedQuiz.quiz.release_date = response.data.release_date;
+        generatedQuiz.quiz.negative_marking = response.data.negative_marking;
         response.data.questions.map((item, index) => {
           item.points = response.data.questions[index].points;
           return 0;
@@ -110,16 +113,21 @@ export default class QuizEditorMainPage extends Component {
       });
     }
   }
-  // componentDidUpdate() {
-  //   this.scrollToBottom();
-  // }
+  setNegativeMarking() {
+    const value = this.state.submitedQuestions.quiz.negative_marking;
+    const newValue = !value;
+    const generatedQuiz = this.state.submitedQuestions;
+    generatedQuiz.quiz.negative_marking = newValue;
+    this.setState({ submitedQuestions: generatedQuiz });
+  }
   setPoints(event, index) {
     const inputQ = this.state.submitedQuestions;
     if (inputQ.quiz.questions_attributes && inputQ.quiz.questions_attributes[index] &&
-    inputQ.quiz.questions_attributes[index].points) {
+    inputQ.quiz.questions_attributes[index].points !== undefined) {
       inputQ.quiz.questions_attributes[index].points = event.target.value;
-    } else inputQ.quiz.questions_attributes[index] = { points: event.target.value };
-
+    } else {
+      inputQ.quiz.questions_attributes[index] = { points: event.target.value };
+    }
     this.setState({ submitedQuestions: inputQ });
   }
   removeQuiz(index) {
@@ -366,6 +374,7 @@ export default class QuizEditorMainPage extends Component {
     releaseDate.quiz.release_date = value;
     this.setState({ submitedQuestions: releaseDate, defaultDate: value });
   }
+
   renderQuestions() {
     displayIndex = 0;
     return (
@@ -484,6 +493,19 @@ export default class QuizEditorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <Calendar key={'calendar'} format="DD/MM/YYYY" date={this.state.submitedQuestions.quiz.release_date} onChange={this.changeReleaseDate} computableFormat={'YYYY-MM-DD'} />
+                </Col>
+              </Col>
+              <Col md={12}>
+                <Col md={6}>
+                  <h5 className="headingLabel">Negative marking:</h5>
+                </Col>
+                <Col md={6} style={{ textAlign: 'left', marginTop: 5 }}>
+                  <input
+                    id="negativeMarkingBox"
+                    type="checkbox"
+                    defaultValue={this.state.submitedQuestions.quiz.negative_marking}
+                    onChange={this.setNegativeMarking}
+                  />
                 </Col>
               </Col>
             </div>

@@ -27,7 +27,7 @@ export default class QuizCreatorMainPage extends Component {
       questions: [],
       inputQuestions: [{
       }],
-      submitedQuestions: { quiz: { title: '', questions_attributes: [], release_date: '01-01-2017' } },
+      submitedQuestions: { quiz: { title: '', questions_attributes: [], negative_marking: false, release_date: '01-01-2017' } },
       generatedQuizID: 0,
       answers: { quiz: [] },
       reviewState: false,
@@ -41,30 +41,25 @@ export default class QuizCreatorMainPage extends Component {
     this.changeTitle = this.changeTitle.bind(this);
     this.changeAttempts = this.changeAttempts.bind(this);
     this.changeReleaseDate = this.changeReleaseDate.bind(this);
+    this.setNegativeMarking = this.setNegativeMarking.bind(this);
+  }
+  setNegativeMarking() {
+    const value = this.state.submitedQuestions.quiz.negative_marking;
+    const newValue = !value;
+    const generatedQuiz = this.state.submitedQuestions;
+    generatedQuiz.quiz.negative_marking = newValue;
+    this.setState({ submitedQuestions: generatedQuiz });
   }
   setPoints(event, index) {
     const inputQ = this.state.submitedQuestions;
     if (inputQ.quiz.questions_attributes && inputQ.quiz.questions_attributes[index] &&
-    inputQ.quiz.questions_attributes[index].points) {
+    inputQ.quiz.questions_attributes[index].points !== undefined) {
       inputQ.quiz.questions_attributes[index].points = event.target.value;
-    } else inputQ.quiz.questions_attributes[index] = { points: event.target.value };
+    } else {
+      inputQ.quiz.questions_attributes[index] = { points: event.target.value };
+    }
 
     this.setState({ submitedQuestions: inputQ });
-  }
-  removeQuiz(index) {
-    displayIndex = 0;
-    const remQuestions = this.state.questions;
-    remQuestions[index] = null;
-    const sQuestions = this.state.submitedQuestions;
-    sQuestions.quiz.questions_attributes[index] = null;
-    this.setState({ questions: remQuestions, submitedQuestions: sQuestions });
-  }
-  handleInput(questionI, answers, i) {
-    if (answers) {
-      const inputQuestion = this.state.inputQuestions;
-      inputQuestion[i].answers = answers;
-      this.setState({ inputQuestions: inputQuestion });
-    }
   }
   isReviewMode() {
     const sQuestions = this.state.submitedQuestions;
@@ -281,6 +276,21 @@ export default class QuizCreatorMainPage extends Component {
     releaseDate.quiz.release_date = value;
     this.setState({ submitedQuestions: releaseDate, defaultDate: value });
   }
+  handleInput(questionI, answers, i) {
+    if (answers) {
+      const inputQuestion = this.state.inputQuestions;
+      inputQuestion[i].answers = answers;
+      this.setState({ inputQuestions: inputQuestion });
+    }
+  }
+  removeQuiz(index) {
+    displayIndex = 0;
+    const remQuestions = this.state.questions;
+    remQuestions[index] = null;
+    const sQuestions = this.state.submitedQuestions;
+    sQuestions.quiz.questions_attributes[index] = null;
+    this.setState({ questions: remQuestions, submitedQuestions: sQuestions });
+  }
   renderGroup(object, index) {
     if (this.state.questions[index]) {
       displayIndex += 1;
@@ -334,10 +344,6 @@ export default class QuizCreatorMainPage extends Component {
     );
   }
   render() {
-  //  console.log("start rendering");
-  //  console.log(this.state.submitedQuestions);
-  //  console.log(this.state.questions);
-  //  console.log("end rendering");
     if (this.state.errorState === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>
@@ -387,6 +393,18 @@ export default class QuizCreatorMainPage extends Component {
                 </Col>
                 <Col md={6}>
                   <Calendar key={'calendar'} format="DD/MM/YYYY" date={this.state.defaultDate} onChange={this.changeReleaseDate} computableFormat={'YYYY-MM-DD'} />
+                </Col>
+              </Col>
+              <Col md={12}>
+                <Col md={6}>
+                  <h5 className="headingLabel">Negative marking:</h5>
+                </Col>
+                <Col md={6} style={{ textAlign: 'left', marginTop: 5 }}>
+                  <input
+                    id="negativeMarkingBox"
+                    type="checkbox"
+                    onChange={this.setNegativeMarking}
+                  />
                 </Col>
               </Col>
             </div>

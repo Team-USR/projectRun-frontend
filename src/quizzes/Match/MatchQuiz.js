@@ -223,19 +223,19 @@ export default class MatchQuiz extends Component {
 
         { /* Display Left Column */ }
         <Col md={12}>
-        <Col md={6}>
-        <div className="leftColumn">
-          { leftElements.map((obj, index) => this.renderLeftElement(obj, index)) }
-        </div>
-        </Col>
-        { /* Display Right Column */ }
-        <Col md={6}>
-        <div className="rightColumn">
-          { rightElements.map((obj, index) =>
+          <Col md={6}>
+            <div className="leftColumn">
+              { leftElements.map((obj, index) => this.renderLeftElement(obj, index)) }
+            </div>
+          </Col>
+          { /* Display Right Column */ }
+          <Col md={6}>
+            <div className="rightColumn">
+              { rightElements.map((obj, index) =>
               this.renderRightElement(obj, index))
           }
-        </div>
-        </Col>
+            </div>
+          </Col>
         </Col>
       </div>
     );

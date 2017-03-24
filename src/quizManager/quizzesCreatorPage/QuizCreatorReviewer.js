@@ -218,6 +218,7 @@ export default class QuizCreatorReviewer extends Component {
           <h1>{this.state.quizInfo.title}</h1>
           <h5>Attempts remaining: {this.state.quizInfo.attempts}</h5>
           <h5>Release date: {this.state.quizInfo.release_date}</h5>
+          <h5>Negative marking: {this.state.quizInfo.negative_marking}</h5>
           {this.state.quizInfo.questions.map((question, index) =>
           this.renderQuestions(question, index))}
           <div className="submitPanel">
