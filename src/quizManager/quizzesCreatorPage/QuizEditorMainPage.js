@@ -7,6 +7,7 @@ import { SingleChoiceQuizGenerator } from '../../createQuizzes/SingleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { ClozeGenerator } from '../../createQuizzes/Cloze';
 import { MixQuizGenerator } from '../../createQuizzes/Mix';
+import { CrossQuizGenerator } from '../../createQuizzes/Cross';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
@@ -203,6 +204,18 @@ export default class QuizEditorMainPage extends Component {
     // console.log(questionObject);
   }
 
+  collectCrossObject(data, questionTitle, questionID) {
+    // const questionObject = {
+    //   question: questionTitle,
+    //   type: 'cross',
+    //   sentences_attributes: data,
+    // };
+    // const inputQ = this.state.submitedQuestions;
+    // inputQ.quiz.questions_attributes[questionID] = questionObject;
+    // this.setState({ submitedQuestions: inputQ });
+    // console.log(questionObject);
+  }
+
   addQuiz(quizType, questionObj) {
     displayIndex = 0;
     const buttonGroup = (
@@ -284,7 +297,6 @@ export default class QuizEditorMainPage extends Component {
     }
 
     if (quizType === 'mix') {
-      //  console.log(questionObj);
       const question = (
         <MixQuizGenerator
           content={questionObj}
@@ -294,6 +306,21 @@ export default class QuizEditorMainPage extends Component {
           key={`mix${id}`}
           updateParent={(answersAttributes, qObject, ind) =>
             this.collectMixObject(answersAttributes, qObject, ind)}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+
+    if (quizType === 'cross') {
+      console.log(questionObj);
+      const question = (
+        <CrossQuizGenerator
+          content={questionObj}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          index={id}
+          key={`cross${id}`}
+          updateParent={(answersAttributes, qObject, ind) =>
+            this.collectCrossObject(answersAttributes, qObject, ind)}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -440,6 +467,7 @@ export default class QuizEditorMainPage extends Component {
             <Button onClick={() => this.addQuiz('match', null)}>Match</Button>
             <Button onClick={() => this.addQuiz('cloze', null)}>Cloze</Button>
             <Button onClick={() => this.addQuiz('mix', null)}>Mix</Button>
+            <Button onClick={() => this.addQuiz('cross', null)}>Cross</Button>
           </div>
           <div
             style={{ float: 'left', clear: 'both' }}

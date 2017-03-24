@@ -6,7 +6,8 @@
   },
   "rules": {
     "react/jsx-filename-extension": [1, {"extensions": [".js", ".jsx"]}],
-    "no-restricted-syntax": "off"
+    "no-restricted-syntax": "off",
+    "no-console": "off"
   },
   "env": {
     "jest": true
