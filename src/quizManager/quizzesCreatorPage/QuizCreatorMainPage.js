@@ -449,7 +449,6 @@ export default class QuizCreatorMainPage extends Component {
     );
   }
   render() {
-    console.log(this.state.submitedQuestions);
     if (this.state.errorState === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>

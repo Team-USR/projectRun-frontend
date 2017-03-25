@@ -142,7 +142,6 @@ export default class QuizViewerMainPage extends Component {
   }
   isResultsMode() {
     // console.log("POST: ", this.state.answers);
-  //  console.log("ANSWERS", this.state.answers);
     axios({
       url: `${API_URL}/quizzes/${this.state.quizInfo.id}/submit`,
       data: this.state.answers,
@@ -172,10 +171,14 @@ export default class QuizViewerMainPage extends Component {
     const tempAnswers = this.state.answers;
     const tempQuestions = this.state.answers.questions;
     let newAnswer = {};
-
+    let allFalse = false;
     if (type === 'multiple_choice') {
       const mcqAnswer = { id, answer_ids: answers };
       newAnswer = mcqAnswer;
+      if (answers.length === 0) {
+        allFalse = true;
+        tempQuestions.splice(index, 1);
+      }
     }
     if (type === 'single_choice') {
       const mcqAnswer = { id, answer_id: answers };
@@ -193,7 +196,11 @@ export default class QuizViewerMainPage extends Component {
       const clozeAnswer = { id, answer_gaps: answers };
       newAnswer = clozeAnswer;
     }
-    tempQuestions[index] = newAnswer;
+
+    if (allFalse === false) {
+      tempQuestions[index] = newAnswer;
+    }
+
     tempAnswers.questions = tempQuestions;
     this.setState({ answers: tempAnswers });
   }
