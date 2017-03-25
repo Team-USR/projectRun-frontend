@@ -142,6 +142,7 @@ export default class QuizViewerMainPage extends Component {
   }
   isResultsMode() {
     // console.log("POST: ", this.state.answers);
+  //  console.log("ANSWERS", this.state.answers);
     axios({
       url: `${API_URL}/quizzes/${this.state.quizInfo.id}/submit`,
       data: this.state.answers,
@@ -196,6 +197,12 @@ export default class QuizViewerMainPage extends Component {
     tempAnswers.questions = tempQuestions;
     this.setState({ answers: tempAnswers });
   }
+  isNegativeMarking() {
+    if (this.state.quizInfo.negative_marking === true) {
+      return 'This quiz contains negative marking';
+    }
+    return '';
+  }
   renderSubmitPanel() {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
@@ -225,8 +232,8 @@ export default class QuizViewerMainPage extends Component {
       return (
         <div className="submitPanel">
           <h3>
-           Score :
-           {this.state.score}/{this.state.totalScore}
+           Score:
+            {` ${this.state.score}/${this.state.totalScore} `}
             ({ (this.state.score / this.state.totalScore) * 100 }%)
           </h3>
         </div>
@@ -333,12 +340,6 @@ export default class QuizViewerMainPage extends Component {
       );
     }
     return ('');
-  }
-  isNegativeMarking() {
-    if (this.state.quizInfo.negative_marking === true) {
-      return 'This quiz contains negative marking';
-    }
-    return '';
   }
   render() {
     if (this.state.error) {
