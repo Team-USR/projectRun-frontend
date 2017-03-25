@@ -16,9 +16,11 @@ class QuestionWrapper extends Component {
     this.state = { results: [] };
   }
   onChildChanged(newState, id, index) {
-    const newArray = this.state.results;
+    let newArray = this.state.results;
     if (newState === true) newArray.push(id);
-    else newArray.splice(index, 1);
+    else {
+      newArray = newArray.filter(item => item !== id);
+    }
     this.setState({ results: newArray });
     this.props.callbackParent(newArray, index);
   }
