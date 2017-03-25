@@ -177,7 +177,7 @@ export default class SideBarQuizzes extends Component {
           </Nav>
           <Nav key={'teacher'} >
             <Accordion defaultActiveKey={this.state.activePanel}>
-              <Panel header={`Not published (${unpublishedContent.length})`} eventKey="1">
+              <Panel header={`Not published (${unpublishedContent.length})`} eventKey="1" onClick={() => { this.setState({ activePanel: null }); }}>
                 {
         unpublishedContent.map((item, index) => {
           if (index < maxUnpublished) {
@@ -201,7 +201,7 @@ export default class SideBarQuizzes extends Component {
         )
       }
               </Panel>
-              <Panel header={`Published (${publishedContent.length})`} eventKey="2">
+              <Panel header={`Published (${publishedContent.length})`} eventKey="2" onClick={() => { this.setState({ activePanel: null }); }} >
                 {
         publishedContent.map((item, index) => {
           if (index < maxPublished) {
@@ -270,7 +270,7 @@ export default class SideBarQuizzes extends Component {
           <Nav key={'student'}>
             <Accordion defaultActiveKey={this.state.activePanel}>
 
-              <Panel header={`Not started (${notStartedContent.length})`} eventKey="1" >
+              <Panel header={`Not started (${notStartedContent.length})`} eventKey="1" onClick={() => { this.setState({ activePanel: null }); }}>
                 {
             notStartedContent.map((item, index) => {
               if (index < maxNotStarted) {
@@ -298,7 +298,7 @@ export default class SideBarQuizzes extends Component {
       }
 
               </Panel>
-              <Panel header={`In progress (${inprogressContent.length})`} eventKey="2">
+              <Panel header={`In progress (${inprogressContent.length})`} eventKey="2" onClick={() => { this.setState({ activePanel: null }); }}>
                 {
           inprogressContent.map((item, index) => {
             if (index < maxInprogress) {
@@ -322,7 +322,7 @@ export default class SideBarQuizzes extends Component {
         )
       }
               </Panel>
-              <Panel header={`Submitted (${submittedContent.length})`} eventKey="3">
+              <Panel header={`Submitted (${submittedContent.length})`} eventKey="3" onClick={() => { this.setState({ activePanel: null }); }}>
                 {
             submittedContent.map((item, index) => {
               if (index < maxsubmitted) {
