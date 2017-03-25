@@ -36,6 +36,7 @@ export default class QuizCreatorMainPage extends Component {
       errorState: false,
       defaultDate: '01-01-2017',
       errors: { quiz: { title: '', questions_attributes: [] } },
+      hasErrors: [],
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -66,50 +67,86 @@ export default class QuizCreatorMainPage extends Component {
   // checkMix(element) {
   //   return "da";
   // }
-
-  checkCorectness() {
-    const questions = this.state.submitedQuestions;
-    let verdict = true;
-    if (questions.quiz.title === '') {
-      verdict = false;
+  checkMultiple(element) {
+    this.element = element;
+    let errorMessage = '';
+    let atLeastOneTrue = false;
+    let answerFields = '';
+    if (element.question === '') {
+      errorMessage += 'Question is empty. \n';
+    }
+    element.answers_attributes.map((item) => {
+      if (item.is_correct === true) {
+        atLeastOneTrue = true;
+      }
+      if (item.answer === '' || item.answer === undefined) {
+        answerFields = 'Answer fields can\'t be empty. \n';
+      }
+      return 0;
+    });
+    if (atLeastOneTrue === false) {
+      errorMessage += 'At least one of the answers needs to be true. \n';
+    }
+    errorMessage += answerFields;
+    return errorMessage;
+  }
+  checkCorectnessTitle(generatedQuiz) {
+    if (generatedQuiz.quiz.title === '') {
       const thisObject = this.state.errors;
       thisObject.quiz.title = 'Title is empty!';
       this.setState({ errors: thisObject });
+      const thisError = this.state.hasErrors;
+      thisError[0] = true;
+      this.setState({ hasErrors: thisError });
     }
-    let errorMessage;
+    if (generatedQuiz.quiz.title !== '') {
+      const thisObject = this.state.errors;
+      thisObject.quiz.title = '';
+      this.setState({ errors: thisObject });
+      const thisError = this.state.hasErrors;
+      thisError[0] = false;
+      this.setState({ hasErrors: thisError });
+    }
+  }
+  checkCorectness(element, index) {
+    const questions = this.state.submitedQuestions;
+    let errorMessage = '';
+    this.checkCorectnessTitle(questions);
     const thisObject = this.state.errors;
-    questions.quiz.questions_attributes.map((element, index) => {
-      if (element.type === 'match') {
+    if (element.type === 'match') {
       // TODO: check for errors method(element)
       //  errorMessage = this.checkMatch(element); --returns string describing error
-      } else if (element.type === 'multiple_coice') {
-        // TODO: check for errors
-        //  errorMessage = this.checkMultiple(element); --returns string describing error
-      } else if (element.type === 'single_coice') {
+    } else if (element.type === 'multiple_choice') {
+      errorMessage += this.checkMultiple(element);
+    } else if (element.type === 'single_choice') {
         // TODO: check for errors
         //  errorMessage = this.checkSingle(element); --returns string describing error
-      } else if (element.type === 'mix') {
+    } else if (element.type === 'mix') {
         // TODO: check for errors
         //  errorMessage = this.checkMix(element);
-      } else if (element.type === 'cloze') {
+    } else if (element.type === 'cloze') {
         // TODO: check for errors
         //  errorMessage = this.checkCloze(element); --returns string describing error
-      } else if (element.type === 'cross') {
+    } else if (element.type === 'cross') {
         // TODO: check for errors
         //  errorMessage = this.checkCross(element); --returns string describing error
-      }
-      if (errorMessage !== '') {
-        verdict = false;
-      }
-      thisObject.quiz.questions_attributes[index] = errorMessage;
-      return '';
-    });
+    }
+    if (errorMessage !== '') {
+      const thisError = this.state.hasErrors;
+      thisError[index + 1] = true;
+      this.setState({ hasErrors: thisError });
+    }
+    if (errorMessage === '') {
+      const thisError = this.state.hasErrors;
+      thisError[index + 1] = false;
+      this.setState({ hasErrors: thisError });
+    }
+    thisObject.quiz.questions_attributes[index] = errorMessage;
     this.setState({ errors: thisObject });
-    return verdict;
   }
 
   isReviewMode() {
-    if (this.checkCorectness()) {
+    if (this.state.hasErrors.filter(item => item === true).length === 0) {
       const sQuestions = this.state.submitedQuestions;
   //    console.log("submitedQuestions ", sQuestions,"finishsubmited");
       const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
@@ -173,6 +210,7 @@ export default class QuizCreatorMainPage extends Component {
     }
     //  console.log('QUIZ POST', quiz);
     inputQ.quiz.questions_attributes[questionID] = quiz;
+    this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
 
@@ -196,6 +234,7 @@ export default class QuizCreatorMainPage extends Component {
       gaps_attributes: gapsAttributes,
     };
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
 
@@ -216,6 +255,7 @@ export default class QuizCreatorMainPage extends Component {
       sentences_attributes: data,
     };
     inputQ.quiz.questions_attributes[questionID] = questionObject;
+    this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
     //  console.log(inputQ);
     // console.log(questionObject);
@@ -316,6 +356,7 @@ export default class QuizCreatorMainPage extends Component {
     const generatedQuiz = this.state.submitedQuestions;
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
+    this.checkCorectnessTitle(generatedQuiz);
   }
   changeAttempts(event) {
     const attempted = this.state.submitedQuestions;
@@ -370,7 +411,8 @@ export default class QuizCreatorMainPage extends Component {
             />
           </div>
           <div>
-            <h5 className="error_message">{this.renderQuestionError(index)}</h5>
+            {this.renderQuestionError(index).split('\n').map((errtext, i) =>
+              <h5 className="error_message" key={`errtext${index}${i + 1}`}>{errtext}</h5>)}
           </div>
           {this.state.questions[index].buttonGroup}
         </div>
@@ -407,6 +449,7 @@ export default class QuizCreatorMainPage extends Component {
     );
   }
   render() {
+    console.log(this.state.submitedQuestions);
     if (this.state.errorState === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>
