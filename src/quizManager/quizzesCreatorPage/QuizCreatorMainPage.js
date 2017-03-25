@@ -90,6 +90,34 @@ export default class QuizCreatorMainPage extends Component {
     errorMessage += answerFields;
     return errorMessage;
   }
+
+  checkMix(element) {
+    this.element = element;
+    const solArray = element.sentences_attributes;
+    let mainSol = '';
+    const altSol = [];
+    for (let i = 0; i < solArray.length; i += 1) {
+      if (solArray[i].is_main === true) {
+        mainSol = solArray[i].text;
+      } else {
+        altSol.push(solArray[i].text);
+      }
+    }
+    const splitMain = mainSol.split(' ').sort().join(',');
+    let everythingMatches = true;
+    altSol.map((el) => {
+      const splitAlt = el.split(' ').sort().join(',');
+      if (splitMain !== splitAlt) {
+        everythingMatches = false;
+      }
+      return '';
+    });
+    if (!everythingMatches) {
+      return ('The alternate solutions should contain all the main solution characters!');
+    }
+    return '';
+  }
+
   checkCorectnessTitle(generatedQuiz) {
     if (generatedQuiz.quiz.title === '') {
       const thisObject = this.state.errors;
@@ -117,13 +145,12 @@ export default class QuizCreatorMainPage extends Component {
       // TODO: check for errors method(element)
       //  errorMessage = this.checkMatch(element); --returns string describing error
     } else if (element.type === 'multiple_choice') {
-      errorMessage += this.checkMultiple(element);
+      errorMessage = this.checkMultiple(element);
     } else if (element.type === 'single_choice') {
         // TODO: check for errors
         //  errorMessage = this.checkSingle(element); --returns string describing error
     } else if (element.type === 'mix') {
-        // TODO: check for errors
-        //  errorMessage = this.checkMix(element);
+      errorMessage = this.checkMix(element);
     } else if (element.type === 'cloze') {
         // TODO: check for errors
         //  errorMessage = this.checkCloze(element); --returns string describing error
@@ -449,7 +476,6 @@ export default class QuizCreatorMainPage extends Component {
     );
   }
   render() {
-    console.log(this.state.submitedQuestions);
     if (this.state.errorState === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>
