@@ -1,34 +1,13 @@
 import React from 'react';
 import { ClozeForm, ClozeList } from './index';
 import { GAP_MATCHER, HINT_MATCHER } from '../../constants';
-import { getNOfGaps, buildRawSentence } from '../../helpers/Cloze';
-
-
-function findTokens(clozePhrase, currentInd) {
-  const gaps = [];
-  while (clozePhrase.length) {
-    const gapText = {
-      no: currentInd,
-      gap_text: clozePhrase[0].split(/[{}]/)[1],
-    };
-    clozePhrase.splice(0, 1);
-    if (clozePhrase.length && clozePhrase[0].match(HINT_MATCHER)) {
-      gapText.hint_attributes = {
-        hint_text: clozePhrase[0].split(/\*/g)[1],
-      };
-      clozePhrase.splice(0, 1);
-    }
-    gaps.push(gapText);
-  }
-  return gaps;
-}
-
+import { getNOfGaps, buildRawSentence, findTokens } from '../../helpers/Cloze';
 
 export default class ClozeGenerator extends React.Component {
 
   constructor(props) {
     super(props);
-    if (!props.editorContent) {
+    if (!props.editorContent || Object.keys(props.editorContent).length === 0) {
       this.state = {
         current: 0,
         count: 1,

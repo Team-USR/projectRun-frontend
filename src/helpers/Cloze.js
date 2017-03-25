@@ -1,4 +1,4 @@
-import { GAP_MATCHER } from '../constants';
+import { GAP_MATCHER, HINT_MATCHER } from '../constants';
 
 
 export function getNOfGaps(sentence) {
@@ -15,4 +15,23 @@ export function buildRawSentence(formated, gaps) {
     const hint = gap.hint ? `*${gap.hint.hint_text}*` : '';
     return `{${gap.gap_text}}${hint}`;
   });
+}
+
+export function findTokens(clozePhrase, currentInd) {
+  const gaps = [];
+  while (clozePhrase.length) {
+    const gapText = {
+      no: currentInd,
+      gap_text: clozePhrase[0].split(/[{}]/)[1],
+    };
+    clozePhrase.splice(0, 1);
+    if (clozePhrase.length && clozePhrase[0].match(HINT_MATCHER)) {
+      gapText.hint_attributes = {
+        hint_text: clozePhrase[0].split(/\*/g)[1],
+      };
+      clozePhrase.splice(0, 1);
+    }
+    gaps.push(gapText);
+  }
+  return gaps;
 }
