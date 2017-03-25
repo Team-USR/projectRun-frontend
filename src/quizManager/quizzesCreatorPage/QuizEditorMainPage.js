@@ -188,7 +188,7 @@ export default class QuizEditorMainPage extends Component {
   }
 
   isReviewMode() {
-    if (this.checkCorectness()) {
+    if (true===true) {
       const sQuestions = this.state.submitedQuestions;
     //  console.log("submitedQuestions ", sQuestions,"finishsubmited");
       const filteredQuestions = sQuestions.quiz.questions_attributes.filter(

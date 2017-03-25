@@ -66,8 +66,30 @@ export default class QuizCreatorMainPage extends Component {
   // checkMix(element) {
   //   return "da";
   // }
+   checkMultiple(element) {
+    let errorMessage = '';
+    let atLeastOneTrue = false;
+    let answerFields = '';
+    if(element.question===''){
+      errorMessage = errorMessage + 'Question is empty. ';
+    }
+    element.answers_attributes.map(item => {
+      console.log("item",item);
+      if (item.is_correct === true) {
+        atLeastOneTrue = true;
+      }
+      if (item.answer === '' || item.answer === undefined) {
+        answerFields = answerFields + 'Answer fields can\'t be empty. ';
+      }
+    });
+      if (atLeastOneTrue === false) {
+         errorMessage = errorMessage + 'At least one of the answers needs to be true. ';
+    }
+    errorMessage = errorMessage + answerFields;
+    return errorMessage;
+   }
 
-  checkCorectness() {
+  checkCorectness(element, index) {
     const questions = this.state.submitedQuestions;
     let verdict = true;
     if (questions.quiz.title === '') {
@@ -76,16 +98,21 @@ export default class QuizCreatorMainPage extends Component {
       thisObject.quiz.title = 'Title is empty!';
       this.setState({ errors: thisObject });
     }
-    let errorMessage;
+    if(questions.quiz.title!== ''){
+      verdict = true;
+      const thisObject = this.state.errors;
+      thisObject.quiz.title = '';
+      this.setState({ errors: thisObject });
+    }
+    let errorMessage = '';
     const thisObject = this.state.errors;
     questions.quiz.questions_attributes.map((element, index) => {
       if (element.type === 'match') {
       // TODO: check for errors method(element)
       //  errorMessage = this.checkMatch(element); --returns string describing error
-      } else if (element.type === 'multiple_coice') {
-        // TODO: check for errors
-        //  errorMessage = this.checkMultiple(element); --returns string describing error
-      } else if (element.type === 'single_coice') {
+      } else if (element.type === 'multiple_choice') {
+        errorMessage += this.checkMultiple(element);
+      } else if (element.type === 'single_choice') {
         // TODO: check for errors
         //  errorMessage = this.checkSingle(element); --returns string describing error
       } else if (element.type === 'mix') {
@@ -407,6 +434,7 @@ export default class QuizCreatorMainPage extends Component {
     );
   }
   render() {
+    console.log(this.state.submitedQuestions);
     if (this.state.errorState === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>

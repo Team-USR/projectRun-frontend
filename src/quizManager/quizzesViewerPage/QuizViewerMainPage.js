@@ -334,6 +334,12 @@ export default class QuizViewerMainPage extends Component {
     }
     return ('');
   }
+  isNegativeMarking() {
+    if (this.state.quizInfo.negative_marking === true) {
+      return 'This quiz contains negative marking';
+    }
+    return '';
+  }
   render() {
     if (this.state.error) {
       return (<h1>ERROR</h1>);
@@ -345,6 +351,7 @@ export default class QuizViewerMainPage extends Component {
       <div className="mainQuizViewerBlock">
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         <h5 style={styles.quizTile}>Created by: {this.state.quizInfo.creator}</h5>
+        <h5 style={styles.quizTile}>{this.isNegativeMarking()}</h5>
         {this.state.quizInfo.questions.map((question, index) =>
         this.renderQuestions(question, index))
         }
