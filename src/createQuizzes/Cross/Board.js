@@ -6,7 +6,7 @@ export default class Board extends Component {
   renderSquare(i, j) {
     const board = this.props.content;
     let squareValue = '';
-    if (board[i].row[j] && board[i].row[j] !== '*') {
+    if (board[i] && board[i].row[j] && board[i].row[j] !== '*') {
       squareValue = board[i].row[j];
     }
     return (

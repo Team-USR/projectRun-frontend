@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import Popup from 'react-popup';
-import { Board } from './index';
+import { Board, Crossword } from './index';
 
 export default class CrossQuizGenerator extends Component {
   constructor(props) {
@@ -27,7 +27,6 @@ export default class CrossQuizGenerator extends Component {
 
   componentWillMount() {
     // console.log('Will Mount');
-
     const content = this.props.content;
 
     if (content) {
@@ -63,6 +62,70 @@ export default class CrossQuizGenerator extends Component {
       }
     }
     return -1;
+  }
+
+  autoGenerate() {
+    const words = ['dog', 'cat', 'bat', 'elephantes', 'kangaroo'];
+    const clues = ['Man\'s best friend', 'Likes to chase mice', 'Flying mammal', 'Has a trunk', 'Large marsupial'];
+
+    // Create crossword object with the words and clues
+    const cw = new Crossword(words, clues);
+    // console.log(cw);
+
+    const tries = 30;
+    const grid = cw.getSquareGrid(tries);
+
+    // console.log(grid);
+
+    if (grid == null) {
+      const badWords = cw.getBadWords();
+      const str = [];
+      for (let k = 0; k < badWords.length; k += 1) {
+        str.push(badWords[k].word);
+      }
+      console.log("Shoot! A grid could not be created with these words:\n" + str.join("\n"));
+      return;
+    }
+
+    const matrix = [];
+    for (let i = 0; i < grid.length; i += 1) {
+      const arr = grid[i];
+      // console.log(arr);
+      let row = '';
+      for (let j = 0; j < arr.length; j += 1) {
+        // console.log(arr[j]);
+        if (arr[j] && arr[j].char) {
+          row += arr[j].char;
+        } else {
+          row += '*';
+        }
+      }
+      console.log(row);
+      matrix.push({ row });
+    }
+
+    console.log(matrix);
+    this.generateWordsForEditor(matrix);
+
+
+    const genContent = {
+      width: matrix[0].length,
+      height: matrix.length,
+      hints: [{}],
+    };
+
+    this.setState({
+      boardValues: matrix,
+      generatedContent: genContent,
+    });
+
+    console.log('---------------------');
+
+    // turn the crossword grid into HTML
+    // var show_answers = true;
+    // const el = CrosswordUtils.toHtml(grid, show_answers);
+
+    // console.log(el);
   }
 
   getWordsAndPositions(myString, x, y, type) {
@@ -379,17 +442,20 @@ export default class CrossQuizGenerator extends Component {
     const newAcrossWords = [];
     const newDownWords = [];
 
+    const width = board[0].row.length;
+    const height = board.length;
+
     // Store the positions for Rows - Across Words
-    for (let i = 0; i < this.props.content.height; i += 1) {
+    for (let i = 0; i < height; i += 1) {
       const rowString = board[i].row;
       const generatedRowWords = this.getWordsAndPositions(rowString, i, 0, 'across');
       newAcrossWords.push(generatedRowWords);
     }
 
     // Store the positions for Columns - Down Words
-    for (let j = 0; j < this.props.content.width; j += 1) {
+    for (let j = 0; j < width; j += 1) {
       let colString = '';
-      for (let i = 0; i < this.props.content.height; i += 1) {
+      for (let i = 0; i < height; i += 1) {
         colString += board[i].row[j];
       }
 
@@ -493,7 +559,7 @@ export default class CrossQuizGenerator extends Component {
   }
 
   render() {
-    // console.log('render', this.state);
+    console.log('render', this.state.genBoard);
     return (
       <div className="crossQuizGenerator">
         <Popup
@@ -534,6 +600,11 @@ export default class CrossQuizGenerator extends Component {
               defaultValue={this.state.boardHeight}
             />
 
+            <div id="crossword">
+              <Button onClick={() => this.autoGenerate()}>
+                Auto GENERATE
+              </Button>
+            </div>
             { this.renderGenerateBoardButton() }
 
           </form>

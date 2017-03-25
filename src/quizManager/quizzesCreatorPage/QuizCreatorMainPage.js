@@ -67,7 +67,7 @@ export default class QuizCreatorMainPage extends Component {
 //    console.log("submitedQuestions ", sQuestions,"finishsubmited");
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
      element !== null);
-    // console.log('filtered ', filteredQuestions);
+    console.log('filtered ', filteredQuestions);
     this.setState({ submitedQuestions: filteredQuestions });
   //  console.log("----------");
   //  console.log(this.state.submitedQuestions);
