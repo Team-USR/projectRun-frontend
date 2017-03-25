@@ -9,17 +9,18 @@ function CustomTooltip(props) {
     payload: React.PropTypes.arrayOf(React.PropTypes.shape({
       payload: React.PropTypes.shape({
         date: React.PropTypes.string,
+        name: React.PropTypes.string,
+        value: React.PropTypes.number,
       }),
       value: React.PropTypes.number,
     })).isRequired,
-    label: React.PropTypes.string.isRequired,
   };
 
   if (props.active) {
     return (
       <div className="tooltip-container">
-        <h2><b>{props.label}</b></h2>
-        <p>Score: {props.payload[0].value}</p>
+        <h2><b>{props.payload[0].payload.name}</b></h2>
+        <p>Score: {props.payload[0].payload.value}</p>
         <p>{props.payload[0].payload.date}</p>
       </div>
     );
