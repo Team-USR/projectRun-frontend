@@ -144,9 +144,6 @@ export default class QuizCreatorMainPage extends Component {
     };
 
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
-    // console.log(newQuestion);
-    // console.log(rowsAttributes);
-    // console.log(hintsAttributes);
     this.setState({ submitedQuestions: inputQ });
   }
 

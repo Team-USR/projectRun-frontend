@@ -261,6 +261,9 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
+    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+      pointsAssigned = this.state.quizInfo.questions[questionID].points;
+    }
 
     const newQuestion = {
       question,

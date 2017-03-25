@@ -183,6 +183,7 @@ export default class CrossQuizGenerator extends Component {
     // console.log('this', newHintsAttributes);
     // console.log(this.state);
     this.setState({ hintsAttributes: newHintsAttributes });
+    return newHintsAttributes;
   }
 
   /* Function called everytime when user types in Quiz Title Input */
@@ -370,12 +371,11 @@ export default class CrossQuizGenerator extends Component {
     }
 
     // Update hintsAttributes Object
-    this.updateHintsAttributes(newAcrossWords, newDownWords);
+    const hintsAttributes = this.updateHintsAttributes(newAcrossWords, newDownWords);
 
     const questionTitle = this.state.crossQuizQuestion;
     const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
     const rowsAttributes = this.state.boardValues;
-    const hintsAttributes = this.state.hintsAttributes;
     const questionId = this.props.index;
 
     // Send Match Data to MainQuizGenerator
