@@ -36,7 +36,7 @@ export default class ClozeSentence extends React.Component {
     return (
       words.map((word) => {
         if (!word.match(GAP_MATCHER)) return `${word} `;
-        const tooltip = <Tooltip key={`tooltip-${word}-${hintsCopy.length}`}>{hintsCopy.pop() || 'No hints!'}</Tooltip>;
+        const tooltip = <Tooltip id={`${word}`} key={`tooltip-${word}-${hintsCopy.length}`}>{hintsCopy.pop() || 'No hints!'}</Tooltip>;
         return (
           <OverlayTrigger id="tooltip" key={`overlay-${word}-${hintsCopy.length}`} placement="top" overlay={tooltip}>
             <input
