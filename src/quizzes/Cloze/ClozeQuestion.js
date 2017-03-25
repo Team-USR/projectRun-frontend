@@ -25,14 +25,6 @@ export default class ClozeQuestion extends React.Component {
     this.setState({ resultsState: nextProps.resultsState });
   }
 
-  answersState() {
-    if (this.state.correctAnswer.correct) return 'green';
-    const matches = this.state.correctAnswer.correct_gaps.filter((gap, ind) =>
-      gap === this.state.answers[ind]);
-    if (matches.length === 0) return 'red';
-    return 'orange';
-  }
-
   handleChange(e) {
     const newAnswers = this.state.answers;
     newAnswers[e.target.id - 1] = e.target.value.trim();
@@ -81,12 +73,17 @@ export default class ClozeQuestion extends React.Component {
   }
 
   render() {
+    let validationClass = '';
+    if (this.state.resultsState) {
+      validationClass = this.state.correctAnswer ?
+        'correctAnswerWrapper' : 'wrongAnswerWrapper';
+    }
     return (
-      <div className="cardSection">
+      <div className={`cardSection ${validationClass}`} >
         <h3 className="questionPanel">
           {this.props.index}. {this.props.request}
         </h3>
-        <ul style={this.state.resultsState ? { color: this.answersState() } : {}}>
+        <ul>
           {this.props.reviewer ? this.renderReview() : this.renderView()}
         </ul>
       </div>

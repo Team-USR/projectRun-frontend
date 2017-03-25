@@ -329,7 +329,6 @@ export default class QuizViewerMainPage extends Component {
         text: sentence,
         gaps: hints.splice(0, getNOfGaps(sentence)),
       }));
-
       return (
         <ClozeQuestion
           id={question.id}
