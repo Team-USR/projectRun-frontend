@@ -108,25 +108,6 @@ export default class MixQuizGenerator extends Component {
       this.state.mixQuizQuestion, this.props.index);
   }
 
-  // submitData() {
-  //   const xd = this.state.mainSolution;
-  //   const finalDataArray = MixQuizGenerator.splitSentence(xd);
-  //   const finalDataCopyLast = MixQuizGenerator.createWordsArray(finalDataArray);
-  //   let finalDataCopy = [];
-  //   finalDataCopyLast.map(element => finalDataCopy.push(element));
-  //   finalDataCopy = finalDataCopy.sort().join(',');
-  //   const alternateCopy = this.state.alternateSolutions;
-  //   for (let i = 0; i < alternateCopy.length; i += 1) {
-  //     const alternateSentArray =
-  //     MixQuizGenerator.createWordsArray(MixQuizGenerator.splitSentence(alternateCopy[i]));
-  //     if (finalDataCopy !== alternateSentArray.sort().join(',')) {
-  //       const errorMess = `Alternate solution ${i + 1} cannot be made from the main one`;
-  //       this.setState({ errorMessage: errorMess });
-  //       return;
-  //     }
-  //   }
-  // }
-
   updateFormattedObject(mainSol, alternateSols) {
     const sentenceAttributes = [];
     sentenceAttributes.push({
