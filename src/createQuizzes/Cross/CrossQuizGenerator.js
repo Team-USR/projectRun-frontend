@@ -1,28 +1,35 @@
 import React, { Component, PropTypes } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
 import Popup from 'react-popup';
-import { Board, Crossword } from './index';
+import { Board, Crossword, BoardSize } from './index';
 
 export default class CrossQuizGenerator extends Component {
   constructor(props) {
     super(props);
+    const minimumBoardSize = 8;
+    const maximumBoardSize = 25;
     this.state = {
       quizTitlePlaceHolder: 'Insert a title or a question for this quiz',
       showBoard: false,
-      boardWidth: 5,
-      boardHeight: 5,
+      boardWidth: minimumBoardSize,
+      boardHeight: minimumBoardSize,
+      displayHeight: minimumBoardSize,
+      displayWidth: minimumBoardSize,
       boardValues: [{}],
       crossQuizQuestion: 'Question',
       metaAtributes: [],
       hintsAttributes: [],
       acrossWords: [],
       downWords: [],
+      inputWords: [],
+      maximumBoardLimit: maximumBoardSize,
     };
 
-    this.boardWidth = 5;
-    this.boardHeight = 5;
+    this.boardWidth = this.state.boardWidth;
+    this.boardHeight = this.state.boardHeight;
 
     this.renderBoard = this.renderBoard.bind(this);
+    this.autoGenerate = this.autoGenerate.bind(this);
   }
 
   componentWillMount() {
@@ -52,6 +59,8 @@ export default class CrossQuizGenerator extends Component {
       this.props.updateParent(
         questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
     }
+
+    this.handleGenerateBoard();
   }
 
   getHintByCoordintes(x, y, isAcross) {
@@ -64,70 +73,6 @@ export default class CrossQuizGenerator extends Component {
       }
     }
     return -1;
-  }
-
-  autoGenerate() {
-    const words = ['dog', 'cat', 'bat', 'elephantes', 'kangaroo'];
-    const clues = ['Man\'s best friend', 'Likes to chase mice', 'Flying mammal', 'Has a trunk', 'Large marsupial'];
-
-    // Create crossword object with the words and clues
-    const cw = new Crossword(words, clues);
-    // console.log(cw);
-
-    const tries = 30;
-    const grid = cw.getSquareGrid(tries);
-
-    // console.log(grid);
-
-    if (grid == null) {
-      const badWords = cw.getBadWords();
-      const str = [];
-      for (let k = 0; k < badWords.length; k += 1) {
-        str.push(badWords[k].word);
-      }
-      console.log("Shoot! A grid could not be created with these words:\n" + str.join("\n"));
-      return;
-    }
-
-    const matrix = [];
-    for (let i = 0; i < grid.length; i += 1) {
-      const arr = grid[i];
-      // console.log(arr);
-      let row = '';
-      for (let j = 0; j < arr.length; j += 1) {
-        // console.log(arr[j]);
-        if (arr[j] && arr[j].char) {
-          row += arr[j].char;
-        } else {
-          row += '*';
-        }
-      }
-      console.log(row);
-      matrix.push({ row });
-    }
-
-    console.log(matrix);
-    this.generateWordsForEditor(matrix);
-
-
-    const genContent = {
-      width: matrix[0].length,
-      height: matrix.length,
-      hints: [{}],
-    };
-
-    this.setState({
-      boardValues: matrix,
-      generatedContent: genContent,
-    });
-
-    console.log('---------------------');
-
-    // turn the crossword grid into HTML
-    // var show_answers = true;
-    // const el = CrosswordUtils.toHtml(grid, show_answers);
-
-    // console.log(el);
   }
 
   getWordsAndPositions(myString, x, y, type) {
@@ -203,6 +148,66 @@ export default class CrossQuizGenerator extends Component {
 
     return generatedWords;
   }
+
+  autoGenerate() {
+    // const words = ['dog', 'cat', 'bat', 'elephantes', 'kangaroo'];
+    const words = this.state.inputWords;
+    console.log(words);
+    const clues = [];
+
+    words.map((word) => {
+      clues.push('');
+      return word;
+    });
+
+    // Create crossword object with the words
+    const cw = new Crossword(words, clues);
+    const tries = this.state.maximumBoardLimit;
+    const grid = cw.getSquareGrid(tries);
+
+    if (grid == null) {
+      const badWords = cw.getBadWords();
+      const str = [];
+      for (let k = 0; k < badWords.length; k += 1) {
+        str.push(badWords[k].word);
+      }
+      console.log('Shoot! A grid could not be created with these words');
+      return;
+    }
+
+    const matrix = [];
+    for (let i = 0; i < grid.length; i += 1) {
+      const arr = grid[i];
+      let row = '';
+      for (let j = 0; j < arr.length; j += 1) {
+        if (arr[j] && arr[j].char) {
+          row += arr[j].char.toLowerCase();
+        } else {
+          row += '*';
+        }
+      }
+      matrix.push({ row });
+    }
+
+    this.generateWordsForEditor(matrix);
+
+    const width = matrix[0].row.length;
+    const height = matrix.length;
+
+    this.setState({
+      boardWidth: width,
+      boardHeight: height,
+      displayWidth: width,
+      displayHeight: height,
+      boardValues: matrix,
+    });
+
+    this.boardWidth = width;
+    this.boardHeight = height;
+
+    // console.log('---------------------');
+  }
+
 
   updateHintsAttributes(acrossWords, downWords) {
     const newHintsAttributes = [];
@@ -353,9 +358,12 @@ export default class CrossQuizGenerator extends Component {
         'The board dimensions should be valid numbers. Thank you! :)',
         'Oops! Board Limits incorrect!',
       );
-    } else if (this.boardHeight > 30 || this.boardWidth > 30) {
+    } else if (this.boardHeight > this.state.maximumBoardLimit ||
+        this.boardWidth > this.state.maximumBoardLimit) {
       Popup.alert(
-        'The board size should not be larger than 30 x 30. Thank you! :)',
+        `The board size should not be larger than
+         ${this.state.maximumBoardLimit} x ${this.state.maximumBoardLimit}.
+         Thank you! :)`,
         'Oops! Board Limits exceeded!',
       );
     } else if (this.boardHeight < 1 || this.boardWidth < 1) {
@@ -407,12 +415,14 @@ export default class CrossQuizGenerator extends Component {
     const target = e.target;
     const value = parseInt(target.value, 10);
     this.boardHeight = value;
+    this.setState({ displayHeight: value });
   }
 
   handleWidthChange(e) {
     const target = e.target;
     const value = parseInt(target.value, 10);
     this.boardWidth = value;
+    this.setState({ displayWidth: value });
   }
 
   handleClueChange(e, x, y, clueType) {
@@ -446,6 +456,24 @@ export default class CrossQuizGenerator extends Component {
       questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
 
     // console.log(this.state.acrossWords);
+  }
+
+  handleInputWordsChange(e) {
+    const target = e.target;
+    const value = target.value;
+
+    let wordsArray = value.split('\n');
+
+    wordsArray = wordsArray.filter((word) => {
+      // console.log(word.length);
+      if (word.length > 1) {
+        return true;
+      }
+      return false;
+    });
+
+    this.setState({ inputWords: wordsArray });
+    // console.log(wordsArray);
   }
 
   generateWordsForEditor(board) {
@@ -503,7 +531,6 @@ export default class CrossQuizGenerator extends Component {
     if (this.state.showBoard) {
       board = (
         <div className="crossBoardPanel">
-          <Button onClick={() => this.handleClearBoard()}>Clear Board</Button>
           <Board
             content={this.state.boardValues}
             width={this.state.boardWidth}
@@ -562,14 +589,8 @@ export default class CrossQuizGenerator extends Component {
     return (null);
   }
 
-  renderGenerateBoardButton() {
-    return (
-      <Button onClick={() => this.handleGenerateBoard()}>Generate</Button>
-    );
-  }
-
   render() {
-    console.log('render', this.state.genBoard);
+    // console.log(this.boardWidth, this.boardHeight);
     return (
       <div className="crossQuizGenerator">
         <Popup
@@ -582,43 +603,68 @@ export default class CrossQuizGenerator extends Component {
         <div className="createCrossQuizTitle">
           <h3>Cross question</h3>
         </div>
-        <div className="createCrossQuizContent">
-          <b>Question: </b>
-          <input
-            type="text"
-            name="crossQuizTitle"
-            className="quizTitleInput"
-            value={this.state.crossQuizQuestion}
-            placeholder={this.state.quizTitlePlaceHolder}
-            onChange={e => this.handleQuestionInputChange(e)}
-          />
 
-          <h5>Board Size: </h5>
-          <form>
-            <label htmlFor="boardWidth">Width</label>
+
+        <div className="createCrossQuizContent">
+
+          <Col md={12}>
+            <b>Question: </b>
             <input
-              id="boardWidth"
-              type="number"
-              onChange={e => this.handleWidthChange(e)}
-              defaultValue={this.state.boardWidth}
+              type="text"
+              name="crossQuizTitle"
+              className="quizTitleInput"
+              value={this.state.crossQuizQuestion}
+              placeholder={this.state.quizTitlePlaceHolder}
+              onChange={e => this.handleQuestionInputChange(e)}
             />
-            <label htmlFor="boardHeight">Height</label>
-            <input
-              id="boardHeight"
-              type="number"
-              onChange={e => this.handleHeightChange(e)}
-              defaultValue={this.state.boardHeight}
-            />
+          </Col>
+          <br />
+          <br />
+          <Col md={6}>
+            <h4><b>Board Size </b></h4>
+            <form>
+              <BoardSize
+                id={'boardWidth'}
+                labelValue={'Witdh'}
+                size={this.state.displayWidth}
+                handleSizeChange={e => this.handleWidthChange(e)}
+              />
+
+              <BoardSize
+                id={'boardHeight'}
+                labelValue={'Height'}
+                size={this.state.displayHeight}
+                handleSizeChange={e => this.handleHeightChange(e)}
+              />
+
+              <div>
+                <Button onClick={() => this.handleGenerateBoard()}>Resize</Button>
+              </div>
+              <div>
+                <Button onClick={() => this.handleClearBoard()}>Clear</Button>
+              </div>
+            </form>
+
+          </Col>
+          <h4><b>Words</b></h4>
+          <Col md={6}>
+            <div>
+              <textarea
+                rows="4"
+                cols="30"
+                placeholder="Write your words, each on a separete line"
+                onChange={e => this.handleInputWordsChange(e)}
+              />
+
+            </div>
 
             <div id="crossword">
               <Button onClick={() => this.autoGenerate()}>
-                Auto GENERATE
+                Generate
               </Button>
             </div>
-            { this.renderGenerateBoardButton() }
-
-          </form>
-
+          </Col>
+          <div className="clearfix" />
           { this.renderBoard() }
           { this.renderGeneratedWords() }
         </div>
