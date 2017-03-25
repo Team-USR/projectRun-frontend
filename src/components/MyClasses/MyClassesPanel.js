@@ -326,8 +326,15 @@ export default class MyClassesPanel extends Component {
         );
       }
     } else if (this.props.userType === STUDENT) {
-      const data = this.props.marksPerQuizPerClass.filter(myClass =>
-        myClass.className === this.props.classTitle);
+      const data = this.props.marksPerQuizPerClass.reduce((acc, myClass) => {
+        if (myClass.className === this.props.classTitle) {
+          return myClass.marks.map(quiz => ({
+            name: quiz.name,
+            value: quiz.score,
+          }));
+        }
+        return acc;
+      }, []);
       if (this.props.panelType === 'show_selected_class') {
         element = (
           <div>
@@ -337,8 +344,13 @@ export default class MyClassesPanel extends Component {
               quizzes={this.props.content.quizzes}
             />
             <hr />
-            {data[0].marks.length > 0 ?
-              <div className="col-md-9"><LineCh color="grey" data={data[0].marks} /></div>
+            {data.length > 0 ?
+              (<div className="line-chart-container">
+                <LineCh
+                  color="grey"
+                  data={data}
+                />
+              </div>)
               : <h3>You have no submitted quiz for this class.</h3>}
           </div>
         );

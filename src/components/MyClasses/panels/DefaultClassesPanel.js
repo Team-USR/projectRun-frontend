@@ -18,7 +18,7 @@ export default class DefaultClassesPanel extends Component {
     if (this.props.userType === TEACHER) {
       if (this.props.averagePerCreatedClass.length > 0) {
         return (
-          <div className="col-md-9">
+          <div className="line-chart-container">
             <LineCh
               data={this.props.averagePerCreatedClass.filter(myClass =>
                 myClass.value !== null)}
