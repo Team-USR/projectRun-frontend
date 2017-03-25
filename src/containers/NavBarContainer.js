@@ -5,8 +5,8 @@ import { logoutUser } from '../redux/modules/user';
 
 const mapStoreToProps = store => ({
   userType: store.auth.userType,
-  userTypeClass: store.auth.userType === TEACHER ? 'glyphicon-home'
-    : 'glyphicon-education',
+  userTypeClass: store.auth.userType === TEACHER ? 'fa-university'
+    : 'fa-graduation-cap',
 });
 
 const mapDispatchToProps = dispatch => ({
