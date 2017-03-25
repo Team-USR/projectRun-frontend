@@ -10,7 +10,7 @@ import { ClozeGenerator } from '../../createQuizzes/Cloze';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
-
+import { checkMix, checkMultiple, checkCloze } from '../../helpers/Validators';
 
 const styles = {
   loading: {
@@ -67,56 +67,6 @@ export default class QuizCreatorMainPage extends Component {
   // checkMix(element) {
   //   return "da";
   // }
-  checkMultiple(element) {
-    this.element = element;
-    let errorMessage = '';
-    let atLeastOneTrue = false;
-    let answerFields = '';
-    if (element.question === '') {
-      errorMessage += 'Question is empty. \n';
-    }
-    element.answers_attributes.map((item) => {
-      if (item.is_correct === true) {
-        atLeastOneTrue = true;
-      }
-      if (item.answer === '' || item.answer === undefined) {
-        answerFields = 'Answer fields can\'t be empty. \n';
-      }
-      return 0;
-    });
-    if (atLeastOneTrue === false) {
-      errorMessage += 'At least one of the answers needs to be true. \n';
-    }
-    errorMessage += answerFields;
-    return errorMessage;
-  }
-
-  checkMix(element) {
-    this.element = element;
-    const solArray = element.sentences_attributes;
-    let mainSol = '';
-    const altSol = [];
-    for (let i = 0; i < solArray.length; i += 1) {
-      if (solArray[i].is_main === true) {
-        mainSol = solArray[i].text;
-      } else {
-        altSol.push(solArray[i].text);
-      }
-    }
-    const splitMain = mainSol.split(' ').sort().join(',');
-    let everythingMatches = true;
-    altSol.map((el) => {
-      const splitAlt = el.split(' ').sort().join(',');
-      if (splitMain !== splitAlt) {
-        everythingMatches = false;
-      }
-      return '';
-    });
-    if (!everythingMatches) {
-      return ('The alternate solutions should contain all the main solution characters!');
-    }
-    return '';
-  }
 
   checkCorectnessTitle(generatedQuiz) {
     if (generatedQuiz.quiz.title === '') {
@@ -145,12 +95,11 @@ export default class QuizCreatorMainPage extends Component {
       // TODO: check for errors method(element)
       //  errorMessage = this.checkMatch(element); --returns string describing error
     } else if (element.type === 'multiple_choice' || element.type === 'single_choice') {
-      errorMessage = this.checkMultiple(element);
+      errorMessage = checkMultiple(element);
     } else if (element.type === 'mix') {
-      errorMessage = this.checkMix(element);
+      errorMessage = checkMix(element);
     } else if (element.type === 'cloze') {
-        // TODO: check for errors
-        //  errorMessage = this.checkCloze(element); --returns string describing error
+      errorMessage = checkCloze(element);
     } else if (element.type === 'cross') {
         // TODO: check for errors
         //  errorMessage = this.checkCross(element); --returns string describing error
