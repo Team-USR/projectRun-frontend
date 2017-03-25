@@ -1,5 +1,4 @@
 import React from 'react';
-import { ListGroup } from 'react-bootstrap';
 import { ClozeSentence } from './index';
 import { getNOfGaps } from '../../helpers/Cloze';
 
@@ -87,9 +86,9 @@ export default class ClozeQuestion extends React.Component {
         <h3 className="questionPanel">
           {this.props.index}. {this.props.request}
         </h3>
-        <ListGroup style={this.state.resultsState ? { color: this.answersState() } : {}}>
+        <ul style={this.state.resultsState ? { color: this.answersState() } : {}}>
           {this.props.reviewer ? this.renderReview() : this.renderView()}
-        </ListGroup>
+        </ul>
       </div>
     );
   }

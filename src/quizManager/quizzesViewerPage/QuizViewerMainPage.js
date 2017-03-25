@@ -333,6 +333,7 @@ export default class QuizViewerMainPage extends Component {
       return (
         <ClozeQuestion
           id={question.id}
+          key={index}
           index={index}
           reviewer={false}
           request={question.question}
