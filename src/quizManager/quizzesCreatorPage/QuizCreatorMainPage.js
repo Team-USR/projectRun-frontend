@@ -144,11 +144,8 @@ export default class QuizCreatorMainPage extends Component {
     if (element.type === 'match') {
       // TODO: check for errors method(element)
       //  errorMessage = this.checkMatch(element); --returns string describing error
-    } else if (element.type === 'multiple_choice') {
+    } else if (element.type === 'multiple_choice' || element.type === 'single_choice') {
       errorMessage = this.checkMultiple(element);
-    } else if (element.type === 'single_choice') {
-        // TODO: check for errors
-        //  errorMessage = this.checkSingle(element); --returns string describing error
     } else if (element.type === 'mix') {
       errorMessage = this.checkMix(element);
     } else if (element.type === 'cloze') {
