@@ -255,15 +255,22 @@ export default class QuizEditorMainPage extends Component {
   }
 
   collectCrossObject(question, metaAtributes, rowsAttributes, hintsAttributes, questionID) {
+    const inputQ = this.state.submitedQuestions;
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+
     const newQuestion = {
       question,
       type: 'cross',
+      points: pointsAssigned,
       metadata_attributes: metaAtributes,
       rows_attributes: rowsAttributes,
       hints_attributes: hintsAttributes,
     };
 
-    const inputQ = this.state.submitedQuestions;
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
     this.setState({ submitedQuestions: inputQ });
   }
@@ -370,9 +377,9 @@ export default class QuizEditorMainPage extends Component {
           resultsState={this.state.resultsState}
           index={id}
           key={`cross${id}`}
-          updateParent={(questionTitle, metaAtributes, rowsAttributes, hintsAttributes) =>
+          updateParent={(questionTitle, metaAtributes, rowsAttributes, hintsAttributes, ind) =>
             this.collectCrossObject(
-              questionTitle, metaAtributes, rowsAttributes, hintsAttributes, id,
+              questionTitle, metaAtributes, rowsAttributes, hintsAttributes, ind,
             )}
         />);
       questionObject = { id, question, buttonGroup };
