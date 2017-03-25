@@ -241,7 +241,7 @@ export default class QuizViewerMainPage extends Component {
           <h3>
            Score:
             {` ${this.state.score}/${this.state.totalScore} `}
-            ({ (this.state.score / this.state.totalScore) * 100 }%)
+            ({ parseFloat((this.state.score / this.state.totalScore) * 100).toFixed(2) }%)
           </h3>
         </div>
       );

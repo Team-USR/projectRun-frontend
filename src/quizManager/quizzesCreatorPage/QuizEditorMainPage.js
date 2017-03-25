@@ -545,7 +545,7 @@ export default class QuizEditorMainPage extends Component {
                     className="form-control"
                     id="attemptsInput"
                     type="number"
-                    placeholder="ex: 10"
+                    placeholder="ex: 10 (0 = ∞)"
                     onChange={this.changeAttempts}
                     value={submit.quiz.attempts}
                   />
