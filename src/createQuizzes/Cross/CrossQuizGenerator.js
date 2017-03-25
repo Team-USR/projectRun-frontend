@@ -46,9 +46,11 @@ export default class CrossQuizGenerator extends Component {
       const metaAtributes = { width: content.width, height: content.height };
       const rowsAttributes = board;
       const hintsAttributes = content.hints;
+      const questionId = this.props.index;
 
       // Send Match Data to MainQuizGenerator
-      this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
+      this.props.updateParent(
+        questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
     }
   }
 
@@ -244,6 +246,7 @@ export default class CrossQuizGenerator extends Component {
     // console.log('this', newHintsAttributes);
     // console.log(this.state);
     this.setState({ hintsAttributes: newHintsAttributes });
+    return newHintsAttributes;
   }
 
   /* Function called everytime when user types in Quiz Title Input */
@@ -259,9 +262,11 @@ export default class CrossQuizGenerator extends Component {
     const metaAtributes = { width: this.state.boardWidth, height: this.state.boardHeight };
     const rowsAttributes = this.state.boardValues;
     const hintsAttributes = this.state.hintsAttributes;
+    const questionId = this.props.index;
 
     // Send Match Data to MainQuizGenerator
-    this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
+    this.props.updateParent(
+      questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
   }
 
   handleSquareChange(e, i, j) {
@@ -302,9 +307,11 @@ export default class CrossQuizGenerator extends Component {
     const metaAtributes = { width: this.state.boardWidth, height: this.state.boardHeight };
     const rowsAttributes = newBoard;
     const hintsAttributes = this.state.hintsAttributes;
+    const questionId = this.props.index;
 
     // Send Match Data to MainQuizGenerator
-    this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
+    this.props.updateParent(
+      questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
   }
 
   handleClearBoard() {
@@ -387,10 +394,12 @@ export default class CrossQuizGenerator extends Component {
       const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
       const rowsAttributes = newBoard;
       const hintsAttributes = this.state.hintsAttributes;
+      const questionId = this.props.index;
 
       // Send Match Data to MainQuizGenerator
       // console.log(this.state);
-      this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
+      this.props.updateParent(
+        questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
     }
   }
 
@@ -425,15 +434,16 @@ export default class CrossQuizGenerator extends Component {
     }
 
     // Update hintsAttributes Object
-    this.updateHintsAttributes(newAcrossWords, newDownWords);
+    const hintsAttributes = this.updateHintsAttributes(newAcrossWords, newDownWords);
 
     const questionTitle = this.state.crossQuizQuestion;
     const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
     const rowsAttributes = this.state.boardValues;
-    const hintsAttributes = this.state.hintsAttributes;
+    const questionId = this.props.index;
 
     // Send Match Data to MainQuizGenerator
-    this.props.updateParent(questionTitle, metaAtributes, rowsAttributes, hintsAttributes);
+    this.props.updateParent(
+      questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
 
     // console.log(this.state.acrossWords);
   }
@@ -618,6 +628,7 @@ export default class CrossQuizGenerator extends Component {
 }
 
 CrossQuizGenerator.propTypes = {
+  index: PropTypes.number.isRequired,
   content: PropTypes.shape({
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,

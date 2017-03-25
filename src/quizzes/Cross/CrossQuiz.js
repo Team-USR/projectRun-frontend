@@ -215,6 +215,7 @@ export default class CrossQuiz extends Component {
 
         <div className="matchQuizTitle">
           <h3> { quizIndex }. { crossQuizQuestion } </h3>
+          <h5>Points: {this.props.question.points}</h5>
         </div>
 
         <div className="">
@@ -249,6 +250,7 @@ CrossQuiz.propTypes = {
     rows: PropTypes.arrayOf(PropTypes.string).isRequired,
     question: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
+    points: PropTypes.number.isRequired,
   }).isRequired,
   index: PropTypes.number.isRequired,
   callbackParent: PropTypes.func.isRequired,
