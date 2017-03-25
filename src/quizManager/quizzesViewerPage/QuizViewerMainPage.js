@@ -36,6 +36,7 @@ export default class QuizViewerMainPage extends Component {
       savedSession: true,
       score: null,
       error: false,
+      totalScore: null,
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -48,7 +49,6 @@ export default class QuizViewerMainPage extends Component {
       headers: this.props.userToken,
     })
     .then(response => setTimeout(() => {
-      // console.log(response);
       this.setState({
         loadingQuiz: false,
         quizInfo: response.data.quiz,
@@ -155,7 +155,6 @@ export default class QuizViewerMainPage extends Component {
       method: 'post',
     })
     .then((response) => {
-      // console.log(response);
       const newState = !this.state.resultsState;
       const dataSet = response.data.feedback;
       const newData = {};
@@ -167,7 +166,8 @@ export default class QuizViewerMainPage extends Component {
         resultsState: newState,
         getResponse: response,
         data: newData,
-        score: response.data.points });
+        score: response.data.points,
+        totalScore: response.data.total_points });
       this.props.reloadSideBar();
       // console.log(this.state.score);
     });
@@ -210,8 +210,8 @@ export default class QuizViewerMainPage extends Component {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.isReviewMode}>BACK</Button>
-          <Button className="submitButton" onClick={this.isResultsMode}>SUBMIT</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}>BACK</Button>
+          <Button className="enjoy-css" onClick={this.isResultsMode}>SUBMIT</Button>
         </div>);
     }
     if (this.state.savedSession && !this.state.reviewState && !this.state.resultsState) {
@@ -220,21 +220,25 @@ export default class QuizViewerMainPage extends Component {
           <h5>
             { this.state.session.last_updated }
           </h5>
-          <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}> FINISH</Button>
         </div>);
     }
     if (!this.state.reviewState && !this.state.resultsState && !this.state.savedSession) {
       return (
         <div className="submitPanel">
-          <Button className="submitButton" onClick={this.saveSession}>
+          <Button className="enjoy-css" onClick={this.saveSession}>
             SAVE
           </Button>
-          <Button className="submitButton" onClick={this.isReviewMode}> FINISH</Button>
+          <Button className="enjoy-css" onClick={this.isReviewMode}> FINISH</Button>
         </div>);
     } if (this.state.resultsState) {
       return (
         <div className="submitPanel">
-          <h3> MARK : {this.state.score} </h3>
+          <h3>
+           Score :
+           {this.state.score}/{this.state.totalScore}
+            ({ (this.state.score / this.state.totalScore) * 100 }%)
+          </h3>
         </div>
       );
     }
@@ -365,9 +369,9 @@ export default class QuizViewerMainPage extends Component {
       <div className="mainQuizViewerBlock">
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         <h5 style={styles.quizTile}>Created by: {this.state.quizInfo.creator}</h5>
-        <h5 style={styles.quizTile}>Attempts remaining: {this.state.quizInfo.attempts}</h5>
         {this.state.quizInfo.questions.map((question, index) =>
-        this.renderQuestions(question, index))}
+        this.renderQuestions(question, index))
+        }
         {this.renderSubmitPanel()}
       </div>
     );

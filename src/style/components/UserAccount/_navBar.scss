@@ -6,6 +6,19 @@
   width: 100%;
   z-index: 10;
 
+.BrandTitleWrapper{
+  display: inline;
+  .userTypeIcon{
+    top:5px;
+    .glyphicon-education{
+      color:white;
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+
   @media (max-width: 767px) {
     position: relative;
   }

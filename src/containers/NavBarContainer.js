@@ -1,6 +1,13 @@
 import { connect } from 'react-redux';
+import { TEACHER } from '../constants';
 import { NavBar } from '../components/UserAccount/';
 import { logoutUser } from '../redux/modules/user';
+
+const mapStoreToProps = store => ({
+  userType: store.auth.userType,
+  userTypeClass: store.auth.userType === TEACHER ? 'glyphicon-home'
+    : 'glyphicon-education',
+});
 
 const mapDispatchToProps = dispatch => ({
   onLogout: () => {
@@ -9,7 +16,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const NavBarContainer = connect(
-  null,
+  mapStoreToProps,
   mapDispatchToProps,
   null,
   { pure: false },

@@ -1,23 +1,49 @@
 import React from 'react';
-import { PieChart, Pie, LineChart, XAxis, YAxis, Tooltip, Line, Cell, Text } from 'recharts';
+import { PieChart, Pie, LineChart, XAxis, YAxis, Tooltip, Line, Cell, Text, Legend } from 'recharts';
 import QuizDot from './QuizDot';
 import { CHART_COLOR } from '../../constants';
 
+function CustomTooltip(props) {
+  CustomTooltip.propTypes = {
+    active: React.PropTypes.bool.isRequired,
+    payload: React.PropTypes.arrayOf(React.PropTypes.shape({
+      payload: React.PropTypes.shape({
+        date: React.PropTypes.string,
+      }),
+      value: React.PropTypes.number,
+    })).isRequired,
+    label: React.PropTypes.string.isRequired,
+  };
+
+  if (props.active) {
+    return (
+      <div className="tooltip-container">
+        <h2><b>{props.label}</b></h2>
+        <p>Score: {props.payload[0].value}</p>
+        <p>{props.payload[0].payload.date}</p>
+      </div>
+    );
+  }
+  return null;
+}
 
 export function LineCh(props) {
   LineCh.propTypes = {
     data: React.PropTypes.arrayOf(React.PropTypes.shape({
-      quiz: React.PropTypes.string,
-      score: React.PropTypes.number,
+      name: React.PropTypes.string,
+      value: React.PropTypes.number,
+      date: React.PropTypes.string,
     })).isRequired,
     color: React.PropTypes.string,
+    placeholder: React.PropTypes.string,
   };
 
   LineCh.defaultProps = {
     color: CHART_COLOR,
+    placeholder: 'You have no quizzes submited yet.',
   };
   return props.data.length > 0 ? (
-    <LineChart width={800} height={400} data={props.data}>
+    <LineChart width={900} height={450} data={props.data}>
       <XAxis
         dataKey="name"
         padding={{ left: 30, right: 30 }}
@@ -25,56 +51,58 @@ export function LineCh(props) {
       />
       <YAxis
         tickCount={12}
-        dataKey="score"
+        dataKey="value"
         domain={[0, 100]} fontWeight={700}
         stroke={props.color}
       />
-      <Tooltip />
-      <Line type="monotone" dataKey="score" fillOpacity={0.8} dot={<QuizDot />} strokeWidth={3} />
+      {props.data[0].date ? <Tooltip content={<CustomTooltip />} />
+        : <Tooltip />}
+
+      <Line type="monotone" dataKey="value" fillOpacity={0.8} dot={<QuizDot />} strokeWidth={3} />
     </LineChart>
-  ) : <h2 style={{ color: props.color }}>You have no quizzes submited yet!</h2>;
+  ) : <h3>{props.placeholder}</h3>;
 }
 
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
+
+const RADIAN = Math.PI / 180;
+
 function renderLabel(pie) {
-  const radius = pie.innerRadius + ((pie.outerRadius - pie.innerRadius) * 0.3);
-  const x = pie.cx + (radius * Math.cos(-pie.midAngle * (Math.PI / 180)));
-  const y = pie.cy + (radius * Math.sin(-pie.midAngle * (Math.PI / 180)));
+  const radius = pie.innerRadius + ((pie.outerRadius - pie.innerRadius) * 0.5);
+  const x = pie.cx + (radius * Math.cos(-pie.midAngle * RADIAN));
+  const y = pie.cy + (radius * Math.sin(-pie.midAngle * RADIAN));
+
   return (
-    <Text x={x} y={y} fill="#fff" fontSize="2.5em" dominantBaseline="central">
-      {pie.value ? `${pie.name}: ${pie.value}` : ''}
+    <Text x={x} y={y} fill="#fff" textAnchor={x > pie.cx ? 'start' : 'end'} fontSize="2.5em" dominantBaseline="central">
+      {`${(pie.percent * 100).toFixed(0)}%`}
     </Text>
   );
 }
 
 export function PieCh(props) {
-  PieCh.propTypes = {
-    data: React.PropTypes.arrayOf(React.PropTypes.shape({
-      quiz: React.PropTypes.string,
-      score: React.PropTypes.number,
-    })).isRequired,
-  };
-
   return (
-    <PieChart width={800} height={400}>
+    <PieChart width={900} height={450}>
       <Pie
         data={props.data}
         cx={400}
         cy={200}
-        outerRadius={200}
         label={pie => renderLabel(pie)}
+        outerRadius={200}
         fill="#8884d8"
       >
-        {props.data.map((entry, index) => {
-          if (entry && index) {
-            return (
-              <Cell key={`cell-${index + 1}`} fill="#228B22" style={{ textAllign: 'center' }}>
-                <Text>{entry.name}</Text>
-              </Cell>
-            );
-          }
-          return <Cell key={`cell-${index + 1}`} fill="#A91101" />;
-        })}
+        {props.data.map((entry, index) =>
+          (<Cell key={entry.name} fill={COLORS[index % COLORS.length]}>
+            <Text stroke="#000">{entry.name}</Text>
+          </Cell>))}
       </Pie>
+      <Legend verticalAlign="bottom" align="center" />
     </PieChart>
   );
 }
+
+PieCh.propTypes = {
+  data: React.PropTypes.arrayOf(React.PropTypes.shape({
+    quiz: React.PropTypes.string,
+    score: React.PropTypes.number,
+  })).isRequired,
+};

@@ -83,7 +83,7 @@ export default class ClozeQuestion extends React.Component {
 
   render() {
     return (
-      <div className="clozeQuizContainer">
+      <div className="cardSection">
         <h3 className="questionPanel">
           {this.props.index}. {this.props.request}
         </h3>

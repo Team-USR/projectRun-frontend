@@ -9,23 +9,41 @@
     .sessionWrapper {
       text-align: center;
 
+
+      .cardSection:hover {
+          box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+          text-align: center;
+          width: 40%;
+          margin: 5% auto;
+          padding: 30px;
+          margin-bottom: 10px;
+           border-radius: 5px 5px 0 0;
+      }
+
       .sessionCard {
         margin:0 auto;
-        border: 1px solid grey;
         margin-top:10px;
         margin-bottom: 10px;
         padding:10px;
-        box-shadow: 0 0 0 10px rgba(255,255,255,.25);
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
         max-width: 700px;
         text-align: left;
         .rightSection{
           text-align: right;
         }
       }
+      .sessionCard:hover{
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        border-radius: 7px;
+      }
       .inProgress {
         background-color: #4CAF50;
         border: 1px solid #4CAF50;
-        box-shadow: 0 0 0 10px rgba(255,255,255,.25);
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
         color:white;
         z-index: 1;
         padding:10px;
@@ -42,6 +60,10 @@
         .rightSection{
           text-align: right;
         }
+      }
+      .inProgress:hover{
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        border-radius: 7px;
       }
     }
 }

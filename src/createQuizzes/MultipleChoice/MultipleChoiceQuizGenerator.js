@@ -6,7 +6,10 @@ let displayIndex = 0;
 export default class MultipleChoiceQuizGenerator extends Component {
   constructor() {
     super();
-    this.state = { answerNoState: 0, answers_choices: [], answers_attributes: [], question: '' };
+    this.state = { answerNoState: 0,
+      answers_choices: [],
+      answers_attributes: [],
+      question: '' };
     this.addAnswers = this.addAnswers.bind(this);
     this.setQuestion = this.setQuestion.bind(this);
   }
@@ -27,7 +30,9 @@ export default class MultipleChoiceQuizGenerator extends Component {
     },
   );
     this.setState({ answers_choices: newArray, answers_attributes: filteredArray });
-    this.props.updateParent(filteredArray, this.state.question, this.props.index);
+    this.props.updateParent(filteredArray,
+       this.state.question,
+       this.props.index);
   }
   onChildChangedText(index, answer, isCorrect) {
     const newAnswer = { answer, is_correct: isCorrect };
@@ -41,11 +46,15 @@ export default class MultipleChoiceQuizGenerator extends Component {
     },
   );
     this.setState({ answers_choices: newArray, answers_attributes: filteredArray });
-    this.props.updateParent(filteredArray, this.state.question, this.props.index);
+    this.props.updateParent(filteredArray,
+       this.state.question,
+       this.props.index);
   }
   setQuestion(event) {
     this.setState({ question: event.target.value });
-    this.props.updateParent(this.state.answers_attributes, event.target.value, this.props.index);
+    this.props.updateParent(this.state.answers_attributes,
+       event.target.value,
+       this.props.index);
   }
   addAnswers() {
     const choicesTemp = this.state.answers_choices;
@@ -94,7 +103,7 @@ export default class MultipleChoiceQuizGenerator extends Component {
     displayIndex = 0;
     return (
       <div className="questionBlock">
-        <h3>Multiple choice question</h3>
+        <h4>Multiple choice question</h4>
         <div className="">
           <label htmlFor="textInput">
             Question
