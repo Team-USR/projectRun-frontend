@@ -5,7 +5,7 @@ import { CHART_COLOR } from '../../constants';
 
 function CustomTooltip(props) {
   CustomTooltip.propTypes = {
-    active: React.PropTypes.bool.isRequired,
+    active: React.PropTypes.bool,
     payload: React.PropTypes.arrayOf(React.PropTypes.shape({
       payload: React.PropTypes.shape({
         date: React.PropTypes.string,
@@ -13,13 +13,18 @@ function CustomTooltip(props) {
         value: React.PropTypes.number,
       }),
       value: React.PropTypes.number,
-    })).isRequired,
+    })),
+  };
+
+  CustomTooltip.defaultProps = {
+    payload: [],
+    active: false,
   };
 
   if (props.active) {
     return (
       <div className="tooltip-container">
-        <h2><b>{props.payload[0].payload.name}</b></h2>
+        <h4><b>{props.payload[0].payload.name}</b></h4>
         <p>Score: {props.payload[0].payload.value}</p>
         <p>{props.payload[0].payload.date}</p>
       </div>
@@ -44,7 +49,7 @@ export function LineCh(props) {
     placeholder: 'You have no quizzes submited yet.',
   };
   return props.data.length > 0 ? (
-    <LineChart width={900} height={450} data={props.data}>
+    <LineChart width={700} height={450} data={props.data}>
       <XAxis
         dataKey="name"
         padding={{ left: 30, right: 30 }}
@@ -82,11 +87,11 @@ function renderLabel(pie) {
 
 export function PieCh(props) {
   return (
-    <PieChart width={900} height={450}>
+    <PieChart width={700} height={450}>
       <Pie
         data={props.data}
-        cx={400}
-        cy={200}
+        cx={350}
+        cy={225}
         label={pie => renderLabel(pie)}
         outerRadius={200}
         fill="#8884d8"
