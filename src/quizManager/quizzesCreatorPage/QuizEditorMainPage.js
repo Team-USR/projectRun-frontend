@@ -10,6 +10,7 @@ import { MixQuizGenerator } from '../../createQuizzes/Mix';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
+import { checkMix, checkMultiple, checkCloze } from '../../helpers/Validators';
 
 
 const styles = {
@@ -146,29 +147,6 @@ export default class QuizEditorMainPage extends Component {
       this.setState({ inputQuestions: inputQuestion });
     }
   }
-  checkMultiple(element) {
-    this.element = element;
-    let errorMessage = '';
-    let atLeastOneTrue = false;
-    let answerFields = '';
-    if (element.question === '') {
-      errorMessage += 'Question is empty. \n';
-    }
-    element.answers_attributes.map((item) => {
-      if (item.is_correct === true) {
-        atLeastOneTrue = true;
-      }
-      if (item.answer === '' || item.answer === undefined) {
-        answerFields = 'Answer fields can\'t be empty. \n';
-      }
-      return 0;
-    });
-    if (atLeastOneTrue === false) {
-      errorMessage += 'At least one of the answers needs to be true. \n';
-    }
-    errorMessage += answerFields;
-    return errorMessage;
-  }
   checkCorectnessTitle(generatedQuiz) {
     if (generatedQuiz.quiz.title === '') {
       const thisObject = this.state.errors;
@@ -195,17 +173,12 @@ export default class QuizEditorMainPage extends Component {
     if (element.type === 'match') {
       // TODO: check for errors method(element)
       //  errorMessage = this.checkMatch(element); --returns string describing error
-    } else if (element.type === 'multiple_choice') {
-      errorMessage += this.checkMultiple(element);
-    } else if (element.type === 'single_choice') {
-        // TODO: check for errors
-        //  errorMessage = this.checkSingle(element); --returns string describing error
+    } else if (element.type === 'multiple_choice' || element.type === 'single_choice') {
+      errorMessage += checkMultiple(element);
     } else if (element.type === 'mix') {
-        // TODO: check for errors
-        //  errorMessage = this.checkMix(element);
+      errorMessage = checkMix(element);
     } else if (element.type === 'cloze') {
-        // TODO: check for errors
-        //  errorMessage = this.checkCloze(element); --returns string describing error
+      errorMessage = checkCloze(element);
     } else if (element.type === 'cross') {
         // TODO: check for errors
         //  errorMessage = this.checkCross(element); --returns string describing error
