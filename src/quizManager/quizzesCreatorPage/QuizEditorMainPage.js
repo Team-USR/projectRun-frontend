@@ -64,10 +64,6 @@ export default class QuizEditorMainPage extends Component {
        generatedQuiz.quiz.attempts = response.data.attempts;
        generatedQuiz.quiz.release_date = response.data.release_date;
        generatedQuiz.quiz.negative_marking = response.data.negative_marking;
-       response.data.questions.map((item, index) => {
-         item.points = response.data.questions[index].points;
-         return 0;
-       });
        setTimeout(() => {
          this.setState({
            loadingQuiz: false,
@@ -100,10 +96,7 @@ export default class QuizEditorMainPage extends Component {
         generatedQuiz.quiz.attempts = response.data.attempts;
         generatedQuiz.quiz.release_date = response.data.release_date;
         generatedQuiz.quiz.negative_marking = response.data.negative_marking;
-        response.data.questions.map((item, index) => {
-          item.points = response.data.questions[index].points;
-          return 0;
-        });
+
         setTimeout(() => {
           this.setState({
             loadingQuiz: false,
