@@ -49,7 +49,7 @@ export function LineCh(props) {
     placeholder: 'You have no quizzes submited yet.',
   };
   return props.data.length > 0 ? (
-    <LineChart width={700} height={450} data={props.data}>
+    <LineChart width={window.innerWidth - 300} height={450} data={props.data}>
       <XAxis
         dataKey="name"
         padding={{ left: 30, right: 30 }}

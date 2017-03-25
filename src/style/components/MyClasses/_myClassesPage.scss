@@ -36,9 +36,16 @@
     display: initial;
   }
 
-  .line-chart-container {
+  .pie-chart-container {
+    position: absolute;
     display: block;
-    margin-left: 24%;
-    margin-right: 26%;
+    left: 50%;
+    transform:translateX(calc(-50% + 100px));
+  }
+
+  .line-chart-container {
+    position: absolute;
+    display: block;
+    margin: 50px;
   }
 }

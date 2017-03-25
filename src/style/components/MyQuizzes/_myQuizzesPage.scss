@@ -16,13 +16,17 @@
   }
 
   .pie-chart-container {
+    position: absolute;
     display: block;
-    margin: 0 26% 0 24%;
+    left: 50%;
+    transform:translateX(calc(-50% + 100px));
   }
 
   .line-chart-container {
+    position: absolute;
+    top:600px;
     display: block;
-    margin: 0 26% 0 24%;
+    margin: 50px;
   }
 
 }
