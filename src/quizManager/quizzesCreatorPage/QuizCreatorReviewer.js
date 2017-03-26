@@ -191,6 +191,7 @@ export default class QuizCreatorReviewer extends Component {
         <ClozeQuestion
           key={question.id}
           index={index}
+          points={question.points}
           request={question.question}
           sentences={questionsArray}
         />

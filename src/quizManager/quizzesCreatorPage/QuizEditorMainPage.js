@@ -108,6 +108,10 @@ export default class QuizEditorMainPage extends Component {
       });
     }
   }
+  componentWillUnmount() {
+    id = 0;
+    displayIndex = 0;
+  }
   setNegativeMarking() {
     const value = this.state.submitedQuestions.quiz.negative_marking;
     const newValue = !value;

@@ -45,6 +45,10 @@ export default class QuizCreatorMainPage extends Component {
     this.changeReleaseDate = this.changeReleaseDate.bind(this);
     this.setNegativeMarking = this.setNegativeMarking.bind(this);
   }
+  componentWillUnmount() {
+    id = 0;
+    displayIndex = 0;
+  }
   setNegativeMarking() {
     const value = this.state.submitedQuestions.quiz.negative_marking;
     const newValue = !value;
@@ -194,7 +198,6 @@ export default class QuizCreatorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-
     const newQuestion = {
       question: 'Fill in the gaps:',
       type: 'cloze',

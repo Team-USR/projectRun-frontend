@@ -75,14 +75,15 @@ export default class ClozeQuestion extends React.Component {
   render() {
     let validationClass = '';
     if (this.state.resultsState) {
-      validationClass = this.state.correctAnswer ?
+      validationClass = this.state.correctAnswer.correct ?
         'correctAnswerWrapper' : 'wrongAnswerWrapper';
     }
     return (
       <div className={`cardSection ${validationClass}`} >
-        <h3 className="questionPanel">
-          {this.props.index}. {this.props.request}
-        </h3>
+        <div className="questionPanel">
+          <h3>{this.props.index}. {this.props.request}</h3>
+          <h5>Points: {this.props.points}</h5>
+        </div>
         <ul>
           {this.props.reviewer ? this.renderReview() : this.renderView()}
         </ul>
@@ -94,6 +95,7 @@ export default class ClozeQuestion extends React.Component {
 ClozeQuestion.propTypes = {
   index: React.PropTypes.number.isRequired,
   request: React.PropTypes.string.isRequired,
+  points: React.PropTypes.number,
   sentences: React.PropTypes.arrayOf(React.PropTypes.shape({
     text: React.PropTypes.string,
     gaps: React.PropTypes.arrayOf(React.PropTypes.shape({
@@ -115,6 +117,7 @@ ClozeQuestion.propTypes = {
 
 ClozeQuestion.defaultProps = {
   gaps: [],
+  points: 0,
   sessionAnswers: [],
   reviewer: true,
   studentReview: false,
