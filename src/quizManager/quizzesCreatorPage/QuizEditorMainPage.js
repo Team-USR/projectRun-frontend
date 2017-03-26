@@ -57,7 +57,7 @@ export default class QuizEditorMainPage extends Component {
        if (!response || (response && response.status !== 200)) {
          this.setState({ errorState: true });
        }
-       console.log(response.data);
+      //  console.log(response.data);
        const generatedQuiz = this.state.submitedQuestions;
        generatedQuiz.quiz.title = response.data.title;
        generatedQuiz.quiz.attempts = response.data.attempts;
@@ -152,7 +152,7 @@ export default class QuizEditorMainPage extends Component {
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(
       element => element !== null,
     );
-    console.log('filtered', filteredQuestions);
+    // console.log('filtered', filteredQuestions);
     this.setState({ loading: true, submitedQuestions: filteredQuestions });
 //    console.log("----------");
 //    console.log(filteredQuestions);
@@ -272,7 +272,7 @@ export default class QuizEditorMainPage extends Component {
       rows_attributes: rowsAttributes,
       hints_attributes: hintsAttributes,
     };
-    console.log(newQuestion);
+    // console.log(newQuestion);
 
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
     this.setState({ submitedQuestions: inputQ });
