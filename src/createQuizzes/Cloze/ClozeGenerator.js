@@ -49,10 +49,12 @@ export default class ClozeGenerator extends React.Component {
   }
 
   componentWillMount() {
-    this.props.updateParent(this.props.index,
-      this.state.toSendQuestions.map(q => q.question).join('\n'),
-      this.state.gapsAttributes,
-      this.props.editorContent.question);
+    if (this.editorContent && Object.keys(this.props.editorContent).length > 0) {
+      this.props.updateParent(this.props.index,
+        this.state.toSendQuestions.map(q => q.question).join('\n'),
+        this.state.gapsAttributes,
+        this.props.editorContent.question);
+    }
   }
   addQuestion(text) {
     const question = {
