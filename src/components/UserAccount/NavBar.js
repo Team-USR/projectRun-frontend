@@ -36,7 +36,7 @@ export default function NavBar(props) {
             <MenuItem divider />
             <MenuItem >Help</MenuItem>
           </NavDropdown>
-          <LinkContainer onClick={props.onLogout} to="/login">
+          <LinkContainer onClick={props.onLogout} to="/home">
             <NavItem >
               Logout
             </NavItem>
