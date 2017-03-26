@@ -45,9 +45,47 @@
       }
     }
   }
-  .inputWordsTextarea {
-    resize: none;
+
+  .crossQuestionWrapper {
+    margin: 15px 0;
   }
 
+  .crossInputsWrapper {
+    margin-top: 5px;
+    margin-bottom: 15px;
+
+    .crossInputsForm {
+      height: 85px;
+      .inputWordsTextarea {
+        height: 85px;
+        resize: none;
+      }
+
+      .bottomHeightBtn {
+        top: 17px;
+      }
+    }
+  }
+
+  .crossHintsWrapper {
+    .hintItemWrapper {
+      margin: 5px 0;
+
+      .itemLabelContainer {
+        text-align: right;
+        label {
+          line-height: 34px;
+        }
+      }
+
+    }
+  }
+
+  .crossButtonsWrapper {
+    margin: 15px 0;
+    .crossButton {
+      width: 100%;
+    }
+  }
 
 }
