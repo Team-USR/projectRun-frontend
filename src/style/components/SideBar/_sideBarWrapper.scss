@@ -1,4 +1,8 @@
 .sideBarWrapper {
+  .navbar{
+    border:none;
+    border-top:1px solid black;
+  }
 
   .mainNavContainer {
 
@@ -11,17 +15,24 @@
       position: relative;
       width: 100%;
     }
+    @media (min-width: 1500px) {
+      width:250px;
+    }
 
     .container {
       width: 200px;
       padding: 0px;
+      .navbar-header{
+        width:100%;
+      }
       @media (max-width: 767px) {
         width: 100%;
       }
+      @media (min-width: 1500px) {
+        width:100%;
+      }
       .searchBarItem {
-        margin-top:20px;
-        width:199px;
-        margin-right:15px;
+        width:200px;
         background-color:#222222;
         color: white;
         border:0px;
@@ -30,20 +41,43 @@
         font-size: 18px;
         padding-left: 30px;
         text-align: left;
-
+        padding-top:5px;
+        padding-bottom: 5px;
+        @media (min-width: 1500px) {
+          width:249px;
+          padding-left: 52px;
+        }
+      }
+      .searchBarItem:focus {
+        background-color: #080808;
       }
       .panel-group {
-        width: 199px;
+        width: 200px;
         margin-top:20px;
         border-radius:0px;
         background-color: #222222;
-
+        cursor: pointer;
+        @media (min-width: 1500px) {
+          width:249px;
+        }
+        .panel-collapse{
+          .panel-body{
+            padding-left:0;
+          }
+        }
       }
       .panel-heading {
         border-radius:0px;
         background-color: #222222;
         color:white;
         border:0px;
+        background-color: #333333;
+        .panel-title{
+          a{
+            text-decoration: none;
+            padding: 10px 19px;
+          }
+        }
       }
       .panel-default {
         border-radius:0px;
@@ -81,19 +115,22 @@
       background-color: #222222;
       border:0px;
       font-size: 18px;
-      margin-left:30px;
+      width:100%;
       color:grey;
       text-align: center;
       display: inline;
+      margin-left: -1px;
+      border-radius: 0;
+      outline:none;
     }
     .mainButton:hover {
     background-color: #222222;
     border:0px;
     font-size: 18px;
-    margin-left:30px;
     color:white;
     text-align: center;
     display: inline;
+    background-color: #080808;
   }
     .titleButton:hover{
       background-color: #222222;
@@ -119,26 +156,45 @@
       }
     }
     .sideBarButton{
-      color:grey;
+      color:rgb(230,230,230);
       border:0;
-      width: 130px;
-      margin-top:3px;
+      width: 200px;
+      padding: 10px 0;
       background-color: #222222;
       outline: none;
+      border-radius:0;
+      @media(min-width:1500px){
+        width: 250px;
+      }
     }
     .sideBarButton:hover{
       color:white;
-      border:0;
-      width: 130px;
-      margin-top:3px;
-      background-color: #222222;
+      background-color: #080808;
     }
 
     .sideBarLeft {
       padding-left:0;
+      padding-right:0;
       width: 200px;
       @media (max-width: 767px) {
         width: 100%;
+      }
+      @media (min-width: 1500px) {
+        width:100%;
+      }
+      .search_icon{
+        position: absolute;
+        color: white;
+        top: 79px;
+        right: 5px;
+        pointer-events: none;
+      }
+      .search_icon2{
+        position: absolute;
+        color: white;
+        top: 118px;
+        right: 5px;
+        pointer-events: none;
       }
     }
   }
