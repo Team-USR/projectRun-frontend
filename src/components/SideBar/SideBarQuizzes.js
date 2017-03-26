@@ -123,13 +123,16 @@ export default class SideBarQuizzes extends Component {
   renderSearchBar() {
     return (
       <NavItem key={'searchBar'} >
-        <input
-          className="searchBarItem"
-          id="searchBar"
-          type="text"
-          placeholder="Search for a quiz"
-          onChange={this.filterItems}
-        />
+        <div>
+          <i className="fa fa-search search_icon" aria-hidden="true" />
+          <input
+            className="searchBarItem"
+            id="searchBar"
+            type="text"
+            placeholder="Search for a quiz"
+            onChange={this.filterItems}
+          />
+        </div>
       </NavItem>
     );
   }
@@ -275,9 +278,8 @@ export default class SideBarQuizzes extends Component {
           {this.renderSearchBar()}
           <Nav key={'student'}>
             <Accordion defaultActiveKey={this.state.activePanel}>
-
               <Panel header={`Not started (${notStartedContent.length})`} eventKey="1" onClick={() => { this.setState({ activePanel: null }); }}>
-                {
+               {
             notStartedContent.map((item, index) => {
               if (index < maxNotStarted) {
                 return (

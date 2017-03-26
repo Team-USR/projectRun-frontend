@@ -4,7 +4,7 @@ import { ControlLabel, form, FormControl, Button, ButtonGroup, Col } from 'react
 import cookie from 'react-cookie';
 import Toggle from 'react-toggle';
 import { STUDENT, TEACHER } from '../../constants';
-import loginLogo from '../../assets/images/logo.png';
+
 
 export default function LoginForm(props) {
   function loginUser(e) {
