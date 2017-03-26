@@ -34,9 +34,9 @@ export default class ClozeGenerator extends React.Component {
           });
         });
       const toSendQuestions = buildToSendQuestions(questions);
-
       this.state = {
         current: props.editorContent.cloze_sentence.text.split('\n').length,
+        question: props.editorContent.question,
         questions,
         gapsAttributes,
         toSendQuestions,
@@ -48,6 +48,12 @@ export default class ClozeGenerator extends React.Component {
     this.removeQuestion = this.removeQuestion.bind(this);
   }
 
+  componentWillMount() {
+    this.props.updateParent(this.props.index,
+      this.state.toSendQuestions.map(q => q.question).join('\n'),
+      this.state.gapsAttributes,
+      this.props.editorContent.question);
+  }
   addQuestion(text) {
     const question = {
       no: this.state.current,
@@ -105,8 +111,9 @@ export default class ClozeGenerator extends React.Component {
   }
 
   changeQuestionTitle() {
+    this.setState({ question: this.questionTitle.value });
     this.props.updateParent(this.props.index,
-      this.state.toSendQuestions,
+      this.state.toSendQuestions.map(q => q.question).join('\n'),
       this.state.gapsAttributes,
       this.questionTitle.value);
   }
@@ -124,6 +131,7 @@ export default class ClozeGenerator extends React.Component {
               inputRef={(input) => { this.questionTitle = input; }}
               onChange={() => this.changeQuestionTitle()}
               type="text"
+              defaultValue={this.state.question}
               placeholder="Question title."
             />
           </Col>

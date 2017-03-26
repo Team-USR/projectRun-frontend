@@ -261,7 +261,7 @@ export default class QuizEditorMainPage extends Component {
     this.setState({ submitedQuestions: inputQ });
   }
 
-  collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+  collectClozeObject(questionID, sentenceAttributes, gapsAttributes, questionTitle) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
     if (inputQ.quiz.questions_attributes[questionID] &&
@@ -272,7 +272,7 @@ export default class QuizEditorMainPage extends Component {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     const newQuestion = {
-      question: 'Fill in the gaps:',
+      question: questionTitle,
       type: 'cloze',
       points: pointsAssigned,
       cloze_sentence_attributes: {
