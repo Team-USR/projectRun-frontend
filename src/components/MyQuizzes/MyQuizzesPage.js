@@ -98,6 +98,9 @@ export default class MyQuizzesPage extends Component {
         quizID = cookie.load('current-session-id');
         this.setState({ panelType: pType, currentID: quizID });
       }
+    })
+    .catch(() => {
+      this.setState({ panelType: 'default' });
     });
   }
   reloadBar() {

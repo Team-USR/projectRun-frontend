@@ -138,6 +138,9 @@ export default class MyClassesPage extends Component {
       })
       .then((quizzesResponse) => {
         this.setState({ allQuizzes: quizzesResponse.data });
+      })
+      .catch(() => {
+        this.setState({ panelType: 'my_classes_default_panel' });
       });
 
       const newSideBarContent = { classes: response.data.filter(obj => obj.role === 'admin').reverse() };

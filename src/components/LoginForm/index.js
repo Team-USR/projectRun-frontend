@@ -4,6 +4,7 @@ import { ControlLabel, form, FormControl, Button, ButtonGroup, Col } from 'react
 import cookie from 'react-cookie';
 import Toggle from 'react-toggle';
 import { STUDENT, TEACHER } from '../../constants';
+import loginLogo from '../../assets/images/logo.png';
 
 export default function LoginForm(props) {
   let error;
@@ -11,13 +12,12 @@ export default function LoginForm(props) {
     error = <h3 className="invalidHeader">{props.loginError}</h3>;
   }
   let isTeacher = false;
-  if (cookie.load('userType') !== undefined) {
-    isTeacher = cookie.load('userType');
-  }
-
   return (
     <div className="loginPage">
-      <h1 className="welcomeTitle" id="title">Welcome!</h1>
+
+      <div className="logoLogin">
+        <img src={loginLogo} alt={''} />
+      </div>
       {error}
       <div className="loginWrapper">
         <form>
@@ -64,7 +64,7 @@ export default function LoginForm(props) {
               </form>
             </Col>
             <Col md={6}>
-              <ButtonGroup>
+              <ButtonGroup style={{ float: 'right' }}>
                 <Button
                   type="submit"
                   onClick={props.submitLogin}
