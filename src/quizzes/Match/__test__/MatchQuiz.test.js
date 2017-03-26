@@ -7,6 +7,7 @@ const questionToBeSent = {
   id: 0,
   type: 'match',
   question: 'title',
+  match_default: 'Choose an option',
   left: [{ id: 'abc', answer: 'left1' }],
   right: [{ id: '123', answer: 'right1' }],
 };
@@ -42,6 +43,7 @@ const matchRightElement = (
     rightElements={questionToBeSent.right}
     leftElements={questionToBeSent.left}
     defaultValue={{ id: '', answer: 'default' }}
+    defaultAnswer={{ id: '', answer: 'option 1' }}
     inReview={false}
     inResult={false}
     onChange={() => true}
@@ -85,7 +87,7 @@ describe('Match Quiz - set 2 - rightElements', () => {
 describe('Match Quiz - set 3 - DOM Elements', () => {
   /* Test for Single Div with class .matchQuizContainer */
   it('5) MatchQuiz should mount in a full DOM', () => {
-    expect(mount(matchQuiz).find('.matchQuizContainer').length).toBe(1);
+    expect(mount(matchQuiz).find('.cardSection').length).toBe(1);
   });
 
   it('6) Check if MatchQuiz has a title', () => {

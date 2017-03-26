@@ -5,7 +5,8 @@
     "window": true
   },
   "rules": {
-    "react/jsx-filename-extension": [1, {"extensions": [".js", ".jsx"]}]
+    "react/jsx-filename-extension": [1, {"extensions": [".js", ".jsx"]}],
+    "no-restricted-syntax": "off"
   },
   "env": {
     "jest": true

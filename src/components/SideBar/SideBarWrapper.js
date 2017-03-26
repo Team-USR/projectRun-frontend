@@ -4,6 +4,19 @@ import { SideBarQuizzes, SideBarClasses } from './index';
 import { STUDENT, TEACHER } from '../../constants';
 
 export default class SideBarWrapper extends Component {
+  constructor() {
+    super();
+    this.state = {
+      sideContent: '',
+    };
+  }
+  componentWillMount() {
+    this.setState({ sideContent: this.props.sideBarContent });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ sideContent: nextProps.sideBarContent });
+  }
 
   renderSideBarContent() {
     let sideBarContent = (<Nav />);
@@ -14,8 +27,8 @@ export default class SideBarWrapper extends Component {
             key={'stud'}
             userType={this.props.userType}
             onQuizClick={id =>
-            this.props.onSideBarItemClick(id, 'viewer')}
-            content={this.props.sideBarContent.session}
+            this.props.onSideBarItemClick(id, 'sessions')}
+            content={this.state.sideContent.session}
           />
         );
       } else if (this.props.userType === TEACHER) {
@@ -25,7 +38,7 @@ export default class SideBarWrapper extends Component {
             userType={this.props.userType}
             onQuizClick={id =>
             this.props.onSideBarItemClick(id, 'reviewer')}
-            content={this.props.sideBarContent.quizzes}
+            content={this.state.sideContent.quizzes}
             onQuizCreatorClick={() => this.props.createQuiz()}
           />
         );
@@ -40,7 +53,7 @@ export default class SideBarWrapper extends Component {
             onCreateClassClick={() => this.props.onCreateClassClick()}
             onClassClick={(currentClassId, classTitle) =>
               this.props.onSideBarItemClick(currentClassId, classTitle)}
-            content={this.props.sideBarContent.classes}
+            content={this.state.sideContent.classes}
           />
         );
       } else if (this.props.userType === STUDENT) {
@@ -49,7 +62,8 @@ export default class SideBarWrapper extends Component {
             userType={this.props.userType}
             onClassClick={(currentClassId, classTitle) =>
               this.props.onSideBarItemClick(currentClassId, classTitle)}
-            content={this.props.sideBarContent.classes}
+            handleSearchClassForRequestInvite={() => this.props.handleSearchClassForRequestInvite()}
+            content={this.state.sideContent.classes}
           />
         );
       }
@@ -64,7 +78,11 @@ export default class SideBarWrapper extends Component {
         <Navbar inverse collapseOnSelect className="mainNavContainer">
           <Navbar.Header>
             <Navbar.Brand>
-              <Button onClick={() => this.props.onSideBarTitleClick()}>{this.props.title}</Button>
+              <Button
+                className="mainButton"
+                onClick={() => this.props.onSideBarTitleClick()}
+              >
+                {this.props.title}</Button>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
@@ -90,9 +108,11 @@ SideBarWrapper.propTypes = {
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   userType: PropTypes.string.isRequired,
+  handleSearchClassForRequestInvite: PropTypes.func,
 };
 
 SideBarWrapper.defaultProps = {
   onCreateClassClick: null,
   createQuiz: null,
+  handleSearchClassForRequestInvite: null,
 };

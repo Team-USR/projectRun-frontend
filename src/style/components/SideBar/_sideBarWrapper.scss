@@ -1,7 +1,8 @@
 .sideBarWrapper {
 
   .mainNavContainer {
-    background-color: #212831;
+
+
     border-radius: 0;
     position: fixed;
     width: 200px;
@@ -13,12 +14,128 @@
 
     .container {
       width: 200px;
+      padding: 0px;
       @media (max-width: 767px) {
         width: 100%;
       }
+      .searchBarItem {
+        margin-top:20px;
+        width:199px;
+        margin-right:15px;
+        background-color:#222222;
+        color: white;
+        border:0px;
+        border-bottom:1px solid white;
+        outline: none;
+        font-size: 18px;
+        padding-left: 30px;
+        text-align: left;
+
+      }
+      .panel-group {
+        width: 199px;
+        margin-top:20px;
+        border-radius:0px;
+        background-color: #222222;
+
+      }
+      .panel-heading {
+        border-radius:0px;
+        background-color: #222222;
+        color:white;
+        border:0px;
+      }
+      .panel-default {
+        border-radius:0px;
+        background-color: #222222;
+        border: 0;
+        width:100%;
+        padding:0px;
+      }
+
+    }
+    .titleButton{
+      background-color: #222222;
+      border:0px;
+      margin-left:15px;
+      color:grey;
+      font-size: 16px;
+      text-align: center;
+      display: inline;
+      width:150px;
+      .createText {
+        padding-top: 5px;
+      }
+      .plusIconWrapper {
+        width:32px;
+        height:32px;
+        margin-right:5px;
+        .plusIcon{
+          width: 30px;
+          height: 30px;
+          margin-right:3px;
+        }
+      }
+    }
+    .mainButton {
+      background-color: #222222;
+      border:0px;
+      font-size: 18px;
+      margin-left:30px;
+      color:grey;
+      text-align: center;
+      display: inline;
+    }
+    .mainButton:hover {
+    background-color: #222222;
+    border:0px;
+    font-size: 18px;
+    margin-left:30px;
+    color:white;
+    text-align: center;
+    display: inline;
+  }
+    .titleButton:hover{
+      background-color: #222222;
+      border:0px;
+      font-size: 16px;
+      margin-left:15px;
+      color:white;
+      text-align: center;
+      display: inline;
+      width:150px;
+      .createText {
+        padding-top: 5px;
+      }
+      .plusIconWrapper {
+        width:32px;
+        height:32px;
+        margin-right:5px;
+        .plusIcon{
+          width: 30px;
+          height: 30px;
+          margin-right:3px;
+        }
+      }
+    }
+    .sideBarButton{
+      color:grey;
+      border:0;
+      width: 130px;
+      margin-top:3px;
+      background-color: #222222;
+      outline: none;
+    }
+    .sideBarButton:hover{
+      color:white;
+      border:0;
+      width: 130px;
+      margin-top:3px;
+      background-color: #222222;
     }
 
     .sideBarLeft {
+      padding-left:0;
       width: 200px;
       @media (max-width: 767px) {
         width: 100%;

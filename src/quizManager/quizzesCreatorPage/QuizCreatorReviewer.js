@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Button } from 'react-bootstrap';
 import { MultipleChoiceQuiz } from '../../quizzes/MultipleChoice';
+import { SingleChoiceQuiz } from '../../quizzes/SingleChoice';
+import { ClozeQuestion } from '../../quizzes/Cloze';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
+import { getNOfGaps } from '../../helpers/Cloze';
 
 
 const styles = {
@@ -29,7 +32,7 @@ export default class QuizCreatorReviewer extends Component {
       answers: { questions: [] },
       getResponse: '',
       data: {},
-      errorState: false,
+      error: false,
       published: false,
       loadingPublishing: false,
     };
@@ -51,18 +54,20 @@ export default class QuizCreatorReviewer extends Component {
       }, 510);
       this.setState({
         quizInfo: response.data, published: response.data.published });
+    })
+    .catch(() => {
+      this.setState({ error: true });
+      this.props.handleError('default');
     });
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.quizID !== nextProps.quizID) {
       this.setState({ loadingQuiz: true });
-//    console.log("SDADS", nextProps.quizID);
       axios({
         url: `${API_URL}/quizzes/${nextProps.quizID}/edit`,
         headers: this.props.userToken,
       })
       .then((response) => {
-  //    console.log(response);
         if (!response || (response && response.status !== 200)) {
           this.setState({ errorState: true });
         }
@@ -102,9 +107,6 @@ export default class QuizCreatorReviewer extends Component {
     this.setState({ reviewState: newState });
   }
   renderQuestions(question, index) {
-  //  console.log(answers);
-  //  console.log(type);
-//    console.log("ANSWERSATTRIBUTES", question.answers);
     const answersAttributes = question.answers;
     if (question.type === 'multiple_choice') {
       return (
@@ -121,28 +123,77 @@ export default class QuizCreatorReviewer extends Component {
         />
       );
     }
-    if (question.type === 'match') {
+    if (question.type === 'single_choice') {
       return (
-        <MatchQuiz
+        <SingleChoiceQuiz
           id={question.id}
           reviewState={this.state.reviewState}
           resultsState={this.state.resultsState}
           question={question}
           index={index}
-          correctAnswer={this.state.data[question.id]}
+          correctAnswer={{}}
+          creatorAnswers={answersAttributes}
+          callbackParent={() => {}}
+          key={`single_choice_quiz_${question.id}`}
+        />
+      );
+    }
+    if (question.type === 'match') {
+      const newQuestion = question;
+      const pairs = newQuestion.pairs;
+      newQuestion.left = pairs.map((obj) => {
+        const leftItem = { id: obj.id.toString(), answer: obj.left_choice };
+        return leftItem;
+      });
+      newQuestion.right = pairs.map((obj) => {
+        const rightItem = { id: obj.id.toString(), answer: obj.right_choice };
+        return rightItem;
+      });
+
+      return (
+        <MatchQuiz
+          id={question.id}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          question={newQuestion}
+          index={index}
+          correctAnswer={{}}
           callbackParent={() => {}}
           key={`match_quiz_${question.id}`}
         />
       );
     }
     if (question.type === 'mix') {
+      //  console.log(question);
       return (
         <MixQuiz
           question={question}
           index={index}
           key={question.id}
-          reviewState={this.state.reviewState}
+          teacherView={this.state.reviewState}
           resultsState={this.state.resultsState}
+          callbackParent={() => {}}
+        />
+      );
+    }
+    if (question.type === 'cloze') {
+      const sentencesInExercise = question.cloze_sentence.text.split('\n');
+      const reversedGaps = question.gaps.map(gap => ({
+        gap: gap.gap_text,
+        hint: gap.hint ? gap.hint.hint_text : '',
+      }));
+      const questionsArray = sentencesInExercise.map(sentence => ({
+        text: sentence,
+        gaps: reversedGaps.splice(0, getNOfGaps(sentence)),
+      }));
+
+      return (
+        <ClozeQuestion
+          key={question.id}
+          index={index}
+          points={question.points}
+          request={question.question}
+          sentences={questionsArray}
         />
       );
     }
@@ -151,9 +202,9 @@ export default class QuizCreatorReviewer extends Component {
   render() {
   //  console.log(this.state.quizInfo);
   //    console.log("RENDER QUIZ "+ this.props.quizID, this.state.quizInfo.title);
-    if (this.state.errorState === true) {
+    if (this.state.error === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
-        <h1>Connection error...</h1>
+        <h1>Error</h1>
       </div>);
     } else
     if (this.state.loadingQuiz) {
@@ -165,18 +216,31 @@ export default class QuizCreatorReviewer extends Component {
     if (!this.state.published) {
       return (
         <div className="mainQuizViewerBlock">
-          <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
+          <h1>{this.state.quizInfo.title}</h1>
+          <h5>Attempts remaining: {this.state.quizInfo.attempts}</h5>
+          <h5>Release date: {this.state.quizInfo.release_date}</h5>
+          <h5 className="negativeMarking">Negative marking: </h5>
+          <input
+            className="negativeMarkingCheckBox"
+            type="checkbox"
+            disabled
+            checked={this.state.quizInfo.negative_marking}
+          />
           {this.state.quizInfo.questions.map((question, index) =>
           this.renderQuestions(question, index))}
           <div className="submitPanel">
             <Button
-              className="submitButton"
+              className="enjoy-css"
               onClick={() => this.props.handleSubmitButton()}
-            >EDIT QUIZ</Button>
+            >
+              Edit
+            </Button>
             <Button
-              className="submitButton"
+              className="enjoy-css"
               onClick={() => this.publishQuiz()}
-            >Publish quiz</Button>
+            >
+              Publish
+            </Button>
           </div>
         </div>
       );
@@ -189,23 +253,27 @@ export default class QuizCreatorReviewer extends Component {
           this.renderQuestions(question, index))}
           <div className="submitPanel">
             <Button
-              className="submitButton"
+              className="enjoy-css"
               onClick={() => this.props.deleteQuiz(this.state.quizInfo.id)}
-            >DELETE QUIZ</Button>
+            >
+              Delete
+            </Button>
           </div>
         </div>
       );
     }
     return (
       <div className="mainQuizViewerBlock">
-        <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
+        <h1>{this.state.quizInfo.title}</h1>
         {this.state.quizInfo.questions.map((question, index) =>
         this.renderQuestions(question, index))}
         <div className="submitPanel">
           <Button
-            className="submitButton"
+            className="enjoy-css"
             onClick={() => this.props.handleSubmitButton()}
-          >EDIT QUIZ</Button>
+          >
+            Edit
+          </Button>
         </div>
       </div>
     );
@@ -218,8 +286,10 @@ QuizCreatorReviewer.propTypes = {
   handlePublish: React.PropTypes.func,
   quizID: React.PropTypes.string.isRequired,
   deleteQuiz: React.PropTypes.func,
+  handleError: React.PropTypes.func,
 };
 QuizCreatorReviewer.defaultProps = {
   handlePublish: null,
   deleteQuiz: null,
+  handleError: null,
 };

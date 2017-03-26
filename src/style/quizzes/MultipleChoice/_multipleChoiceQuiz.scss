@@ -2,6 +2,22 @@
   text-align: center;
 
   .questionPanel{
-    text-align: center;
+    .choicesListMultipleChoice{
+      text-align: left;
+    }
   }
+
+}
+.choicesListMultipleChoice{
+  text-align: left;
+  .singleMultipleChoice{
+    display: inline-block;
+    .inputChoice{
+      text-align: right;
+    }
+    .choiceName{
+      text-align: left;
+    }
+  }
+
 }

@@ -16,9 +16,11 @@ class QuestionWrapper extends Component {
     this.state = { results: [] };
   }
   onChildChanged(newState, id, index) {
-    const newArray = this.state.results.slice();
+    let newArray = this.state.results;
     if (newState === true) newArray.push(id);
-    else newArray.splice(index, 1);
+    else {
+      newArray = newArray.filter(item => item !== id);
+    }
     this.setState({ results: newArray });
     this.props.callbackParent(newArray, index);
   }
@@ -32,12 +34,15 @@ class QuestionWrapper extends Component {
       if (this.props.sessionAnswers.answer_ids !== null
         && this.props.sessionAnswers.answer_ids !== undefined) {
         const ids = this.props.sessionAnswers.answer_ids;
-        defaultAnswer = ids.map((element) => {
-          if (element === choices.id) return true;
+        ids.map((element) => {
+          if (element === choices.id) {
+            defaultAnswer = true;
+          }
           return (null);
-        })[0];
+        });
       }
     }
+
     // console.log("SESSION",this.props.sessionAnswers);
     return (
       <Choice
@@ -83,15 +88,16 @@ class QuestionWrapper extends Component {
       }
     }
 
-    const styleClasses = `multipleChoiceContainer ${this.answerClass}`;
+    const styleClasses = `cardSection ${this.answerClass}`;
 
     return (
       <div className={styleClasses}>
         <div className="questionPanel">
           <Question question={question.question} index={index} key={question.id} />
+          <h5>Points: {question.points}</h5>
         </div>
         <div style={styles.choiceContainer}>
-          <div style={styles.choicePanel}>
+          <div className="choicesListMultipleChoice">
             <form>
               { question.answers.map((choice, indexQ) =>
                 this.renderChoices(indexQ, choice, inReview))}

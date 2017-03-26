@@ -1,6 +1,16 @@
 .mainQuizGeneratorBlock {
   text-align: center;
 
+  .headingWrapper{
+    max-width: 380px;
+    .headingLabel {
+      text-align: right;
+    }
+  }
+  .quizButtons{
+    margin-bottom:100px;
+  }
+
   .generatorQuizContainer {
     text-align: center;
     width: 60%;

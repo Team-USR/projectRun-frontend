@@ -1,5 +1,7 @@
 import React, { PropTypes, Component } from 'react';
+import { Col, Row } from 'react-bootstrap';
 import { WordButton } from './index';
+
 
 export default class MixQuiz extends Component {
   constructor(props) {
@@ -13,21 +15,43 @@ export default class MixQuiz extends Component {
   componentWillMount() {
     const emptyArray = [];
     const wordArray = [];
-    this.props.question.words.map((word, index) => {
-      emptyArray.push(index);
-      const id = index;
-      wordArray.push(<WordButton
-        key={id} text={word} reviewState={this.props.reviewState}
-        resultsState={this.props.resultsState} onClick={() =>
-        this.handleClick(index)}
-      />);
-      return (' ');
-    },
-    );
+    const sessionArray = [];
+    if (!this.props.teacherView) {
+      if (this.props.sessionAnswers === null) {
+        this.props.question.words.map((word, index) => {
+          emptyArray.push(index);
+          const id = index;
+          wordArray.push(<WordButton
+            key={id} text={word} reviewState={this.props.reviewState}
+            resultsState={this.props.resultsState} onClick={() =>
+            this.handleClick(index)}
+          />);
+          return (' ');
+        },
+        );
+      } else {
+        this.props.question.words.map((word, index) => {
+          emptyArray.push(index);
+          const id = index;
+          wordArray.push(<WordButton
+            key={id} text={word} reviewState={this.props.reviewState}
+            resultsState={this.props.resultsState} onClick={() =>
+            this.handleClick(index)}
+          />);
+          return (' ');
+        },
+        );
+        const savedAns = this.props.sessionAnswers.answer;
+        for (let i = 0; i < savedAns.length; i += 1) {
+          sessionArray.push(this.props.question.words.indexOf(savedAns[i]));
+          emptyArray[this.props.question.words.indexOf(savedAns[i])] = null;
+        }
+      }
+    }
     this.setState({
       buttonsArray: wordArray,
       bottomArray: emptyArray,
-
+      topArray: sessionArray,
     });
   }
 
@@ -67,7 +91,46 @@ export default class MixQuiz extends Component {
     return returnedArray;
   }
   // this.props.correctAnswer.correct_sentences gives the solutions array;
-
+  renderBody() {
+    if (!this.props.teacherView) {
+      return (<div>
+        <div className="solutionContainer" id="solutionContainer">
+          <Row className="mix_label">
+            <Col md={12}>
+              <b> Your solution so far: </b>
+            </Col>
+          </Row>
+          <div className="sol_container">{this.renderButtons(this.state.topArray)}</div>
+        </div>
+        <div className="wordsContainer" id="wordsContainer">
+          <Row className="mix_label">
+            <Col md={12}>
+              <b> Reorder the following words: </b>
+            </Col>
+          </Row>
+          {this.renderButtons(this.state.bottomArray)}
+        </div>
+      </div>);
+    }
+    const alternateSols = [];
+    let mainSolution = null;
+    const solutions = this.props.question.sentences;
+    for (let i = 0; i < solutions.length; i += 1) {
+      if (solutions[i].is_main) {
+        mainSolution = <p> {solutions[i].text}</p>;
+      } else {
+        alternateSols.push(<li key={`alternateSol${i}`}>{solutions[i].text}</li>);
+      }
+    }
+    return (
+      <div className="solution_container">
+        <b>Main Solution: </b>
+        {mainSolution}
+        <b>Alternative Solutions: </b>
+        <ul className="alternative_solutions">{alternateSols}</ul>
+      </div>
+    );
+  }
 
   render() {
     if (this.props.resultsState) {
@@ -78,16 +141,12 @@ export default class MixQuiz extends Component {
         this.answerClass = 'wrongAnswerWrapper';
       }
     }
-    const styleClasses = `mixQuizContainer ${this.answerClass}`;
+    const styleClasses = `cardSection ${this.answerClass}`;
     return (
       <div className={styleClasses}>
         <h3>{this.props.index}. {this.props.question.question}</h3>
-        <div className="solutionContainer" id="solutionContainer">
-          Your solution so far: {this.renderButtons(this.state.topArray)}
-        </div>
-        <div className="wordsContainer" id="wordsContainer">
-          {this.renderButtons(this.state.bottomArray)}
-        </div>
+        <h5>Points: {this.props.question.points}</h5>
+        {this.renderBody()}
       </div>
     );
   }
@@ -99,13 +158,19 @@ MixQuiz.propTypes = {
     id: PropTypes.number.isRequired,
     question: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
-    words: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired }).isRequired,
-  reviewState: PropTypes.bool.isRequired,
+    points: PropTypes.number.isRequired,
+    sentences: PropTypes.arrayOf(PropTypes.object.isRequired),
+    words: PropTypes.arrayOf(PropTypes.string.isRequired) }).isRequired,
+  reviewState: PropTypes.bool,
   resultsState: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
   correctAnswer: PropTypes.shape({
     correct: PropTypes.bool,
-    correct_sentences: PropTypes.arrayOf(PropTypes.number),
+    correct_sentences: PropTypes.arrayOf(PropTypes.string),
+  }),
+  teacherView: PropTypes.bool,
+  sessionAnswers: PropTypes.shape({
+    answer: PropTypes.arrayOf(PropTypes.string),
   }),
 };
 
@@ -114,4 +179,7 @@ MixQuiz.defaultProps = {
     correct: false,
     correct_sentences: [],
   },
+  reviewState: false,
+  teacherView: false,
+  sessionAnswers: null,
 };
