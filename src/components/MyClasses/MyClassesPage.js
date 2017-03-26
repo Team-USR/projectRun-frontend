@@ -5,7 +5,6 @@ import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { SideBarWrapper } from '../SideBar';
 import { MyClassesPanel } from './index';
 import { BrandSpinner } from '../utils';
-import { findHighestMark } from '../../helpers';
 
 export default class MyClassesPage extends Component {
 
@@ -15,7 +14,6 @@ export default class MyClassesPage extends Component {
     this.state = {
       panelType: 'my_classes_default_panel',
       averagePerCreatedClass: [],
-      marksPerQuizPerClass: [],
       loadingSideBar: true,
       allClasses: [],
       currentClassTitle: '',
@@ -45,12 +43,10 @@ export default class MyClassesPage extends Component {
       }
       if (settingUserType === STUDENT) {
         this.requestStudentData();
-        this.requestStudentStatistics();
       }
       this.setState({ userT: settingUserType });
     } else {
       this.requestStudentData();
-      this.requestStudentStatistics();
     }
   }
 
@@ -216,15 +212,12 @@ export default class MyClassesPage extends Component {
     });
   }
 
-  requestStudentStatistics() {
-    axios({
-      url: `${API_URL}/statistics/marks_groups_quizzes`,
+  async requestStudentStatistics(classId) {
+    const data = await axios({
+      url: `${API_URL}/statistics/marks_groups_quizzes?id=${classId}`,
       headers: this.props.userToken,
-    }).then((response) => {
-      this.setState({
-        marksPerQuizPerClass: response.data,
-      });
     });
+    return data.data;
   }
 
   reloadBar() {
@@ -376,15 +369,9 @@ export default class MyClassesPage extends Component {
         allStudents={this.state.allStudents}
         averagePerCreatedClass={this.state.averagePerCreatedClass.map(average => ({
           name: average.group_name,
-          value: average.average,
+          value: parseFloat(average.average.match(/\d+\.(\d\d|0)/)[0], 10),
         }))}
-        marksPerQuizPerClass={this.state.marksPerQuizPerClass.map(myClass => ({
-          className: myClass.group_name,
-          marks: myClass.marks ? Object.keys(myClass.marks).map(quizId => ({
-            name: myClass.marks[quizId][0].quiz_title,
-            score: findHighestMark(myClass.marks[quizId]).score,
-          })) : [],
-        }))}
+        getClassMarks={classId => this.requestStudentStatistics(classId)}
         numberOfClasses={this.state.sideBarContent.classes.length}
         getAllClasses={() => this.getAllClasses()}
         updateAllStudents={object => this.updateAllStudents(object)}
