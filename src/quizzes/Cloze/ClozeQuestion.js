@@ -1,5 +1,4 @@
 import React from 'react';
-import { ListGroup } from 'react-bootstrap';
 import { ClozeSentence } from './index';
 import { getNOfGaps } from '../../helpers/Cloze';
 
@@ -24,14 +23,6 @@ export default class ClozeQuestion extends React.Component {
       this.setState({ correctAnswer: copy });
     }
     this.setState({ resultsState: nextProps.resultsState });
-  }
-
-  answersState() {
-    if (this.state.correctAnswer.correct) return 'green';
-    const matches = this.state.correctAnswer.correct_gaps.filter((gap, ind) =>
-      gap === this.state.answers[ind]);
-    if (matches.length === 0) return 'red';
-    return 'orange';
   }
 
   handleChange(e) {
@@ -82,14 +73,20 @@ export default class ClozeQuestion extends React.Component {
   }
 
   render() {
+    let validationClass = '';
+    if (this.state.resultsState) {
+      validationClass = this.state.correctAnswer.correct ?
+        'correctAnswerWrapper' : 'wrongAnswerWrapper';
+    }
     return (
-      <div className="cardSection">
-        <h3 className="questionPanel">
-          {this.props.index}. {this.props.request}
-        </h3>
-        <ListGroup style={this.state.resultsState ? { color: this.answersState() } : {}}>
+      <div className={`cardSection ${validationClass}`} >
+        <div className="questionPanel">
+          <h3>{this.props.index}. {this.props.request}</h3>
+          <h5>Points: {this.props.points}</h5>
+        </div>
+        <ul>
           {this.props.reviewer ? this.renderReview() : this.renderView()}
-        </ListGroup>
+        </ul>
       </div>
     );
   }
@@ -98,6 +95,7 @@ export default class ClozeQuestion extends React.Component {
 ClozeQuestion.propTypes = {
   index: React.PropTypes.number.isRequired,
   request: React.PropTypes.string.isRequired,
+  points: React.PropTypes.number,
   sentences: React.PropTypes.arrayOf(React.PropTypes.shape({
     text: React.PropTypes.string,
     gaps: React.PropTypes.arrayOf(React.PropTypes.shape({
@@ -119,6 +117,7 @@ ClozeQuestion.propTypes = {
 
 ClozeQuestion.defaultProps = {
   gaps: [],
+  points: 0,
   sessionAnswers: [],
   reviewer: true,
   studentReview: false,
