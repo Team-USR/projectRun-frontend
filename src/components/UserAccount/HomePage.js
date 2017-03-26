@@ -13,7 +13,7 @@ function HomePageComp(props) {
       <h1 className="welcome_message"><b> Welcome, {props.name}!</b></h1>
       <div className="logoContainer">
         <i className="fa fa-check-square-o logo" aria-hidden="true" />
-        <span className="logoName">Interactive language exercises</span>
+        <span className="logoName">INTERACTIVE LANGUAGE EXERCISES</span>
       </div>
       <div className="laptopContainer">
         <h2 className="title">Quick and easy way to create and solve quizzes.</h2>

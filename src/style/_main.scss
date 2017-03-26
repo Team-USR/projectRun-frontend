@@ -5,8 +5,23 @@ html,body {
   font-family: 'Roboto', sans-serif;
 }
 
+.modal-open {
+  .topNabBarWrapper {
+    .navbar-header {
+      margin-left: -7.5px;
+    }
+    .navbar-collapse {
+      margin-right: 7.5px;
+    }
+  }
+}
+
 .appContent {
   padding-top: 51px;
+
+  .mm-popup__box {
+    transform: translateX(+100px);
+  }
 
 
   @media (max-width: 767px) {
@@ -38,23 +53,7 @@ ul {
     margin: 5% auto;
     padding: 30px;
     margin-bottom: 10px;
-     border-radius: 5px 5px 0 0;
-}
-.matchQuizContainer,
-.mixQuizContainer,
-.multipleChoiceContainer,
-.clozeQuizContainer {
-  text-align: center;
-  width: 40%;
-  margin: 5% auto;
-  padding: 30px;
-  border: 3px solid #000000;
-  margin-bottom: 10px;
-  box-shadow: 5px 5px 5px #888888;
-
-  @media (max-width: 900px) {
-    width: 60%;
-  }
+    border-radius: 5px 5px 0 0;
 }
 
 .clozeQuizContainer {

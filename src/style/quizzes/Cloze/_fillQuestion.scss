@@ -1,14 +1,15 @@
-.closeQuizContainer {
-input[type="text"] {
-  box-sizing: border-box;
-  text-align: center;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  border-bottom: 2px solid black;
-  margin-right: 0.3em;
-  width: 7.9em;
-  padding-left: 0.3em;
-  padding-right: 0.3em;
-}
+.clozeQuizContainer {
+
+  input[type="text"] {
+    box-sizing: border-box;
+    text-align: center;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    border-bottom: 2px solid black;
+    margin-right: 0.3em;
+    width: 7.9em;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+  }
 }
