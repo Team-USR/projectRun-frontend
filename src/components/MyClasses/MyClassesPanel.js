@@ -351,10 +351,16 @@ export default class MyClassesPanel extends Component {
               (<div className="line-chart-container">
                 <LineCh
                   color="grey"
-                  data={this.state.highestMarks.map(quiz => ({
-                    name: quiz.marks.quiz_name,
-                    value: quiz.marks.score,
-                  }))}
+                  data={this.state.highestMarks.reduce((acc, quiz) => {
+                    const validQuizzes = acc;
+                    if (quiz.marks.quiz_name) {
+                      validQuizzes.push({
+                        name: quiz.marks.quiz_name,
+                        value: quiz.marks.score,
+                      });
+                    }
+                    return validQuizzes;
+                  }, [])}
                 />
               </div>)
               : <h3>You have no submitted quiz for this class.</h3>}
