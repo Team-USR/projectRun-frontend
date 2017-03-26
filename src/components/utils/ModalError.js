@@ -11,6 +11,7 @@ export default class ModalError extends Component {
       buttonsWrapper.push((
         <Button
           key={'close_button'}
+          className="closeButton"
           onClick={() => this.props.close()}
         >
           Close
@@ -21,6 +22,7 @@ export default class ModalError extends Component {
       buttonsWrapper.push((
         <Button
           key={'clear_button'}
+          className="clearButton"
           onClick={() => this.props.confirmClearBoard()}
         >
           Clear Board
@@ -31,6 +33,7 @@ export default class ModalError extends Component {
       buttonsWrapper.push((
         <Button
           key={'generate_button'}
+          className="generateButton"
           onClick={() => this.props.confirmGenerateBoard()}
         >
           Generate Board
@@ -46,13 +49,15 @@ export default class ModalError extends Component {
       <Modal show={this.props.show} onHide={() => this.props.close()}>
         <Modal.Header closeButton>
           <Modal.Title>
-            { this.props.content.header }
+            <b>
+              { this.props.content.header }
+            </b>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>
+          <h5>
             {this.props.content.body}
-          </h4>
+          </h5>
         </Modal.Body>
         <Modal.Footer>
           { this.renderButtons() }
