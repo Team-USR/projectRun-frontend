@@ -2,6 +2,7 @@
   "name": "projectrun-frontend",
   "version": "1.0.0",
   "description": "USR team Project Run Frontend",
+  "homepage": "https://team-usr.github.io/projectRun-frontend",
   "main": "index.js",
   "dependencies": {
     "axios": "^0.15.3",
@@ -56,6 +57,8 @@
     "start-js": "react-scripts start",
     "start": "npm-run-all -p watch-css start-js",
     "build": "npm run build-css && react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "test": "jest",
     "eject": "react-scripts eject"
   },
