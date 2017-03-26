@@ -126,7 +126,7 @@ export default class SideBarQuizzes extends Component {
         <div>
           <i className="fa fa-search search_icon" aria-hidden="true" />
           <input
-            className="searchBarItem"
+            className="searchBarItemSideBar"
             id="searchBar"
             type="text"
             placeholder="Search for a quiz"
@@ -279,7 +279,7 @@ export default class SideBarQuizzes extends Component {
           <Nav key={'student'}>
             <Accordion defaultActiveKey={this.state.activePanel}>
               <Panel header={`Not started (${notStartedContent.length})`} eventKey="1" onClick={() => { this.setState({ activePanel: null }); }}>
-               {
+                {
             notStartedContent.map((item, index) => {
               if (index < maxNotStarted) {
                 return (
