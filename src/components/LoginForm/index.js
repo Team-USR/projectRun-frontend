@@ -7,6 +7,14 @@ import { STUDENT, TEACHER } from '../../constants';
 import loginLogo from '../../assets/images/logo.png';
 
 export default function LoginForm(props) {
+  function loginUser(e) {
+    if (e.which === 13 || e.keyCode === 13) {
+      props.submitLogin();
+      return false;
+    }
+    return true;
+  }
+
   let error;
   if (props.loginError) {
     error = <h3 className="invalidHeader">{props.loginError}</h3>;
@@ -27,6 +35,7 @@ export default function LoginForm(props) {
             type="email"
             placeholder="Enter email"
             onChange={props.handleEmailChange}
+            onKeyPress={e => loginUser(e)}
             value={props.email}
           />
           <ControlLabel className="loginLabel">Password</ControlLabel>
@@ -34,6 +43,7 @@ export default function LoginForm(props) {
             id="formPassword"
             type="password" placeholder="Enter password"
             value={props.password}
+            onKeyPress={e => loginUser(e)}
             onChange={props.handlePasswordChange}
           />
         </form>
