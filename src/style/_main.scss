@@ -2,7 +2,7 @@ $brand-green-color: #0e8c16;
 $brand-red-color: #b22121;
 
 html,body {
-  font-family: Open Sans, sans-serif !important;
+  font-family: 'Roboto', sans-serif;
 }
 
 .modal-open {
@@ -49,6 +49,7 @@ ul {
 .cardSection:hover {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     text-align: center;
+    width: 70%;
     margin: 5% auto;
     padding: 30px;
     margin-bottom: 10px;

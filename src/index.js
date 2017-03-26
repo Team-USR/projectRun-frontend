@@ -15,6 +15,7 @@ import {
   MyClassesContainer,
   SignupContainer,
   SettingsContainer,
+  MainPageContainer,
 } from './containers';
 import authReducer from './redux/modules/user';
 
@@ -29,7 +30,7 @@ const history = syncHistoryWithStore(hashHistory, store);
 
 function isAuth() {
   if (!store.getState().auth.token) {
-    store.dispatch(push('/login'));
+    store.dispatch(push('/home'));
   }
 }
 
@@ -44,6 +45,7 @@ ReactDOM.render(
         <Route path="/my-classes" component={MyClassesContainer} />
         <Route path="/settings" component={SettingsContainer} />
       </Route>
+      <Route path="/home" component={MainPageContainer} />
       <Route path="/login" component={LoginContainer} />
       <Route path="/signup" component={SignupContainer} />
     </Router>

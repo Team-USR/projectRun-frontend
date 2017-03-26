@@ -14,14 +14,14 @@ export default class TextInput extends Component {
     return (
       <label htmlFor="textInput">
         { this.props.text }
-        <input id="textInput" type="text"  onChange={this.handleChange} />
+        <input id="textInput" type="text" onChange={this.handleChange} />
       </label>
     );
   }
 }
 TextInput.propTypes = {
   text: PropTypes.string.isRequired,
-  value: PropTypes.string,
+
 };
 TextInput.defaultProps = {
   value: '',

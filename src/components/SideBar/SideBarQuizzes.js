@@ -126,7 +126,7 @@ export default class SideBarQuizzes extends Component {
         <div>
           <i className="fa fa-search search_icon" aria-hidden="true" />
           <input
-            className="searchBarItem"
+            className="searchBarItemSideBar"
             id="searchBar"
             type="text"
             placeholder="Search for a quiz"
@@ -153,8 +153,8 @@ export default class SideBarQuizzes extends Component {
       });
       let unpublished = 0;
       let published = 0;
-      let maxUnpublished = 12;
-      let maxPublished = 12;
+      let maxUnpublished = 7;
+      let maxPublished = 7;
       if (unpublishedContent.length - maxUnpublished >= 1) {
         maxUnpublished -= 1;
       }
@@ -180,7 +180,7 @@ export default class SideBarQuizzes extends Component {
           </Nav>
           <Nav key={'teacher'} >
             <Accordion defaultActiveKey={this.state.activePanel}>
-              <Panel header={`Not published (${unpublishedContent.length})`} eventKey="1">
+              <Panel header={`Not published (${unpublishedContent.length})`} eventKey="1" onClick={() => { this.setState({ activePanel: null }); }}>
                 {
         unpublishedContent.map((item, index) => {
           if (index < maxUnpublished) {
@@ -194,8 +194,12 @@ export default class SideBarQuizzes extends Component {
           } unpublished += 1;
           if (index === unpublishedContent.length - 1) {
             return (
-              <NavItem key={'moreunpublished'}>
-                <h5>and {unpublished} more</h5>
+              <NavItem
+                key={'moreunpublished'}
+              >
+                <Button className="sideBarButton" onClick={() => this.props.onSideBarTitleClick()}>
+                and {unpublished} more
+               </Button>
               </NavItem>
             );
           }
@@ -204,7 +208,7 @@ export default class SideBarQuizzes extends Component {
         )
       }
               </Panel>
-              <Panel header={`Published (${publishedContent.length})`} eventKey="2">
+              <Panel header={`Published (${publishedContent.length})`} eventKey="2" onClick={() => { this.setState({ activePanel: null }); }} >
                 {
         publishedContent.map((item, index) => {
           if (index < maxPublished) {
@@ -219,7 +223,9 @@ export default class SideBarQuizzes extends Component {
           if (index === publishedContent.length - 1) {
             return (
               <NavItem key={'morepublished'}>
-                <h5>and {published} more</h5>
+                <Button className="sideBarButton" onClick={() => this.props.onSideBarTitleClick()}>
+               and {published} more
+              </Button>
               </NavItem>
             );
           }
@@ -272,83 +278,96 @@ export default class SideBarQuizzes extends Component {
           {this.renderSearchBar()}
           <Nav key={'student'}>
             <Accordion defaultActiveKey={this.state.activePanel}>
+              <Panel header={`Not started (${notStartedContent.length})`} eventKey="1" onClick={() => { this.setState({ activePanel: null }); }}>
+                {
+            notStartedContent.map((item, index) => {
+              if (index < maxNotStarted) {
+                return (
+                  <NavItem key={`notstarted${index + 1}`}>
+                    <Button
+                      className="sideBarButton"
+                      onClick={() => this.props.onQuizClick(item.id)}
+                    >
+                      {item.title}
+                    </Button>
+                  </NavItem>
+                );
+              }notstarted += 1;
+              if (index === notStartedContent.length - 1) {
+                return (
+                  <NavItem key={'nostarted'}>
+                    <Button
+                      className="sideBarButton" onClick={() => this.props.onSideBarTitleClick()}
+                    >
+                   and {notstarted} more
+                  </Button>
+                  </NavItem>
+                );
+              }
+              return (null);
+            },
+        )
+      }
 
-              <Panel header={`Not started (${notStartedContent.length})`} eventKey="1" >
-                {notStartedContent.map((item, index) => {
-                  if (index < maxNotStarted) {
-                    return (
-                      <NavItem key={`notstarted${index + 1}`}>
-                        <Button
-                          className="sideBarButton"
-                          onClick={() => this.props.onQuizClick(item.id)}
-                        >
-                          {item.title}
-                        </Button>
-                      </NavItem>
-                    );
-                  }
-                  notstarted += 1;
-                  if (index === notStartedContent.length - 1) {
-                    return (
-                      <NavItem key={'nostarted'}>
-                        <h5>and {notstarted} more</h5>
-                      </NavItem>
-                    );
-                  }
-                  return (null);
-                })}
               </Panel>
-
-              <Panel header={`In progress (${inprogressContent.length})`} eventKey="2">
-                {inprogressContent.map((item, index) => {
-                  if (index < maxInprogress) {
-                    return (
-                      <NavItem key={`inprogrs${index + 1}`}>
-                        <Button
-                          className="sideBarButton"
-                          onClick={() => this.props.onQuizClick(item.id)}
-                        >
-                          {item.title}
-                        </Button>
-                      </NavItem>
-                    );
-                  }
-                  inprogress += 1;
-                  if (index === inprogressContent.length - 1) {
-                    return (
-                      <NavItem key={'inprogress'}>
-                        <h5>and {inprogress} more</h5>
-                      </NavItem>
-                    );
-                  }
-                  return (null);
-                })}
+              <Panel header={`In progress (${inprogressContent.length})`} eventKey="2" onClick={() => { this.setState({ activePanel: null }); }}>
+                {
+          inprogressContent.map((item, index) => {
+            if (index < maxInprogress) {
+              return (
+                <NavItem key={`inprogrs${index + 1}`}>
+                  <Button className="sideBarButton" onClick={() => this.props.onQuizClick(item.id)}>
+                    {item.title}
+                  </Button>
+                </NavItem>
+              );
+            }inprogress += 1;
+            if (index === inprogressContent.length - 1) {
+              return (
+                <NavItem key={'inprogress'}>
+                  <Button
+                    className="sideBarButton" onClick={() => this.props.onSideBarTitleClick()}
+                  >
+                 and {inprogress} more
+                </Button>
+                </NavItem>
+              );
+            }
+            return (null);
+          },
+        )
+      }
               </Panel>
-
-              <Panel header={`Submitted (${submittedContent.length})`} eventKey="3">
-                {submittedContent.map((item, index) => {
-                  if (index < maxsubmitted) {
-                    return (
-                      <NavItem key={`submitted${index + 1}`}>
-                        <Button
-                          className="sideBarButton"
-                          onClick={() => this.props.onQuizClick(item.id)}
-                        >
-                          {item.title}
-                        </Button>
-                      </NavItem>
-                    );
-                  }
-                  submitted += 1;
-                  if (index === submittedContent.length - 1) {
-                    return (
-                      <NavItem key={'submitted'}>
-                        <h5>and {submitted} more</h5>
-                      </NavItem>
-                    );
-                  }
-                  return (null);
-                })}
+              <Panel header={`Submitted (${submittedContent.length})`} eventKey="3" onClick={() => { this.setState({ activePanel: null }); }}>
+                {
+            submittedContent.map((item, index) => {
+              if (index < maxsubmitted) {
+                return (
+                  <NavItem key={`submitted${index + 1}`}>
+                    <Button
+                      className="sideBarButton"
+                      onClick={() => this.props.onQuizClick(item.id)}
+                    >
+                      {item.title}
+                    </Button>
+                  </NavItem>
+                );
+              }submitted += 1;
+              if (index === submittedContent.length - 1) {
+                return (
+                  <NavItem key={'submitted'}>
+                    <Button
+                      className="sideBarButton" onClick={() => this.props.onSideBarTitleClick()}
+                    >
+                   and {submitted} more
+                  </Button>
+                  </NavItem>
+                );
+              }
+              return (null);
+            },
+        )
+      }
               </Panel>
             </Accordion>
           </Nav>
@@ -368,9 +387,11 @@ SideBarQuizzes.propTypes = {
   onQuizCreatorClick: PropTypes.func,
   userType: PropTypes.string.isRequired,
   onQuizClick: PropTypes.func,
+  onSideBarTitleClick: PropTypes.func,
 };
 SideBarQuizzes.defaultProps = {
   onQuizCreatorClick: null,
+  onSideBarTitleClick: null,
   content: PropTypes.arrayOf(PropTypes.shape({
     id: 0,
     title: '',

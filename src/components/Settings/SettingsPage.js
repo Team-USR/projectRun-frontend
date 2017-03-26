@@ -119,7 +119,7 @@ export default class SettingsPage extends Component {
   render() {
     const profileTab = this.renderProfileTab();
     const passwordTab = this.renderPasswordTab();
-    const prefTab = this.renderPrefTab();
+//    const prefTab = this.renderPrefTab();
     return (
       <Grid>
         <Row>
@@ -138,9 +138,10 @@ export default class SettingsPage extends Component {
                   <h3>Password updated!</h3>
                   : passwordTab }
               </Tab>
-              <Tab eventKey={3} title="Preferences">
-                { prefTab }
-              </Tab>
+              {//  <Tab eventKey={3} title="Preferences">
+              //   { prefTab }
+              // </Tab>
+            }
             </Tabs>
           </Col>
         </Row>

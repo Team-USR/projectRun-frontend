@@ -234,6 +234,7 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
+
     if (inputQ.quiz.questions_attributes[questionID] === undefined
       && this.state.quizInfo.questions[questionID]
       && this.state.quizInfo.questions[questionID].points) {
@@ -297,6 +298,7 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
+
     if (inputQ.quiz.questions_attributes[questionID] === undefined
       && this.state.quizInfo.questions[questionID]
       && this.state.quizInfo.questions[questionID].points) {
@@ -506,17 +508,24 @@ export default class QuizEditorMainPage extends Component {
           <h2>{displayIndex}</h2>
           {this.state.questions[index].question}
 
-          <div style={{ textAlign: 'center' }}>
-            <label htmlFor="pointIn" style={{ marginRight: 10 }}>
-              <h5>Score:</h5>
-            </label>
-            <input
-              id="pointIn"
-              placeholder="ex: 10"
-              type="number"
-              onChange={event => this.setPoints(event, index)}
-              defaultValue={points}
-            />
+          <div style={{ textAlign: 'center', display: 'inline-block', marginTop: 10 }}>
+            <Col md={9} style={{ textAlign: 'center' }}>
+              <Col md={3}>
+                <label htmlFor="pointIn">
+                  <h5>Score:</h5>
+                </label>
+              </Col>
+              <Col md={6}>
+                <input
+                  className="form-control"
+                  id="pointIn"
+                  placeholder="ex: 10"
+                  type="number"
+                  defaultValue={points}
+                  onChange={event => this.setPoints(event, index)}
+                />
+              </Col>
+            </Col>
           </div>
           <div>
             <h5 className="error_message">{this.renderQuestionError(index)}</h5>
@@ -596,7 +605,7 @@ export default class QuizEditorMainPage extends Component {
                     className="form-control"
                     id="attemptsInput"
                     type="number"
-                    placeholder="ex: 10"
+                    placeholder="ex: 10 (0 = ∞)"
                     onChange={this.changeAttempts}
                     value={submit.quiz.attempts}
                   />

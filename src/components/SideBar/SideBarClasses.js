@@ -41,7 +41,7 @@ export default class SideBarClasses extends Component {
         <div>
           <i className="fa fa-search search_icon2" aria-hidden="true" />
           <input
-            className="searchBarItem"
+            className="searchBarItemSideBar"
             id="searchBar"
             type="text"
             placeholder="Search for a class"
