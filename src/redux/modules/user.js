@@ -112,19 +112,19 @@ export function loginUser(user) {
 
 function userSignupInProgress() {
   return {
-    type: USER_LOGIN_IN_PROGRESS,
+    type: USER_SIGNUP_IN_PROGRESS,
   };
 }
 
 function userSignupSuccesful() {
   return {
-    type: USER_LOGIN_SUCCESFUL,
+    type: USER_SIGNUP_SUCCESFUL,
   };
 }
 
 function userSignupFailed(error) {
   return {
-    type: USER_LOGIN_FAILED,
+    type: USER_SIGNUP_FAILED,
     error,
   };
 }
