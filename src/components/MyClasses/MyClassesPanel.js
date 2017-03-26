@@ -398,13 +398,13 @@ MyClassesPanel.propTypes = {
   numberOfClasses: PropTypes.number.isRequired,
   averagePerCreatedClass: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string,
-    value: PropTypes.number,
+    value: PropTypes.string,
   })),
   marksPerQuizPerClass: PropTypes.arrayOf(PropTypes.shape({
     className: PropTypes.string,
     marks: PropTypes.arrayOf(PropTypes.shape({
       name: PropTypes.string,
-      value: PropTypes.number,
+      value: PropTypes.string,
     })),
   })),
   handleSaveNewClassClick: PropTypes.func.isRequired,

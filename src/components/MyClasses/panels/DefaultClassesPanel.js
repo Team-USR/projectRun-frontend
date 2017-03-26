@@ -50,7 +50,7 @@ DefaultClassesPanel.propTypes = {
   numberOfClasses: PropTypes.number.isRequired,
   averagePerCreatedClass: PropTypes.arrayOf(React.PropTypes.shape({
     className: PropTypes.string,
-    average: PropTypes.number,
+    average: PropTypes.string,
   })),
 };
 

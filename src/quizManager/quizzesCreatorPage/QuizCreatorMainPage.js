@@ -373,16 +373,23 @@ export default class QuizCreatorMainPage extends Component {
         <div className="cardSection" key={`generatorQuizContainer${displayIndex}`}>
           <h3>{displayIndex}</h3>
           {this.state.questions[index].question}
-          <div style={{ textAlign: 'center' }}>
-            <label htmlFor="pointIn" style={{ marginRight: 10 }}>
+          <div style={{ textAlign: 'center',display:'inline-block',marginTop:10 }}>
+          <Col md={9} style={{ textAlign: 'center'}}>
+          <Col md={3}>
+            <label htmlFor="pointIn">
               <h5>Score:</h5>
             </label>
+            </Col>
+            <Col md={6}>
             <input
+              className="form-control"
               id="pointIn"
               placeholder="ex: 10"
               type="number"
               onChange={event => this.setPoints(event, index)}
             />
+            </Col>
+            </Col>
           </div>
           <div>
             {this.renderQuestionError(index).split('\n').map((errtext, i) =>
