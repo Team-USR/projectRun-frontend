@@ -1,4 +1,5 @@
 import React from 'react';
+import { Form, FormControl, FormGroup, ControlLabel, Col } from 'react-bootstrap';
 import { ClozeForm, ClozeList } from './index';
 import { GAP_MATCHER, HINT_MATCHER } from '../../constants';
 import { getNOfGaps, buildRawSentence, findTokens, buildToSendQuestions } from '../../helpers/Cloze';
@@ -10,6 +11,7 @@ export default class ClozeGenerator extends React.Component {
     if (!props.editorContent || Object.keys(props.editorContent).length === 0) {
       this.state = {
         current: 0,
+        question: '',
         questions: [],
         gapsAttributes: [],
         toSendQuestions: [],
@@ -73,6 +75,7 @@ export default class ClozeGenerator extends React.Component {
           hint_text: g.hint_attributes.hint_text,
         },
       })),
+      this.questionTitle.value,
     );
   }
 
@@ -98,16 +101,36 @@ export default class ClozeGenerator extends React.Component {
           };
         }
         return { gap_text: g.gap_text };
-      }));
+      }), this.questionTitle.value);
+  }
+
+  changeQuestionTitle() {
+    this.props.updateParent(this.props.index,
+      this.state.toSendQuestions,
+      this.state.gapsAttributes,
+      this.questionTitle.value);
   }
 
   render() {
     return (
-      <div>
-        <h3>Fill in the gaps:</h3>
+      <Form horizontal>
+        <h3>Fill in the gaps</h3>
+        <FormGroup>
+          <Col mdOffset={1} md={2}>
+            <ControlLabel>Question</ControlLabel>
+          </Col>
+          <Col md={8}>
+            <FormControl
+              inputRef={(input) => { this.questionTitle = input; }}
+              onChange={() => this.changeQuestionTitle()}
+              type="text"
+              placeholder="Question title."
+            />
+          </Col>
+        </FormGroup>
         <ClozeForm addQuestion={this.addQuestion} />
         <ClozeList questions={this.state.questions} removeQuestion={this.removeQuestion} />
-      </div>
+      </Form>
     );
   }
 }
