@@ -1,3 +1,55 @@
 .homePageWrapper {
   text-align: center;
+  .welcome_message{
+    margin-top:50px;
+    margin-bottom:50px;
+  }
+  .logoContainer {
+    display: inline-block;
+      .fa-check-square-o {
+        color:green;
+        font-size: 50px;
+      }
+      .logoName{
+        font-size: 40px;
+        font-family: 'Roboto'
+      }
+
+    }
+  .laptopContainer{
+    img {
+      width: 80%;
+      height:auto;
+    }
+    margin-bottom: 50px;
+  }
+  .featuresContainer{
+    padding: 50px 0;
+    background-color: rgb(245,245,245);
+    text-align: center;
+    overflow: auto;
+    .featuresList{
+      display: inline-block;
+      margin-top:20px;
+      color:grey;
+      .featuresItem{
+        font-size: 20px;
+        line-height: 30px;
+        clear:both;
+        float:left;
+        .fa-check{
+          margin-right:10px;
+          color:green;
+        }
+      }
+    }
+  }
+  .subheading{
+    color:grey;
+  }
+  .title{
+
+  }
+
+
 }

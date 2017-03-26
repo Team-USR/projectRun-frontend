@@ -144,7 +144,7 @@ export default class MixQuiz extends Component {
     const styleClasses = `cardSection ${this.answerClass}`;
     return (
       <div className={styleClasses}>
-        <h3>{this.props.index}. {this.props.question.question}</h3>
+        <h3>{this.props.index + 1}. {this.props.question.question}</h3>
         <h5>Points: {this.props.question.points}</h5>
         {this.renderBody()}
       </div>

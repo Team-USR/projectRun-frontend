@@ -7,6 +7,7 @@ import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 import { syncHistoryWithStore, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import App from './App';
 import { HomePage } from './components/UserAccount';
+//import { MainPage } from './components/MainPage';
 
 import {
   QuizViewerContainer,
@@ -36,6 +37,7 @@ function isAuth() {
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history} >
+     { /*   <Route path="/home" component={MainPage} /> */}
       <Route path="/" component={App} onEnter={isAuth} >
         <IndexRoute component={HomePage} />
         <Route path="/quiz" component={QuizViewerContainer} />
