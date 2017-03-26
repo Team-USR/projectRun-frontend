@@ -27,16 +27,28 @@ export default class MyClassesPanel extends Component {
       loadingClassesSearch: false,
       loadingSearch: false,
       moveToPendingError: false,
+      highestMarks: [],
     };
   }
-  componentWillMount() {
+  async componentWillMount() {
+    if (this.props.classId.length > 0) {
+      const data = await this.props.getClassMarks(this.props.classId);
+      this.setState({
+        highestMarks: data,
+      });
+    }
     this.setState({
       filteredStudents: this.props.content.students,
       filteredAllStudents: this.props.allStudents,
     });
   }
-  componentWillReceiveProps(nextProps) {
-//    console.log("RECEIVE PROPS");
+  async componentWillReceiveProps(nextProps) {
+    if (this.props.classId.length > 0) {
+      const data = await this.props.getClassMarks(this.props.classId);
+      this.setState({
+        highestMarks: data,
+      });
+    }
     this.setState({
       filteredStudents: nextProps.content.students,
       filteredAllStudents: nextProps.allStudents,
@@ -326,15 +338,6 @@ export default class MyClassesPanel extends Component {
         );
       }
     } else if (this.props.userType === STUDENT) {
-      const data = this.props.marksPerQuizPerClass.reduce((acc, myClass) => {
-        if (myClass.className === this.props.classTitle) {
-          return myClass.marks.map(quiz => ({
-            name: quiz.name,
-            value: quiz.score,
-          }));
-        }
-        return acc;
-      }, []);
       if (this.props.panelType === 'show_selected_class') {
         element = (
           <div>
@@ -344,11 +347,14 @@ export default class MyClassesPanel extends Component {
               quizzes={this.props.content.quizzes}
             />
             <hr />
-            {data.length > 0 ?
+            {this.state.highestMarks.length > 0 ?
               (<div className="line-chart-container">
                 <LineCh
                   color="grey"
-                  data={data}
+                  data={this.state.highestMarks.map(quiz => ({
+                    name: quiz.marks.quiz_name,
+                    value: quiz.marks.score,
+                  }))}
                 />
               </div>)
               : <h3>You have no submitted quiz for this class.</h3>}
@@ -400,13 +406,7 @@ MyClassesPanel.propTypes = {
     name: PropTypes.string,
     value: PropTypes.number,
   })),
-  marksPerQuizPerClass: PropTypes.arrayOf(PropTypes.shape({
-    className: PropTypes.string,
-    marks: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string,
-      value: PropTypes.number,
-    })),
-  })),
+  getClassMarks: PropTypes.func.isRequired, // eslint-disable-line
   handleSaveNewClassClick: PropTypes.func.isRequired,
   handleSaveAssignedQuizzes: PropTypes.func.isRequired,
   handleSaveEnrolledStudents: PropTypes.func.isRequired,
@@ -422,5 +422,4 @@ MyClassesPanel.propTypes = {
 
 MyClassesPanel.defaultProps = {
   averagePerCreatedClass: [],
-  marksPerQuizPerClass: [],
 };
