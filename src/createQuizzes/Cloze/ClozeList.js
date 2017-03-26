@@ -6,8 +6,8 @@ export default function ClozeList(props) {
     <Col md={12}>
       <ul className="cloze-sentences">
         {props.questions.map(q => (
-          <div>
-            <li style={{ paddingTop: 5 }} key={q.no}>
+          <div key={q.no}>
+            <li style={{ paddingTop: 5 }}>
               <Col md={11}>
                 <p className="text-center">{q.question}</p>
               </Col>
