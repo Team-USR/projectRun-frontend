@@ -9,10 +9,24 @@ export function stripGapNo(word) {
   return word.split(/[{}]/)[1];
 }
 
+export function buildToSendQuestions(questions) {
+  let current = 0;
+  return questions.map(question => ({
+    no: question.no,
+    question: (question.question || '').replace(new RegExp(HINT_MATCHER, 'g'), '')
+      .replace(new RegExp(GAP_MATCHER, 'g'), () => {
+        current += 1;
+        return `{${current}}`;
+      }),
+  }));
+}
+
 export function buildRawSentence(formated, gaps) {
-  return formated.replace(GAP_MATCHER, () => {
-    const gap = gaps.splice(0, 1)[0];
-    const hint = gap.hint ? `*${gap.hint.hint_text}*` : '';
+  let gapInd = 0;
+  return formated.replace(new RegExp(GAP_MATCHER, 'g'), () => {
+    const gap = gaps[gapInd];
+    gapInd += 1;
+    const hint = `*${gap.hint.hint_text}*`;
     return `{${gap.gap_text}}${hint}`;
   });
 }

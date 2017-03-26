@@ -6,6 +6,7 @@ import { SingleChoiceQuiz } from '../../quizzes/SingleChoice';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { ClozeQuestion } from '../../quizzes/Cloze';
 import { MixQuiz } from '../../quizzes/Mix/';
+import { CrossQuiz } from '../../quizzes/Cross/';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
 import { getNOfGaps } from '../../helpers/Cloze';
@@ -116,6 +117,11 @@ export default class QuizViewerMainPage extends Component {
           const id = element.id;
           quest[index] = { pairs: ans, id };
         }
+        if (element.type === 'cross') {
+          ans = this.state.session.metadata[element.id].rows;
+          const id = element.id;
+          quest[index] = { rows: ans, id };
+        }
       }
       return (null);
     });
@@ -196,7 +202,10 @@ export default class QuizViewerMainPage extends Component {
       const clozeAnswer = { id, answer_gaps: answers };
       newAnswer = clozeAnswer;
     }
-
+    if (type === 'cross') {
+      const crossAnswer = { id, rows: answers };
+      newAnswer = crossAnswer;
+    }
     if (allFalse === false) {
       tempQuestions[index] = newAnswer;
     }
@@ -249,9 +258,6 @@ export default class QuizViewerMainPage extends Component {
     return ('');
   }
   renderQuestions(question, index) {
-  //  console.log(this.state.data[question.id]);
-  //  console.log(this.state.answers);
-  // console.log(this.state.session);
     let sessionAns = null;
     if (this.state.session.metadata !== null && this.state.session.metadata[question.id] !== null) {
       sessionAns = this.state.session.metadata[question.id];
@@ -299,7 +305,7 @@ export default class QuizViewerMainPage extends Component {
           sessionAnswers={sessionAns}
           correctAnswer={this.state.data[question.id]}
           callbackParent={(questionId, answers) =>
-          this.collectAnswers(questionId, answers, question.type, index)}
+            this.collectAnswers(questionId, answers, question.type, index)}
           key={`match_quiz_${question.id}`}
         />
       );
@@ -329,10 +335,11 @@ export default class QuizViewerMainPage extends Component {
         text: sentence,
         gaps: hints.splice(0, getNOfGaps(sentence)),
       }));
-
       return (
         <ClozeQuestion
           id={question.id}
+          key={index}
+          points={question.points}
           index={index}
           reviewer={false}
           request={question.question}
@@ -343,6 +350,23 @@ export default class QuizViewerMainPage extends Component {
           studentReview={this.state.reviewState}
           resultsState={this.state.resultsState}
           correctAnswer={this.state.data[question.id]}
+        />
+      );
+    }
+
+    if (question.type === 'cross') {
+      return (
+        <CrossQuiz
+          id={question.id}
+          index={index}
+          question={question}
+          sessionAnswers={sessionAns}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          correctAnswer={this.state.data[question.id]}
+          callbackParent={(questionId, answers) =>
+            this.collectAnswers(questionId, answers, question.type, index)}
+          key={`cross_quiz_${question.id}`}
         />
       );
     }
