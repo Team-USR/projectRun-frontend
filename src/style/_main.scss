@@ -5,8 +5,23 @@ html,body {
   font-family: Open Sans, sans-serif !important;
 }
 
+.modal-open {
+  .topNabBarWrapper {
+    .navbar-header {
+      margin-left: -7.5px;
+    }
+    .navbar-collapse {
+      margin-right: 7.5px;
+    }
+  }
+}
+
 .appContent {
   padding-top: 51px;
+
+  .mm-popup__box {
+    transform: translateX(+100px);
+  }
 
 
   @media (max-width: 767px) {

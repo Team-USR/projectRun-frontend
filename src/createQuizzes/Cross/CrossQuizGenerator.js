@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Button, Col } from 'react-bootstrap';
-import Popup from 'react-popup';
+import { ModalError } from '../../components/utils';
 import { Board, Crossword, BoardSize } from './index';
 
 export default class CrossQuizGenerator extends Component {
@@ -17,23 +17,30 @@ export default class CrossQuizGenerator extends Component {
       displayWidth: minimumBoardSize,
       maximumBoardLimit: maximumBoardSize,
       boardValues: [{}],
-      crossQuizQuestion: 'Question',
+      crossQuizQuestion: '',
+
       metaAtributes: [],
       hintsAttributes: [],
       acrossWords: [],
       downWords: [],
       inputWords: [],
+
+      showModal: false,
+      modalContent: {
+        header: 'Error!',
+        body: 'The Cross Quiz contains errors',
+        buttons: ['close'],
+      },
     };
 
     this.boardWidth = this.state.boardWidth;
     this.boardHeight = this.state.boardHeight;
 
     this.renderBoard = this.renderBoard.bind(this);
-    this.autoGenerate = this.autoGenerate.bind(this);
+    this.closeModal = this.closeModal.bind(this);
   }
 
   componentWillMount() {
-    // console.log('Will Mount');
     const content = this.props.content;
     this.handleResizeBoard();
 
@@ -148,93 +155,6 @@ export default class CrossQuizGenerator extends Component {
     return generatedWords;
   }
 
-  autoGenerate() {
-    // const words = ['dog', 'cat', 'bat', 'elephantes', 'kangaroo'];
-
-    Popup.create({
-      title: 'Generate the Board ? ',
-      content: 'Are you sure that you want to generate the board? This is an irreversible action which will affect the currenlty completed board!',
-      buttons: {
-        right: [{
-          text: 'Generate Board',
-          className: 'success',
-          action: () => {
-            // console.log('box');
-            Popup.close();
-            if (this.state.inputWords.length < 2) {
-              Popup.alert(
-                'A valid Crossword must contain at least 2 words! Each Word should have minimum 2 characters!',
-                'Oops! Words are not valid!',
-              );
-            } else {
-              const words = this.state.inputWords;
-              // console.log(words);
-              const clues = [];
-
-              words.map((word) => {
-                clues.push('');
-                return word;
-              });
-
-              // Create crossword object with the words
-              const cw = new Crossword(words, clues);
-              const tries = this.state.maximumBoardLimit;
-
-              const grid = cw.getSquareGrid(tries);
-
-              if (grid == null) {
-                const badWords = cw.getBadWords();
-                const str = [];
-                for (let k = 0; k < badWords.length; k += 1) {
-                  str.push(badWords[k].word);
-                }
-                Popup.alert(
-                  `A grid could not be created with these words :( \n Please remove these words: \n ${str.join(', ')}`,
-                  'Oops! Words are not valid!',
-                );
-                return;
-              }
-
-              const matrix = [];
-              for (let i = 0; i < grid.length; i += 1) {
-                const arr = grid[i];
-                let row = '';
-                for (let j = 0; j < arr.length; j += 1) {
-                  if (arr[j] && arr[j].char) {
-                    row += arr[j].char.toLowerCase();
-                  } else {
-                    row += '*';
-                  }
-                }
-                matrix.push({ row });
-              }
-
-              this.generateWordsForEditor(matrix);
-
-              const width = matrix[0].row.length;
-              const height = matrix.length;
-
-              this.setState({
-                boardWidth: width,
-                boardHeight: height,
-                displayWidth: width,
-                displayHeight: height,
-                boardValues: matrix,
-              });
-
-              this.boardWidth = width;
-              this.boardHeight = height;
-            }
-          },
-        }],
-        left: [{
-          text: 'Cancel',
-          action: () => Popup.close(),
-        }],
-      },
-    });
-  }
-
   updateHintsAttributes(acrossWords, downWords) {
     const newHintsAttributes = [];
 
@@ -345,58 +265,129 @@ export default class CrossQuizGenerator extends Component {
       questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
   }
 
+  confirmGenerateBoard() {
+    if (this.state.inputWords.length < 2) {
+      this.openModal({
+        header: 'Oops! Words are not valid!',
+        body: 'A valid Crossword must contain at least 2 words! Each Word should have minimum 2 characters!',
+        buttons: ['close'],
+      });
+    } else {
+      const words = this.state.inputWords;
+      const clues = [];
+
+      words.map((word) => {
+        clues.push('');
+        return word;
+      });
+
+      // Create crossword object with the words
+      const cw = new Crossword(words, clues);
+      const tries = this.state.maximumBoardLimit;
+
+      const grid = cw.getSquareGrid(tries);
+
+      if (grid == null) {
+        const badWords = cw.getBadWords();
+        const str = [];
+        for (let k = 0; k < badWords.length; k += 1) {
+          str.push(badWords[k].word);
+        }
+        this.openModal({
+          header: 'Oops! Words are not valid!',
+          body: `A grid could not be created with these words :( \n Please remove these words: \n ${str.join(', ')}`,
+          buttons: ['close'],
+        });
+        return;
+      }
+
+      const matrix = [];
+      for (let i = 0; i < grid.length; i += 1) {
+        const arr = grid[i];
+        let row = '';
+        for (let j = 0; j < arr.length; j += 1) {
+          if (arr[j] && arr[j].char) {
+            row += arr[j].char.toLowerCase();
+          } else {
+            row += '*';
+          }
+        }
+        matrix.push({ row });
+      }
+
+      this.setState({
+        hintsAttributes: [],
+      });
+
+      this.generateWordsForEditor(matrix);
+
+      const width = matrix[0].row.length;
+      const height = matrix.length;
+
+      this.setState({
+        boardWidth: width,
+        boardHeight: height,
+        displayWidth: width,
+        displayHeight: height,
+        boardValues: matrix,
+      });
+
+      this.boardWidth = width;
+      this.boardHeight = height;
+      this.closeModal();
+    }
+  }
+
+  handleGenerateBoard() {
+    this.openModal({
+      header: 'Generate the Board ? ',
+      body: 'Are you sure that you want to generate the board? This is an irreversible action which will affect the currenlty completed board!',
+      buttons: ['close', 'generate'],
+    });
+  }
+
+  confirmClearBoard() {
+    const newBoard = this.state.boardValues;
+    for (let i = 0; i < this.boardHeight; i += 1) {
+      const row = '*'.repeat(this.boardWidth);
+      newBoard[i] = { row };
+    }
+
+    this.setState({
+      boardValues: newBoard,
+      hintsAttributes: [],
+      acrossWords: [],
+      downWords: [],
+    });
+
+    this.closeModal();
+  }
+
   handleClearBoard() {
-    Popup.create({
-      title: 'Clear the Board ? ',
-      content: 'Are you sure that you want to clear the board? \n This is an irreversible action which will affect the stored words! ',
-      buttons: {
-        right: [{
-          text: 'Clear Board',
-          className: 'danger',
-          action: () => {
-            const newBoard = this.state.boardValues;
-            for (let i = 0; i < this.boardHeight; i += 1) {
-              const row = '*'.repeat(this.boardWidth);
-              newBoard[i] = { row };
-            }
-
-            this.setState({
-              boardValues: newBoard,
-              hintsAttributes: [],
-              acrossWords: [],
-              downWords: [],
-            });
-
-            Popup.close();
-          },
-        }],
-        left: [{
-          text: 'Cancel',
-          action: () => Popup.close(),
-        }],
-      },
+    this.openModal({
+      header: 'Clear the Board ? ',
+      body: 'Are you sure that you want to clear the board? This is an irreversible action which will affect the stored words!',
+      buttons: ['close', 'clear'],
     });
   }
 
   handleResizeBoard() {
-    if (isNaN(this.boardHeight) || isNaN(this.boardWidth)) {
-      Popup.alert(
-        'The board dimensions should be valid numbers. Thank you! :)',
-        'Oops! Board Limits incorrect!',
-      );
+    if (isNaN(this.boardHeight) || isNaN(this.boardWidth) ||
+      this.boardHeight < 1 || this.boardWidth < 1) {
+      this.openModal({
+        header: 'Oops! The Board is too small!',
+        body: 'The board should contain at least 1 row or 1 column. Thank you! :)',
+        buttons: ['close'],
+      });
     } else if (this.boardHeight > this.state.maximumBoardLimit ||
         this.boardWidth > this.state.maximumBoardLimit) {
-      Popup.alert(
-        `The board size should not be larger than
-         ${this.state.maximumBoardLimit} x ${this.state.maximumBoardLimit}.
-         Thank you! :)`,
-        'Oops! Board Limits exceeded!',
-      );
-    } else if (this.boardHeight < 1 || this.boardWidth < 1) {
-      Popup.alert(
-        'The board should contain at least 1 row or 1 column. Thank you! :)',
-        'Oops! The Board is too small!',
-      );
+      this.openModal({
+        header: 'Oops! Board Limits exceeded!',
+        body: `The board size should not be larger than
+               ${this.state.maximumBoardLimit} x ${this.state.maximumBoardLimit}.
+               Thank you! :)`,
+        buttons: ['close'],
+      });
     } else {
       const newBoard = this.state.boardValues;
       for (let i = 0; i < this.boardHeight; i += 1) {
@@ -420,7 +411,6 @@ export default class CrossQuizGenerator extends Component {
         boardHeight: this.boardHeight,
       });
 
-
       // Update hintsAttributes Object
       this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
 
@@ -431,7 +421,6 @@ export default class CrossQuizGenerator extends Component {
       const questionId = this.props.index;
 
       // Send Match Data to MainQuizGenerator
-      // console.log(this.state);
       this.props.updateParent(
         questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
     }
@@ -527,8 +516,42 @@ export default class CrossQuizGenerator extends Component {
       newDownWords.push(generatedColWords);
     }
 
+    // Update TextareaContent and InputWords - for Editor
+    const newInputWord = [];
+    let newTextAreaContent = '';
+    newAcrossWords.map((array) => {
+      if (array.length > 0) {
+        array.map((word) => {
+          if (word.value && word.value.length > 0) {
+            newInputWord.push(word.value);
+            newTextAreaContent += `${word.value}\n`;
+          }
+          return word;
+        });
+      }
+      return array;
+    });
+
+    newDownWords.map((array) => {
+      if (array.length > 0) {
+        array.map((word) => {
+          if (word.value && word.value.length > 0) {
+            newInputWord.push(word.value);
+            newTextAreaContent += `${word.value}\n`;
+          }
+          return word;
+        });
+      }
+      return array;
+    });
+
     this.updateHintsAttributes(newAcrossWords, newDownWords);
-    this.setState({ acrossWords: newAcrossWords, downWords: newDownWords });
+    this.setState({
+      acrossWords: newAcrossWords,
+      downWords: newDownWords,
+      textAreaContent: newTextAreaContent,
+      inputWords: newInputWord,
+    });
   }
 
   generateWords(board, row, col) {
@@ -550,6 +573,18 @@ export default class CrossQuizGenerator extends Component {
     // console.log(newAcrossWords, newDownWords);
 
     this.setState({ downWords: newDownWords, acrossWords: newAcrossWords });
+  }
+
+  closeModal() {
+    this.setState({ showModal: false });
+  }
+
+  openModal(content) {
+    if (content) {
+      this.setState({ showModal: true, modalContent: content });
+    } else {
+      this.setState({ showModal: true });
+    }
   }
 
   renderBoard() {
@@ -616,19 +651,24 @@ export default class CrossQuizGenerator extends Component {
   }
 
   render() {
+    let textAreaContent = '';
+    if (this.state.textAreaContent) {
+      textAreaContent = this.state.textAreaContent;
+    }
+
     return (
       <div className="crossQuizGenerator">
-        <Popup
-          className="mm-popup"
-          btnClass="mm-popup__btn"
-          closeBtn
-          defaultOk="Ok"
-          wildClasses={false}
-        />
         <div className="createCrossQuizTitle">
           <h3>Cross question</h3>
         </div>
 
+        <ModalError
+          show={this.state.showModal}
+          content={this.state.modalContent}
+          close={() => this.closeModal()}
+          confirmClearBoard={() => this.confirmClearBoard()}
+          confirmGenerateBoard={() => this.confirmGenerateBoard()}
+        />
 
         <div className="createCrossQuizContent">
 
@@ -688,13 +728,14 @@ export default class CrossQuizGenerator extends Component {
                 className="form-control"
                 rows="4"
                 cols="30"
-                placeholder="Write your words, each on a separete line"
+                defaultValue={textAreaContent}
+                placeholder="Write your words, each on a different line"
                 onChange={e => this.handleInputWordsChange(e)}
               />
             </div>
             <br />
             <div id="crossword">
-              <Button onClick={() => this.autoGenerate()}>
+              <Button onClick={() => this.handleGenerateBoard()}>
                 Generate
               </Button>
             </div>
@@ -706,7 +747,9 @@ export default class CrossQuizGenerator extends Component {
       </div>
     );
   }
+
 }
+
 
 CrossQuizGenerator.propTypes = {
   index: PropTypes.number.isRequired,
