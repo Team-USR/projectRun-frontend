@@ -36,7 +36,6 @@
   .searchBarItem {
     margin-top:20px;
     width:300px;
-    margin-right:15px;
     background-color:#ffffff;
     color: black;
     border:0px;
@@ -46,6 +45,9 @@
     padding-left: 70px;
     text-align: left;
     margin-bottom:50px;
+  }
+  .searchBarItem:focus {
+    background-color: #080808;
   }
   .main_container{
     margin:25px 0;

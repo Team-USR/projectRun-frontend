@@ -4,7 +4,7 @@ import { Button } from 'react-bootstrap';
 export default function AlternateSolution(props) {
   return (
     <div className="AlternateSolutionWrapper">
-      {props.index + 1}
+      <div>{props.index + 1}</div>
       <input
         className="form_alternate_input"
         value={props.value}

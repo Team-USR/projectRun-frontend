@@ -123,13 +123,16 @@ export default class SideBarQuizzes extends Component {
   renderSearchBar() {
     return (
       <NavItem key={'searchBar'} >
-        <input
-          className="searchBarItem"
-          id="searchBar"
-          type="text"
-          placeholder="Search for a quiz"
-          onChange={this.filterItems}
-        />
+        <div>
+          <i className="fa fa-search search_icon" aria-hidden="true" />
+          <input
+            className="searchBarItem"
+            id="searchBar"
+            type="text"
+            placeholder="Search for a quiz"
+            onChange={this.filterItems}
+          />
+        </div>
       </NavItem>
     );
   }
@@ -271,83 +274,81 @@ export default class SideBarQuizzes extends Component {
             <Accordion defaultActiveKey={this.state.activePanel}>
 
               <Panel header={`Not started (${notStartedContent.length})`} eventKey="1" >
-                {
-            notStartedContent.map((item, index) => {
-              if (index < maxNotStarted) {
-                return (
-                  <NavItem key={`notstarted${index + 1}`}>
-                    <Button
-                      className="sideBarButton"
-                      onClick={() => this.props.onQuizClick(item.id)}
-                    >
-                      {item.title}
-                    </Button>
-                  </NavItem>
-                );
-              }notstarted += 1;
-              if (index === notStartedContent.length - 1) {
-                return (
-                  <NavItem key={'nostarted'}>
-                    <h5>and {notstarted} more</h5>
-                  </NavItem>
-                );
-              }
-              return (null);
-            },
-        )
-      }
+                {notStartedContent.map((item, index) => {
+                  if (index < maxNotStarted) {
+                    return (
+                      <NavItem key={`notstarted${index + 1}`}>
+                        <Button
+                          className="sideBarButton"
+                          onClick={() => this.props.onQuizClick(item.id)}
+                        >
+                          {item.title}
+                        </Button>
+                      </NavItem>
+                    );
+                  }
+                  notstarted += 1;
+                  if (index === notStartedContent.length - 1) {
+                    return (
+                      <NavItem key={'nostarted'}>
+                        <h5>and {notstarted} more</h5>
+                      </NavItem>
+                    );
+                  }
+                  return (null);
+                })}
+              </Panel>
 
-              </Panel>
               <Panel header={`In progress (${inprogressContent.length})`} eventKey="2">
-                {
-          inprogressContent.map((item, index) => {
-            if (index < maxInprogress) {
-              return (
-                <NavItem key={`inprogrs${index + 1}`}>
-                  <Button className="sideBarButton" onClick={() => this.props.onQuizClick(item.id)}>
-                    {item.title}
-                  </Button>
-                </NavItem>
-              );
-            }inprogress += 1;
-            if (index === inprogressContent.length - 1) {
-              return (
-                <NavItem key={'inprogress'}>
-                  <h5>and {inprogress} more</h5>
-                </NavItem>
-              );
-            }
-            return (null);
-          },
-        )
-      }
+                {inprogressContent.map((item, index) => {
+                  if (index < maxInprogress) {
+                    return (
+                      <NavItem key={`inprogrs${index + 1}`}>
+                        <Button
+                          className="sideBarButton"
+                          onClick={() => this.props.onQuizClick(item.id)}
+                        >
+                          {item.title}
+                        </Button>
+                      </NavItem>
+                    );
+                  }
+                  inprogress += 1;
+                  if (index === inprogressContent.length - 1) {
+                    return (
+                      <NavItem key={'inprogress'}>
+                        <h5>and {inprogress} more</h5>
+                      </NavItem>
+                    );
+                  }
+                  return (null);
+                })}
               </Panel>
+
               <Panel header={`Submitted (${submittedContent.length})`} eventKey="3">
-                {
-            submittedContent.map((item, index) => {
-              if (index < maxsubmitted) {
-                return (
-                  <NavItem key={`submitted${index + 1}`}>
-                    <Button
-                      className="sideBarButton"
-                      onClick={() => this.props.onQuizClick(item.id)}
-                    >
-                      {item.title}
-                    </Button>
-                  </NavItem>
-                );
-              }submitted += 1;
-              if (index === submittedContent.length - 1) {
-                return (
-                  <NavItem key={'submitted'}>
-                    <h5>and {submitted} more</h5>
-                  </NavItem>
-                );
-              }
-              return (null);
-            },
-        )
-      }
+                {submittedContent.map((item, index) => {
+                  if (index < maxsubmitted) {
+                    return (
+                      <NavItem key={`submitted${index + 1}`}>
+                        <Button
+                          className="sideBarButton"
+                          onClick={() => this.props.onQuizClick(item.id)}
+                        >
+                          {item.title}
+                        </Button>
+                      </NavItem>
+                    );
+                  }
+                  submitted += 1;
+                  if (index === submittedContent.length - 1) {
+                    return (
+                      <NavItem key={'submitted'}>
+                        <h5>and {submitted} more</h5>
+                      </NavItem>
+                    );
+                  }
+                  return (null);
+                })}
               </Panel>
             </Accordion>
           </Nav>
