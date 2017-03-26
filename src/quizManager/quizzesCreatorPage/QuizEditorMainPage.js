@@ -7,6 +7,7 @@ import { SingleChoiceQuizGenerator } from '../../createQuizzes/SingleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { ClozeGenerator } from '../../createQuizzes/Cloze';
 import { MixQuizGenerator } from '../../createQuizzes/Mix';
+import { CrossQuizGenerator } from '../../createQuizzes/Cross';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
@@ -215,7 +216,6 @@ export default class QuizEditorMainPage extends Component {
          if (!response || (response && response.status !== 201)) {
            this.setState({ errorState: true });
          }
-
          this.props.handleSubmitButton();
        });
     } else {
@@ -308,6 +308,30 @@ export default class QuizEditorMainPage extends Component {
     // console.log(questionObject);
   }
 
+  collectCrossObject(question, metaAtributes, rowsAttributes, hintsAttributes, questionID) {
+    const inputQ = this.state.submitedQuestions;
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+      pointsAssigned = this.state.quizInfo.questions[questionID].points;
+    }
+    const newQuestion = {
+      question,
+      type: 'cross',
+      points: pointsAssigned,
+      metadata_attributes: metaAtributes,
+      rows_attributes: rowsAttributes,
+      hints_attributes: hintsAttributes,
+    };
+    // console.log(newQuestion);
+
+    inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.setState({ submitedQuestions: inputQ });
+  }
+
   addQuiz(quizType, questionObj) {
     displayIndex = 0;
     const buttonGroup = (
@@ -389,7 +413,6 @@ export default class QuizEditorMainPage extends Component {
     }
 
     if (quizType === 'mix') {
-      //  console.log(questionObj);
       const question = (
         <MixQuizGenerator
           content={questionObj}
@@ -399,6 +422,22 @@ export default class QuizEditorMainPage extends Component {
           key={`mix${id}`}
           updateParent={(answersAttributes, qObject, ind) =>
             this.collectMixObject(answersAttributes, qObject, ind)}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+
+    if (quizType === 'cross') {
+      const question = (
+        <CrossQuizGenerator
+          content={questionObj}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          index={id}
+          key={`cross${id}`}
+          updateParent={(questionTitle, metaAtributes, rowsAttributes, hintsAttributes, ind) =>
+            this.collectCrossObject(
+              questionTitle, metaAtributes, rowsAttributes, hintsAttributes, ind,
+            )}
         />);
       questionObject = { id, question, buttonGroup };
     }
@@ -593,6 +632,7 @@ export default class QuizEditorMainPage extends Component {
             <Button onClick={() => this.addQuiz('match', null)}>Match</Button>
             <Button onClick={() => this.addQuiz('cloze', null)}>Cloze</Button>
             <Button onClick={() => this.addQuiz('mix', null)}>Mix</Button>
+            <Button onClick={() => this.addQuiz('cross', null)}>Cross</Button>
           </div>
           <div
             style={{ float: 'left', clear: 'both' }}

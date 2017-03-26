@@ -1,0 +1,21 @@
+.modal-content {
+  .modal-header {
+    background-color: rgb(245, 245, 245);
+  }
+  .modal-body {
+
+  }
+  .modal-footer {
+    border: 0px;
+
+    .clearButton {
+      background-color: $brand-red-color;
+      color: white;
+    }
+
+    .generateButton {
+      background-color: $brand-green-color;
+      color: white;
+    }
+  }
+}

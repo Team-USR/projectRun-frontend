@@ -6,6 +6,7 @@ import { SingleChoiceQuiz } from '../../quizzes/SingleChoice';
 import { ClozeQuestion } from '../../quizzes/Cloze';
 import { MatchQuiz } from '../../quizzes/Match/';
 import { MixQuiz } from '../../quizzes/Mix/';
+import { CrossQuiz } from '../../quizzes/Cross/';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
 import { getNOfGaps } from '../../helpers/Cloze';
@@ -194,6 +195,21 @@ export default class QuizCreatorReviewer extends Component {
           points={question.points}
           request={question.question}
           sentences={questionsArray}
+        />
+      );
+    }
+
+    if (question.type === 'cross') {
+      return (
+        <CrossQuiz
+          id={question.id}
+          index={index}
+          question={question}
+          reviewState={this.state.reviewState}
+          resultsState={this.state.resultsState}
+          correctAnswer={{}}
+          callbackParent={() => {}}
+          key={`cross_quiz_${question.id}`}
         />
       );
     }
