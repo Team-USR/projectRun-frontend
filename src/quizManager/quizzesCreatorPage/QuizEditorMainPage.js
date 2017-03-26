@@ -234,7 +234,8 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    if (inputQ.quiz.questions_attributes[questionID] === undefined && this.state.quizInfo.questions[questionID]
+     && this.state.quizInfo.questions[questionID].points) {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     let quiz = {};
@@ -268,7 +269,8 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    if (inputQ.quiz.questions_attributes[questionID] === undefined && this.state.quizInfo.questions[questionID]
+     && this.state.quizInfo.questions[questionID].points) {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     const newQuestion = {
@@ -293,7 +295,8 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    if (inputQ.quiz.questions_attributes[questionID] === undefined && this.state.quizInfo.questions[questionID]
+     && this.state.quizInfo.questions[questionID].points) {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     const questionObject = {
@@ -489,7 +492,7 @@ export default class QuizEditorMainPage extends Component {
   renderGroup(object, index) {
     if (this.state.questions[index]) {
       displayIndex += 1;
-      let points = 0;
+      let points = null;
       if (this.state.quizInfo.questions && this.state.quizInfo.questions[index]) {
         points = this.state.quizInfo.questions[index].points;
       }

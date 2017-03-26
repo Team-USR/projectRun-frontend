@@ -150,8 +150,8 @@ export default class SideBarQuizzes extends Component {
       });
       let unpublished = 0;
       let published = 0;
-      let maxUnpublished = 12;
-      let maxPublished = 12;
+      let maxUnpublished = 7;
+      let maxPublished = 7;
       if (unpublishedContent.length - maxUnpublished >= 1) {
         maxUnpublished -= 1;
       }
@@ -191,8 +191,12 @@ export default class SideBarQuizzes extends Component {
           } unpublished += 1;
           if (index === unpublishedContent.length - 1) {
             return (
-              <NavItem key={'moreunpublished'}>
-                <h5>and {unpublished} more</h5>
+              <NavItem
+                key={'moreunpublished'}
+              >
+                <Button className="sideBarButton" onClick={() => this.props.onSideBarTitleClick()}>
+                and {unpublished} more
+               </Button>
               </NavItem>
             );
           }
@@ -216,7 +220,9 @@ export default class SideBarQuizzes extends Component {
           if (index === publishedContent.length - 1) {
             return (
               <NavItem key={'morepublished'}>
-                <h5>and {published} more</h5>
+                <Button className="sideBarButton" onClick={() => this.props.onSideBarTitleClick()}>
+               and {published} more
+              </Button>
               </NavItem>
             );
           }
@@ -288,7 +294,11 @@ export default class SideBarQuizzes extends Component {
               if (index === notStartedContent.length - 1) {
                 return (
                   <NavItem key={'nostarted'}>
-                    <h5>and {notstarted} more</h5>
+                    <Button
+                      className="sideBarButton" onClick={() => this.props.onSideBarTitleClick()}
+                    >
+                   and {notstarted} more
+                  </Button>
                   </NavItem>
                 );
               }
@@ -313,7 +323,11 @@ export default class SideBarQuizzes extends Component {
             if (index === inprogressContent.length - 1) {
               return (
                 <NavItem key={'inprogress'}>
-                  <h5>and {inprogress} more</h5>
+                  <Button
+                    className="sideBarButton" onClick={() => this.props.onSideBarTitleClick()}
+                  >
+                 and {inprogress} more
+                </Button>
                 </NavItem>
               );
             }
@@ -340,7 +354,11 @@ export default class SideBarQuizzes extends Component {
               if (index === submittedContent.length - 1) {
                 return (
                   <NavItem key={'submitted'}>
-                    <h5>and {submitted} more</h5>
+                    <Button
+                      className="sideBarButton" onClick={() => this.props.onSideBarTitleClick()}
+                    >
+                   and {submitted} more
+                  </Button>
                   </NavItem>
                 );
               }
@@ -367,9 +385,11 @@ SideBarQuizzes.propTypes = {
   onQuizCreatorClick: PropTypes.func,
   userType: PropTypes.string.isRequired,
   onQuizClick: PropTypes.func,
+  onSideBarTitleClick: PropTypes.func,
 };
 SideBarQuizzes.defaultProps = {
   onQuizCreatorClick: null,
+  onSideBarTitleClick: null,
   content: PropTypes.arrayOf(PropTypes.shape({
     id: 0,
     title: '',

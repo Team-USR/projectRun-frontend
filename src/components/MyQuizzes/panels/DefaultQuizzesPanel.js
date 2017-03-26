@@ -1,26 +1,33 @@
 import React, { Component } from 'react';
+import { Button } from 'react-bootstrap';
 import { PieCh, LineCh } from '../../Charts';
 import { STUDENT, TEACHER } from '../../../constants';
 import { formatDataForStudentQuizPie,
   formatDataForTeacherQuizPie, compareSubmitDates } from '../../../helpers';
 
+let margin = 600;
+let panel = 'default';
 export default class DefaultQuizzesPanel extends Component {
 
   constructor() {
     super();
     this.state = {
+      type: null,
     };
   }
-
   render() {
     let data = [];
     if (this.props.userT === STUDENT) {
       data = formatDataForStudentQuizPie(this.props.quizzes);
+      margin = 1000;
+      panel = 'sessions';
     } else if (this.props.userT === TEACHER) {
+      margin = 600;
       data = formatDataForTeacherQuizPie(this.props.quizzes);
+      panel = 'reviewer';
     }
     return (
-      <div>
+      <div className="">
         <h1><b>Statistics</b></h1>
         {
           (this.props.userT === TEACHER && (
@@ -48,6 +55,22 @@ export default class DefaultQuizzesPanel extends Component {
             />
           </div>)
         }
+        <div className="quizList" style={{ marginTop: margin }}>
+          <h5><b>All quizzes</b></h5>
+          {
+          this.props.quizzes.map((item, index) =>
+             (
+               <Button
+                 className="quizListItem"
+                 key={`quiz${index + 1}`}
+                 onClick={() => this.props.onSideBarItemClick(item.id, panel)}
+               >
+                 {item.title}
+               </Button>
+            ),
+          )
+        }
+        </div>
       </div>
     );
   }
@@ -66,4 +89,5 @@ DefaultQuizzesPanel.propTypes = {
     score: React.PropTypes.number,
   })).isRequired,
   userT: React.PropTypes.string.isRequired,
+  onSideBarItemClick: React.PropTypes.func.isRequired,
 };

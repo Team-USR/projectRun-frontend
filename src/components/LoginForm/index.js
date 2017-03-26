@@ -22,10 +22,6 @@ export default function LoginForm(props) {
   let isTeacher = false;
   return (
     <div className="loginPage">
-
-      <div className="logoLogin">
-        <img src={loginLogo} alt={''} />
-      </div>
       {error}
       <div className="loginWrapper">
         <form>
