@@ -177,10 +177,14 @@ export default class QuizViewerMainPage extends Component {
     const tempAnswers = this.state.answers;
     const tempQuestions = this.state.answers.questions;
     let newAnswer = {};
-
+    let allFalse = false;
     if (type === 'multiple_choice') {
       const mcqAnswer = { id, answer_ids: answers };
       newAnswer = mcqAnswer;
+      if (answers.length === 0) {
+        allFalse = true;
+        tempQuestions.splice(index, 1);
+      }
     }
     if (type === 'single_choice') {
       const mcqAnswer = { id, answer_id: answers };
@@ -202,9 +206,18 @@ export default class QuizViewerMainPage extends Component {
       const crossAnswer = { id, rows: answers };
       newAnswer = crossAnswer;
     }
-    tempQuestions[index] = newAnswer;
+    if (allFalse === false) {
+      tempQuestions[index] = newAnswer;
+    }
+
     tempAnswers.questions = tempQuestions;
     this.setState({ answers: tempAnswers });
+  }
+  isNegativeMarking() {
+    if (this.state.quizInfo.negative_marking === true) {
+      return 'This quiz contains negative marking';
+    }
+    return '';
   }
   renderSubmitPanel() {
     if (this.state.reviewState && !this.state.resultsState) {
@@ -235,8 +248,8 @@ export default class QuizViewerMainPage extends Component {
       return (
         <div className="submitPanel">
           <h3>
-           Score :
-           {this.state.score}/{this.state.totalScore}
+           Score:
+            {` ${this.state.score}/${this.state.totalScore} `}
             ({ (this.state.score / this.state.totalScore) * 100 }%)
           </h3>
         </div>
@@ -322,10 +335,11 @@ export default class QuizViewerMainPage extends Component {
         text: sentence,
         gaps: hints.splice(0, getNOfGaps(sentence)),
       }));
-
       return (
         <ClozeQuestion
           id={question.id}
+          key={index}
+          points={question.points}
           index={index}
           reviewer={false}
           request={question.question}
@@ -369,6 +383,7 @@ export default class QuizViewerMainPage extends Component {
       <div className="mainQuizViewerBlock">
         <h1 style={styles.quizTitle}>{this.state.quizInfo.title}</h1>
         <h5 style={styles.quizTile}>Created by: {this.state.quizInfo.creator}</h5>
+        <h5 style={styles.quizTile}>{this.isNegativeMarking()}</h5>
         {this.state.quizInfo.questions.map((question, index) =>
         this.renderQuestions(question, index))
         }

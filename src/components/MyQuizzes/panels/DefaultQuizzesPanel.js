@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Col } from 'react-bootstrap';
 import { PieCh, LineCh } from '../../Charts';
 import { STUDENT, TEACHER } from '../../../constants';
 import { formatDataForStudentQuizPie,
@@ -25,19 +24,19 @@ export default class DefaultQuizzesPanel extends Component {
         <h1><b>My Quizzes</b></h1>
         <hr />
         {this.props.quizzes.length > 0 ?
-          (<Col sm={8} smOffset={2}>
+          (<div className="pie-chart-container">
             <PieCh data={data} />
-          </Col>)
+          </div>)
           : <h3>You have {this.props.userT === STUDENT ? 'no assigned' : 'not created any'} quizzes.</h3>
         }
         <br />
         { this.props.userT === STUDENT &&
-          (<Col sm={8} smOffset={1}>
+          (<div className="line-chart-container">
             <LineCh
               data={this.props.submittedQuizzes.sort((a, b) => compareSubmitDates(a.date, b.date))}
               color="grey"
             />
-          </Col>)
+          </div>)
         }
       </div>
     );

@@ -37,7 +37,7 @@ export function formatDataForStudentQuizPie(quizzes) {
     submitted: 0,
   });
   const dataAsArray = [];
-  Object.keys(data).forEach(key => dataAsArray.push({
+  Object.keys(data).forEach(key => data[key] > 0 && dataAsArray.push({
     name: formatKeys(key),
     value: data[key],
   }));
@@ -58,7 +58,7 @@ export function formatDataForTeacherQuizPie(quizzes) {
     not_published: 0,
   });
   const dataAsArray = [];
-  Object.keys(data).forEach(key => dataAsArray.push({
+  Object.keys(data).forEach(key => data[key] > 0 && dataAsArray.push({
     name: formatKeys(key),
     value: data[key],
   }));

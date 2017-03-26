@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip, OverlayTrigger, ListGroupItem } from 'react-bootstrap';
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { GAP_MATCHER } from '../../constants';
 import { stripGapNo } from '../../helpers/Cloze';
 
@@ -36,7 +36,7 @@ export default class ClozeSentence extends React.Component {
     return (
       words.map((word) => {
         if (!word.match(GAP_MATCHER)) return `${word} `;
-        const tooltip = <Tooltip key={`tooltip-${word}-${hintsCopy.length}`}>{hintsCopy.pop() || 'No hints!'}</Tooltip>;
+        const tooltip = <Tooltip id={`${word}`} key={`tooltip-${word}-${hintsCopy.length}`}>{hintsCopy.pop() || 'No hints!'}</Tooltip>;
         return (
           <OverlayTrigger id="tooltip" key={`overlay-${word}-${hintsCopy.length}`} placement="top" overlay={tooltip}>
             <input
@@ -81,9 +81,9 @@ export default class ClozeSentence extends React.Component {
 
   render() {
     return (
-      <ListGroupItem key={this.props.index} style={{ marginTop: '8px' }}>
+      <li key={this.props.index + 1} style={{ marginTop: '8px' }}>
         {this.props.reviewer ? this.renderReview() : this.renderView()}
-      </ListGroupItem>
+      </li>
     );
   }
 }

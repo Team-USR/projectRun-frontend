@@ -35,4 +35,17 @@
   @media (max-width: 767px) {
     display: initial;
   }
+
+  .pie-chart-container {
+    position: absolute;
+    display: block;
+    left: 50%;
+    transform:translateX(calc(-50% + 100px));
+  }
+
+  .line-chart-container {
+    position: absolute;
+    display: block;
+    margin: 50px;
+  }
 }

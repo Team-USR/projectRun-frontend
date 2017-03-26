@@ -11,6 +11,7 @@ import { CrossQuizGenerator } from '../../createQuizzes/Cross';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
+import { checkMix, checkMultiple, checkCloze } from '../../helpers/Validators';
 
 
 const styles = {
@@ -38,6 +39,8 @@ export default class QuizEditorMainPage extends Component {
       loadingQuiz: true,
       error: false,
       defaultDate: '01-01-2017',
+      errors: { quiz: { title: '', questions_attributes: [] } },
+      hasErrors: [],
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -57,16 +60,11 @@ export default class QuizEditorMainPage extends Component {
        if (!response || (response && response.status !== 200)) {
          this.setState({ errorState: true });
        }
-      //  console.log(response.data);
        const generatedQuiz = this.state.submitedQuestions;
        generatedQuiz.quiz.title = response.data.title;
        generatedQuiz.quiz.attempts = response.data.attempts;
        generatedQuiz.quiz.release_date = response.data.release_date;
        generatedQuiz.quiz.negative_marking = response.data.negative_marking;
-       response.data.questions.map((item, index) => {
-         item.points = response.data.questions[index].points;
-         return 0;
-       });
        setTimeout(() => {
          this.setState({
            loadingQuiz: false,
@@ -99,10 +97,7 @@ export default class QuizEditorMainPage extends Component {
         generatedQuiz.quiz.attempts = response.data.attempts;
         generatedQuiz.quiz.release_date = response.data.release_date;
         generatedQuiz.quiz.negative_marking = response.data.negative_marking;
-        response.data.questions.map((item, index) => {
-          item.points = response.data.questions[index].points;
-          return 0;
-        });
+
         setTimeout(() => {
           this.setState({
             loadingQuiz: false,
@@ -113,6 +108,10 @@ export default class QuizEditorMainPage extends Component {
         response.data.questions.map(questionObj => this.addQuiz(questionObj.type, questionObj));
       });
     }
+  }
+  componentWillUnmount() {
+    id = 0;
+    displayIndex = 0;
   }
   setNegativeMarking() {
     const value = this.state.submitedQuestions.quiz.negative_marking;
@@ -146,30 +145,82 @@ export default class QuizEditorMainPage extends Component {
       this.setState({ inputQuestions: inputQuestion });
     }
   }
+  checkCorectnessTitle(generatedQuiz) {
+    if (generatedQuiz.quiz.title === '') {
+      const thisObject = this.state.errors;
+      thisObject.quiz.title = 'Title is empty!';
+      this.setState({ errors: thisObject });
+      const thisError = this.state.hasErrors;
+      thisError[0] = true;
+      this.setState({ hasErrors: thisError });
+    }
+    if (generatedQuiz.quiz.title !== '') {
+      const thisObject = this.state.errors;
+      thisObject.quiz.title = '';
+      this.setState({ errors: thisObject });
+      const thisError = this.state.hasErrors;
+      thisError[0] = false;
+      this.setState({ hasErrors: thisError });
+    }
+  }
+  checkCorectness(element, index) {
+    const questions = this.state.submitedQuestions;
+    let errorMessage = '';
+    this.checkCorectnessTitle(questions);
+    const thisObject = this.state.errors;
+    if (element.type === 'match') {
+      // TODO: check for errors method(element)
+      //  errorMessage = this.checkMatch(element); --returns string describing error
+    } else if (element.type === 'multiple_choice' || element.type === 'single_choice') {
+      errorMessage += checkMultiple(element);
+    } else if (element.type === 'mix') {
+      errorMessage = checkMix(element);
+    } else if (element.type === 'cloze') {
+      errorMessage = checkCloze(element);
+    } else if (element.type === 'cross') {
+        // TODO: check for errors
+        //  errorMessage = this.checkCross(element); --returns string describing error
+    }
+    if (errorMessage !== '') {
+      const thisError = this.state.hasErrors;
+      thisError[index + 1] = true;
+      this.setState({ hasErrors: thisError });
+    }
+    if (errorMessage === '') {
+      const thisError = this.state.hasErrors;
+      thisError[index + 1] = false;
+      this.setState({ hasErrors: thisError });
+    }
+    thisObject.quiz.questions_attributes[index] = errorMessage;
+    this.setState({ errors: thisObject });
+  }
   isReviewMode() {
-    const sQuestions = this.state.submitedQuestions;
-  //  console.log("submitedQuestions ", sQuestions,"finishsubmited");
-    const filteredQuestions = sQuestions.quiz.questions_attributes.filter(
-      element => element !== null,
-    );
-    // console.log('filtered', filteredQuestions);
-    this.setState({ loading: true, submitedQuestions: filteredQuestions });
-//    console.log("----------");
-//    console.log(filteredQuestions);
-//    console.log("----------");
-    axios({
-      url: `${API_URL}/quizzes/${this.props.quizID}`,
-      data: this.state.submitedQuestions,
-      headers: this.props.userToken,
-      method: 'patch',
-    })
-     .then((response) => {
-       if (!response || (response && response.status !== 201)) {
-         this.setState({ errorState: true });
-       }
-
-       this.props.handleSubmitButton();
-     });
+    if (this.state.hasErrors.filter(item => item === true).length === 0) {
+      const sQuestions = this.state.submitedQuestions;
+    //  console.log("submitedQuestions ", sQuestions,"finishsubmited");
+      const filteredQuestions = sQuestions.quiz.questions_attributes.filter(
+        element => element !== null,
+      );
+      // console.log('filtered', filteredQuestions, 'finishfiltered');
+      this.setState({ loading: true, submitedQuestions: filteredQuestions });
+  //    console.log("----------");
+  //    console.log(filteredQuestions);
+  //    console.log("----------");
+      axios({
+        url: `${API_URL}/quizzes/${this.props.quizID}`,
+        data: this.state.submitedQuestions,
+        headers: this.props.userToken,
+        method: 'patch',
+      })
+       .then((response) => {
+         if (!response || (response && response.status !== 201)) {
+           this.setState({ errorState: true });
+         }
+         this.props.handleSubmitButton();
+       });
+    } else {
+      window.alert('Quiz has errors');
+    }
   }
   isResultsMode() {
     const newState = !this.state.resultsState;
@@ -206,6 +257,7 @@ export default class QuizEditorMainPage extends Component {
       quiz = { question, type, points: pointsAssigned, answers_attributes: answersAttributes };
     }
     inputQ.quiz.questions_attributes[questionID] = quiz;
+    this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
 
@@ -230,6 +282,7 @@ export default class QuizEditorMainPage extends Component {
     };
 
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
 
@@ -250,6 +303,7 @@ export default class QuizEditorMainPage extends Component {
       sentences_attributes: data,
     };
     inputQ.quiz.questions_attributes[questionID] = questionObject;
+    this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
     // console.log(questionObject);
   }
@@ -402,6 +456,7 @@ export default class QuizEditorMainPage extends Component {
     const generatedQuiz = this.state.submitedQuestions;
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
+    this.checkCorectnessTitle(generatedQuiz);
   }
   changeAttempts(event) {
     const attempted = this.state.submitedQuestions;
@@ -422,6 +477,15 @@ export default class QuizEditorMainPage extends Component {
          this.renderGroup(object, index))
     );
   }
+
+  renderQuestionError(index) {
+    if (this.state.errors.quiz.questions_attributes &&
+      this.state.errors.quiz.questions_attributes[index] !== undefined) {
+      return this.state.errors.quiz.questions_attributes[index];
+    }
+    return '';
+  }
+
   renderGroup(object, index) {
     if (this.state.questions[index]) {
       displayIndex += 1;
@@ -445,6 +509,9 @@ export default class QuizEditorMainPage extends Component {
               onChange={event => this.setPoints(event, index)}
               defaultValue={points}
             />
+          </div>
+          <div>
+            <h5 className="error_message">{this.renderQuestionError(index)}</h5>
           </div>
           {this.state.questions[index].buttonGroup}
         </div>
@@ -547,6 +614,9 @@ export default class QuizEditorMainPage extends Component {
                     onChange={this.setNegativeMarking}
                   />
                 </Col>
+              </Col>
+              <Col md={12}>
+                <h5 className="error_message">{this.state.errors.quiz.title} </h5>
               </Col>
             </div>
           </label>
