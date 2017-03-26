@@ -371,6 +371,7 @@ export default class MyClassesPage extends Component {
         averagePerCreatedClass={formatAveragePerCreatedClass(this.state.averagePerCreatedClass)}
         getClassMarks={classId => this.requestStudentStatistics(classId)}
         numberOfClasses={this.state.sideBarContent.classes.length}
+        classes={this.state.sideBarContent.classes}
         getAllClasses={() => this.getAllClasses()}
         updateAllStudents={object => this.updateAllStudents(object)}
         handleSaveNewClassClick={newClassTitle =>
@@ -386,6 +387,8 @@ export default class MyClassesPage extends Component {
         requestsList={this.state.requestsList}
         invitedList={this.state.invitedList}
         refreshStudents={(classID, ptype) => this.refreshStudents(classID, ptype)}
+        handleSideBarClassClick={(currentClassId, classTitle) =>
+          this.handleSideBarClassClick(currentClassId, classTitle)}
       />);
     return element;
   }

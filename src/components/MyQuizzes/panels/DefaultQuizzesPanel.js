@@ -56,7 +56,10 @@ export default class DefaultQuizzesPanel extends Component {
           </div>)
         }
         <div className="quizList" style={{ marginTop: margin }}>
-          <h5><b>All quizzes</b></h5>
+          {
+          (this.props.quizzes.length > 0 &&
+            <h5><b>All quizzes</b></h5>)
+          }
           {
           this.props.quizzes.map((item, index) =>
              (

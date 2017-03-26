@@ -61,6 +61,7 @@ export default class SideBarWrapper extends Component {
       } else if (this.props.userType === STUDENT) {
         sideBarContent = (
           <SideBarClasses
+            onSideBarTitleClick={() => this.props.onSideBarTitleClick()}
             userType={this.props.userType}
             onClassClick={(currentClassId, classTitle) =>
               this.props.onSideBarItemClick(currentClassId, classTitle)}

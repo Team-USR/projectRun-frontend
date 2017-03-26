@@ -115,7 +115,12 @@ export default class SideBarClasses extends Component {
            if (index === this.state.content.length - 1) {
              return (
                <NavItem className="classesNav" key={'moreClasses'}>
-                 <h5> and {classesCounter} more...</h5>
+                 <Button
+                   className="sideBarButton"
+                   onClick={() => this.props.onSideBarTitleClick()}
+                 >
+                 and {classesCounter} more...
+                 </Button>
                </NavItem>
              );
            }
@@ -135,9 +140,11 @@ SideBarClasses.propTypes = {
   content: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   onClassClick: PropTypes.func,
   handleSearchClassForRequestInvite: PropTypes.func,
+  onSideBarTitleClick: PropTypes.func,
 };
 SideBarClasses.defaultProps = {
   onCreateClassClick: null,
   onClassClick: null,
   handleSearchClassForRequestInvite: null,
+  onSideBarTitleClick: null,
 };

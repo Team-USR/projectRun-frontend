@@ -25,7 +25,8 @@
     transform:translateX(calc(-50% + 100px));
   }
   .quizList {
-    position:absolute;
+    position:relative;
+    margin: 0 auto;
     .quizListItem{
       width: 200px;
       margin:2px;
