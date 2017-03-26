@@ -234,7 +234,9 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    if (inputQ.quiz.questions_attributes[questionID] === undefined
+      && this.state.quizInfo.questions[questionID]
+      && this.state.quizInfo.questions[questionID].points) {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     let quiz = {};
@@ -261,18 +263,20 @@ export default class QuizEditorMainPage extends Component {
     this.setState({ submitedQuestions: inputQ });
   }
 
-  collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+  collectClozeObject(questionID, sentenceAttributes, gapsAttributes, questionTitle) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
     if (inputQ.quiz.questions_attributes[questionID] &&
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    if (inputQ.quiz.questions_attributes[questionID] === undefined
+      && this.state.quizInfo.questions[questionID]
+      && this.state.quizInfo.questions[questionID].points) {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     const newQuestion = {
-      question: 'Fill in the gaps:',
+      question: questionTitle,
       type: 'cloze',
       points: pointsAssigned,
       cloze_sentence_attributes: {
@@ -293,7 +297,9 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    if (inputQ.quiz.questions_attributes[questionID] === undefined
+      && this.state.quizInfo.questions[questionID]
+      && this.state.quizInfo.questions[questionID].points) {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     const questionObject = {
@@ -315,7 +321,9 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    if (inputQ.quiz.questions_attributes[questionID] === undefined
+      && this.state.quizInfo.questions[questionID]
+      && this.state.quizInfo.questions[questionID].points) {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     const newQuestion = {
@@ -489,7 +497,7 @@ export default class QuizEditorMainPage extends Component {
   renderGroup(object, index) {
     if (this.state.questions[index]) {
       displayIndex += 1;
-      let points = 0;
+      let points = null;
       if (this.state.quizInfo.questions && this.state.quizInfo.questions[index]) {
         points = this.state.quizInfo.questions[index].points;
       }

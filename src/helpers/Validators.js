@@ -50,6 +50,8 @@ export function checkMix(element) {
 export function checkCloze(element) {
   if (element.gaps_attributes.length === 0) {
     return 'The question should contain at least one valid sentence!';
+  } else if (element.question.length === 0) {
+    return 'The question should have a title!';
   }
   return '';
 }
