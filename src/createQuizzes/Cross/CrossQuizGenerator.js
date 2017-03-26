@@ -47,15 +47,20 @@ export default class CrossQuizGenerator extends Component {
     if (content) {
       // console.log('reviewState');
       const board = content.rows.map(value => ({ row: value }));
-      this.generateWordsForEditor(board);
+      this.generateWordsForEditor(board, false);
 
       this.setState({
         showBoard: true,
         boardWidth: content.width,
         boardHeight: content.height,
+        displayWidth: content.width,
+        displayHeight: content.height,
         crossQuizQuestion: content.question,
         boardValues: board,
       });
+
+      this.boardWidth = content.width;
+      this.boardHeight = content.height;
 
       const questionTitle = content.question;
       const metaAtributes = { width: content.width, height: content.height };
@@ -319,7 +324,7 @@ export default class CrossQuizGenerator extends Component {
         hintsAttributes: [],
       });
 
-      this.generateWordsForEditor(matrix);
+      this.generateWordsForEditor(matrix, true);
 
       const width = matrix[0].row.length;
       const height = matrix.length;
@@ -491,9 +496,9 @@ export default class CrossQuizGenerator extends Component {
     this.setState({ inputWords: wordsArray });
   }
 
-  generateWordsForEditor(board) {
-    const newAcrossWords = [];
-    const newDownWords = [];
+  generateWordsForEditor(board, clearHints) {
+    let newAcrossWords = [];
+    let newDownWords = [];
 
     const width = board[0].row.length;
     const height = board.length;
@@ -519,30 +524,43 @@ export default class CrossQuizGenerator extends Component {
     // Update TextareaContent and InputWords - for Editor
     const newInputWord = [];
     let newTextAreaContent = '';
-    newAcrossWords.map((array) => {
+    newAcrossWords = newAcrossWords.map((array) => {
+      let newArray = array;
       if (array.length > 0) {
-        array.map((word) => {
+        newArray = array.map((word) => {
           if (word.value && word.value.length > 0) {
             newInputWord.push(word.value);
             newTextAreaContent += `${word.value}\n`;
           }
-          return word;
+          const newWord = word;
+          // Clear Across Hints when Regenerate
+          if (clearHints) {
+            newWord.hintObj = -1;
+          }
+          return newWord;
         });
       }
-      return array;
+      return newArray;
     });
 
-    newDownWords.map((array) => {
+    newDownWords = newDownWords.map((array) => {
+      let newArray = array;
       if (array.length > 0) {
-        array.map((word) => {
+        newArray = array.map((word) => {
           if (word.value && word.value.length > 0) {
             newInputWord.push(word.value);
             newTextAreaContent += `${word.value}\n`;
           }
-          return word;
+
+          const newWord = word;
+          // Clear Down Hints when Regenerate
+          if (clearHints) {
+            newWord.hintObj = -1;
+          }
+          return newWord;
         });
       }
-      return array;
+      return newArray;
     });
 
     this.updateHintsAttributes(newAcrossWords, newDownWords);
@@ -614,13 +632,18 @@ export default class CrossQuizGenerator extends Component {
 
     return (
       <div>
-        <label htmlFor="boardClue">{obj.value.toUpperCase()} </label>
-        <input
-          id="boardClue"
-          type="text"
-          onChange={e => this.handleClueChange(e, x, y, clueType)}
-          defaultValue={hintValue}
-        />
+        <Col md={2}>
+          <label htmlFor="boardClue">{obj.value.toUpperCase()} </label>
+        </Col>
+        <Col md={10}>
+          <input
+            className="form-control"
+            id="boardClue"
+            type="text"
+            onChange={e => this.handleClueChange(e, x, y, clueType)}
+            value={hintValue}
+          />
+        </Col>
       </div>
     );
   }
@@ -725,7 +748,7 @@ export default class CrossQuizGenerator extends Component {
             <h4><b>Words</b></h4>
             <div>
               <textarea
-                className="form-control"
+                className="inputWordsTextarea form-control"
                 rows="4"
                 cols="30"
                 defaultValue={textAreaContent}

@@ -40,9 +40,9 @@ export default class CrossQuiz extends Component {
 
     // Generate a Matrix of 0's
     const matrix = [];
-    for (let i = 0; i < width; i += 1) {
+    for (let i = 0; i < height; i += 1) {
       const row = [];
-      for (let j = 0; j < height; j += 1) {
+      for (let j = 0; j < width; j += 1) {
         row.push(0);
       }
       matrix[i] = row;
@@ -109,8 +109,8 @@ export default class CrossQuiz extends Component {
     let currentNo = 1;
     const width = this.state.width;
     const height = this.state.height;
-    for (let i = 0; i < width; i += 1) {
-      for (let j = 0; j < height; j += 1) {
+    for (let i = 0; i < height; i += 1) {
+      for (let j = 0; j < width; j += 1) {
         const myWord = this.findWordByPosition(hints, i, j);
         if (myWord !== -1) {
           hintsNoMatrix[i][j] = currentNo;

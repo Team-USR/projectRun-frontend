@@ -30,6 +30,7 @@ export default class Board extends Component {
         sqType = 'editable';
       }
     }
+
     return (
       <Square
         squareType={sqType}

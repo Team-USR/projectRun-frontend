@@ -272,6 +272,7 @@ export default class QuizEditorMainPage extends Component {
       rows_attributes: rowsAttributes,
       hints_attributes: hintsAttributes,
     };
+    console.log(newQuestion);
 
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
     this.setState({ submitedQuestions: inputQ });
