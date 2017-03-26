@@ -31,7 +31,7 @@ export default class MyClassesPanel extends Component {
     };
   }
   async componentWillMount() {
-    if (this.props.classId.length > 0) {
+    if (this.props.classId.length > 0 && this.props.userType === STUDENT) {
       const data = await this.props.getClassMarks(this.props.classId);
       this.setState({
         highestMarks: data,
@@ -43,7 +43,7 @@ export default class MyClassesPanel extends Component {
     });
   }
   async componentWillReceiveProps(nextProps) {
-    if (this.props.classId.length > 0) {
+    if (this.props.classId.length > 0 && this.props.userType === STUDENT) {
       const data = await this.props.getClassMarks(this.props.classId);
       this.setState({
         highestMarks: data,
@@ -410,7 +410,7 @@ MyClassesPanel.propTypes = {
   numberOfClasses: PropTypes.number.isRequired,
   averagePerCreatedClass: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string,
-    value: PropTypes.string,
+    value: PropTypes.number,
   })),
   getClassMarks: PropTypes.func.isRequired, // eslint-disable-line
   handleSaveNewClassClick: PropTypes.func.isRequired,

@@ -7,7 +7,6 @@ import { Router, Route, hashHistory, IndexRoute } from 'react-router';
 import { syncHistoryWithStore, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import App from './App';
 import { HomePage } from './components/UserAccount';
-// import { MainPage } from './components/MainPage';
 
 import {
   QuizViewerContainer,
@@ -16,6 +15,7 @@ import {
   MyClassesContainer,
   SignupContainer,
   SettingsContainer,
+  MainPageContainer,
 } from './containers';
 import authReducer from './redux/modules/user';
 
@@ -30,14 +30,13 @@ const history = syncHistoryWithStore(hashHistory, store);
 
 function isAuth() {
   if (!store.getState().auth.token) {
-    store.dispatch(push('/login'));
+    store.dispatch(push('/home'));
   }
 }
 
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history} >
-     { /*   <Route path="/home" component={MainPage} /> */}
       <Route path="/" component={App} onEnter={isAuth} >
         <IndexRoute component={HomePage} />
         <Route path="/quiz" component={QuizViewerContainer} />
@@ -46,6 +45,7 @@ ReactDOM.render(
         <Route path="/my-classes" component={MyClassesContainer} />
         <Route path="/settings" component={SettingsContainer} />
       </Route>
+      <Route path="/home" component={MainPageContainer} />
       <Route path="/login" component={LoginContainer} />
       <Route path="/signup" component={SignupContainer} />
     </Router>
