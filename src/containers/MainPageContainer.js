@@ -33,7 +33,7 @@ function MainPage(props) {
             className="registerButton"
             onClick={() => props.goToSignup()}
           >
-          Sing up now
+          Sign up now
           </Button>
         </section>
         <img src={demolaptop} alt="" />
