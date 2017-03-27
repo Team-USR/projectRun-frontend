@@ -162,9 +162,9 @@ export default class DefaultQuizzesPanel extends Component {
           (this.props.userT === TEACHER && (
             <h5><b>Published/Unpublished quizzes</b></h5>
           )) || (
-          this.props.userT === STUDENT && (
-            <h5><b>Not started/ In progress/ Submitted quizzes</b></h5>
-          ))
+          this.props.userT === STUDENT && (this.props.quizzes.length > 0) &&
+            (<h5><b>Not started/ In progress/ Submitted quizzes</b></h5>)
+          )
         }
 
         <hr />
@@ -177,10 +177,10 @@ export default class DefaultQuizzesPanel extends Component {
         <br />
         { this.props.userT === STUDENT &&
           (<div className="line-chart-container">
-          {
+            {
             ((this.props.submittedQuizzes.length > 0) &&
               (<h5><b>Average marks for all quizzes</b></h5>))
-          }
+            }
             <LineCh
               data={this.props.submittedQuizzes.sort((a, b) => compareSubmitDates(a.date, b.date))}
               color="grey"
