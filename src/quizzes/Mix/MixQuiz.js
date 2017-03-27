@@ -81,7 +81,7 @@ export default class MixQuiz extends Component {
     for (let i = 0; i < iArray.length; i += 1) {
       if (iArray[i] !== null) {
         returnedArray.push(<WordButton
-          key={iArray[i]} text={this.props.question.words[iArray[i]]}
+          key={`mix_button_${iArray[i]}`} text={this.props.question.words[iArray[i]]}
           reviewState={this.props.reviewState}
           resultsState={this.props.resultsState} onClick={() =>
           this.handleClick(iArray[i])}
@@ -97,7 +97,7 @@ export default class MixQuiz extends Component {
         <div className="solutionContainer" id="solutionContainer">
           <Row className="mix_label">
             <Col md={12}>
-              <b> Your solution so far: </b>
+              <h4> Your solution so far: </h4>
             </Col>
           </Row>
           <div className="sol_container">{this.renderButtons(this.state.topArray)}</div>
@@ -105,7 +105,7 @@ export default class MixQuiz extends Component {
         <div className="wordsContainer" id="wordsContainer">
           <Row className="mix_label">
             <Col md={12}>
-              <b> Reorder the following words: </b>
+              <h4> Reorder the following words: </h4>
             </Col>
           </Row>
           {this.renderButtons(this.state.bottomArray)}
@@ -119,15 +119,17 @@ export default class MixQuiz extends Component {
       if (solutions[i].is_main) {
         mainSolution = <p> {solutions[i].text}</p>;
       } else {
-        alternateSols.push(<li key={`alternateSol${i}`}>{solutions[i].text}</li>);
+        alternateSols.push(<li className="solution" key={`alternateSol${i}`}>{solutions[i].text}</li>);
       }
     }
     return (
       <div className="solution_container">
-        <b>Main Solution: </b>
-        {mainSolution}
-        <b>Alternative Solutions: </b>
-        <ul className="alternative_solutions">{alternateSols}</ul>
+        <h4>Main Solution: </h4>
+        <h5 className="solution">{mainSolution}</h5>
+        {(alternateSols.length !== 0 && (<h4>Alternative Solutions: </h4>))}
+        <ul className="alternative_solutions">
+          {alternateSols}
+        </ul>
       </div>
     );
   }

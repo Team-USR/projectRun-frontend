@@ -8,7 +8,7 @@
   .modal-footer {
     border: 0px;
 
-    .clearButton {
+    .clearButton, .deleteButton {
       background-color: $brand-red-color;
       color: white;
     }

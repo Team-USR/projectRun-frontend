@@ -123,7 +123,7 @@ export default class ClozeGenerator extends React.Component {
   render() {
     return (
       <Form horizontal>
-        <h3>Fill in the gaps</h3>
+        <h3 className="question_title">Fill in the gaps question</h3>
         <FormGroup>
           <Col mdOffset={1} md={2}>
             <ControlLabel>Question</ControlLabel>

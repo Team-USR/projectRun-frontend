@@ -212,29 +212,22 @@ export default class MatchQuiz extends Component {
       }
     }
 
-    const styleClasses = `cardSection clearfix ${this.answerClass}`;
+    const styleClasses = `cardSection matchQuizContainer clearfix ${this.answerClass}`;
     const matchQuiz = (
       <div className={styleClasses}>
-
         <div className="matchQuizTitle">
-          <h3> { quizIndex + 1 }. { matchQuizTitle } </h3>
-          <h5>Points: {this.props.question.points}</h5>
+          <h3>{ quizIndex + 1}. { matchQuizTitle } </h3>
+          <h5> Points: {this.props.question.points}</h5>
         </div>
 
         { /* Display Left Column */ }
         <Col md={12}>
           <Col md={6}>
-            <div className="leftColumn">
-              { leftElements.map((obj, index) => this.renderLeftElement(obj, index)) }
-            </div>
+            { leftElements.map((obj, index) => this.renderLeftElement(obj, index)) }
           </Col>
           { /* Display Right Column */ }
           <Col md={6}>
-            <div className="rightColumn">
-              { rightElements.map((obj, index) =>
-              this.renderRightElement(obj, index))
-          }
-            </div>
+            { rightElements.map((obj, index) => this.renderRightElement(obj, index)) }
           </Col>
         </Col>
       </div>

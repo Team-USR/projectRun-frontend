@@ -46,7 +46,7 @@ export function LineCh(props) {
 
   LineCh.defaultProps = {
     color: CHART_COLOR,
-    placeholder: 'You have no quizzes submited yet.',
+    placeholder: '',
   };
   return props.data.length > 0 ? (
     <LineChart width={window.innerWidth - 350} height={450} data={props.data}>

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Button, Col } from 'react-bootstrap';
+import { Button, Col, Clearfix } from 'react-bootstrap';
 import { ModalError } from '../../components/utils';
 import { Board, Crossword, BoardSize } from './index';
 
@@ -631,8 +631,8 @@ export default class CrossQuizGenerator extends Component {
     }
 
     return (
-      <div>
-        <Col md={2}>
+      <Col md={12} className="hintItemWrapper">
+        <Col md={2} className="itemLabelContainer">
           <label htmlFor="boardClue">{obj.value.toUpperCase()} </label>
         </Col>
         <Col md={10}>
@@ -644,29 +644,29 @@ export default class CrossQuizGenerator extends Component {
             value={hintValue}
           />
         </Col>
-      </div>
+      </Col>
     );
   }
 
   renderGeneratedWords() {
     if (this.state.showBoard) {
       return (
-        <div>
-          <div>
-            <h3>Across:</h3>
+        <div className="crossHintsWrapper">
+          <Col md={12}>
+            <h3>Across</h3>
             { this.state.acrossWords.map((array, x) =>
               array.map((obj, y) => this.renderClue(obj, x, y, 'across')),
               )
             }
-          </div>
+          </Col>
 
-          <div>
-            <h3>Down:</h3>
+          <Col md={12}>
+            <h3>Down</h3>
             { this.state.downWords.map((array, x) =>
               array.map((obj, y) => this.renderClue(obj, x, y, 'down')),
               )
             }
-          </div>
+          </Col>
         </div>
       );
     }
@@ -682,7 +682,7 @@ export default class CrossQuizGenerator extends Component {
     return (
       <div className="crossQuizGenerator">
         <div className="createCrossQuizTitle">
-          <h3>Cross question</h3>
+          <h3 className="question_title">Cross question</h3>
         </div>
 
         <ModalError
@@ -695,7 +695,7 @@ export default class CrossQuizGenerator extends Component {
 
         <div className="createCrossQuizContent">
 
-          <Col md={12}>
+          <Col md={12} className="crossQuestionWrapper">
             <Col md={2}>
               <div>
                 <b>Question: </b>
@@ -712,58 +712,70 @@ export default class CrossQuizGenerator extends Component {
               />
             </Col>
           </Col>
-          <br />
-          <br />
-          <Col md={6}>
-            <h4><b>Board Size </b></h4>
-            <form>
-              <BoardSize
-                id={'boardWidth'}
-                labelValue={'Witdh'}
-                size={this.state.displayWidth}
-                handleSizeChange={e => this.handleWidthChange(e)}
-              />
-              <br /> <br />
-              <BoardSize
-                id={'boardHeight'}
-                labelValue={'Height'}
-                size={this.state.displayHeight}
-                handleSizeChange={e => this.handleHeightChange(e)}
-              />
-              <br /> <br /> <br />
-              <Col md={6}>
-                <div>
-                  <Button onClick={() => this.handleResizeBoard()}>Resize</Button>
-                </div>
-              </Col>
-              <Col md={6}>
-                <div>
-                  <Button onClick={() => this.handleClearBoard()}>Clear</Button>
-                </div>
-              </Col>
-            </form>
+          <Col md={12} className="crossInputsWrapper">
+            <Col md={6}>
+              <h4><b>Board Size </b></h4>
+              <form className="crossInputsForm">
+                <BoardSize
+                  styleClass="sizeLabel"
+                  id={'boardWidth'}
+                  labelValue={'Witdh'}
+                  size={this.state.displayWidth}
+                  handleSizeChange={e => this.handleWidthChange(e)}
+                />
+                <BoardSize
+                  styleClass="sizeLabel bottomHeightBtn"
+                  id={'boardHeight'}
+                  labelValue={'Height'}
+                  size={this.state.displayHeight}
+                  handleSizeChange={e => this.handleHeightChange(e)}
+                />
+                <Clearfix />
+              </form>
 
+            </Col>
+            <Col md={6}>
+              <h4><b>Words</b></h4>
+              <form className="crossInputsForm">
+                <textarea
+                  className="inputWordsTextarea form-control"
+                  defaultValue={textAreaContent}
+                  placeholder="Write your words, each on a different line"
+                  onChange={e => this.handleInputWordsChange(e)}
+                />
+              </form>
+            </Col>
+            <Clearfix />
           </Col>
-          <Col md={6}>
-            <h4><b>Words</b></h4>
-            <div>
-              <textarea
-                className="inputWordsTextarea form-control"
-                rows="4"
-                cols="30"
-                defaultValue={textAreaContent}
-                placeholder="Write your words, each on a different line"
-                onChange={e => this.handleInputWordsChange(e)}
-              />
-            </div>
-            <br />
-            <div id="crossword">
-              <Button onClick={() => this.handleGenerateBoard()}>
+
+          <Col md={12} className="crossButtonsWrapper">
+            <Col md={4}>
+              <Button
+                className="crossButton"
+                onClick={() => this.handleResizeBoard()}
+              >
+                Resize
+              </Button>
+            </Col>
+            <Col md={4}>
+              <Button
+                className="crossButton"
+                onClick={() => this.handleClearBoard()}
+              >
+                Clear
+              </Button>
+            </Col>
+            <Col md={4}>
+              <Button
+                className="crossButton"
+                onClick={() => this.handleGenerateBoard()}
+              >
                 Generate
               </Button>
-            </div>
+            </Col>
+
           </Col>
-          <div className="clearfix" />
+          <Clearfix />
           { this.renderBoard() }
           { this.renderGeneratedWords() }
         </div>

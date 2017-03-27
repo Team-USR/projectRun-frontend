@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Button } from 'react-bootstrap';
-import { TEACHER } from '../../../constants';
+import { TEACHER, STUDENT } from '../../../constants';
 
 export default class GroupQuizzes extends Component {
 
@@ -46,7 +46,10 @@ export default class GroupQuizzes extends Component {
     return (
       <div className="groupSectionWrapper">
         <div className="titleSection">
-          <h1>Quizzes</h1>
+          {
+            ((this.props.userType === TEACHER) && <h1>Quizzes</h1>) ||
+            ((this.props.userType === STUDENT) && <h1>Assigned quizzes</h1>)
+          }
         </div>
         <ul>
           { this.renderQuizzes() }

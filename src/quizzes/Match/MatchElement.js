@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Col } from 'react-bootstrap';
 
 let answers = [];
 let leftElements = [];
@@ -9,9 +10,9 @@ export default function MatchLeftElement(props) {
   // console.log(props.index);
   return (
     <div className="matchLeftElementWrapper">
-      <div className="matchLeftElement">
+      <Col md={12} className="matchLeftElement">
         <div className="leftText"> {props.answer} </div>
-      </div>
+      </Col>
     </div>
   );
 }
@@ -49,6 +50,7 @@ export function MatchRightElement(props) {
     <div className="matchRightElementWrapper">
       <div className="matchRightElement">
         <select
+          className="form-control"
           id={props.index}
           disabled={props.inReview || props.inResult}
           onChange={e => onChange(e, props)}
