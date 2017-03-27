@@ -17,7 +17,7 @@ export default function AlternateSolution(props) {
         </Col>
         <Col md={1}>
           <Button onClick={() => props.removeSolution(props.index)}>
-            Remove
+            <i className="fa fa-times" aria-hidden="true" />
           </Button>
         </Col>
       </Col>

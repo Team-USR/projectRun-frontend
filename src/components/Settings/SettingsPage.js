@@ -79,8 +79,8 @@ export default class SettingsPage extends Component {
   renderProfileTab() {
     this.profile = [];
     return (
-      <div className="settingsContainer">
-        <h1><b>Profile</b></h1>
+      <div className="settings_tab">
+        <h2>Profile</h2>
         <form>
           <div className="information">
             <h3><span className="settings_item">Name:</span> {this.state.userName} </h3>
@@ -130,7 +130,7 @@ export default class SettingsPage extends Component {
     const passwordTab = this.renderPasswordTab();
 //    const prefTab = this.renderPrefTab();
     return (
-      <Grid>
+      <Grid className="options_container">
         <Row>
           <Col md={12}>
             <h1><b>Settings</b></h1>
@@ -139,10 +139,10 @@ export default class SettingsPage extends Component {
         <Row>
           <Col md={12}>
             <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
-              <Tab eventKey={1} title="Profile">
+              <Tab eventKey={1} title="Profile" className="settings_tab_container">
                 { profileTab }
               </Tab>
-              <Tab eventKey={2} title="Password">
+              <Tab eventKey={2} title="Password" className="settings_tab_container">
                 { this.state.statusText === 'OK' ?
                   <h3>Password updated!</h3>
                   : passwordTab }

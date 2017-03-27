@@ -79,8 +79,8 @@ export default class PasswordManager extends React.Component {
 
   render() {
     return (
-      <div>
-        <h1><b>Reset password</b></h1>
+      <div className="settings_tab">
+        <h2>Reset password</h2>
         <br />
         <Form horizontal>
           <FormGroup controlId="formCurrentPassword">
