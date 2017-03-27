@@ -71,6 +71,17 @@ export default class ModalError extends Component {
         </Button>
       ));
     }
+    if (buttons.indexOf('ok') !== -1) {
+      buttonsWrapper.push((
+        <Button
+          key={'ok_button'}
+          className="okButton"
+          onClick={() => this.props.close()}
+        >
+          OK
+        </Button>
+      ));
+    }
 
     return buttonsWrapper;
   }

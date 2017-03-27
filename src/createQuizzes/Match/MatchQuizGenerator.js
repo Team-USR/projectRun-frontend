@@ -125,12 +125,24 @@ export default class MatchQuizGenerator extends Component {
     const templateItemObj = { left_choice: '', right_choice: '' };
     const newCreateItemsArray = this.state.createItems;
     newCreateItemsArray.push(templateItemObj);
+
+    const questionAndDefault = {
+      question: this.state.matchQuizQuestion,
+      match_default: this.state.defaultSelectValue,
+    };
+    this.props.updateParent(newCreateItemsArray, questionAndDefault, this.props.index);
     this.setState({ createItems: newCreateItemsArray });
   }
 
   deleteMatchElement(index) {
     const newCreateItemsArray = this.state.createItems;
     newCreateItemsArray.splice(index, 1);
+
+    const questionAndDefault = {
+      question: this.state.matchQuizQuestion,
+      match_default: this.state.defaultSelectValue,
+    };
+    this.props.updateParent(newCreateItemsArray, questionAndDefault, this.props.index);
     this.setState({ createItems: newCreateItemsArray });
   }
 
