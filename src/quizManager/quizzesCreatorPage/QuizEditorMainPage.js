@@ -202,17 +202,13 @@ export default class QuizEditorMainPage extends Component {
     this.setState({ errors: thisObject });
   }
   isReviewMode() {
-    if (this.state.hasErrors.filter(item => item === true).length === 0) {
-      const sQuestions = this.state.submitedQuestions;
-    //  console.log("submitedQuestions ", sQuestions,"finishsubmited");
-      const filteredQuestions = sQuestions.quiz.questions_attributes.filter(
+    const sQuestions = this.state.submitedQuestions;
+    const filteredQuestions = sQuestions.quiz.questions_attributes.filter(
         element => element !== null,
       );
-      // console.log('filtered', filteredQuestions, 'finishfiltered');
+    if (this.state.hasErrors.filter(item => item === true).length === 0 &&
+      filteredQuestions.length > 0) {
       this.setState({ loading: true, submitedQuestions: filteredQuestions });
-  //    console.log("----------");
-  //    console.log(filteredQuestions);
-  //    console.log("----------");
       axios({
         url: `${API_URL}/quizzes/${this.props.quizID}`,
         data: this.state.submitedQuestions,
