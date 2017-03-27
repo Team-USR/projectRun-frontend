@@ -17,7 +17,7 @@ export default function LoginForm(props) {
 
   let error;
   if (props.loginError) {
-    error = <h3 className="invalidHeader">{props.loginError}</h3>;
+    error = <h3 className="alert alert-danger">{props.loginError}</h3>;
   }
   let isTeacher = false;
   return (
