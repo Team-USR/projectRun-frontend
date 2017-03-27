@@ -1,7 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Col } from 'react-bootstrap';
-import demolaptop from '../../assets/images/demolaptop.png';
 
 const mapStateToProps = state => ({
   name: state.auth.name,

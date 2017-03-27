@@ -45,38 +45,38 @@ export default function LoginForm(props) {
         </form>
 
         <div className="loginButtonWrapper">
-              <form style={{ width: 300, display: 'inline-flex' }}>
-                <div style={{ display: 'inline-block', lineHeight: 10 }}>
-                  <h5>Student</h5>
-                </div>
-                <div style={{ marginTop: 5, marginLeft: 5, marginRight: 5 }}>
-                  <Toggle
-                    defaultChecked={isTeacher}
-                    icons={false}
-                    onChange={() => {
-                      if (isTeacher === false) {
-                        cookie.save('userType', TEACHER);
-                        isTeacher = true;
-                      } else {
-                        cookie.save('userType', STUDENT);
-                        isTeacher = false;
-                      }
-                    }}
-                  />
-                </div>
-                <h5>Teacher</h5>
-              </form>
-              <ButtonGroup style={{ float: 'right' }}>
-                <Button
-                  type="submit"
-                  onClick={props.submitLogin}
-                >
-              Login
-            </Button>
-                <LinkContainer to={'/signup'}>
-                  <Button>Sign-up</Button>
-                </LinkContainer>
-              </ButtonGroup>
+          <form style={{ width: 300, display: 'inline-flex' }}>
+            <div style={{ display: 'inline-block', lineHeight: 10 }}>
+              <h5>Student</h5>
+            </div>
+            <div style={{ marginTop: 5, marginLeft: 5, marginRight: 5 }}>
+              <Toggle
+                defaultChecked={isTeacher}
+                icons={false}
+                onChange={() => {
+                  if (isTeacher === false) {
+                    cookie.save('userType', TEACHER);
+                    isTeacher = true;
+                  } else {
+                    cookie.save('userType', STUDENT);
+                    isTeacher = false;
+                  }
+                }}
+              />
+            </div>
+            <h5>Teacher</h5>
+          </form>
+          <ButtonGroup style={{ float: 'right' }}>
+            <Button
+              type="submit"
+              onClick={props.submitLogin}
+            >
+          Login
+        </Button>
+            <LinkContainer to={'/signup'}>
+              <Button>Sign-up</Button>
+            </LinkContainer>
+          </ButtonGroup>
         </div>
       </div>
     </div>

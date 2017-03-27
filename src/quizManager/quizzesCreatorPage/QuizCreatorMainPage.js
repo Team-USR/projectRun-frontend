@@ -408,9 +408,9 @@ export default class QuizCreatorMainPage extends Component {
         <div className="cardSection" key={`generatorQuizContainer${displayIndex}`}>
           <h3>{displayIndex}</h3>
           {this.state.questions[index].question}
-          <div style={{ textAlign: 'center',display:'inline-block',marginTop:10 }}>
-          <Col md={9} style={{ textAlign: 'center'}}>
-          <Col md={3}>
+          <div style={{ textAlign: 'center', display: 'inline-block',marginTop:10 }}>
+           <Col md={9} style={{ textAlign: 'center' }}>
+            <Col md={3}>
             <label htmlFor="pointIn">
               <h5>Score:</h5>
             </label>

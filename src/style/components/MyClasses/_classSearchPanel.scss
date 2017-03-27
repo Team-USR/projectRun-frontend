@@ -51,7 +51,6 @@
       width: 100%;
     }
     .inviteButton{
-      width:35px;
       margin-left:20px;
       margin-top: 5px;
 
@@ -61,6 +60,10 @@
       text-align: center;
       width: auto;
       margin-top: 1px;
+      padding: 5px;
+      .fa-sign-in {
+        font-size: 20px
+      }
       .className{
         text-align: right;
         max-width: 300px;

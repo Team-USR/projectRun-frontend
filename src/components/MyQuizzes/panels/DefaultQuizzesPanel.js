@@ -88,7 +88,7 @@ export default class DefaultQuizzesPanel extends Component {
         return (null);
       });
       if (notStartedContent.length > 0) {
-        result.push(<hr />);
+        result.push(<hr key={'hr1'} />);
         result.push(<h5
           key="notstarted"
           className="subtitleQuizzes"
@@ -108,7 +108,7 @@ export default class DefaultQuizzesPanel extends Component {
        ),
       );
       if (inprogressContent.length > 0) {
-        result.push(<hr />);
+        result.push(<hr key={'hr2'} />);
         result.push(<h5
           key="inprogress"
           className="subtitleQuizzes"
@@ -127,7 +127,7 @@ export default class DefaultQuizzesPanel extends Component {
        ),
       );
       if (submittedContent.length > 0) {
-        result.push(<hr />);
+        result.push(<hr key={'hr3'} />);
         result.push(<h5 key="submitted" className="subtitleQuizzes"><b>Submitted quizzes</b></h5>);
       }
       submittedContent.map((item, index) =>

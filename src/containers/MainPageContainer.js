@@ -17,6 +17,7 @@ function MainPage(props) {
           <i className="fa fa-check-square-o logo" aria-hidden="true" />
           <span className="logoName">INTERACTIVE LANGUAGE EXERCISES</span>
         </div>
+        <hr />
         <ButtonToolbar className="loginButton">
           <Button onClick={() => props.goToLogin()} >Log in</Button>
         </ButtonToolbar>
