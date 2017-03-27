@@ -159,9 +159,9 @@ export default class DefaultQuizzesPanel extends Component {
       <div className="">
         <h1><b>Statistics</b></h1>
         {
-          (this.props.userT === TEACHER && (
+          (this.props.userT === TEACHER && (this.props.quizzes.length > 0) &&
             <h5><b>Published/Unpublished quizzes</b></h5>
-          )) || (
+          ) || (
           this.props.userT === STUDENT && (this.props.quizzes.length > 0) &&
             (<h5><b>Not started/ In progress/ Submitted quizzes</b></h5>)
           )
