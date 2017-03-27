@@ -8,7 +8,7 @@ export default function BoardSize(props) {
   }
 
   return (
-    <div>
+    <Col md={12} className={props.styleClass}>
       <Col md={4}>
         <label htmlFor={props.id}>
           { props.labelValue }
@@ -23,7 +23,7 @@ export default function BoardSize(props) {
           value={size}
         />
       </Col>
-    </div>
+    </Col>
   );
 }
 
@@ -32,4 +32,9 @@ BoardSize.propTypes = {
   labelValue: PropTypes.string.isRequired,
   size: PropTypes.number.isRequired,
   handleSizeChange: PropTypes.func.isRequired,
+  styleClass: PropTypes.string,
+};
+
+BoardSize.defaultProps = {
+  styleClass: '',
 };

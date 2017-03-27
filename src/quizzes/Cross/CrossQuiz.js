@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-// import { Col } from 'react-bootstrap';
+import { Col, Clearfix } from 'react-bootstrap';
 import { Board } from './index';
 
 
@@ -134,13 +134,12 @@ export default class CrossQuiz extends Component {
           const index = i;
           return (
             <div key={`down_hint${index}`}>
-              <h5>
+              <h4>
                 <b>
-                  { hintsNumbers[obj.row][obj.column] }
-                  :
-                  { obj.hint }
+                  { ` ${hintsNumbers[obj.row][obj.column]}: ` }
                 </b>
-              </h5>
+                { obj.hint }
+              </h4>
             </div>
           );
         })
@@ -154,24 +153,23 @@ export default class CrossQuiz extends Component {
     const hintsNumbers = this.state.hintsNumbers;
 
     return (
-      <div>
+      <Col md={12}>
         { acrossHints.map((obj, i) => {
           const index = i;
           return (
 
             <div key={`across_hint${index}`}>
-              <h5>
+              <h4>
                 <b>
-                  { hintsNumbers[obj.row][obj.column] }
-                  :
-                  { obj.hint }
+                  { ` ${hintsNumbers[obj.row][obj.column]}: ` }
                 </b>
-              </h5>
+                { obj.hint }
+              </h4>
             </div>
           );
         })
         }
-      </div>
+      </Col>
     );
   }
 
@@ -217,25 +215,23 @@ export default class CrossQuiz extends Component {
       <div className={styleClasses}>
 
         <div className="matchQuizTitle">
-          <h3> { quizIndex + 1 }. { crossQuizQuestion } </h3>
-          <h5>Points: {this.props.question.points}</h5>
+          <h3> <b> { quizIndex + 1 }. { crossQuizQuestion } </b> </h3>
+          <h5> <b>Points:</b> {this.props.question.points}</h5>
         </div>
 
         <div className="">
           { this.renderBoard() }
         </div>
 
-        <div className="">
-          <div>
-            <h4> Across: </h4>
-            { this.renderAcrossHints() }
-            <hr />
-            <h4> Down: </h4>
-            { this.renderDownHints() }
-          </div>
-        </div>
+        <Col md={12}>
+          <h3> <b> Across </b> </h3>
+          { this.renderAcrossHints() }
+          <hr />
+          <h3> <b> Down </b> </h3>
+          { this.renderDownHints() }
+        </Col>
 
-
+        <Clearfix />
       </div>
     );
   }

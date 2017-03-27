@@ -45,9 +45,52 @@
       }
     }
   }
-  .inputWordsTextarea {
-    resize: none;
+
+  .crossQuestionWrapper {
+    line-height: 34px;
+    margin: 15px 0;
   }
 
+  .crossInputsWrapper {
+    margin-top: 5px;
+    margin-bottom: 15px;
+
+    .crossInputsForm {
+      height: 85px;
+      .inputWordsTextarea {
+        height: 85px;
+        resize: none;
+      }
+
+      .sizeLabel {
+        line-height: 34px;
+      }
+
+      .bottomHeightBtn {
+        top: 12px;
+      }
+    }
+  }
+
+  .crossHintsWrapper {
+    .hintItemWrapper {
+      margin: 5px 0;
+
+      .itemLabelContainer {
+        text-align: right;
+        label {
+          line-height: 34px;
+        }
+      }
+
+    }
+  }
+
+  .crossButtonsWrapper {
+    margin: 15px 0;
+    .crossButton {
+      width: 100%;
+    }
+  }
 
 }
