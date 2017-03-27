@@ -44,13 +44,13 @@ export default class ChoiceInput extends Component {
     return (
       <div>
         <Col md={12}>
-          <Col md={3}>
+          <Col md={3} className="choiceInput">
         Choice {displayedIndex}:
           {this.props.text}
           </Col>
           <Col md={6}>
             <input
-              className="form-control"
+              className="form-control choiceText"
               id="choiceInput"type="text" defaultValue={answer} onChange={this.handleChange}
             />
           </Col>
