@@ -71,10 +71,10 @@ export default function LoginForm(props) {
               type="submit"
               onClick={props.submitLogin}
             >
-          Login
+          Log in
         </Button>
             <LinkContainer to={'/signup'}>
-              <Button>Sign-up</Button>
+              <Button>Sign up</Button>
             </LinkContainer>
           </ButtonGroup>
         </div>
