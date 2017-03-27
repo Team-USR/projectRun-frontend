@@ -508,14 +508,14 @@ export default class QuizEditorMainPage extends Component {
           <h2>{displayIndex}</h2>
           {this.state.questions[index].question}
 
-          <div style={{ textAlign: 'center', display: 'inline-block', marginTop: 10 }}>
-            <Col md={9} style={{ textAlign: 'center' }}>
-              <Col md={3}>
+          <Col md={12} className="general_points_container">
+            <Col md={12} className="points_container">
+              <div className="points_wrapper">
                 <label htmlFor="pointIn">
                   <h5>Score:</h5>
                 </label>
-              </Col>
-              <Col md={6}>
+              </div>
+              <div className="points_wrapper">
                 <input
                   className="form-control"
                   id="pointIn"
@@ -524,9 +524,9 @@ export default class QuizEditorMainPage extends Component {
                   defaultValue={points}
                   onChange={event => this.setPoints(event, index)}
                 />
-              </Col>
+              </div>
             </Col>
-          </div>
+          </Col>
           <div>
             <h5 className="error_message">{this.renderQuestionError(index)}</h5>
           </div>

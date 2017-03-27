@@ -175,12 +175,12 @@ export default class MatchQuizGenerator extends Component {
     const createMatchQuiz = (
       <div className="matchQuizGenerator">
         <div className="createMatchQuizTitle">
-          <h3>Match question</h3>
+          <h3 className="question_title">Match question</h3>
         </div>
-        <Col md={12}>
+        <Col md={12} className="matchQuestionWrapper">
           <Col md={2}>
             <div>
-              <b>Question: </b>
+              <h4>Question: </h4>
             </div>
           </Col>
           <Col md={10}>

@@ -41,6 +41,39 @@ ul {
   margin-bottom: 10px;
   border-radius: 5px;
   background-color: #FAFAFA;
+  .question_title {
+    margin-bottom:30px;
+  }
+  .general_points_container{
+    margin-top:10px;
+    .points_container{
+      .points_wrapper{
+        display: inline-block;
+        #pointIn{
+          margin-left:10px;
+          width:150px;
+        }
+      }
+    }
+  }
+  .solution_container{
+    display: inline-block;
+    .alternative_solutions {
+      padding-left: 0;
+      padding:0;
+      .solution{
+        margin-bottom:10px;
+      }
+    }
+    .solution{
+      margin-bottom:10px;
+    }
+  }
+  .delete_button{
+    button{
+      margin-top:10px;
+    }
+  }
 }
 .cardSection:hover {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
