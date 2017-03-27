@@ -45,7 +45,7 @@ export default function LoginForm(props) {
         </form>
 
         <div className="loginButtonWrapper">
-          <form style={{ width: 300, display: 'inline-flex' }}>
+          <form style={{ display: 'inline-flex' }}>
             <div style={{ display: 'inline-block', lineHeight: 10 }}>
               <h5>Student</h5>
             </div>
@@ -71,10 +71,10 @@ export default function LoginForm(props) {
               type="submit"
               onClick={props.submitLogin}
             >
-          Login
+          Log in
         </Button>
             <LinkContainer to={'/signup'}>
-              <Button>Sign-up</Button>
+              <Button>Sign up</Button>
             </LinkContainer>
           </ButtonGroup>
         </div>

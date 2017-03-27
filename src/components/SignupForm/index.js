@@ -40,13 +40,13 @@ export default function SignupForm(props) {
         <div className="signupButtonWrapper">
           <ButtonGroup style={{ float: 'right' }}>
             <LinkContainer to={'/login'}>
-              <Button>Login</Button>
+              <Button>Log in</Button>
             </LinkContainer>
             <Button
               type="submit"
               onClick={props.submitSignup}
             >
-            Signup
+            Sign up
           </Button>
           </ButtonGroup>
         </div>

@@ -31,8 +31,8 @@ export default class DefaultClassesPanel extends Component {
           </div>
         );
       }
-      return (<h3>You either have no classes created, no quizzes
-       published or no one solved your quizzes yet.</h3>);
+      return (<h4>Statistics will be available as soon as you create a class,
+         publish a quiz and someone will solve your quizzes.</h4>);
     }
     return '';
   }

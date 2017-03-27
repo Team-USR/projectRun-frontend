@@ -14,7 +14,6 @@ import { getNOfGaps } from '../../helpers/Cloze';
 
 const styles = {
   quizTitle: {
-    fontSize: 20,
     color: '#000',
     textAlign: 'center',
   },

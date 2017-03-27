@@ -86,8 +86,8 @@ export default class PasswordManager extends React.Component {
         </Col>);
     }
     return (
-      <div>
-        <h1><b>Change password</b></h1>
+      <div className="settings_tab">
+        <h2>Change password</h2>
         {error}
         <br />
         <Form horizontal>
