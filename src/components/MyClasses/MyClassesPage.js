@@ -39,6 +39,7 @@ export default class MyClassesPage extends Component {
         header: 'Error!',
         body: 'The Quiz contains errors',
         buttons: ['close'],
+        modalProps: {},
       },
     };
   }
@@ -343,7 +344,6 @@ export default class MyClassesPage extends Component {
   }
 
   handleSaveAssignedQuizzes(newQuizzesArray) {
-//    console.log("NEW quizzes ARRAY", newQuizzesArray);
     this.setState({ loading: true });
     this.newQuizzesArray = [];
     const quizzesIdArray = newQuizzesArray.map(obj => obj.id);

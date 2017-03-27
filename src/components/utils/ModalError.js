@@ -56,6 +56,21 @@ export default class ModalError extends Component {
         </Button>
       ));
     }
+    if (buttons.indexOf('deleteQuiz') !== -1) {
+      let quizId = 0;
+      if (modalProps && modalProps.quizId) {
+        quizId = modalProps.quizId;
+      }
+      buttonsWrapper.push((
+        <Button
+          key={'deleteQuiz_button'}
+          className="deleteButton"
+          onClick={() => this.props.confirmDeleteQuiz(quizId)}
+        >
+          Delete Quiz
+        </Button>
+      ));
+    }
 
     return buttonsWrapper;
   }
@@ -97,11 +112,12 @@ ModalError.propTypes = {
   confirmClearBoard: PropTypes.func,
   confirmGenerateBoard: PropTypes.func,
   confirmDeleteClass: PropTypes.func,
-
+  confirmDeleteQuiz: PropTypes.func,
 };
 
 ModalError.defaultProps = {
   confirmClearBoard: null,
   confirmGenerateBoard: null,
   confirmDeleteClass: null,
+  confirmDeleteQuiz: null,
 };
