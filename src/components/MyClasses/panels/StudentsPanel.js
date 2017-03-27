@@ -484,7 +484,7 @@ export default class StudentsPanel extends Component {
                         className="decline"
                         onClick={() => this.declineStudents(item)}
                       >
-                        <span className="glyphicon glyphicon-remove" style={{ color: 'red' }} />
+                        <span className="glyphicon glyphicon-remove" style={{ color: '#d10c0f' }} />
                       </Button>
                       <Button
                         className="accept"
@@ -527,7 +527,7 @@ export default class StudentsPanel extends Component {
                 accept=".csv" onChange={this.importCSV}
               />
               <Button onClick={this.parseFile}>Read file</Button>
-              <p style={{ color: 'red' }}>{this.state.errorMessage}</p>
+              <p style={{ color: '#d10c0f' }}>{this.state.errorMessage}</p>
             </div>
 
           </div>

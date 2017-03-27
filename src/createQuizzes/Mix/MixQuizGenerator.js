@@ -191,7 +191,7 @@ export default class MixQuizGenerator extends Component {
   }
 
   render() {
-    const style = { color: 'red' };
+    const style = { color: '#d10c0f' };
     return (
       <div className="mixQuizGeneratorContainer">
         <h3 className="question_title"> Mix Question </h3>

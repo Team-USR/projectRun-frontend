@@ -29,7 +29,7 @@ ul {
   list-style: none;
 }
 .error_message{
-  color:red;
+  color:$brand-red-color;
 }
 .cardSection{
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -92,11 +92,11 @@ ul {
 }
 
 .wrongAnswerWrapper {
-  box-shadow: 0 8px 16px 0 #b22121;
+  box-shadow: 0 8px 16px 0 $brand-red-color;
   transition: 0.3s;
 }
 .wrongAnswerWrapper:hover {
-  box-shadow: 0 8px 16px 0 #b22121;
+  box-shadow: 0 8px 16px 0 $brand-red-color;
 }
 .enjoy-css {
   -webkit-box-sizing: content-box;
