@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import React from 'react';
 import SignupForm from '../components/SignupForm';
+import { BrandSpinner } from '../components/utils';
 import * as userActions from '../redux/modules/user';
 
 class SignupContainer extends React.Component {
@@ -57,7 +58,7 @@ class SignupContainer extends React.Component {
       );
     }
     return (
-      <div>Signup in...</div>
+      <div><BrandSpinner /></div>
     );
   }
 }
