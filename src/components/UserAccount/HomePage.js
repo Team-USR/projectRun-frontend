@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Col } from 'react-bootstrap';
+import demolaptop from '../../assets/images/demolaptop.png';
 
 const mapStateToProps = state => ({
   name: state.auth.name,
@@ -8,7 +10,7 @@ const mapStateToProps = state => ({
 function HomePageComp(props) {
   return (
     <div className="homePageWrapper">
-      <h1><b> Welcome back, {props.name}!</b></h1>
+      <h1 className="welcome_message"><b> Welcome, {props.name}!</b></h1>
     </div>
   );
 }

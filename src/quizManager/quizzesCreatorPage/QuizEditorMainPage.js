@@ -234,7 +234,10 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+
+    if (inputQ.quiz.questions_attributes[questionID] === undefined
+      && this.state.quizInfo.questions[questionID]
+      && this.state.quizInfo.questions[questionID].points) {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     let quiz = {};
@@ -261,18 +264,20 @@ export default class QuizEditorMainPage extends Component {
     this.setState({ submitedQuestions: inputQ });
   }
 
-  collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+  collectClozeObject(questionID, sentenceAttributes, gapsAttributes, questionTitle) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
     if (inputQ.quiz.questions_attributes[questionID] &&
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    if (inputQ.quiz.questions_attributes[questionID] === undefined
+      && this.state.quizInfo.questions[questionID]
+      && this.state.quizInfo.questions[questionID].points) {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     const newQuestion = {
-      question: 'Fill in the gaps:',
+      question: questionTitle,
       type: 'cloze',
       points: pointsAssigned,
       cloze_sentence_attributes: {
@@ -293,7 +298,10 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+
+    if (inputQ.quiz.questions_attributes[questionID] === undefined
+      && this.state.quizInfo.questions[questionID]
+      && this.state.quizInfo.questions[questionID].points) {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     const questionObject = {
@@ -315,7 +323,9 @@ export default class QuizEditorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    if (inputQ.quiz.questions_attributes[questionID] === undefined) {
+    if (inputQ.quiz.questions_attributes[questionID] === undefined
+      && this.state.quizInfo.questions[questionID]
+      && this.state.quizInfo.questions[questionID].points) {
       pointsAssigned = this.state.quizInfo.questions[questionID].points;
     }
     const newQuestion = {
@@ -489,7 +499,7 @@ export default class QuizEditorMainPage extends Component {
   renderGroup(object, index) {
     if (this.state.questions[index]) {
       displayIndex += 1;
-      let points = 0;
+      let points = null;
       if (this.state.quizInfo.questions && this.state.quizInfo.questions[index]) {
         points = this.state.quizInfo.questions[index].points;
       }
@@ -498,17 +508,24 @@ export default class QuizEditorMainPage extends Component {
           <h2>{displayIndex}</h2>
           {this.state.questions[index].question}
 
-          <div style={{ textAlign: 'center' }}>
-            <label htmlFor="pointIn" style={{ marginRight: 10 }}>
-              <h5>Score:</h5>
-            </label>
-            <input
-              id="pointIn"
-              placeholder="ex: 10"
-              type="number"
-              onChange={event => this.setPoints(event, index)}
-              defaultValue={points}
-            />
+          <div style={{ textAlign: 'center', display: 'inline-block', marginTop: 10 }}>
+            <Col md={9} style={{ textAlign: 'center' }}>
+              <Col md={3}>
+                <label htmlFor="pointIn">
+                  <h5>Score:</h5>
+                </label>
+              </Col>
+              <Col md={6}>
+                <input
+                  className="form-control"
+                  id="pointIn"
+                  placeholder="ex: 10"
+                  type="number"
+                  defaultValue={points}
+                  onChange={event => this.setPoints(event, index)}
+                />
+              </Col>
+            </Col>
           </div>
           <div>
             <h5 className="error_message">{this.renderQuestionError(index)}</h5>
@@ -588,7 +605,7 @@ export default class QuizEditorMainPage extends Component {
                     className="form-control"
                     id="attemptsInput"
                     type="number"
-                    placeholder="ex: 10"
+                    placeholder="ex: 10 (0 = ∞)"
                     onChange={this.changeAttempts}
                     value={submit.quiz.attempts}
                   />

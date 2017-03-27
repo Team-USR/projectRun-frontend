@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, FormGroup, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, FormGroup, InputGroup, FormControl, Col, ControlLabel } from 'react-bootstrap';
 import { GAP_MATCHER, HINT_MATCHER } from '../../constants';
 
 export default class ClozeForm extends React.Component {
@@ -17,7 +17,7 @@ export default class ClozeForm extends React.Component {
 
   checkIfValid() {
     const toAdd = this.content.value;
-    if ((toAdd.match(new RegExp(GAP_MATCHER, 'g')) || []).length ===
+    if (toAdd.match(GAP_MATCHER) && (toAdd.match(new RegExp(GAP_MATCHER, 'g')) || []).length ===
         (toAdd.match(new RegExp(HINT_MATCHER, 'g')) || []).length) {
       this.setState({ valid: true });
     } else {
@@ -35,8 +35,11 @@ export default class ClozeForm extends React.Component {
 
   render() {
     return (
-      <form>
-        <FormGroup>
+      <FormGroup>
+        <Col mdOffset={1} md={2}>
+          <ControlLabel>To be solved</ControlLabel>
+        </Col>
+        <Col md={8}>
           <InputGroup>
             <FormControl
               inputRef={(input) => { this.content = input; }}
@@ -48,8 +51,8 @@ export default class ClozeForm extends React.Component {
               <Button onClick={this.renderQuestion} disabled={!this.state.valid}>+</Button>
             </InputGroup.Button>
           </InputGroup>
-        </FormGroup>
-      </form>
+        </Col>
+      </FormGroup>
     );
   }
 }

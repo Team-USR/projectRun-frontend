@@ -5,6 +5,7 @@ import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { SideBarWrapper } from '../SideBar';
 import { MyClassesPanel } from './index';
 import { BrandSpinner } from '../utils';
+import { formatAveragePerCreatedClass } from '../../helpers';
 
 export default class MyClassesPage extends Component {
 
@@ -134,6 +135,9 @@ export default class MyClassesPage extends Component {
       })
       .then((quizzesResponse) => {
         this.setState({ allQuizzes: quizzesResponse.data });
+      })
+      .catch(() => {
+        this.setState({ panelType: 'my_classes_default_panel' });
       });
 
       const newSideBarContent = { classes: response.data.filter(obj => obj.role === 'admin').reverse() };
@@ -364,10 +368,7 @@ export default class MyClassesPage extends Component {
         allClasses={this.state.allClasses}
         allQuizzes={this.state.allQuizzes}
         allStudents={this.state.allStudents}
-        averagePerCreatedClass={this.state.averagePerCreatedClass.map(average => ({
-          name: average.group_name,
-          value: parseFloat(average.average.match(/\d+\.(\d\d|0)/)[0], 10),
-        }))}
+        averagePerCreatedClass={formatAveragePerCreatedClass(this.state.averagePerCreatedClass)}
         getClassMarks={classId => this.requestStudentStatistics(classId)}
         numberOfClasses={this.state.sideBarContent.classes.length}
         getAllClasses={() => this.getAllClasses()}

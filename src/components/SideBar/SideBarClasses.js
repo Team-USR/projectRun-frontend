@@ -38,13 +38,16 @@ export default class SideBarClasses extends Component {
   renderSearchBar() {
     return (
       <NavItem key={'searchBar'} >
-        <input
-          className="searchBarItem"
-          id="searchBar"
-          type="text"
-          placeholder="Search for a class"
-          onChange={this.filterItems}
-        />
+        <div>
+          <i className="fa fa-search search_icon2" aria-hidden="true" />
+          <input
+            className="searchBarItemSideBar"
+            id="searchBar"
+            type="text"
+            placeholder="Search for a class"
+            onChange={this.filterItems}
+          />
+        </div>
       </NavItem>
     );
   }
