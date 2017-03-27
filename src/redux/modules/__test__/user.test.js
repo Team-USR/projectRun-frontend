@@ -1,30 +1,45 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import * as actions from '../user';
+import cookie from 'react-cookie';
+import { userLoginInProgress } from '../user';
 import { API_URL } from '../../../constants';
 
-const mock = new MockAdapter(axios);
-mock.onPost(`${API_URL}/users/sign_in`, {
-  email: 'signin-test@gmail.com',
-  password: 'passwordtest',
-}).reply(200, {
-  data: {
-    name: 'testName',
-  },
-}, {
-  'access-token': 'test-access-token',
-  client: 'test-client',
-  'token-type': 'Bearer',
-  uid: 'signup-test@gmail.com',
-},
-);
+// const mock = new MockAdapter(axios);
+// mock.onPost(`${API_URL}/users/sign_in`, {
+//   email: 'signin-test@gmail.com',
+//   password: 'passwordtest',
+// }).reply(200, {
+//   data: {
+//     name: 'testName',
+//   },
+// }, {
+//   'access-token': 'test-access-token',
+//   client: 'test-client',
+//   'token-type': 'Bearer',
+//   uid: 'signup-test@gmail.com',
+// },
+// );
+
+beforeAll(() => {
+  cookie.save('access-token', 'test-access-token');
+  cookie.save('client', 'test-client');
+  cookie.save('token-type', 'Bearer');
+  cookie.save('uid', 'signup-test@gmail.com');
+});
+
+afterAll(() => {
+  cookie.remove('access-token');
+  cookie.remove('client');
+  cookie.remove('token-type');
+  cookie.remove('uid');
+});
 
 describe('Actions test', () => {
   it('should return userLoginInProgress', () => {
     const expectedAction = {
       type: 'USER_LOGIN_IN_PROGRESS',
     };
-    expect(actions.userLoginInProgress()).toEqual(expectedAction);
+    expect(userLoginInProgress()).toEqual(expectedAction);
   });
 
   // it('should return userLoginSuccesful object', () => {
