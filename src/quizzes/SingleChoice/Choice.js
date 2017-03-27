@@ -65,7 +65,7 @@ class Choice extends Component {
     const { value, choiceText, inReview } = this.props;
     return (
       <div>
-        <label htmlFor="0">
+        <label htmlFor={this.props.id}>
           <div className="singleMultipleChoice">
             {this.renderLabel(value, choiceText, inReview)}
             {choiceText}

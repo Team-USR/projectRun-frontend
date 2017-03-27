@@ -1,5 +1,5 @@
 module.exports = {
-  'Teacher login': function (browser) {
+  'Teacher login': (browser) => {
     browser
       .url('http://localhost:3000/#/home')
       .waitForElementVisible('body', 1000)
