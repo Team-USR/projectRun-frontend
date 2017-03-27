@@ -1,12 +1,13 @@
 {
-  "main.css": "static/css/main.9bcf50bd.css",
-  "main.css.map": "static/css/main.9bcf50bd.css.map",
-  "main.js": "static/js/main.276fac87.js",
-  "main.js.map": "static/js/main.276fac87.js.map",
+  "main.css": "static/css/main.fbf830cb.css",
+  "main.css.map": "static/css/main.fbf830cb.css.map",
+  "main.js": "static/js/main.7bee1cf4.js",
+  "main.js.map": "static/js/main.7bee1cf4.js.map",
+  "static/media/demolaptop.png": "static/media/demolaptop.32e4dc07.png",
+  "static/media/demomac.png": "static/media/demomac.b46bdfec.png",
   "static/media/glyphicons-halflings-regular.eot": "static/media/glyphicons-halflings-regular.f4769f9b.eot",
   "static/media/glyphicons-halflings-regular.svg": "static/media/glyphicons-halflings-regular.89889688.svg",
   "static/media/glyphicons-halflings-regular.ttf": "static/media/glyphicons-halflings-regular.e18bbf61.ttf",
   "static/media/glyphicons-halflings-regular.woff": "static/media/glyphicons-halflings-regular.fa277232.woff",
-  "static/media/glyphicons-halflings-regular.woff2": "static/media/glyphicons-halflings-regular.448c34a5.woff2",
-  "static/media/plus.svg": "static/media/plus.311313cd.svg"
+  "static/media/glyphicons-halflings-regular.woff2": "static/media/glyphicons-halflings-regular.448c34a5.woff2"
 }
