@@ -108,3 +108,14 @@ export function getLastHighestGrades(data) {
     date: dataObj[key].date,
   }));
 }
+
+export function formatAveragePerCreatedClass(averages) {
+  const filtered = averages.filter(myClass => myClass.average !== null);
+  if (filtered.length === 0) {
+    return [];
+  }
+  return filtered.map(average => ({
+    name: average.group_name,
+    value: parseFloat(average.average.match(/\d+\.(\d\d|\d)/)[0], 10),
+  }));
+}

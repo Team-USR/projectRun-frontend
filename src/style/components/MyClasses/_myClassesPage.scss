@@ -4,11 +4,23 @@
   .deleteButton{
     text-align: center;
   }
+  .quizList{
+    position:relative;
+    margin: 0 auto;
+  .quizListItem{
+    width: 200px;
+    margin:2px;
+    height:50px;
+  }
+}
 
   .contentWrapper {
     overflow: hidden;
     margin-left: 200px;
     text-align: center;
+    @media(min-width: 1500px){
+      margin-left: 250px;
+    }
 
     .groupSectionWrapper {
         width: auto;

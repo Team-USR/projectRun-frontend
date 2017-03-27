@@ -7,9 +7,10 @@ import { SingleChoiceQuizGenerator } from '../../createQuizzes/SingleChoice';
 import { MatchQuizGenerator } from '../../createQuizzes/Match';
 import { MixQuizGenerator } from '../../createQuizzes/Mix';
 import { ClozeGenerator } from '../../createQuizzes/Cloze';
+import { CrossQuizGenerator } from '../../createQuizzes/Cross';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
-import { BrandSpinner } from '../../components/utils';
+import { BrandSpinner, ModalError } from '../../components/utils';
 import { checkMix, checkMultiple, checkCloze } from '../../helpers/Validators';
 
 const styles = {
@@ -37,6 +38,13 @@ export default class QuizCreatorMainPage extends Component {
       defaultDate: '01-01-2017',
       errors: { quiz: { title: '', questions_attributes: [] } },
       hasErrors: [],
+      showModal: false,
+      modalContent: {
+        header: 'Error!',
+        body: 'The Quiz contains errors',
+        buttons: ['close'],
+        modalProps: {},
+      },
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -123,16 +131,12 @@ export default class QuizCreatorMainPage extends Component {
   }
 
   isReviewMode() {
-    if (this.state.hasErrors.filter(item => item === true).length === 0) {
-      const sQuestions = this.state.submitedQuestions;
-  //    console.log("submitedQuestions ", sQuestions,"finishsubmited");
-      const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
+    const sQuestions = this.state.submitedQuestions;
+    const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
        element !== null);
-  //    console.log("filtered ",filteredQuestions," finishfiltered");
+    if (this.state.hasErrors.filter(item => item === true).length === 0 &&
+     filteredQuestions.length > 0) {
       this.setState({ submitedQuestions: filteredQuestions });
-    //  console.log("----------");
-    //  console.log(this.state.submitedQuestions);
-  //  console.log("----------");
       axios({
         url: `${API_URL}/quizzes`,
         headers: this.props.userToken,
@@ -150,12 +154,29 @@ export default class QuizCreatorMainPage extends Component {
     //    this.setState({ generatedQuizID: resultID, loading: loadingFalse });
       });
     } else {
-      window.alert('Quiz has errors');
+      // window.alert('Quiz has errors');
+      this.openModal({
+        header: 'Oops! You\'ve missed something!',
+        body: 'The quiz contains some blank spaces and cannot be submitted. Please check the fields!',
+        buttons: ['close'],
+      });
     }
   }
   isResultsMode() {
     const newState = !this.state.resultsState;
     this.setState({ resultsState: newState });
+  }
+
+  closeModal() {
+    this.setState({ showModal: false });
+  }
+
+  openModal(content) {
+    if (content) {
+      this.setState({ showModal: true, modalContent: content });
+    } else {
+      this.setState({ showModal: true });
+    }
   }
 
   collectObject(answersAttributes, question, type, questionID) {
@@ -165,10 +186,6 @@ export default class QuizCreatorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    // if (inputQ.quiz.questions_attributes[questionID] === undefined) {
-    //   pointsAssigned = this.state.quizInfo.questions[questionID].points;
-    // }
-
     let quiz = {};
     if (type === 'match') {
       quiz = {
@@ -185,13 +202,34 @@ export default class QuizCreatorMainPage extends Component {
     } if (type === 'single_choice') {
       quiz = { question, type, points: pointsAssigned, answers_attributes: answersAttributes };
     }
-    //  console.log('QUIZ POST', quiz);
+
     inputQ.quiz.questions_attributes[questionID] = quiz;
     this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
 
-  collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+  collectCrossObject(question, metaAtributes, rowsAttributes, hintsAttributes, questionID) {
+    const inputQ = this.state.submitedQuestions;
+    let pointsAssigned = 0;
+    if (inputQ.quiz.questions_attributes[questionID] &&
+       inputQ.quiz.questions_attributes[questionID].points) {
+      pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
+    }
+
+    const newQuestion = {
+      question,
+      type: 'cross',
+      points: pointsAssigned,
+      metadata_attributes: metaAtributes,
+      rows_attributes: rowsAttributes,
+      hints_attributes: hintsAttributes,
+    };
+
+    inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.setState({ submitedQuestions: inputQ });
+  }
+
+  collectClozeObject(questionID, sentenceAttributes, gapsAttributes, questionTitle) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
     if (inputQ.quiz.questions_attributes[questionID] &&
@@ -199,7 +237,7 @@ export default class QuizCreatorMainPage extends Component {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
     const newQuestion = {
-      question: 'Fill in the gaps:',
+      question: questionTitle,
       type: 'cloze',
       points: pointsAssigned,
       cloze_sentence_attributes: {
@@ -307,6 +345,19 @@ export default class QuizCreatorMainPage extends Component {
       questionObject = { id, question, buttonGroup };
     }
 
+    if (quizType === 'cross') {
+      const question = (
+        <CrossQuizGenerator
+          updateParent={(questionTitle, metaAtributes, rowsAttributes, hintsAttributes, ind) =>
+            this.collectCrossObject(
+              questionTitle, metaAtributes, rowsAttributes, hintsAttributes, ind,
+            )}
+          index={id}
+          key={`cross${id}`}
+        />);
+      questionObject = { id, question, buttonGroup };
+    }
+
     if (quizType === 'mix') {
       const question = (
         <MixQuizGenerator
@@ -373,17 +424,24 @@ export default class QuizCreatorMainPage extends Component {
         <div className="cardSection" key={`generatorQuizContainer${displayIndex}`}>
           <h3>{displayIndex}</h3>
           {this.state.questions[index].question}
-          <div style={{ textAlign: 'center' }}>
-            <label htmlFor="pointIn" style={{ marginRight: 10 }}>
-              <h5>Score:</h5>
-            </label>
-            <input
-              id="pointIn"
-              placeholder="ex: 10"
-              type="number"
-              onChange={event => this.setPoints(event, index)}
-            />
-          </div>
+          <Col md={12} className="general_points_container">
+            <Col md={12} className="points_container">
+              <div className="points_wrapper">
+                <label htmlFor="pointIn">
+                  <h5>Score:</h5>
+                </label>
+              </div>
+              <div className="points_wrapper">
+                <input
+                  className="form-control"
+                  id="pointIn"
+                  placeholder="ex: 10"
+                  type="number"
+                  onChange={event => this.setPoints(event, index)}
+                />
+              </div>
+            </Col>
+          </Col>
           <div>
             {this.renderQuestionError(index).split('\n').map((errtext, i) =>
               <h5 className="error_message" key={`errtext${index}${i + 1}`}>{errtext}</h5>)}
@@ -461,7 +519,7 @@ export default class QuizCreatorMainPage extends Component {
                     className="form-control"
                     id="attemptsInput"
                     type="number"
-                    placeholder="ex: 10"
+                    placeholder="ex: 10 (0 = ∞)"
                     onChange={this.changeAttempts}
                   />
                 </Col>
@@ -494,7 +552,6 @@ export default class QuizCreatorMainPage extends Component {
           <br /><br />
           {this.renderQuestions()}
           <br /><br /><br />
-          { this.renderSubmitPanel() }
           Select a quiz to be added:
           <br />
           <div className="quizButtons">
@@ -503,10 +560,18 @@ export default class QuizCreatorMainPage extends Component {
             <Button onClick={() => this.addQuiz('match')}>Match</Button>
             <Button onClick={() => this.addQuiz('cloze')}>Cloze</Button>
             <Button onClick={() => this.addQuiz('mix')}>Mix</Button>
+            <Button onClick={() => this.addQuiz('cross')}>Cross</Button>
           </div>
+          { this.renderSubmitPanel() }
           <div
             style={{ float: 'left', clear: 'both' }}
             ref={(input) => { this.scroller = input; }}
+          />
+
+          <ModalError
+            show={this.state.showModal}
+            content={this.state.modalContent}
+            close={() => this.closeModal()}
           />
         </div>
       );

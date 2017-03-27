@@ -1,0 +1,106 @@
+.MainPageContainer {
+  text-align: center;
+  .welcome_message{
+    margin-top:50px;
+    margin-bottom:50px;
+  }
+  .logoSection{
+    padding-top:25px;
+
+
+    .loginButton{
+      position:absolute;
+      button{
+        border:0px;
+      //  background-color: rgb(230,230,230);
+        font-size: 20px;
+      }
+      right:50px;
+      top:30px;
+    }
+  .logoContainer {
+
+    display: inline-block;
+      .fa-check-square-o {
+        color:$brand-green-color;
+        font-size: 50px;
+      }
+      .logoName{
+        margin-left:10px;
+        font-size: 40px;
+        font-family: 'Roboto';
+        color:black;
+        letter-spacing: 2px;
+        font-weight: bold;
+      }
+
+    }
+  }
+  .registerSection{
+    text-align: center;
+    padding-top:20px;
+    padding-bottom: 20px;
+    .registerButton {
+      width: 200px;
+      height:60px;
+      font-size: 20px;
+    }
+  }
+  .laptopContainer{
+    padding-bottom:50px;
+    padding-top:50px;
+    img {
+      height:80vh;
+      width: auto;
+    }
+    text-align: center;
+  }
+  .groupsContainer{
+    padding-bottom:50px;
+    padding-top:50px;
+    img {
+      height:80vh;
+      width: auto;
+    }
+    background-color: rgb(245,245,245);
+    text-align: center;
+  }
+  .featuresContainer{
+    padding: 50px 0;
+    background-color: rgb(245,245,245);
+    text-align: center;
+    overflow: auto;
+    .featuresList{
+      display: inline-block;
+      margin-top:20px;
+      color:grey;
+      .featuresItem{
+        font-size: 20px;
+        line-height: 30px;
+        clear:both;
+        float:left;
+        .fa-check{
+          margin-right:10px;
+          color:$brand-green-color;
+        }
+      }
+    }
+  }
+
+  .footerSection{
+    background-color: #222222;
+    height:70px;
+    padding-top:20px;
+    .footerText{
+      color:white;
+    }
+  }
+  .subheading{
+    color:grey;
+  }
+  .title{
+
+  }
+
+
+}

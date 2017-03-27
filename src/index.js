@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { Router, Route, browserHistory, IndexRoute } from 'react-router';
+import { Router, Route, hashHistory, IndexRoute } from 'react-router';
 import { syncHistoryWithStore, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import App from './App';
 import { HomePage } from './components/UserAccount';
@@ -15,6 +15,7 @@ import {
   MyClassesContainer,
   SignupContainer,
   SettingsContainer,
+  MainPageContainer,
 } from './containers';
 import authReducer from './redux/modules/user';
 
@@ -22,14 +23,14 @@ const store = createStore(
   combineReducers({
     auth: authReducer,
     routing: routerReducer,
-  }), applyMiddleware(routerMiddleware(browserHistory), thunk));
+  }), applyMiddleware(routerMiddleware(hashHistory), thunk));
 
-const history = syncHistoryWithStore(browserHistory, store);
+const history = syncHistoryWithStore(hashHistory, store);
 
 
 function isAuth() {
   if (!store.getState().auth.token) {
-    store.dispatch(push('/login'));
+    store.dispatch(push('/home'));
   }
 }
 
@@ -44,6 +45,7 @@ ReactDOM.render(
         <Route path="/my-classes" component={MyClassesContainer} />
         <Route path="/settings" component={SettingsContainer} />
       </Route>
+      <Route path="/home" component={MainPageContainer} />
       <Route path="/login" component={LoginContainer} />
       <Route path="/signup" component={SignupContainer} />
     </Router>

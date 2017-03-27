@@ -4,14 +4,35 @@
       background-color: $brand-green-color;
       color: white;
     }
+    .navbar-collapse {
+      margin-right: 7.5px;
+        li{
+          width: 100%;
+          list-style-type: none;
+          a{
+            width:100%;
+            text-decoration: none;
+            .titleButton {
+              width: 100%;
+            }
+          }
+          a:hover{
+                text-decoration: none;
+          }
+        }
 
   }
 
   .classesNav {
     width: 200px;
+    margin-left: -1px;
     a{
       padding: 0px;
       margin-top:3px;
     }
+    @media (min-width: 1500px) {
+      width:250px;
+    }
   }
+}
 }

@@ -36,7 +36,6 @@
   .searchBarItem {
     margin-top:20px;
     width:300px;
-    margin-right:15px;
     background-color:#ffffff;
     color: black;
     border:0px;
@@ -46,6 +45,9 @@
     padding-left: 70px;
     text-align: left;
     margin-bottom:50px;
+  }
+  .searchBarItem:focus {
+    background-color: #ffffff;
   }
   .main_container{
     margin:25px 0;
@@ -98,15 +100,11 @@
         margin-bottom:20px;
       }
       .invited_containerCSV{
-        background-color: #f2f3f4;
-        width: 80%;
-        margin: auto;
-        border: 1px solid grey;
-        border-radius: 30px;
-        margin-bottom: 30px;
+        display:inline-block;
         .invited_inside{
           .invited_margin{
             display: inline-block;
+            margin: 0 30px;
           }
           min-height: 100px;
           max-height:300px;
@@ -114,10 +112,11 @@
           margin:9px;
           .invited{
             text-align: left;
-            display:inline-block;
-            float:left;
-            clear:both;
-            margin:2px 0;
+            display: inline-block;
+            float: left;
+            clear: both;
+            margin: 11px 0;
+            min-width: 250px;
             .ok_sign{
               color:green;
               top: 5px;
@@ -134,26 +133,40 @@
         }
       }
     }
+    .cardSection_inv,.cardSection_inv2{
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      transition: 0.3s;
+      text-align: center;
+      margin-top: 30px;
+      padding: 30px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      background-color: #FAFAFA;
+    }
+    .cardSection_inv2{
+      padding: 15px;
+      background-color: #edeaea;
+    }
+    .cardSection_inv2:hover{
+      box-shadow: 0 4px 8px 0 $brand-green-color;
+    }
     .invited_container{
-      background-color: #f2f3f4;
-      width: 80%;
-      margin: auto;
-      border: 1px solid grey;
-      border-radius: 30px;
-      margin-bottom: 30px;
+      display:inline-block;
       .invited_inside{
         .invited_margin{
-          margin-left:40%;
+          display: inline-block;
+          margin: 0 30px;
         }
         height: 300px;
         overflow-y: scroll;
         margin:9px;
         .invited{
           text-align: left;
-          display:inline-block;
-          float:left;
-          clear:both;
-          margin:2px 0;
+          display: inline-block;
+          float: left;
+          clear: both;
+          margin: 11px 0;
+          min-width: 250px;
         }
       }
     }

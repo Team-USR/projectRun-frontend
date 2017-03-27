@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import { Nav, NavItem, Button } from 'react-bootstrap';
-import plusSign from '../../assets/images/plus.svg';
 import { TEACHER, STUDENT } from '../../constants';
 
 export default class SideBarClasses extends Component {
@@ -36,15 +35,24 @@ export default class SideBarClasses extends Component {
     this.setState({ content: filteredContent });
   }
   renderSearchBar() {
+    let myStyle;
+    if (this.props.userType === STUDENT) {
+      myStyle = { top: '99px' };
+    } else {
+      myStyle = { top: '103px', zIndex: '3' };
+    }
     return (
       <NavItem key={'searchBar'} >
-        <input
-          className="searchBarItem"
-          id="searchBar"
-          type="text"
-          placeholder="Search for a class"
-          onChange={this.filterItems}
-        />
+        <div>
+          <i style={myStyle} className="fa fa-search search_icon2" aria-hidden="true" />
+          <input
+            className="searchBarItemSideBar"
+            id="searchBar"
+            type="text"
+            placeholder="Search for a class"
+            onChange={this.filterItems}
+          />
+        </div>
       </NavItem>
     );
   }
@@ -72,29 +80,22 @@ export default class SideBarClasses extends Component {
       (
         <NavItem>
           <Button className="titleButton" onClick={() => this.props.onCreateClassClick()}>
-            <div className="row">
-              <div className="col-md-3 plusIconWrapper">
-                <img className="plusIcon" src={plusSign} alt={'+'} />
-              </div>
-              <div className="col-md-9 createText">
-                Create Class
-              </div>
-            </div>
+            <i className="fa fa-plus" aria-hidden="true" />  Create Class
           </Button>
         </NavItem>
       );
     }
     let classesCounter = 0;
-    let maxDisplayed = 15;
+    let maxDisplayed = 9;
     if (this.state.content.length - maxDisplayed >= 1) {
       maxDisplayed -= 1;
     }
     return (
       <div>
+        { createClassButton }
         { this.renderSearchButton() }
         { this.renderSearchBar() }
         <Nav>
-          { createClassButton }
           {
          this.state.content.map((obj, index) => {
            if (index < maxDisplayed) {
@@ -112,7 +113,12 @@ export default class SideBarClasses extends Component {
            if (index === this.state.content.length - 1) {
              return (
                <NavItem className="classesNav" key={'moreClasses'}>
-                 <h5> and {classesCounter} more...</h5>
+                 <Button
+                   className="sideBarButton"
+                   onClick={() => this.props.onSideBarTitleClick()}
+                 >
+                 and {classesCounter} more...
+                 </Button>
                </NavItem>
              );
            }
@@ -132,9 +138,11 @@ SideBarClasses.propTypes = {
   content: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   onClassClick: PropTypes.func,
   handleSearchClassForRequestInvite: PropTypes.func,
+  onSideBarTitleClick: PropTypes.func,
 };
 SideBarClasses.defaultProps = {
   onCreateClassClick: null,
   onClassClick: null,
   handleSearchClassForRequestInvite: null,
+  onSideBarTitleClick: null,
 };

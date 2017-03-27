@@ -4,8 +4,9 @@ import axios from 'axios';
 import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { SideBarWrapper } from '../SideBar';
 import { MyClassesPanel } from './index';
-import { BrandSpinner } from '../utils';
-import { findHighestMark } from '../../helpers';
+import { BrandSpinner, ModalError } from '../utils';
+
+import { formatAveragePerCreatedClass } from '../../helpers';
 
 export default class MyClassesPage extends Component {
 
@@ -15,7 +16,6 @@ export default class MyClassesPage extends Component {
     this.state = {
       panelType: 'my_classes_default_panel',
       averagePerCreatedClass: [],
-      marksPerQuizPerClass: [],
       loadingSideBar: true,
       allClasses: [],
       currentClassTitle: '',
@@ -33,6 +33,14 @@ export default class MyClassesPage extends Component {
       content: { quizzes: [], students: [] },
       userT: STUDENT,
       loading: false,
+
+      showModal: false,
+      modalContent: {
+        header: 'Error!',
+        body: 'The Quiz contains errors',
+        buttons: ['close'],
+        modalProps: {},
+      },
     };
   }
 
@@ -45,16 +53,15 @@ export default class MyClassesPage extends Component {
       }
       if (settingUserType === STUDENT) {
         this.requestStudentData();
-        this.requestStudentStatistics();
       }
       this.setState({ userT: settingUserType });
     } else {
       this.requestStudentData();
-      this.requestStudentStatistics();
     }
   }
 
   getClassContent(currentClassId) {
+    this.setState({ loading: true });
     axios({
       url: `${API_URL}/groups/${currentClassId}/quizzes`,
       headers: this.props.userToken,
@@ -76,18 +83,38 @@ export default class MyClassesPage extends Component {
             requestsList: studentsResponse.data.pending_requests_users,
             invitedList: studentsResponse.data.pending_invite_users,
           });
+          setTimeout(() => {
+            this.setState({
+              loading: false,
+            });
+          }, 510);
         })
         .catch(() => {
           this.setState({ panelType: 'my_classes_default_panel' });
+          setTimeout(() => {
+            this.setState({
+              loading: false,
+            });
+          }, 510);
         });
       } else if (this.state.userT === STUDENT) {
         this.setState({ panelType: 'show_selected_class', content: newContent });
+        setTimeout(() => {
+          this.setState({
+            loading: false,
+          });
+        }, 510);
       }
     })
     .catch(() => {
       cookie.remove('current-class-id');
       cookie.remove('current-class-title');
       this.setState({ panelType: 'my_classes_default_panel' });
+      setTimeout(() => {
+        this.setState({
+          loading: false,
+        });
+      }, 510);
     });
   }
   refreshStudents(currentClassId, ptyp) {
@@ -126,6 +153,18 @@ export default class MyClassesPage extends Component {
     this.setState({ allStudents: object });
   }
 
+  closeModal() {
+    this.setState({ showModal: false });
+  }
+
+  openModal(content) {
+    if (content) {
+      this.setState({ showModal: true, modalContent: content });
+    } else {
+      this.setState({ showModal: true });
+    }
+  }
+
   requestTeacherData() {
     axios({
       url: `${API_URL}/users/mine/groups`,
@@ -138,6 +177,9 @@ export default class MyClassesPage extends Component {
       })
       .then((quizzesResponse) => {
         this.setState({ allQuizzes: quizzesResponse.data });
+      })
+      .catch(() => {
+        this.setState({ panelType: 'my_classes_default_panel' });
       });
 
       const newSideBarContent = { classes: response.data.filter(obj => obj.role === 'admin').reverse() };
@@ -213,15 +255,12 @@ export default class MyClassesPage extends Component {
     });
   }
 
-  requestStudentStatistics() {
-    axios({
-      url: `${API_URL}/statistics/marks_groups_quizzes`,
+  async requestStudentStatistics(classId) {
+    const data = await axios({
+      url: `${API_URL}/statistics/marks_groups_quizzes?id=${classId}`,
       headers: this.props.userToken,
-    }).then((response) => {
-      this.setState({
-        marksPerQuizPerClass: response.data,
-      });
     });
+    return data.data;
   }
 
   reloadBar() {
@@ -299,7 +338,7 @@ export default class MyClassesPage extends Component {
     });
   }
 
-  handleDeleteClass(classId) {
+  confirmDeleteClass(classId) {
     this.setState({ loading: true });
     axios({
       url: `${API_URL}/groups/${classId}`,
@@ -312,10 +351,20 @@ export default class MyClassesPage extends Component {
       cookie.remove('current-class-title');
       this.setState({ panelType: 'my_classes_default_panel' });
     });
+
+    this.closeModal();
+  }
+
+  handleDeleteClass(deleteClassId) {
+    this.openModal({
+      header: 'Delete this class?',
+      body: 'Are you sure that you want to DELETE this class? This is an irreversible action which will affect the currenlty enrolled students and assigned quizzes!',
+      buttons: ['close', 'deleteClass'],
+      modalProps: { classId: deleteClassId },
+    });
   }
 
   handleSaveAssignedQuizzes(newQuizzesArray) {
-//    console.log("NEW quizzes ARRAY", newQuizzesArray);
     this.setState({ loading: true });
     this.newQuizzesArray = [];
     const quizzesIdArray = newQuizzesArray.map(obj => obj.id);
@@ -371,18 +420,10 @@ export default class MyClassesPage extends Component {
         allClasses={this.state.allClasses}
         allQuizzes={this.state.allQuizzes}
         allStudents={this.state.allStudents}
-        averagePerCreatedClass={this.state.averagePerCreatedClass.map(average => ({
-          name: average.group_name,
-          value: average.average,
-        }))}
-        marksPerQuizPerClass={this.state.marksPerQuizPerClass.map(myClass => ({
-          className: myClass.group_name,
-          marks: myClass.marks ? Object.keys(myClass.marks).map(quizId => ({
-            name: myClass.marks[quizId][0].quiz_title,
-            score: findHighestMark(myClass.marks[quizId]).score,
-          })) : [],
-        }))}
+        averagePerCreatedClass={formatAveragePerCreatedClass(this.state.averagePerCreatedClass)}
+        getClassMarks={classId => this.requestStudentStatistics(classId)}
         numberOfClasses={this.state.sideBarContent.classes.length}
+        classes={this.state.sideBarContent.classes}
         getAllClasses={() => this.getAllClasses()}
         updateAllStudents={object => this.updateAllStudents(object)}
         handleSaveNewClassClick={newClassTitle =>
@@ -398,6 +439,8 @@ export default class MyClassesPage extends Component {
         requestsList={this.state.requestsList}
         invitedList={this.state.invitedList}
         refreshStudents={(classID, ptype) => this.refreshStudents(classID, ptype)}
+        handleSideBarClassClick={(currentClassId, classTitle) =>
+          this.handleSideBarClassClick(currentClassId, classTitle)}
       />);
     return element;
   }
@@ -429,7 +472,7 @@ export default class MyClassesPage extends Component {
         <div className="myClassesPageWrapper">
           { this.renderSideBar() }
           <div className="contentWrapper">
-            <BrandSpinner />;
+            <BrandSpinner />
           </div>
         </div>
       );
@@ -439,6 +482,12 @@ export default class MyClassesPage extends Component {
         <div className="contentWrapper">
           { this.renderClassesPanel() }
         </div>
+        <ModalError
+          show={this.state.showModal}
+          content={this.state.modalContent}
+          close={() => this.closeModal()}
+          confirmDeleteClass={classId => this.confirmDeleteClass(classId)}
+        />
       </div>
     );
   }

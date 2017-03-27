@@ -1,3 +1,66 @@
 .homePageWrapper {
   text-align: center;
+  .welcome_message{
+    margin-top:30px;
+    margin-bottom:30px;
+  }
+  .logoContainer {
+    display: inline-block;
+      .fa-check-square-o {
+        color:$brand-green-color;
+        font-size: 50px;
+      }
+      .logoName{
+        margin-left:10px;
+        font-size: 40px;
+        font-family: 'Roboto';
+        color:black;
+        letter-spacing: 3px;
+      }
+
+    }
+  .laptopContainer{
+    img {
+      height:70vh;
+      width: auto;
+    }
+    margin-bottom: 50px;
+  }
+  .groupsContainer{
+    img {
+      height:70vh;
+      width: auto;
+    }
+    margin-bottom: 50px;
+    background-color: rgb(245,245,245);
+  }
+  .featuresContainer{
+    padding: 50px 0;
+    background-color: rgb(245,245,245);
+    text-align: center;
+    overflow: auto;
+    .featuresList{
+      display: inline-block;
+      margin-top:20px;
+      color:grey;
+      .featuresItem{
+        font-size: 20px;
+        line-height: 30px;
+        clear:both;
+        float:left;
+        .fa-check{
+          margin-right:10px;
+          color:$brand-green-color;
+        }
+      }
+    }
+  }
+  .subheading{
+    color:grey;
+  }
+  .title{
+
+  }
+
+
 }

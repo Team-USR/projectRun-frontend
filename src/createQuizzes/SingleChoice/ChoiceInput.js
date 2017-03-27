@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
 
 let answer;
 let isCorrect;
@@ -45,19 +45,27 @@ export default class ChoiceInput extends Component {
   //  console.log(this.props.ind, this.state.selected);
     return (
       <div >
-        <label htmlFor="choiceInput">
-        Choice:{displayedIndex}
-          {this.props.text}
-          <input
-            id="choiceInput"type="text" defaultValue={answer} onChange={this.handleChange}
-          />
-        </label>
+        <Col md={12}>
+          <Col md={3} className="choiceInput">
+      Choice {displayedIndex}:
+        {this.props.text}
+          </Col>
+          <Col md={6}>
+            <input
+              className="form-control choiceText"
+              id="choiceInput"type="text" defaultValue={answer} onChange={this.handleChange}
+            />
+          </Col>
+          <Col md={3}>
           Answer: <input
             type="radio"
             name="group"
             onChange={this.handleAnswerChange} checked={this.props.ind === this.state.selected}
           />
-        <Button onClick={this.onDelete}>X</Button>
+            <Button onClick={this.onDelete} style={{ marginLeft: 5 }}>
+              <span className="fa fa-times" /></Button>
+          </Col>
+        </Col>
       </div>
     );
   }

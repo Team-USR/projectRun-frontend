@@ -70,23 +70,27 @@ export default class ClassSearchPanel extends React.Component {
   renderPendingClasses() {
     const element = [];
     if (this.state.pendingClasses.length > 0) {
-      element.push(<h3 key={'pendingRequests'}>Invitations</h3>);
+      element.push(<h3 key={'pendingRequests'}>Requests</h3>);
     }
     if (this.state.pendingClasses !== undefined && this.state.pendingClasses !== null) {
       this.state.pendingClasses.map((cl) => {
         let col = '';
         let createdAt = '';
+        let iconClass = 'fa-paper-plane';
         this.state.sentClasses.map((item, index) => {
           if (item === cl.id) {
-            col = 'green';
-            createdAt = this.state.sentClassesInfo[index];
+            col = '#2ed146';
+            iconClass = 'fa-check';
+            if (this.state.sentClassesInfo[index]) {
+              createdAt = this.state.sentClassesInfo[index];
+            } else createdAt = 'Request sent';
           }
           return 0;
         });
 
         element.push(
           <li
-            className="pendingButtons"
+            className="cardSection pendingButtons clearfix"
             key={`pendingList${cl.id}`}
           >
             <Col md={12} key={`item${cl.id + 1}`}>
@@ -99,7 +103,7 @@ export default class ClassSearchPanel extends React.Component {
                     key={`invitation${cl.id}`}
                     onClick={() => this.props.sendInvitation(cl.id)}
                   >
-                    <span className="glyphicon glyphicon-log-in" />
+                    <span className={`fa ${iconClass}`} />
                   </Button>
                 </div>
               </Col>
@@ -163,7 +167,7 @@ export default class ClassSearchPanel extends React.Component {
     return (
       <div className="classSearchPanelWrapper">
         <div>
-          <h1><b>Request Class Invitation</b></h1>
+          <h1><b>Join a class</b></h1>
           <hr />
         </div>
         <input

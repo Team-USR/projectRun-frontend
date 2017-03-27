@@ -194,30 +194,44 @@ export default class MixQuizGenerator extends Component {
     const style = { color: 'red' };
     return (
       <div className="mixQuizGeneratorContainer">
-        <h3> Mix Question </h3>
-        <Col md={12}>
-          <b>Question: </b>
-          <input
-            type="text"
-            name="matchQuizTitle"
-            className="form_input"
-            value={this.state.mixQuizQuestion}
-            placeholder={'ex: Mixed-up sentence exercise'}
-            onChange={e => this.handleQuestionInputChange(e)}
-          />
+        <h3 className="question_title"> Mix Question </h3>
+        <Col md={12} className="question_wrapper">
+          <Col md={2} className="question_line">
+            <h4 className="question_heading">Question: </h4>
+          </Col>
+          <Col md={10}>
+            <input
+              type="text"
+              name="matchQuizTitle"
+              className="form-control"
+              value={this.state.mixQuizQuestion}
+              placeholder={'ex: Mixed-up sentence exercise'}
+              onChange={e => this.handleQuestionInputChange(e)}
+            />
+          </Col>
         </Col>
         <div className="mixQuizGenerator">
           <div className="mixQuizInput">
-            <Col md={12}>
-              <b>Sentence:</b>
-              <input
-                className="form_input"
-                value={this.state.mainSolution}
-                placeholder="ex: This App is amazing!"
-                rows="10" cols="30" onChange={this.handleChange}
-              />
+            <Col md={12} className="question_wrapper">
+              <Col md={2} className="question_line">
+                <h4 className="question_heading">Sentence: </h4>
+              </Col>
+              <Col md={10}>
+                <input
+                  className="form-control"
+                  value={this.state.mainSolution}
+                  placeholder="ex: This App is amazing!"
+                  rows="10" cols="30" onChange={this.handleChange}
+                />
+              </Col>
             </Col>
-            <Button type="button" onClick={this.addSolution}>Add another solution</Button>
+            <Button
+              className="add_solution"
+              type="button"
+              onClick={this.addSolution}
+            >
+              Add an alternative solution
+            </Button>
           </div>
           {this.renderAlternateSolution()}
           <p style={style}>{this.state.errorMessage}</p>

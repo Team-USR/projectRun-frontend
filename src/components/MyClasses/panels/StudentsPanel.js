@@ -125,7 +125,7 @@ export default class StudentsPanel extends Component {
       this.state.csvData.map((email, index) => {
         const ind = index;
         emptyArray.push(
-          <div key={`student_email_${ind}`} className="invited">
+          <div key={`student_email_${ind}`} className="invited cardSection_inv2">
             <div>{email}</div>
           </div>,
         );
@@ -327,7 +327,7 @@ export default class StudentsPanel extends Component {
     const arrayToRet = [];
     this.state.studentsInvited.map((element, index) => {
       const ind = index;
-      arrayToRet.push(<div key={`invited_${ind}`} className="invited">{element}</div>);
+      arrayToRet.push(<div key={`invited_${ind}`} className="invited cardSection_inv2">{element}</div>);
       return '';
     });
     return arrayToRet;
@@ -448,14 +448,15 @@ export default class StudentsPanel extends Component {
             {this.renderStudentInvite()}
           </div>
         </div>
-        <div className="invited_container">
-          <div className="invited_inside">
-            <div className="invited_margin">
-              {this.renderInvitedStudents()}
-              <Clearfix />
+        {(this.state.studentsInvited.length !== 0) &&
+          (<div className="invited_container cardSection_inv">
+            <div className="invited_inside">
+              <div className="invited_margin">
+                {this.renderInvitedStudents()}
+                <Clearfix />
+              </div>
             </div>
-          </div>
-        </div>
+          </div>)}
       </div>
     );
   }
@@ -489,7 +490,7 @@ export default class StudentsPanel extends Component {
                         className="accept"
                         onClick={() => this.approveStudent(item)}
                       >
-                        <span className="glyphicon glyphicon-ok" style={{ color: 'green' }} />
+                        <span className="glyphicon glyphicon-ok" style={{ color: '#2ed146' }} />
                       </Button>
                     </Col>
                   </Col>
@@ -507,7 +508,7 @@ export default class StudentsPanel extends Component {
     let myStyle;
     if (this.state.showContainer) {
       myStyle = {
-        display: 'block',
+        display: 'inline-block',
       };
     } else {
       myStyle = {
@@ -531,7 +532,7 @@ export default class StudentsPanel extends Component {
 
           </div>
           {this.showLabel()}
-          <div className="invited_containerCSV" style={myStyle}>
+          <div className="invited_containerCSV cardSection_inv" style={myStyle}>
             <div className="invited_inside">
               <div className="invited_margin">
                 {this.showCsvData()}

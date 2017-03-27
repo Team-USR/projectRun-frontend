@@ -24,6 +24,7 @@ coverage
 .lock-wscript
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
+build/
 build/Release
 
 # Dependency directories
@@ -38,3 +39,8 @@ jspm_packages
 
 # Generated CSS file
 src/App.css
+
+# nightwatch test
+selenium-debug.log
+*.jar
+reports

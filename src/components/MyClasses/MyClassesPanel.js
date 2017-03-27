@@ -27,16 +27,28 @@ export default class MyClassesPanel extends Component {
       loadingClassesSearch: false,
       loadingSearch: false,
       moveToPendingError: false,
+      highestMarks: [],
     };
   }
-  componentWillMount() {
+  async componentWillMount() {
+    if (this.props.classId.length > 0 && this.props.userType === STUDENT) {
+      const data = await this.props.getClassMarks(this.props.classId);
+      this.setState({
+        highestMarks: data,
+      });
+    }
     this.setState({
       filteredStudents: this.props.content.students,
       filteredAllStudents: this.props.allStudents,
     });
   }
-  componentWillReceiveProps(nextProps) {
-//    console.log("RECEIVE PROPS");
+  async componentWillReceiveProps(nextProps) {
+    if (this.props.classId.length > 0 && this.props.userType === STUDENT) {
+      const data = await this.props.getClassMarks(this.props.classId);
+      this.setState({
+        highestMarks: data,
+      });
+    }
     this.setState({
       filteredStudents: nextProps.content.students,
       filteredAllStudents: nextProps.allStudents,
@@ -236,6 +248,9 @@ export default class MyClassesPanel extends Component {
   renderPanel() {
     let element = (
       <DefaultClassesPanel
+        handleSideBarClassClick={(currentClassId, classTitle) =>
+        this.props.handleSideBarClassClick(currentClassId, classTitle)}
+        classes={this.props.classes}
         userType={this.props.userType}
         numberOfClasses={this.props.numberOfClasses}
         averagePerCreatedClass={this.props.averagePerCreatedClass}
@@ -307,7 +322,7 @@ export default class MyClassesPanel extends Component {
               </Col>
             </Col>
             <Button
-              className="deleteButton"
+              className="red_button"
               onClick={() =>
               this.props.handleDeleteClass(this.props.classId)}
             >
@@ -326,15 +341,6 @@ export default class MyClassesPanel extends Component {
         );
       }
     } else if (this.props.userType === STUDENT) {
-      const data = this.props.marksPerQuizPerClass.reduce((acc, myClass) => {
-        if (myClass.className === this.props.classTitle) {
-          return myClass.marks.map(quiz => ({
-            name: quiz.name,
-            value: quiz.score,
-          }));
-        }
-        return acc;
-      }, []);
       if (this.props.panelType === 'show_selected_class') {
         element = (
           <div>
@@ -344,11 +350,20 @@ export default class MyClassesPanel extends Component {
               quizzes={this.props.content.quizzes}
             />
             <hr />
-            {data.length > 0 ?
+            {this.state.highestMarks.length > 0 ?
               (<div className="line-chart-container">
                 <LineCh
                   color="grey"
-                  data={data}
+                  data={this.state.highestMarks.reduce((acc, quiz) => {
+                    const validQuizzes = acc;
+                    if (quiz.marks.quiz_name) {
+                      validQuizzes.push({
+                        name: quiz.marks.quiz_name,
+                        value: quiz.marks.score,
+                      });
+                    }
+                    return validQuizzes;
+                  }, [])}
                 />
               </div>)
               : <h3>You have no submitted quiz for this class.</h3>}
@@ -400,13 +415,7 @@ MyClassesPanel.propTypes = {
     name: PropTypes.string,
     value: PropTypes.number,
   })),
-  marksPerQuizPerClass: PropTypes.arrayOf(PropTypes.shape({
-    className: PropTypes.string,
-    marks: PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string,
-      value: PropTypes.number,
-    })),
-  })),
+  getClassMarks: PropTypes.func.isRequired, // eslint-disable-line
   handleSaveNewClassClick: PropTypes.func.isRequired,
   handleSaveAssignedQuizzes: PropTypes.func.isRequired,
   handleSaveEnrolledStudents: PropTypes.func.isRequired,
@@ -418,9 +427,10 @@ MyClassesPanel.propTypes = {
   requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   refreshStudents: PropTypes.func.isRequired,
   invitedList: PropTypes.arrayOf(PropTypes.string).isRequired,
+  handleSideBarClassClick: PropTypes.func.isRequired,
+  classes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 MyClassesPanel.defaultProps = {
   averagePerCreatedClass: [],
-  marksPerQuizPerClass: [],
 };

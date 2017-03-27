@@ -1,41 +1,50 @@
 import React, { PropTypes } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
 
 export default function MatchQuizItem(props) {
   const quizID = `quizItem + ${props.id}`;
   return (
-    <div className="quizItem" id={quizID} key={quizID}>
-      <div className="itemIndex">
-        <label htmlFor="item">{ props.index + 1 }</label>
-      </div>
-      <textarea
-        id={props.id}
-        disabled={props.reviewState || props.resultsState}
-        name={props.leftTextareaName}
-        className="itemTexarea leftTextarea"
-        placeholder={props.leftTextareaPlaceholder}
-        rows="3" cols="25"
-        value={props.leftValue}
-        onChange={e => props.onChange(e, props.index)}
-      />
-      <textarea
-        id={props.id}
-        disabled={props.reviewState || props.resultsState}
-        name={props.rightTextareaName}
-        className="itemTexarea rightTextarea"
-        placeholder={props.rightTextareaPlaceHolder}
-        rows="3" cols="25"
-        value={props.rightValue}
-        onChange={e => props.onChange(e, props.index)}
-      />
-      <div className="deleteMatchItemBtnContainer">
-        <Button
-          className="deleteMatchItemBtn"
+
+    <Col md={12} className="quizItem" id={quizID} key={quizID}>
+      <Col md={1}>
+        <div className="itemIndex">
+          <label htmlFor="item">{ props.index + 1 }</label>
+        </div>
+      </Col>
+      <Col md={5}>
+        <textarea
           id={props.id}
-          onClick={() => props.deleteMatchElement(props.index)}
-        > X </Button>
-      </div>
-    </div>
+          disabled={props.reviewState || props.resultsState}
+          name={props.leftTextareaName}
+          className="itemTexarea leftTextarea form-control"
+          placeholder={props.leftTextareaPlaceholder}
+          value={props.leftValue}
+          onChange={e => props.onChange(e, props.index)}
+        />
+      </Col>
+      <Col md={5}>
+        <textarea
+          id={props.id}
+          disabled={props.reviewState || props.resultsState}
+          name={props.rightTextareaName}
+          className="itemTexarea rightTextarea form-control"
+          placeholder={props.rightTextareaPlaceHolder}
+          value={props.rightValue}
+          onChange={e => props.onChange(e, props.index)}
+        />
+      </Col>
+      <Col md={1}>
+        <div className="deleteMatchItemBtnContainer">
+          <Button
+            className="deleteMatchItemBtn"
+            id={props.id}
+            onClick={() => props.deleteMatchElement(props.index)}
+          >
+            <i className="fa fa-times" aria-hidden="true" />
+          </Button>
+        </div>
+      </Col>
+    </Col>
   );
 }
 

@@ -3,8 +3,13 @@ import { Button } from 'react-bootstrap';
 
 export default function ButtonWrapper(props) {
   return (
-    <div>
-      <Button onClick={() => props.removeQuiz(props.index)}>Delete this question</Button>
+    <div className="delete_button">
+      <Button
+        className="red_button"
+        onClick={() => props.removeQuiz(props.index)}
+      >
+        Delete this question
+      </Button>
     </div>
   );
 }

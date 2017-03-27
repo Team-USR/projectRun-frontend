@@ -3,28 +3,26 @@
     width: 50%;
     float: left;
   }
+  .matchQuestionWrapper{
+    line-height: 34px;
+  }
 
   .quizItem {
     display: inline-flex;
     margin: 10px auto;
 
     .itemIndex {
-      width: 50px;
-      line-height: 50px;
-      margin-left: -50px;
+      line-height: 46px;
     }
 
     .itemTexarea {
       resize: none;
       margin: 0 10px;
     }
+
+    .fa-times {
+      color: $brand-red-color;
+    }
   }
 
-  .quizTitleInput {
-    width: 80%;
-  }
-
-  .addMoreItemsBtn {
-    margin-right: 60px;
-  }
 }

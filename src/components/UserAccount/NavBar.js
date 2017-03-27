@@ -10,8 +10,9 @@ export default function NavBar(props) {
         <Navbar.Brand>
           <Link to="/" className="navbar-brand">
             <div className="BrandTitleWrapper">
+              <i className="fa fa-check-square-o logo" aria-hidden="true" />
               <span> Interactive Language </span>
-              <span className={`glyphicon ${props.userTypeClass} userTypeIcon`} />
+              <i aria-hidden="true" className={`fa ${props.userTypeClass} userTypeIcon`} />
             </div>
           </Link>
         </Navbar.Brand>
@@ -36,7 +37,7 @@ export default function NavBar(props) {
             <MenuItem divider />
             <MenuItem >Help</MenuItem>
           </NavDropdown>
-          <LinkContainer onClick={props.onLogout} to="/login">
+          <LinkContainer onClick={props.onLogout} to="/home">
             <NavItem >
               Logout
             </NavItem>

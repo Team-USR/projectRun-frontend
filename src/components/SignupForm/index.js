@@ -1,17 +1,17 @@
 import React from 'react';
-import { ControlLabel, form, FormControl, Button } from 'react-bootstrap';
+import { ControlLabel, form, FormControl, Button, ButtonGroup } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 export default function SignupForm(props) {
   let error;
   if (props.signupError) {
-    error = <h3 className="invalidHeader">{props.signupError}</h3>;
+    error = <h4 className="text-danger text-center">{props.signupError}</h4>;
   }
 
   return (
     <div className="loginPage">
-      <h1 className="welcomeTitle" id="title">Welcome to Interactive Language Exercises</h1>
-      {error}
-      <div className="loginWrapper">
+      <div className="signupWrapper cardSection">
+        {error}
         <form>
           <ControlLabel className="loginLabel">Name</ControlLabel>
           <FormControl
@@ -37,13 +37,18 @@ export default function SignupForm(props) {
             onChange={props.handlePasswordChange}
           />
         </form>
-        <div className="loginButtonWrapper">
-          <Button
-            type="submit"
-            onClick={props.submitSignup}
-          >
-            Signup
+        <div className="signupButtonWrapper">
+          <ButtonGroup style={{ float: 'right' }}>
+            <LinkContainer to={'/login'}>
+              <Button>Log in</Button>
+            </LinkContainer>
+            <Button
+              type="submit"
+              onClick={props.submitSignup}
+            >
+            Sign up
           </Button>
+          </ButtonGroup>
         </div>
       </div>
     </div>

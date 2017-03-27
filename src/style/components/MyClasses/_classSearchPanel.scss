@@ -4,7 +4,6 @@
   .searchBarItem {
     margin-top:20px;
     width:300px;
-    margin-right:15px;
     background-color:#ffffff;
     color: black;
     border:0px;
@@ -14,9 +13,8 @@
     padding-left: 70px;
     text-align: left;
     margin-bottom:50px;
-
-
   }
+
   .classSearchResultsPanel{
 
 
@@ -27,7 +25,7 @@
     }
     .classStudentBtn {
       text-align: center;
-      width: 180px;
+      min-width: 300px;
       margin: 5px 0;
 
       .glyphicon {
@@ -53,7 +51,6 @@
       width: 100%;
     }
     .inviteButton{
-      width:35px;
       margin-left:20px;
       margin-top: 5px;
 
@@ -63,6 +60,10 @@
       text-align: center;
       width: auto;
       margin-top: 1px;
+      padding: 5px;
+      .fa-sign-in {
+        font-size: 20px
+      }
       .className{
         text-align: right;
         max-width: 300px;

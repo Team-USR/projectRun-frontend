@@ -7,10 +7,15 @@
   z-index: 10;
 
 .BrandTitleWrapper{
+  .logo {
+    color: $brand-green-color;
+    font-size: 23px;
+    padding-top:2px;
+  }
   display: inline;
   .userTypeIcon{
-    top:5px;
     .glyphicon-education{
+      top:0;
       color:white;
       width: 40px;
       height: 40px;

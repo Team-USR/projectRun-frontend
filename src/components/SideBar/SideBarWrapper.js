@@ -24,6 +24,7 @@ export default class SideBarWrapper extends Component {
       if (this.props.userType === STUDENT) {
         sideBarContent = (
           <SideBarQuizzes
+            onSideBarTitleClick={() => this.props.onSideBarTitleClick()}
             key={'stud'}
             userType={this.props.userType}
             onQuizClick={id =>
@@ -34,6 +35,7 @@ export default class SideBarWrapper extends Component {
       } else if (this.props.userType === TEACHER) {
         sideBarContent = (
           <SideBarQuizzes
+            onSideBarTitleClick={() => this.props.onSideBarTitleClick()}
             key={'teach'}
             userType={this.props.userType}
             onQuizClick={id =>
@@ -49,6 +51,7 @@ export default class SideBarWrapper extends Component {
       if (this.props.userType === TEACHER) {
         sideBarContent = (
           <SideBarClasses
+            onSideBarTitleClick={() => this.props.onSideBarTitleClick()}
             userType={this.props.userType}
             onCreateClassClick={() => this.props.onCreateClassClick()}
             onClassClick={(currentClassId, classTitle) =>
@@ -59,6 +62,7 @@ export default class SideBarWrapper extends Component {
       } else if (this.props.userType === STUDENT) {
         sideBarContent = (
           <SideBarClasses
+            onSideBarTitleClick={() => this.props.onSideBarTitleClick()}
             userType={this.props.userType}
             onClassClick={(currentClassId, classTitle) =>
               this.props.onSideBarItemClick(currentClassId, classTitle)}
