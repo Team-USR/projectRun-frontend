@@ -23,8 +23,8 @@ export default function LoginForm(props) {
   return (
     <div className="loginPage">
       {error}
-      <div className="loginWrapper">
-        <form>
+      <div className="loginWrapper cardSection">
+        <form >
           <ControlLabel className="loginLabel">Email</ControlLabel>
           <FormControl
             id="formEmail"
@@ -45,8 +45,6 @@ export default function LoginForm(props) {
         </form>
 
         <div className="loginButtonWrapper">
-          <Col md={12}>
-            <Col md={6}>
               <form style={{ width: 300, display: 'inline-flex' }}>
                 <div style={{ display: 'inline-block', lineHeight: 10 }}>
                   <h5>Student</h5>
@@ -68,8 +66,6 @@ export default function LoginForm(props) {
                 </div>
                 <h5>Teacher</h5>
               </form>
-            </Col>
-            <Col md={6}>
               <ButtonGroup style={{ float: 'right' }}>
                 <Button
                   type="submit"
@@ -81,8 +77,6 @@ export default function LoginForm(props) {
                   <Button>Sign-up</Button>
                 </LinkContainer>
               </ButtonGroup>
-            </Col>
-          </Col>
         </div>
       </div>
     </div>

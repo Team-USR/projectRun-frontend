@@ -54,11 +54,11 @@ export default class DefaultClassesPanel extends Component {
         <h1><b>Statistics</b></h1>
         { this.renderHeader() }
         { this.renderCharts() }
-        {
-          (this.props.classes.length > 0 &&
-          <h5><b>All classes</b></h5>)
-        }
         <div className="quizList" style={{ marginTop: margin }}>
+          {
+          (this.props.classes.length > 0 &&
+          <h5 style={{ marginTop: 50 }}><b>All classes</b></h5>)
+          }
           { this.renderAllClasses()}
         </div>
       </div>

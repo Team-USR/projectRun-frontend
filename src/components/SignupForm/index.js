@@ -1,5 +1,6 @@
 import React from 'react';
-import { ControlLabel, form, FormControl, Button } from 'react-bootstrap';
+import { ControlLabel, form, FormControl, Button, ButtonGroup } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 export default function SignupForm(props) {
   let error;
@@ -9,9 +10,8 @@ export default function SignupForm(props) {
 
   return (
     <div className="loginPage">
-      <h1 className="welcomeTitle" id="title">Welcome to Interactive Language Exercises</h1>
       {error}
-      <div className="loginWrapper">
+      <div className="signupWrapper cardSection">
         <form>
           <ControlLabel className="loginLabel">Name</ControlLabel>
           <FormControl
@@ -36,15 +36,23 @@ export default function SignupForm(props) {
             value={props.password}
             onChange={props.handlePasswordChange}
           />
-        </form>
-        <div className="loginButtonWrapper">
-          <Button
-            type="submit"
-            onClick={props.submitSignup}
-          >
+            </form>
+          <div className="signupButtonWrapper">
+          <ButtonGroup style={{ float: 'right' }}>
+            <LinkContainer to={'/login'}>
+              <Button>Login</Button>
+            </LinkContainer>
+            <Button
+              type="submit"
+              onClick={props.submitSignup}
+              >
             Signup
           </Button>
-        </div>
+        </ButtonGroup>
+          </div>
+
+
+
       </div>
     </div>
   );
