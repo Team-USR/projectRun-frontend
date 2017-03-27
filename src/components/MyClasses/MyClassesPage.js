@@ -52,6 +52,7 @@ export default class MyClassesPage extends Component {
   }
 
   getClassContent(currentClassId) {
+    this.setState({ loading: true });
     axios({
       url: `${API_URL}/groups/${currentClassId}/quizzes`,
       headers: this.props.userToken,
@@ -73,18 +74,38 @@ export default class MyClassesPage extends Component {
             requestsList: studentsResponse.data.pending_requests_users,
             invitedList: studentsResponse.data.pending_invite_users,
           });
+          setTimeout(() => {
+            this.setState({
+              loading: false,
+            });
+          }, 510);
         })
         .catch(() => {
           this.setState({ panelType: 'my_classes_default_panel' });
+          setTimeout(() => {
+            this.setState({
+              loading: false,
+            });
+          }, 510);
         });
       } else if (this.state.userT === STUDENT) {
         this.setState({ panelType: 'show_selected_class', content: newContent });
+        setTimeout(() => {
+          this.setState({
+            loading: false,
+          });
+        }, 510);
       }
     })
     .catch(() => {
       cookie.remove('current-class-id');
       cookie.remove('current-class-title');
       this.setState({ panelType: 'my_classes_default_panel' });
+      setTimeout(() => {
+        this.setState({
+          loading: false,
+        });
+      }, 510);
     });
   }
   refreshStudents(currentClassId, ptyp) {
@@ -371,6 +392,7 @@ export default class MyClassesPage extends Component {
         averagePerCreatedClass={formatAveragePerCreatedClass(this.state.averagePerCreatedClass)}
         getClassMarks={classId => this.requestStudentStatistics(classId)}
         numberOfClasses={this.state.sideBarContent.classes.length}
+        classes={this.state.sideBarContent.classes}
         getAllClasses={() => this.getAllClasses()}
         updateAllStudents={object => this.updateAllStudents(object)}
         handleSaveNewClassClick={newClassTitle =>
@@ -386,6 +408,8 @@ export default class MyClassesPage extends Component {
         requestsList={this.state.requestsList}
         invitedList={this.state.invitedList}
         refreshStudents={(classID, ptype) => this.refreshStudents(classID, ptype)}
+        handleSideBarClassClick={(currentClassId, classTitle) =>
+          this.handleSideBarClassClick(currentClassId, classTitle)}
       />);
     return element;
   }
