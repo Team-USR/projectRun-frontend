@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import demolaptop from '../assets/images/demolaptop.png';
 import demomac from '../assets/images/demomac.png';
+import demogroups from '../assets/images/demogroups.png';
 
 function MainPage(props) {
   MainPage.propTypes = {
@@ -38,7 +39,7 @@ function MainPage(props) {
         <img src={demolaptop} alt="" />
       </div>
       <div className="featuresContainer">
-        <h2 className="title">Features to experience with Interactive Language Exercises</h2>
+        <h2 className="title">Features to experience</h2>
         <Col md={12}>
           <Col md={6}>
             <div className="featuresList">
@@ -105,7 +106,18 @@ function MainPage(props) {
         </h4>
         <img src={demomac} alt="" />
       </div>
+      <div className="groupsContainer">
+        <h2 className="title">Management system</h2>
+        <h4 className="subheading">
+          Manage classes, students and quizzes.
+        </h4>
+        <img src={demogroups} alt="" />
+      </div>
       <section className="footerSection">
+        <span className="footerText">
+        Team USR @2017
+        </span>
+
       </section>
     </div>
   );

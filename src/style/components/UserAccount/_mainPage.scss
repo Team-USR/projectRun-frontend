@@ -55,6 +55,16 @@
     }
     text-align: center;
   }
+  .groupsContainer{
+    padding-bottom:50px;
+    padding-top:50px;
+    img {
+      height:80vh;
+      width: auto;
+    }
+    background-color: rgb(245,245,245);
+    text-align: center;
+  }
   .featuresContainer{
     padding: 50px 0;
     background-color: rgb(245,245,245);
@@ -76,9 +86,14 @@
       }
     }
   }
+
   .footerSection{
-    background-color: rgb(245,245,245);
-    height:50px;
+    background-color: #222222;
+    height:70px;
+    padding-top:20px;
+    .footerText{
+      color:white;
+    }
   }
   .subheading{
     color:grey;
