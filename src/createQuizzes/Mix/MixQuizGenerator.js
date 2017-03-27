@@ -195,8 +195,8 @@ export default class MixQuizGenerator extends Component {
     return (
       <div className="mixQuizGeneratorContainer">
         <h3 className="question_title"> Mix Question </h3>
-        <Col md={12}>
-          <Col md={2}>
+        <Col md={12} className="question_wrapper">
+          <Col md={2} className="question_line">
             <h4 className="question_heading">Question: </h4>
           </Col>
           <Col md={10}>
@@ -212,8 +212,8 @@ export default class MixQuizGenerator extends Component {
         </Col>
         <div className="mixQuizGenerator">
           <div className="mixQuizInput">
-            <Col md={12}>
-              <Col md={2}>
+            <Col md={12} className="question_wrapper">
+              <Col md={2} className="question_line">
                 <h4 className="question_heading">Sentence: </h4>
               </Col>
               <Col md={10}>
@@ -230,7 +230,7 @@ export default class MixQuizGenerator extends Component {
               type="button"
               onClick={this.addSolution}
             >
-              Add another solution
+              Add an alternative solution
             </Button>
           </div>
           {this.renderAlternateSolution()}
