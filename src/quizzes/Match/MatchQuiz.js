@@ -216,8 +216,8 @@ export default class MatchQuiz extends Component {
     const matchQuiz = (
       <div className={styleClasses}>
         <div className="matchQuizTitle">
-          <h3><b> { quizIndex + 1}. { matchQuizTitle } </b></h3>
-          <h5><b> Points: </b> {this.props.question.points}</h5>
+          <h3>{ quizIndex + 1}. { matchQuizTitle } </h3>
+          <h5> Points: {this.props.question.points}</h5>
         </div>
 
         { /* Display Left Column */ }
