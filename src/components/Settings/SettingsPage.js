@@ -18,6 +18,7 @@ export default class SettingsPage extends Component {
       statusText: '',
       userName: '',
       email: '',
+      err: null,
     };
   }
 
@@ -31,21 +32,24 @@ export default class SettingsPage extends Component {
     }
   }
 
-  changePassword() {
-    axios({
+  async changePassword() {
+    await axios({
       url: `${API_URL}/users/password`,
       headers: this.props.userToken,
       method: 'put',
       data: {
+        current_password: this.state.currentPassword,
         password: this.state.newPassword,
         password_confirmation: this.state.confirmPassword,
       },
-    }).then(res => this.setState({
+    })
+    .then(res => this.setState({
       statusText: res.statusText,
       currentPassword: '',
       newPassword: '',
       confirmPassword: '',
-    }));
+    }))
+    .catch(err => this.setState({ err: err.response.data.errors.full_messages.join(', ') }));
   }
 
   handleCurrentPassword(e) {
@@ -112,6 +116,7 @@ export default class SettingsPage extends Component {
         updateNewValidation={status => this.updateNewValidation(status)}
         updateConfirmValidation={status => this.updateConfirmValidation(status)}
         changePassword={() => this.changePassword()}
+        resetError={this.state.err}
       />
     );
   }

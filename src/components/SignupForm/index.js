@@ -5,7 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 export default function SignupForm(props) {
   let error;
   if (props.signupError) {
-    error = <h3 className="invalidHeader">{props.signupError}</h3>;
+    error = <h3 className="alert alert-danger">{props.signupError}</h3>;
   }
 
   return (
