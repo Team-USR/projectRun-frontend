@@ -1,7 +1,4 @@
-.mixQuizContainer{
-  .mix_label{
-    margin-bottom:10px;
-  }
+.cardSection{
   .solutionContainer{
     margin-bottom: 10px;
     .sol_container{
@@ -11,8 +8,21 @@
     }
   }
   .solution_container{
+    display: inline-block;
+    text-align: left;
+    .center_this{
+      text-align: center;
+    }
     .alternative_solutions {
       padding-left: 0;
+      padding:0;
     }
   }
+  .mixQuizContainer{
+    .mix_label{
+      margin-bottom:10px;
+    }
+
+  }
+
 }

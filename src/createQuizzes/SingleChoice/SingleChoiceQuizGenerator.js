@@ -110,7 +110,7 @@ export default class SingleChoiceQuizGenerator extends Component {
     displayIndex = 0;
     return (
       <div className="questionBlock">
-        <h4>Single choice question</h4>
+        <h3 className="question_title">Single choice question</h3>
         <div className="">
           <Col md={12} >
             <Col md={3} >

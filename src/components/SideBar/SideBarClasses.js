@@ -37,9 +37,9 @@ export default class SideBarClasses extends Component {
   renderSearchBar() {
     let myStyle;
     if (this.props.userType === STUDENT) {
-      myStyle = { top: '116px' };
+      myStyle = { top: '99px' };
     } else {
-      myStyle = { top: '141px' };
+      myStyle = { top: '103px', zIndex: '3' };
     }
     return (
       <NavItem key={'searchBar'} >

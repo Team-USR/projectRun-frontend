@@ -103,7 +103,7 @@ export default class MultipleChoiceQuizGenerator extends Component {
     displayIndex = 0;
     return (
       <div className="questionBlock">
-        <h4>Multiple choice question</h4>
+        <h3 className="question_title">Multiple choice question</h3>
         <div className="">
 
           <Col md={12} >

@@ -408,24 +408,24 @@ export default class QuizCreatorMainPage extends Component {
         <div className="cardSection" key={`generatorQuizContainer${displayIndex}`}>
           <h3>{displayIndex}</h3>
           {this.state.questions[index].question}
-          <div style={{ textAlign: 'center',display:'inline-block',marginTop:10 }}>
-          <Col md={9} style={{ textAlign: 'center'}}>
-          <Col md={3}>
-            <label htmlFor="pointIn">
-              <h5>Score:</h5>
-            </label>
+          <Col md={12} className="general_points_container">
+            <Col md={12} className="points_container">
+              <div className="points_wrapper">
+                <label htmlFor="pointIn">
+                  <h5>Score:</h5>
+                </label>
+              </div>
+              <div className="points_wrapper">
+                <input
+                  className="form-control"
+                  id="pointIn"
+                  placeholder="ex: 10"
+                  type="number"
+                  onChange={event => this.setPoints(event, index)}
+                />
+              </div>
             </Col>
-            <Col md={6}>
-            <input
-              className="form-control"
-              id="pointIn"
-              placeholder="ex: 10"
-              type="number"
-              onChange={event => this.setPoints(event, index)}
-            />
-            </Col>
-            </Col>
-          </div>
+          </Col>
           <div>
             {this.renderQuestionError(index).split('\n').map((errtext, i) =>
               <h5 className="error_message" key={`errtext${index}${i + 1}`}>{errtext}</h5>)}
@@ -536,7 +536,6 @@ export default class QuizCreatorMainPage extends Component {
           <br /><br />
           {this.renderQuestions()}
           <br /><br /><br />
-          { this.renderSubmitPanel() }
           Select a quiz to be added:
           <br />
           <div className="quizButtons">
@@ -547,6 +546,7 @@ export default class QuizCreatorMainPage extends Component {
             <Button onClick={() => this.addQuiz('mix')}>Mix</Button>
             <Button onClick={() => this.addQuiz('cross')}>Cross</Button>
           </div>
+          { this.renderSubmitPanel() }
           <div
             style={{ float: 'left', clear: 'both' }}
             ref={(input) => { this.scroller = input; }}
