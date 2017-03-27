@@ -1,5 +1,15 @@
 .groupPanelWrapper {
-
+  .red_button {
+    background-color: white;
+    color: #d10c0f;
+    border: 2px #d10c0f solid;
+  }
+  .red_button:hover{
+    background-color: #d10c0f;
+    color:white;
+    border:2px #d10c0f solid;
+  }
+  .red_button:focus {outline:0;}
   .quizPanelWrapper {
     .quizzesList {
 

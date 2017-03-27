@@ -22,7 +22,7 @@
 
     display: inline-block;
       .fa-check-square-o {
-        color:green;
+        color:$brand-green-color;
         font-size: 50px;
       }
       .logoName{
@@ -81,7 +81,7 @@
         float:left;
         .fa-check{
           margin-right:10px;
-          color:green;
+          color:$brand-green-color;
         }
       }
     }
