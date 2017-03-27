@@ -130,12 +130,18 @@ export default class QuizEditorMainPage extends Component {
     this.setState({ submitedQuestions: generatedQuiz });
   }
   setPoints(event, index) {
+    let realScore = event.target.value;
+    const e = event;
+    if (isNaN(event.target.value) || event.target.value === '' || event.target.value === undefined || event.target.value === null) {
+      e.target.value = '';
+      realScore = 0;
+    }
     const inputQ = this.state.submitedQuestions;
     if (inputQ.quiz.questions_attributes && inputQ.quiz.questions_attributes[index] &&
     inputQ.quiz.questions_attributes[index].points !== undefined) {
-      inputQ.quiz.questions_attributes[index].points = event.target.value;
+      inputQ.quiz.questions_attributes[index].points = realScore;
     } else {
-      inputQ.quiz.questions_attributes[index] = { points: event.target.value };
+      inputQ.quiz.questions_attributes[index] = { points: realScore };
     }
     this.setState({ submitedQuestions: inputQ });
   }
@@ -497,8 +503,14 @@ export default class QuizEditorMainPage extends Component {
     this.checkCorectnessTitle(generatedQuiz);
   }
   changeAttempts(event) {
+    let realAttempts = event.target.value;
+    const e = event;
+    if (isNaN(event.target.value) || event.target.value === '' || event.target.value === undefined || event.target.value === null) {
+      e.target.value = '';
+      realAttempts = 0;
+    }
     const attempted = this.state.submitedQuestions;
-    attempted.quiz.attempts = event.target.value;
+    attempted.quiz.attempts = realAttempts;
     this.setState({ submitedQuestions: attempted });
     this.checkCorectnessTitle(attempted);
   }
