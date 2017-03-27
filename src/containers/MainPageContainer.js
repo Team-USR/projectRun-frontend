@@ -27,7 +27,12 @@ function MainPage(props) {
           Click and create. Solve and submit. Get your marks. Just like that!
         </h4>
         <section className="registerSection">
-          <Button className="registerButton" onClick={() => props.goToSignup()} >Sing up now</Button>
+          <Button
+            className="registerButton"
+            onClick={() => props.goToSignup()}
+          >
+          Sing up now
+          </Button>
         </section>
         <img src={demolaptop} alt="" />
       </div>

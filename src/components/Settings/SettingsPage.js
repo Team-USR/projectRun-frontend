@@ -25,7 +25,7 @@ export default class SettingsPage extends Component {
     const settingUserType = cookie.load('userType');
     const user = cookie.load('username');
     const em = cookie.load('uid');
-    this.setState({ userName: user, email: em })
+    this.setState({ userName: user, email: em });
     if (settingUserType === TEACHER) {
       this.setState({ isTeacher: true });
     }
@@ -83,8 +83,8 @@ export default class SettingsPage extends Component {
         <h1><b>Profile</b></h1>
         <form>
           <div className="information">
-          <h3><span className="settings_item">Name:</span> {this.state.userName} </h3>
-          <h3><span className="settings_item">Email:</span> {this.state.email} </h3>
+            <h3><span className="settings_item">Name:</span> {this.state.userName} </h3>
+            <h3><span className="settings_item">Email:</span> {this.state.email} </h3>
           </div>
           <label htmlFor={'userType'}>
             <span>Student</span>

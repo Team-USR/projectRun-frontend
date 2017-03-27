@@ -88,7 +88,7 @@ export default class SideBarClasses extends Component {
       );
     }
     let classesCounter = 0;
-    let maxDisplayed = 15;
+    let maxDisplayed = 9;
     if (this.state.content.length - maxDisplayed >= 1) {
       maxDisplayed -= 1;
     }

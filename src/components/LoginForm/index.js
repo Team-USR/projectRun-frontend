@@ -1,6 +1,6 @@
 import React from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { ControlLabel, form, FormControl, Button, ButtonGroup, Col } from 'react-bootstrap';
+import { ControlLabel, form, FormControl, Button, ButtonGroup } from 'react-bootstrap';
 import cookie from 'react-cookie';
 import Toggle from 'react-toggle';
 import { STUDENT, TEACHER } from '../../constants';

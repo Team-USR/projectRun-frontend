@@ -36,8 +36,8 @@ export default function SignupForm(props) {
             value={props.password}
             onChange={props.handlePasswordChange}
           />
-            </form>
-          <div className="signupButtonWrapper">
+        </form>
+        <div className="signupButtonWrapper">
           <ButtonGroup style={{ float: 'right' }}>
             <LinkContainer to={'/login'}>
               <Button>Login</Button>
@@ -45,14 +45,11 @@ export default function SignupForm(props) {
             <Button
               type="submit"
               onClick={props.submitSignup}
-              >
+            >
             Signup
           </Button>
-        </ButtonGroup>
-          </div>
-
-
-
+          </ButtonGroup>
+        </div>
       </div>
     </div>
   );

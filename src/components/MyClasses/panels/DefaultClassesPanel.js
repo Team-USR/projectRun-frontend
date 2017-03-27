@@ -12,6 +12,7 @@ export default class DefaultClassesPanel extends Component {
       return <h3>You currently have {this.props.numberOfClasses} classes</h3>;
     }
     if (this.props.userType === STUDENT) {
+      margin = 0;
       return <h3>You are currently enrolled in {this.props.numberOfClasses} classes</h3>;
     }
     return (null);
@@ -56,8 +57,8 @@ export default class DefaultClassesPanel extends Component {
         { this.renderCharts() }
         <div className="quizList" style={{ marginTop: margin }}>
           {
-          (this.props.classes.length > 0 &&
-          <h5 style={{ marginTop: 50 }}><b>All classes</b></h5>)
+            (this.props.classes.length > 0 &&
+              <h1 style={{ marginTop: 50 }}><b>All classes</b></h1>)
           }
           { this.renderAllClasses()}
         </div>
