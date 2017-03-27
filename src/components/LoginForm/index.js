@@ -17,7 +17,7 @@ export default function LoginForm(props) {
 
   let error;
   if (props.loginError) {
-    error = <h3 className="invalidHeader">{props.loginError}</h3>;
+    error = <h3 className="alert alert-danger">{props.loginError}</h3>;
   }
   let isTeacher = false;
   return (
@@ -71,10 +71,10 @@ export default function LoginForm(props) {
               type="submit"
               onClick={props.submitLogin}
             >
-          Login
+          Log in
         </Button>
             <LinkContainer to={'/signup'}>
-              <Button>Sign-up</Button>
+              <Button>Sign up</Button>
             </LinkContainer>
           </ButtonGroup>
         </div>
