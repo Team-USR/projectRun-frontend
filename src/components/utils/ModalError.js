@@ -7,6 +7,7 @@ export default class ModalError extends Component {
     const buttonsWrapper = [];
 
     const buttons = this.props.content.buttons;
+    const modalProps = this.props.content.modalProps;
     if (buttons.indexOf('close') !== -1) {
       buttonsWrapper.push((
         <Button
@@ -37,6 +38,21 @@ export default class ModalError extends Component {
           onClick={() => this.props.confirmGenerateBoard()}
         >
           Generate Board
+        </Button>
+      ));
+    }
+    if (buttons.indexOf('deleteClass') !== -1) {
+      let classId = 0;
+      if (modalProps && modalProps.classId) {
+        classId = modalProps.classId;
+      }
+      buttonsWrapper.push((
+        <Button
+          key={'deleteClass_button'}
+          className="deleteButton"
+          onClick={() => this.props.confirmDeleteClass(classId)}
+        >
+          Delete Class
         </Button>
       ));
     }
@@ -73,13 +89,19 @@ ModalError.propTypes = {
     header: PropTypes.string.isRequired,
     body: PropTypes.string.isRequired,
     buttons: PropTypes.arrayOf(PropTypes.string).isRequired,
+    modalProps: PropTypes.shape({
+      classId: PropTypes.string,
+    }),
   }).isRequired,
   close: PropTypes.func.isRequired,
   confirmClearBoard: PropTypes.func,
   confirmGenerateBoard: PropTypes.func,
+  confirmDeleteClass: PropTypes.func,
+
 };
 
 ModalError.defaultProps = {
   confirmClearBoard: null,
   confirmGenerateBoard: null,
+  confirmDeleteClass: null,
 };
