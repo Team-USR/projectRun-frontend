@@ -51,6 +51,7 @@
     "eslint-plugin-react": "^6.9.0",
     "jest": "^19.0.2",
     "jest-css-modules": "^1.1.0",
+    "nightwatch": "^0.9.14",
     "react-addons-test-utils": "^15.4.2"
   },
   "scripts": {

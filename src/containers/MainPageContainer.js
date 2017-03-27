@@ -19,7 +19,7 @@ function MainPage(props) {
         </div>
         <hr />
         <ButtonToolbar className="loginButton">
-          <Button onClick={() => props.goToLogin()} >Log in</Button>
+          <Button id="loginButton" onClick={() => props.goToLogin()} >Log in</Button>
         </ButtonToolbar>
       </section>
       <div className="laptopContainer">
