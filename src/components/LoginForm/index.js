@@ -17,13 +17,13 @@ export default function LoginForm(props) {
 
   let error;
   if (props.loginError) {
-    error = <h3 className="alert alert-danger">{props.loginError}</h3>;
+    error = <h4 className="text-danger text-center">{props.loginError}</h4>;
   }
   let isTeacher = false;
   return (
     <div className="loginPage">
-      {error}
       <div className="loginWrapper cardSection">
+        {error}
         <form >
           <ControlLabel className="loginLabel">Email</ControlLabel>
           <FormControl
