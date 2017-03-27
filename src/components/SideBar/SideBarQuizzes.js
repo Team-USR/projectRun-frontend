@@ -1,7 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Nav, NavItem, Button, Accordion, Panel } from 'react-bootstrap';
 import { STUDENT, TEACHER } from '../../constants';
-import plusSign from '../../assets/images/plus.svg';
 
 export default class SideBarQuizzes extends Component {
   constructor() {
@@ -121,10 +120,16 @@ export default class SideBarQuizzes extends Component {
     }
   }
   renderSearchBar() {
+    let myStyle;
+    if (this.props.userType === STUDENT) {
+      myStyle = { top: '80px' };
+    } else {
+      myStyle = { top: '122px' };
+    }
     return (
       <NavItem key={'searchBar'} >
         <div>
-          <i className="fa fa-search search_icon" aria-hidden="true" />
+          <i style={myStyle} className="fa fa-search search_icon" aria-hidden="true" />
           <input
             className="searchBarItem"
             id="searchBar"
@@ -161,23 +166,17 @@ export default class SideBarQuizzes extends Component {
       if (publishedContent.length - maxPublished >= 1) {
         maxPublished -= 1;
       }
+
       return (
         <div>
-          {this.renderSearchBar()}
           <Nav>
             <NavItem key={0}>
               <Button className="titleButton" onClick={() => this.props.onQuizCreatorClick()}>
-                <div className="row">
-                  <div className="col-md-3 plusIconWrapper">
-                    <img className="plusIcon" src={plusSign} alt={'+'} />
-                  </div>
-                  <div className="col-md-9 createText">
-                Create a quiz
-                </div>
-                </div>
+                <i className="fa fa-plus" aria-hidden="true" /> Create a Quiz
               </Button>
             </NavItem>
           </Nav>
+          {this.renderSearchBar()}
           <Nav key={'teacher'} >
             <Accordion defaultActiveKey={this.state.activePanel}>
               <Panel header={`Not published (${unpublishedContent.length})`} eventKey="1">

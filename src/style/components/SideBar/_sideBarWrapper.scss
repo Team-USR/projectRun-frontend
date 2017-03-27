@@ -38,6 +38,7 @@
         border:0px;
         border-bottom:1px solid white;
         outline: none;
+        padding-right: 26px;
         font-size: 18px;
         padding-left: 30px;
         text-align: left;
@@ -88,17 +89,40 @@
       }
 
     }
+    .navbar-nav{
+      float:none;
+      li{
+        width: 100%;
+        a{
+          width:100%;
+          padding: 0;
+          text-decoration: none;
+        }
+        a:hover{
+          text-decoration: none;
+        }
+      }
+    }
     .titleButton{
       background-color: #222222;
       border:0px;
-      margin-left:15px;
+      padding: 10px;
       color:grey;
       font-size: 16px;
       text-align: center;
       display: inline;
-      width:150px;
+      width: 100%;
+      outline: none;
+      padding:10px;
+      color: #e6e6e6;
+      .fa-plus{
+        color:#2ed146;
+        margin-right: 5px;
+      }
       .createText {
         padding-top: 5px;
+        outline:none;
+        color: #e6e6e6;
       }
       .plusIconWrapper {
         width:32px;
@@ -116,7 +140,7 @@
       border:0px;
       font-size: 18px;
       width:100%;
-      color:grey;
+      color: #e6e6e6;
       text-align: center;
       display: inline;
       margin-left: -1px;
@@ -133,14 +157,7 @@
     background-color: #080808;
   }
     .titleButton:hover{
-      background-color: #222222;
-      border:0px;
-      font-size: 16px;
-      margin-left:15px;
-      color:white;
-      text-align: center;
-      display: inline;
-      width:150px;
+      background-color: #080808;
       .createText {
         padding-top: 5px;
       }
@@ -185,17 +202,16 @@
       .search_icon{
         position: absolute;
         color: white;
-        top: 79px;
-        right: 5px;
+        right: 10px;
         pointer-events: none;
       }
       .search_icon2{
         position: absolute;
         color: white;
-        top: 118px;
-        right: 5px;
+        right: 10px;
         pointer-events: none;
       }
+
     }
   }
 }

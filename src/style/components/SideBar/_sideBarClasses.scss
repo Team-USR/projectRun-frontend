@@ -4,6 +4,21 @@
       background-color: $brand-green-color;
       color: white;
     }
+    .navbar-collapse {
+      margin-right: 7.5px;
+        li{
+          width: 100%;
+          a{
+            width:100%;
+            text-decoration: none;
+            .titleButton {
+              width: 100%;
+            }
+          }
+          a:hover{
+                text-decoration: none;
+          }
+        }
 
   }
 
@@ -18,4 +33,5 @@
       width:250px;
     }
   }
+}
 }
