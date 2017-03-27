@@ -4,7 +4,8 @@ import axios from 'axios';
 import { API_URL, STUDENT, TEACHER } from '../../constants';
 import { SideBarWrapper } from '../SideBar';
 import { MyClassesPanel } from './index';
-import { BrandSpinner } from '../utils';
+import { BrandSpinner, ModalError } from '../utils';
+
 import { formatAveragePerCreatedClass } from '../../helpers';
 
 export default class MyClassesPage extends Component {
@@ -32,6 +33,14 @@ export default class MyClassesPage extends Component {
       content: { quizzes: [], students: [] },
       userT: STUDENT,
       loading: false,
+
+      showModal: false,
+      modalContent: {
+        header: 'Error!',
+        body: 'The Quiz contains errors',
+        buttons: ['close'],
+        modalProps: {},
+      },
     };
   }
 
@@ -142,6 +151,18 @@ export default class MyClassesPage extends Component {
   updateAllStudents(object) {
 //    console.log("ALMOST UDPATED", object);
     this.setState({ allStudents: object });
+  }
+
+  closeModal() {
+    this.setState({ showModal: false });
+  }
+
+  openModal(content) {
+    if (content) {
+      this.setState({ showModal: true, modalContent: content });
+    } else {
+      this.setState({ showModal: true });
+    }
   }
 
   requestTeacherData() {
@@ -317,7 +338,7 @@ export default class MyClassesPage extends Component {
     });
   }
 
-  handleDeleteClass(classId) {
+  confirmDeleteClass(classId) {
     this.setState({ loading: true });
     axios({
       url: `${API_URL}/groups/${classId}`,
@@ -330,10 +351,20 @@ export default class MyClassesPage extends Component {
       cookie.remove('current-class-title');
       this.setState({ panelType: 'my_classes_default_panel' });
     });
+
+    this.closeModal();
+  }
+
+  handleDeleteClass(deleteClassId) {
+    this.openModal({
+      header: 'Delete this class?',
+      body: 'Are you sure that you want to DELETE this class? This is an irreversible action which will affect the currenlty enrolled students and assigned quizzes!',
+      buttons: ['close', 'deleteClass'],
+      modalProps: { classId: deleteClassId },
+    });
   }
 
   handleSaveAssignedQuizzes(newQuizzesArray) {
-//    console.log("NEW quizzes ARRAY", newQuizzesArray);
     this.setState({ loading: true });
     this.newQuizzesArray = [];
     const quizzesIdArray = newQuizzesArray.map(obj => obj.id);
@@ -441,7 +472,7 @@ export default class MyClassesPage extends Component {
         <div className="myClassesPageWrapper">
           { this.renderSideBar() }
           <div className="contentWrapper">
-            <BrandSpinner />;
+            <BrandSpinner />
           </div>
         </div>
       );
@@ -451,6 +482,12 @@ export default class MyClassesPage extends Component {
         <div className="contentWrapper">
           { this.renderClassesPanel() }
         </div>
+        <ModalError
+          show={this.state.showModal}
+          content={this.state.modalContent}
+          close={() => this.closeModal()}
+          confirmDeleteClass={classId => this.confirmDeleteClass(classId)}
+        />
       </div>
     );
   }
