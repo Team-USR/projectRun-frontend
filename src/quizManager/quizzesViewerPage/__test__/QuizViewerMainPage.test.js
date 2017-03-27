@@ -5,7 +5,10 @@ import { QuizViewerMainPage } from '../';
 describe('<QuizViwerMainPage />', () => {
   const loading = '.brandSpinnerWrapper';
   it('Component should contain loading screen', () => {
-    expect(mount(<QuizViewerMainPage userToken={{}} />)
+    expect(mount(<QuizViewerMainPage
+      quizID={'2'}
+      userToken={{}}
+    />)
     .find(loading).length).toBe(1);
   });
 });

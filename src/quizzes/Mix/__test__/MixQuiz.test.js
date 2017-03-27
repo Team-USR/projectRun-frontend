@@ -11,6 +11,7 @@ describe('<MixQuiz />', () => {
     words: ['just',
       '3',
       'words'],
+    points: 2,
   };
   const tag = (<MixQuiz
     question={questionToBeSent}
