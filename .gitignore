@@ -39,3 +39,8 @@ jspm_packages
 
 # Generated CSS file
 src/App.css
+
+# nightwatch test
+selenium-debug.log
+*.jar
+reports
