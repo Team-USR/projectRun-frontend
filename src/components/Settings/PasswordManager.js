@@ -80,11 +80,14 @@ export default class PasswordManager extends React.Component {
   render() {
     let error;
     if (this.props.resetError) {
-      error = <h3 className="alert alert-danger">{this.props.resetError}</h3>;
+      error = (
+        <Col smOffset={2}>
+          <ControlLabel className="text-danger">{this.props.resetError}</ControlLabel>
+        </Col>);
     }
     return (
       <div className="settings_tab">
-        <h2>Reset password</h2>
+        <h2>Change password</h2>
         {error}
         <br />
         <Form horizontal>

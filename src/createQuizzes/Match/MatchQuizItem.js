@@ -40,7 +40,7 @@ export default function MatchQuizItem(props) {
             id={props.id}
             onClick={() => props.deleteMatchElement(props.index)}
           >
-            X
+            <i className="fa fa-times" aria-hidden="true" />
           </Button>
         </div>
       </Col>
