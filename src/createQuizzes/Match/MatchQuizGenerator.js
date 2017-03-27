@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
 import { MatchQuizItem } from './index';
 
 export default class MatchQuizGenerator extends Component {
@@ -176,49 +176,58 @@ export default class MatchQuizGenerator extends Component {
       <div className="matchQuizGenerator">
         <div className="createMatchQuizTitle">
           <h3>Match question</h3>
-          <b>Question: </b>
-          <input
-            type="text"
-            name="matchQuizTitle"
-            className="quizTitleInput"
-            value={this.state.matchQuizQuestion}
-            placeholder={this.state.quizTitlePlaceHolder}
-            onChange={e => this.handleQuestionInputChange(e)}
-          />
         </div>
-        <div className="leftColumn">
-          <h3> Left Items </h3>
-        </div>
+        <Col md={12}>
+          <Col md={2}>
+            <div>
+              <b>Question: </b>
+            </div>
+          </Col>
+          <Col md={10}>
+            <input
+              type="text"
+              name="matchQuizTitle"
+              className="quizTitleInput form-control"
+              value={this.state.matchQuizQuestion}
+              placeholder={this.state.quizTitlePlaceHolder}
+              onChange={e => this.handleQuestionInputChange(e)}
+            />
+          </Col>
+        </Col>
 
-        <div className="rightColumn" >
-          <h3> Right Items </h3>
-        </div>
+        <Col md={12}>
+          <Col md={6} sm={6} xs={6}>
+            <h3> Left Items </h3>
+          </Col>
+          <Col md={6} sm={6} xs={6}>
+            <h3> Right Items </h3>
+          </Col>
+        </Col>
 
         <div className="createMatchItems">
           { this.renderMatchItems() }
         </div>
 
-        <br />
-
-        <div className="quizItem" id="deafultValue" key="defaultValue">
-          <div className="addMoreItemsBtn">
+        <Col md={12} className="quizItem" id="deafultValue" key="defaultValue">
+          <Col md={1} />
+          <Col md={5} className="addMoreItemsBtn">
             <Button className="" onClick={this.addMatchElement}> Add Match Element</Button>
-          </div>
+          </Col>
 
-          <div className="">
+          <Col md={5}>
             <div className="defaultOption">
               <textarea
                 disabled={this.props.reviewState}
                 name={this.state.defaultTextareaName}
-                className="itemTexarea"
+                className="itemTexarea rightTextarea form-control"
                 placeholder={this.state.defaultTextareaPlaceHolder}
-                rows="2" cols="25"
                 defaultValue={this.state.defaultSelectValue}
                 onChange={e => this.handleDefaultValueTextareaChange(e)}
               />
             </div>
-          </div>
-        </div>
+            <Col md={1} />
+          </Col>
+        </Col>
 
       </div>
     );

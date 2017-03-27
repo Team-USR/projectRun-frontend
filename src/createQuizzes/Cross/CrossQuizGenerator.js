@@ -717,13 +717,14 @@ export default class CrossQuizGenerator extends Component {
               <h4><b>Board Size </b></h4>
               <form className="crossInputsForm">
                 <BoardSize
+                  styleClass="sizeLabel"
                   id={'boardWidth'}
                   labelValue={'Witdh'}
                   size={this.state.displayWidth}
                   handleSizeChange={e => this.handleWidthChange(e)}
                 />
                 <BoardSize
-                  styleClass="bottomHeightBtn"
+                  styleClass="sizeLabel bottomHeightBtn"
                   id={'boardHeight'}
                   labelValue={'Height'}
                   size={this.state.displayHeight}
