@@ -98,6 +98,9 @@ export default class MyQuizzesPage extends Component {
         quizID = cookie.load('current-session-id');
         this.setState({ panelType: pType, currentID: quizID });
       }
+    })
+    .catch(() => {
+      this.setState({ panelType: 'default' });
     });
   }
   reloadBar() {
@@ -113,7 +116,6 @@ export default class MyQuizzesPage extends Component {
     } else this.requestStudentData();
   }
   updateCurrentQuiz(panelT) {
-  //  console.log(panelT);
     this.setState({ panelType: panelT });
     cookie.save('current-session-type', panelT);
   }
@@ -148,6 +150,10 @@ export default class MyQuizzesPage extends Component {
     let element = <h1><b> My Quizzes</b></h1>;
     if (this.state.panelType === 'default') {
       element = (<DefaultQuizzesPanel
+        onSideBarItemClick={(id, panelType) => {
+          this.updateCurrentQuiz(panelType);
+          this.saveCurrentQuiz(id);
+        }}
         userT={this.state.userT}
         quizzes={this.state.userT === STUDENT ?
           this.state.sideBarContent.session : this.state.sideBarContent.quizzes}

@@ -11,7 +11,7 @@ export default function NavBar(props) {
           <Link to="/" className="navbar-brand">
             <div className="BrandTitleWrapper">
               <span> Interactive Language </span>
-              <span className={`glyphicon ${props.userTypeClass} userTypeIcon`} />
+              <i aria-hidden="true" className={`fa ${props.userTypeClass} userTypeIcon`} />
             </div>
           </Link>
         </Navbar.Brand>
@@ -36,7 +36,7 @@ export default function NavBar(props) {
             <MenuItem divider />
             <MenuItem >Help</MenuItem>
           </NavDropdown>
-          <LinkContainer onClick={props.onLogout} to="/login">
+          <LinkContainer onClick={props.onLogout} to="/home">
             <NavItem >
               Logout
             </NavItem>

@@ -31,7 +31,7 @@
       @media (min-width: 1500px) {
         width:100%;
       }
-      .searchBarItem {
+      .searchBarItemSideBar {
         width:200px;
         background-color:#222222;
         color: white;
@@ -49,7 +49,7 @@
           padding-left: 52px;
         }
       }
-      .searchBarItem:focus {
+      .searchBarItemSideBar:focus {
         background-color: #080808;
       }
       .panel-group {

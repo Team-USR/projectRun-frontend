@@ -1,5 +1,6 @@
 $bootstrap-sass-asset-helper: true;
 $icon-font-path: '../node_modules/bootstrap-sass/assets/fonts/bootstrap/';
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,700&subset=cyrillic,greek,latin-ext');
 
 @function font-path($path) {
   @return $path;
@@ -9,6 +10,7 @@ $icon-font-path: '../node_modules/bootstrap-sass/assets/fonts/bootstrap/';
 @import "../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 /* Main Style File */
 @import './style/_main';
+
 
 /* components */
 @import './style/components/Login/_all';

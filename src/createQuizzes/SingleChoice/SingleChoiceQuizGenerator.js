@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Col } from 'react-bootstrap';
 import { ChoiceInput } from './index';
 
 let displayIndex = 0;
@@ -112,14 +112,24 @@ export default class SingleChoiceQuizGenerator extends Component {
       <div className="questionBlock">
         <h4>Single choice question</h4>
         <div className="">
-          <label htmlFor="textInput">
-            Question
-            <input
-              id="textInput" type="text" onChange={this.setQuestion} defaultValue={questionText}
-            />
-          </label>
-          <Button onClick={this.addAnswers}>Add more answers</Button>
-          <form>
+          <Col md={12} >
+            <Col md={3} >
+              <h4 style={{ marginBottom: 5 }}>
+            Question:
+            </h4>
+            </Col>
+            <Col md={6}>
+              <input
+                placeholder="ex: What is your favourite colour?"
+                className="form-control"
+                id="textInput" type="text" onChange={this.setQuestion} defaultValue={questionText}
+              />
+            </Col>
+            <Col md={3}>
+              <Button onClick={this.addAnswers}>Add more answers</Button>
+            </Col>
+          </Col>
+          <form style={{ paddingTop: 60 }}>
             {this.state.answers_choices.map((element, index) =>
             this.renderAnswers(index, answersToComplete))}
           </form>

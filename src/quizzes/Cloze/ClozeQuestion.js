@@ -81,7 +81,7 @@ export default class ClozeQuestion extends React.Component {
     return (
       <div className={`cardSection ${validationClass}`} >
         <div className="questionPanel">
-          <h3>{this.props.index}. {this.props.request}</h3>
+          <h3>{this.props.index + 1}. {this.props.request}</h3>
           <h5>Points: {this.props.points}</h5>
         </div>
         <ul>

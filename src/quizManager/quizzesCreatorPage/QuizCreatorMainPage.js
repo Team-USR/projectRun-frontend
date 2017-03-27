@@ -213,7 +213,7 @@ export default class QuizCreatorMainPage extends Component {
     this.setState({ submitedQuestions: inputQ });
   }
 
-  collectClozeObject(questionID, sentenceAttributes, gapsAttributes) {
+  collectClozeObject(questionID, sentenceAttributes, gapsAttributes, questionTitle) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
     if (inputQ.quiz.questions_attributes[questionID] &&
@@ -221,7 +221,7 @@ export default class QuizCreatorMainPage extends Component {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
     const newQuestion = {
-      question: 'Fill in the gaps:',
+      question: questionTitle,
       type: 'cloze',
       points: pointsAssigned,
       cloze_sentence_attributes: {
@@ -408,16 +408,23 @@ export default class QuizCreatorMainPage extends Component {
         <div className="cardSection" key={`generatorQuizContainer${displayIndex}`}>
           <h3>{displayIndex}</h3>
           {this.state.questions[index].question}
-          <div style={{ textAlign: 'center' }}>
-            <label htmlFor="pointIn" style={{ marginRight: 10 }}>
+          <div style={{ textAlign: 'center',display:'inline-block',marginTop:10 }}>
+          <Col md={9} style={{ textAlign: 'center'}}>
+          <Col md={3}>
+            <label htmlFor="pointIn">
               <h5>Score:</h5>
             </label>
+            </Col>
+            <Col md={6}>
             <input
+              className="form-control"
               id="pointIn"
               placeholder="ex: 10"
               type="number"
               onChange={event => this.setPoints(event, index)}
             />
+            </Col>
+            </Col>
           </div>
           <div>
             {this.renderQuestionError(index).split('\n').map((errtext, i) =>
@@ -496,7 +503,7 @@ export default class QuizCreatorMainPage extends Component {
                     className="form-control"
                     id="attemptsInput"
                     type="number"
-                    placeholder="ex: 10"
+                    placeholder="ex: 10 (0 = ∞)"
                     onChange={this.changeAttempts}
                   />
                 </Col>
