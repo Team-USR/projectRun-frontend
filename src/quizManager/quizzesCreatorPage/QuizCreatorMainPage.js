@@ -124,16 +124,12 @@ export default class QuizCreatorMainPage extends Component {
   }
 
   isReviewMode() {
-    if (this.state.hasErrors.filter(item => item === true).length === 0) {
-      const sQuestions = this.state.submitedQuestions;
-  //    console.log("submitedQuestions ", sQuestions,"finishsubmited");
-      const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
+    const sQuestions = this.state.submitedQuestions;
+    const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
        element !== null);
-  //    console.log("filtered ",filteredQuestions," finishfiltered");
+    if (this.state.hasErrors.filter(item => item === true).length === 0 &&
+     filteredQuestions.length > 0) {
       this.setState({ submitedQuestions: filteredQuestions });
-    //  console.log("----------");
-    //  console.log(this.state.submitedQuestions);
-  //  console.log("----------");
       axios({
         url: `${API_URL}/quizzes`,
         headers: this.props.userToken,
@@ -166,10 +162,6 @@ export default class QuizCreatorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    // if (inputQ.quiz.questions_attributes[questionID] === undefined) {
-    //   pointsAssigned = this.state.quizInfo.questions[questionID].points;
-    // }
-
     let quiz = {};
     if (type === 'match') {
       quiz = {
