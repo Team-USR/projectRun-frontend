@@ -248,6 +248,9 @@ export default class MyClassesPanel extends Component {
   renderPanel() {
     let element = (
       <DefaultClassesPanel
+        handleSideBarClassClick={(currentClassId, classTitle) =>
+        this.props.handleSideBarClassClick(currentClassId, classTitle)}
+        classes={this.props.classes}
         userType={this.props.userType}
         numberOfClasses={this.props.numberOfClasses}
         averagePerCreatedClass={this.props.averagePerCreatedClass}
@@ -424,6 +427,8 @@ MyClassesPanel.propTypes = {
   requestsList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   refreshStudents: PropTypes.func.isRequired,
   invitedList: PropTypes.arrayOf(PropTypes.string).isRequired,
+  handleSideBarClassClick: PropTypes.func.isRequired,
+  classes: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 MyClassesPanel.defaultProps = {

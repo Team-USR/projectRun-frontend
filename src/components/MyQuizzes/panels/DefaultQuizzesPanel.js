@@ -15,6 +15,135 @@ export default class DefaultQuizzesPanel extends Component {
       type: null,
     };
   }
+
+  renderAllQuizzes() {
+    const result = [];
+    const content = this.props.quizzes;
+    if (this.props.userT === TEACHER) {
+      const publishedContent = content.filter((item) => {
+        if (item.published) {
+          return (item);
+        }
+        return (null);
+      });
+      const unpublishedContent = content.filter((item) => {
+        if (!item.published) {
+          return (item);
+        }
+        return (null);
+      });
+      if (unpublishedContent.length > 0) {
+        result.push(
+          <h5
+            key="unpublished"
+            className="subtitleQuizzes"
+          >
+            <b>Unpublished quizzes</b>
+          </h5>,
+        );
+      }
+      unpublishedContent.map((item, index) =>
+      result.push(
+        <Button
+          className="quizListItem"
+          key={`unpublished${index + 1}`}
+          onClick={() => this.props.onSideBarItemClick(item.id, panel)}
+        >
+          {item.title}
+        </Button>,
+   ),
+  );
+      if (publishedContent.length > 0) {
+        result.push(<h5 key="published" className="subtitleQuizzes"><b>Published quizzes</b></h5>);
+      }
+      publishedContent.map((item, index) =>
+      result.push(
+        <Button
+          className="quizListItem"
+          key={`published${index + 1}`}
+          onClick={() => this.props.onSideBarItemClick(item.id, panel)}
+        >
+          {item.title}
+        </Button>,
+        ),
+      );
+    }
+    if (this.props.userT === STUDENT) {
+      const notStartedContent = content.filter((item) => {
+        if (item.status === 'not_started') {
+          return (item);
+        }
+        return (null);
+      });
+      const inprogressContent = content.filter((item) => {
+        if (item.status === 'in_progress') {
+          return (item);
+        }
+        return (null);
+      });
+      const submittedContent = content.filter((item) => {
+        if (item.status === 'submitted') {
+          return (item);
+        }
+        return (null);
+      });
+      if (notStartedContent.length > 0) {
+        result.push(<hr key={'hr1'} />);
+        result.push(<h5
+          key="notstarted"
+          className="subtitleQuizzes"
+        >
+          <b>Not started quizzes</b>
+        </h5>);
+      }
+      notStartedContent.map((item, index) =>
+      result.push(
+        <Button
+          className="quizListItem"
+          key={`nostarted${index + 1}`}
+          onClick={() => this.props.onSideBarItemClick(item.id, panel)}
+        >
+          {item.title}
+        </Button>,
+       ),
+      );
+      if (inprogressContent.length > 0) {
+        result.push(<hr key={'hr2'} />);
+        result.push(<h5
+          key="inprogress"
+          className="subtitleQuizzes"
+        >
+          <b>In progress quizzes</b></h5>);
+      }
+      inprogressContent.map((item, index) =>
+      result.push(
+        <Button
+          className="quizListItem"
+          key={`inprogress${index + 1}`}
+          onClick={() => this.props.onSideBarItemClick(item.id, panel)}
+        >
+          {item.title}
+        </Button>,
+       ),
+      );
+      if (submittedContent.length > 0) {
+        result.push(<hr key={'hr3'} />);
+        result.push(<h5 key="submitted" className="subtitleQuizzes"><b>Submitted quizzes</b></h5>);
+      }
+      submittedContent.map((item, index) =>
+      result.push(
+        <Button
+          className="quizListItem"
+          key={`submitted${index + 1}`}
+          onClick={() => this.props.onSideBarItemClick(item.id, panel)}
+        >
+          {item.title}
+        </Button>,
+       ),
+      );
+    }
+    return result;
+  }
   render() {
     let data = [];
     if (this.props.userT === STUDENT) {
@@ -56,19 +185,12 @@ export default class DefaultQuizzesPanel extends Component {
           </div>)
         }
         <div className="quizList" style={{ marginTop: margin }}>
-          <h5><b>All quizzes</b></h5>
           {
-          this.props.quizzes.map((item, index) =>
-             (
-               <Button
-                 className="quizListItem"
-                 key={`quiz${index + 1}`}
-                 onClick={() => this.props.onSideBarItemClick(item.id, panel)}
-               >
-                 {item.title}
-               </Button>
-            ),
-          )
+          (this.props.quizzes.length > 0 &&
+            <h1><b>All quizzes</b></h1>)
+          }
+          {
+          this.renderAllQuizzes()
         }
         </div>
       </div>

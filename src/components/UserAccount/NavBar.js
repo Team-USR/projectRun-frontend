@@ -10,6 +10,7 @@ export default function NavBar(props) {
         <Navbar.Brand>
           <Link to="/" className="navbar-brand">
             <div className="BrandTitleWrapper">
+              <i className="fa fa-check-square-o logo" aria-hidden="true" />
               <span> Interactive Language </span>
               <i aria-hidden="true" className={`fa ${props.userTypeClass} userTypeIcon`} />
             </div>

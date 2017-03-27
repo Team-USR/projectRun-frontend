@@ -5,7 +5,7 @@ import { QuizCreatorMainPage, QuizCreatorReviewer, QuizEditorMainPage } from './
 import { QuizViewerMainPage, QuizSessionViewer } from './../../quizManager/quizzesViewerPage';
 import { SideBarWrapper } from '../SideBar/index';
 import { API_URL, STUDENT, TEACHER } from '../../constants';
-import { BrandSpinner } from '../utils';
+import { BrandSpinner, ModalError } from '../utils';
 import { DefaultQuizzesPanel } from './panels';
 import { getLastHighestGrades } from '../../helpers';
 
@@ -20,6 +20,14 @@ export default class MyQuizzesPage extends Component {
       contentLoading: true,
       submittedQuizzes: [],
       userT: STUDENT,
+
+      showModal: false,
+      modalContent: {
+        header: 'Error!',
+        body: 'The Quiz contains errors',
+        buttons: ['close'],
+        modalProps: {},
+      },
     };
   }
   componentWillMount() {
@@ -119,22 +127,45 @@ export default class MyQuizzesPage extends Component {
     this.setState({ panelType: panelT });
     cookie.save('current-session-type', panelT);
   }
-  deleteThisQUiz(id) {
-    axios({
-      url: `${API_URL}/quizzes/${id}`,
-      method: 'delete',
-      headers: this.props.userToken,
-    })
-    .then((response) => {
-      if (!response || (response && response.status !== 200)) {
-        this.setState({ errorState: true });
-      }
-  //    console.log('deleted');
-      cookie.remove('current-session-id');
-      cookie.remove('current-session-type');
-      this.updateCurrentQuiz('default');
-      this.reloadBar();
-    //  this.setState({ loadingSideBar: false });
+
+  closeModal() {
+    this.setState({ showModal: false });
+  }
+
+  openModal(content) {
+    if (content) {
+      this.setState({ showModal: true, modalContent: content });
+    } else {
+      this.setState({ showModal: true });
+    }
+  }
+
+  confirmDeleteQuiz(id) {
+    if (id) {
+      axios({
+        url: `${API_URL}/quizzes/${id}`,
+        method: 'delete',
+        headers: this.props.userToken,
+      })
+      .then((response) => {
+        if (!response || (response && response.status !== 200)) {
+          this.setState({ errorState: true });
+        }
+        cookie.remove('current-session-id');
+        cookie.remove('current-session-type');
+        this.updateCurrentQuiz('default');
+        this.reloadBar();
+      });
+    }
+    this.closeModal();
+  }
+
+  deleteThisQuiz(id) {
+    this.openModal({
+      header: 'Delete this quiz?',
+      body: 'Are you sure that you want to DELETE this quiz? This is an irreversible action and this quiz will not be available to your student any more!',
+      buttons: ['close', 'deleteQuiz'],
+      modalProps: { quizId: id },
     });
   }
   saveCurrentQuiz(id) {
@@ -146,7 +177,6 @@ export default class MyQuizzesPage extends Component {
     this.updateCurrentQuiz('default');
   }
   renderQuizContent() {
-//    console.log("rendering",this.state.currentID);
     let element = <h1><b> My Quizzes</b></h1>;
     if (this.state.panelType === 'default') {
       element = (<DefaultQuizzesPanel
@@ -167,7 +197,7 @@ export default class MyQuizzesPage extends Component {
           userToken={this.props.userToken}
           handlePublish={() => this.reloadBar()}
           handleSubmitButton={() => { this.reloadBar(); this.updateCurrentQuiz('editor'); }}
-          deleteQuiz={(deletedID) => { this.reloadBar(); this.deleteThisQUiz(deletedID); }}
+          deleteQuiz={(deletedID) => { this.reloadBar(); this.deleteThisQuiz(deletedID); }}
           handleError={type => this.updateCurrentQuiz(type)}
         />);
       }
@@ -230,6 +260,12 @@ export default class MyQuizzesPage extends Component {
         <div className="contentWrapper">
           {this.renderQuizContent()}
         </div>
+        <ModalError
+          show={this.state.showModal}
+          content={this.state.modalContent}
+          close={() => this.closeModal()}
+          confirmDeleteQuiz={quizId => this.confirmDeleteQuiz(quizId)}
+        />
       </div>
     );
   }

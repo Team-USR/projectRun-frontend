@@ -5,18 +5,11 @@ html,body {
   font-family: 'Roboto', sans-serif;
 }
 
+
+/* Fix for Modal Error  */
 .modal-open {
-  .topNabBarWrapper {
-    .navbar-header {
-      margin-left: -7.5px;
-    }
-    .navbar-collapse {
-      margin-right: 7.5px;
-      .navbar-nav{
-        float:none;
-      }
-    }
-  }
+  overflow: auto !important;
+  padding-right: 0px !important;
 }
 
 .appContent {

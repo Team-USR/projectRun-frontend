@@ -57,6 +57,9 @@
         bottom: 10px;
         max-width: 700px;
         text-align: left;
+        @media (min-width: 1500px){
+          margin-left:-225px;
+        }
         .rightSection{
           text-align: right;
         }
