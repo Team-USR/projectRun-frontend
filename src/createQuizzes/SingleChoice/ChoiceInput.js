@@ -63,7 +63,7 @@ export default class ChoiceInput extends Component {
             onChange={this.handleAnswerChange} checked={this.props.ind === this.state.selected}
           />
             <Button onClick={this.onDelete} style={{ marginLeft: 5 }}>
-              <span className="glyphicon glyphicon-remove" /></Button>
+              <span className="fa fa-times" /></Button>
           </Col>
         </Col>
       </div>

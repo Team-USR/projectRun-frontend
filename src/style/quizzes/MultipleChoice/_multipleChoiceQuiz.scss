@@ -1,5 +1,8 @@
 .questionBlock {
   text-align: center;
+  .fa-times{
+    color:red;
+  }
   .choiceInput{
     text-align: right;
     line-height: 40px;
