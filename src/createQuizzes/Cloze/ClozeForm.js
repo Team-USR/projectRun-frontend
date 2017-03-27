@@ -48,7 +48,9 @@ export default class ClozeForm extends React.Component {
               placeholder="ex: This {is}*to be* awesome!"
             />
             <InputGroup.Button>
-              <Button onClick={this.renderQuestion} disabled={!this.state.valid}>+</Button>
+              <Button onClick={this.renderQuestion} disabled={!this.state.valid}>
+                <i className="fa fa-plus" style={{ color: '#2ed146' }} aria-hidden="true" />
+              </Button>
             </InputGroup.Button>
           </InputGroup>
         </Col>

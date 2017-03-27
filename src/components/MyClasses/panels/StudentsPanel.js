@@ -490,7 +490,7 @@ export default class StudentsPanel extends Component {
                         className="accept"
                         onClick={() => this.approveStudent(item)}
                       >
-                        <span className="glyphicon glyphicon-ok" style={{ color: 'green' }} />
+                        <span className="glyphicon glyphicon-ok" style={{ color: '#2ed146' }} />
                       </Button>
                     </Col>
                   </Col>
