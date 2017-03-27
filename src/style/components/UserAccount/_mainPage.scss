@@ -6,7 +6,6 @@
   }
   .logoSection{
     padding-top:25px;
-    padding-bottom:25px;
 
 
     .loginButton{
@@ -49,9 +48,10 @@
   }
   .laptopContainer{
     padding-bottom:50px;
+    padding-top:50px;
     img {
-      width: 80%;
-      height:auto;
+      height:80vh;
+      width: auto;
     }
     text-align: center;
   }

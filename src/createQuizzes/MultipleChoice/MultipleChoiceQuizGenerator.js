@@ -107,7 +107,7 @@ export default class MultipleChoiceQuizGenerator extends Component {
         <div className="">
 
           <Col md={12} >
-            <Col md={3} >
+            <Col md={3} className="questionInput">
               <h4 style={{ marginBottom: 5 }}>
             Question:
             </h4>

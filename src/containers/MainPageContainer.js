@@ -99,9 +99,9 @@ function MainPage(props) {
         </Col>
       </div>
       <div className="laptopContainer">
-        <h2 className="title">Quick and easy way to create and solve quizzes.</h2>
+        <h2 className="title">Track your progress and improve your marks.</h2>
         <h4 className="subheading">
-          Click and create. Solve and submit. Get your marks. Just like that!
+          Pie charts. Line Charts
         </h4>
         <img src={demomac} alt="" />
       </div>
