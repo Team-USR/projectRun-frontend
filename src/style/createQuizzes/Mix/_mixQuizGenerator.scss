@@ -1,25 +1,15 @@
 .mixQuizGeneratorContainer{
-  .form_input{
-    outline:none;
-    border:none;
-    border-bottom:2px solid black;
-    margin:10px 0;
-    width:60%;
-    padding-left:20px;
-  }
+
   .quizTitleInput {
     width:80%;
     margin:10px 0;
   }
   .mixQuizGenerator{
-
-    .form_alternate_input{
-      outline:none;
-      border:none;
-      border-bottom:2px solid black;
-      margin:10px;
-      width:60%;
-      text-align: center;
+    .add_solution{
+      margin:14px 0 0;
     }
+  }
+  .question_heading{
+    text-align: right;
   }
 }

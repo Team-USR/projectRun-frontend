@@ -122,9 +122,9 @@ export default class SideBarQuizzes extends Component {
   renderSearchBar() {
     let myStyle;
     if (this.props.userType === STUDENT) {
-      myStyle = { top: '80px' };
+      myStyle = { top: '62px' };
     } else {
-      myStyle = { top: '122px' };
+      myStyle = { top: '103px' };
     }
     return (
       <NavItem key={'searchBar'} >

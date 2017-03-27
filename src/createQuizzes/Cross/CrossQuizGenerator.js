@@ -682,7 +682,7 @@ export default class CrossQuizGenerator extends Component {
     return (
       <div className="crossQuizGenerator">
         <div className="createCrossQuizTitle">
-          <h3>Cross question</h3>
+          <h3 className="question_title">Cross question</h3>
         </div>
 
         <ModalError

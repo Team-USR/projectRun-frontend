@@ -233,7 +233,9 @@ export default class QuizCreatorReviewer extends Component {
       return (
         <div className="mainQuizViewerBlock">
           <h1>{this.state.quizInfo.title}</h1>
-          <h5>Attempts remaining: {this.state.quizInfo.attempts}</h5>
+          {(this.state.quizInfo.attempts !== 0 &&
+            (<h5>Attempts remaining: {this.state.quizInfo.attempts}</h5>))
+            || <h5>This quiz has an unlimited number of attempts</h5> }
           <h5>Release date: {this.state.quizInfo.release_date}</h5>
           <h5 className="negativeMarking">Negative marking: </h5>
           <input
