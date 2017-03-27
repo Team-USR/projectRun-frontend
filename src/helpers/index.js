@@ -111,8 +111,11 @@ export function getLastHighestGrades(data) {
 
 export function formatAveragePerCreatedClass(averages) {
   const filtered = averages.filter(myClass => myClass.average !== null);
+  if (filtered.length === 0) {
+    return [];
+  }
   return filtered.map(average => ({
     name: average.group_name,
-    value: parseFloat(average.average.match(/\d+\.(\d\d|0)/)[0], 10),
+    value: parseFloat(average.average.match(/\d+\.(\d\d|\d)/)[0], 10),
   }));
 }

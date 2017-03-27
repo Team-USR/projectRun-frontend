@@ -10,7 +10,7 @@ import { MixQuizGenerator } from '../../createQuizzes/Mix';
 import { CrossQuizGenerator } from '../../createQuizzes/Cross';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
-import { BrandSpinner } from '../../components/utils';
+import { BrandSpinner, ModalError } from '../../components/utils';
 import { checkMix, checkMultiple, checkCloze } from '../../helpers/Validators';
 
 
@@ -41,6 +41,13 @@ export default class QuizEditorMainPage extends Component {
       defaultDate: '01-01-2017',
       errors: { quiz: { title: '', questions_attributes: [] } },
       hasErrors: [],
+      showModal: false,
+      modalContent: {
+        header: 'Error!',
+        body: 'The Quiz contains errors',
+        buttons: ['close'],
+        modalProps: {},
+      },
     };
     this.isReviewMode = this.isReviewMode.bind(this);
     this.isResultsMode = this.isResultsMode.bind(this);
@@ -219,12 +226,29 @@ export default class QuizEditorMainPage extends Component {
          this.props.handleSubmitButton();
        });
     } else {
-      window.alert('Quiz has errors');
+      // window.alert('Quiz has errors');
+      this.openModal({
+        header: 'Oops! You\'ve missed something!',
+        body: 'The quiz contains some blank spaces and cannot be submitted. Please check the fields!',
+        buttons: ['close'],
+      });
     }
   }
   isResultsMode() {
     const newState = !this.state.resultsState;
     this.setState({ resultsState: newState });
+  }
+
+  closeModal() {
+    this.setState({ showModal: false });
+  }
+
+  openModal(content) {
+    if (content) {
+      this.setState({ showModal: true, modalContent: content });
+    } else {
+      this.setState({ showModal: true });
+    }
   }
 
   collectObject(answersAttributes, question, type, questionID) {
@@ -654,6 +678,12 @@ export default class QuizEditorMainPage extends Component {
           <div
             style={{ float: 'left', clear: 'both' }}
             ref={(input) => { this.scroller2 = input; }}
+          />
+
+          <ModalError
+            show={this.state.showModal}
+            content={this.state.modalContent}
+            close={() => this.closeModal()}
           />
         </div>
       );
