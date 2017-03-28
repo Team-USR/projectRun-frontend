@@ -41,6 +41,7 @@ class Choice extends Component {
     if (inReview) {
       return (
         <input
+          className="inputChoice"
           type="radio"
           name="group"
           value={value}
@@ -53,6 +54,7 @@ class Choice extends Component {
 //    console.log(this.state.checked);
     return (
       <input
+        className="inputChoice"
         type="radio"
         name="group"
         value={value}
@@ -65,10 +67,12 @@ class Choice extends Component {
     const { value, choiceText, inReview } = this.props;
     return (
       <div>
-        <label htmlFor="0">
+        <label htmlFor={this.props.id}>
           <div className="singleMultipleChoice">
             {this.renderLabel(value, choiceText, inReview)}
-            {choiceText}
+            <span className="choiceName">
+              {choiceText}
+            </span>
           </div>
         </label>
         <br />

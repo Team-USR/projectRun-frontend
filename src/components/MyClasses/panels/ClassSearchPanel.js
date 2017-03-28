@@ -79,7 +79,7 @@ export default class ClassSearchPanel extends React.Component {
         let iconClass = 'fa-paper-plane';
         this.state.sentClasses.map((item, index) => {
           if (item === cl.id) {
-            col = 'green';
+            col = '#2ed146';
             iconClass = 'fa-check';
             if (this.state.sentClassesInfo[index]) {
               createdAt = this.state.sentClassesInfo[index];
@@ -122,7 +122,7 @@ export default class ClassSearchPanel extends React.Component {
   }
   renderError() {
     if (this.state.moveToPendingError === true) {
-      return (<h4 style={{ color: 'red' }}>This class has been already selected</h4>);
+      return (<h4 style={{ color: '#d10c0f' }}>This class has been already selected</h4>);
     }
     if (timeout !== null) {
       clearTimeout(timeout);

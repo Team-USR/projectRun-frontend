@@ -322,7 +322,7 @@ export default class MyClassesPanel extends Component {
               </Col>
             </Col>
             <Button
-              className="deleteButton"
+              className="red_button"
               onClick={() =>
               this.props.handleDeleteClass(this.props.classId)}
             >

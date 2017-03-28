@@ -78,9 +78,17 @@ export default class PasswordManager extends React.Component {
   }
 
   render() {
+    let error;
+    if (this.props.resetError) {
+      error = (
+        <Col smOffset={2}>
+          <ControlLabel className="text-danger">{this.props.resetError}</ControlLabel>
+        </Col>);
+    }
     return (
-      <div>
-        <h1><b>Reset password</b></h1>
+      <div className="settings_tab">
+        <h2>Change password</h2>
+        {error}
         <br />
         <Form horizontal>
           <FormGroup controlId="formCurrentPassword">
@@ -160,4 +168,9 @@ PasswordManager.propTypes = {
   handleNewPassword: React.PropTypes.func.isRequired,
   handleConfirmPassword: React.PropTypes.func.isRequired,
   changePassword: React.PropTypes.func.isRequired,
+  resetError: React.PropTypes.string,
+};
+
+PasswordManager.defaultProps = {
+  resetError: null,
 };

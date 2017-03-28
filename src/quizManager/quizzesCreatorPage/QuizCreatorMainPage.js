@@ -38,6 +38,8 @@ export default class QuizCreatorMainPage extends Component {
       defaultDate: '01-01-2017',
       errors: { quiz: { title: '', questions_attributes: [] } },
       hasErrors: [],
+      pointsErrors: [],
+      attemptsErrors: false,
       showModal: false,
       modalContent: {
         header: 'Error!',
@@ -64,34 +66,59 @@ export default class QuizCreatorMainPage extends Component {
     generatedQuiz.quiz.negative_marking = newValue;
     this.setState({ submitedQuestions: generatedQuiz });
   }
+
   setPoints(event, index) {
+    let realScore = event.target.value;
+    const e = event;
+    if (isNaN(event.target.value) || event.target.value === '' || event.target.value === undefined || event.target.value === null) {
+      e.target.value = '';
+      realScore = 0;
+    }
     const inputQ = this.state.submitedQuestions;
     if (inputQ.quiz.questions_attributes && inputQ.quiz.questions_attributes[index] &&
     inputQ.quiz.questions_attributes[index].points !== undefined) {
-      inputQ.quiz.questions_attributes[index].points = event.target.value;
+      inputQ.quiz.questions_attributes[index].points = realScore;
     } else {
-      inputQ.quiz.questions_attributes[index] = { points: event.target.value };
+      inputQ.quiz.questions_attributes[index] = { points: realScore };
     }
 
     this.setState({ submitedQuestions: inputQ });
+//    this.checkCorectnessPoints(index);
+  }
+  checkCorectnessPoints(index) {
+    const thisObject = this.state.pointsErrors;
+    thisObject[index] = false;
+    const pattern = /^\d+$/;
+    const toTest = this.state.submitedQuestions.quiz.questions_attributes[index].points;
+    if (
+      pattern.test(toTest.toString()) === false) {
+      thisObject[index] = true;
+    }
+    this.setState({ pointsErrors: thisObject });
   }
 
   checkCorectnessTitle(generatedQuiz) {
+    const thisObject = this.state.errors;
+    thisObject.quiz.title = '';
+    this.setState({ errors: thisObject, attemptsErrors: false, pointsErrors: false });
     if (generatedQuiz.quiz.title === '') {
-      const thisObject = this.state.errors;
-      thisObject.quiz.title = 'Title is empty!';
+      thisObject.quiz.title = 'Title is empty! \n';
       this.setState({ errors: thisObject });
       const thisError = this.state.hasErrors;
       thisError[0] = true;
       this.setState({ hasErrors: thisError });
     }
     if (generatedQuiz.quiz.title !== '') {
-      const thisObject = this.state.errors;
       thisObject.quiz.title = '';
       this.setState({ errors: thisObject });
       const thisError = this.state.hasErrors;
       thisError[0] = false;
       this.setState({ hasErrors: thisError });
+    }
+    const pattern = /^\d+$/;
+    if (pattern.test(generatedQuiz.quiz.attempts) === false) {
+      thisObject.quiz.title += 'Attempts field needs to be a number!';
+      this.setState({ errors: thisObject, attemptsErrors: true });
     }
   }
   checkCorectness(element, index) {
@@ -129,7 +156,7 @@ export default class QuizCreatorMainPage extends Component {
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
        element !== null);
     if (this.state.hasErrors.filter(item => item === true).length === 0 &&
-     filteredQuestions.length > 0) {
+     filteredQuestions.length > 0 && this.state.attemptsErrors === false) {
       this.setState({ submitedQuestions: filteredQuestions });
       axios({
         url: `${API_URL}/quizzes`,
@@ -379,9 +406,16 @@ export default class QuizCreatorMainPage extends Component {
     this.checkCorectnessTitle(generatedQuiz);
   }
   changeAttempts(event) {
+    let realAttempts = event.target.value;
+    const e = event;
+    if (isNaN(event.target.value) || event.target.value === '' || event.target.value === undefined || event.target.value === null) {
+      e.target.value = '';
+      realAttempts = 0;
+    }
     const attempted = this.state.submitedQuestions;
-    attempted.quiz.attempts = event.target.value;
+    attempted.quiz.attempts = realAttempts;
     this.setState({ submitedQuestions: attempted });
+    this.checkCorectnessTitle(attempted);
   }
   changeReleaseDate(value) {
     const releaseDate = this.state.submitedQuestions;
@@ -437,6 +471,9 @@ export default class QuizCreatorMainPage extends Component {
               </div>
             </Col>
           </Col>
+          <h5 className="error_message" key={`pointserror${index}`}>
+            {(this.state.pointsErrors[index] && 'Invalid points input')}
+          </h5>
           <div>
             {this.renderQuestionError(index).split('\n').map((errtext, i) =>
               <h5 className="error_message" key={`errtext${index}${i + 1}`}>{errtext}</h5>)}
@@ -540,7 +577,9 @@ export default class QuizCreatorMainPage extends Component {
                 </Col>
               </Col>
               <Col md={12}>
-                <h5 className="error_message">{this.state.errors.quiz.title} </h5>
+                {
+                this.state.errors.quiz.title.split('\n').map((errtext, i) =>
+                  <h5 className="error_message" key={`errorTitle${i + 1}`}>{errtext}</h5>)}
               </Col>
             </div>
           </label>

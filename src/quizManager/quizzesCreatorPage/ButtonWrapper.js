@@ -4,7 +4,12 @@ import { Button } from 'react-bootstrap';
 export default function ButtonWrapper(props) {
   return (
     <div className="delete_button">
-      <Button onClick={() => props.removeQuiz(props.index)}>Delete this question</Button>
+      <Button
+        className="red_button"
+        onClick={() => props.removeQuiz(props.index)}
+      >
+        Delete this question
+      </Button>
     </div>
   );
 }

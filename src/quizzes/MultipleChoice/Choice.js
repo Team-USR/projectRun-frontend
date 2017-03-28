@@ -23,6 +23,7 @@ class Choice extends Component {
     if (inReview) {
       return (
         <input
+          className="inputChoice"
           type="checkbox"
           value={value}
           checked={this.state.checked}
@@ -34,6 +35,7 @@ class Choice extends Component {
 //    console.log(this.state.checked);
     return (
       <input
+        className="inputChoice"
         type="checkbox"
         value={value}
         checked={this.state.checked}
@@ -44,10 +46,12 @@ class Choice extends Component {
   render() {
     const { value, choiceText, inReview } = this.props;
     return (
-      <div>
-        <label htmlFor="0">
+      <div className="singleMultipleChoice">
+        <label htmlFor={this.props.id}>
           {this.renderLabel(value, choiceText, inReview)}
-          {choiceText}
+          <span className="choiceName">
+            {choiceText}
+          </span>
         </label>
         <br />
       </div>
@@ -55,6 +59,7 @@ class Choice extends Component {
   }
 }
 Choice.propTypes = {
+  id: PropTypes.number.isRequired,
   callbackParent: PropTypes.func.isRequired,
   value: PropTypes.number.isRequired,
   choiceText: PropTypes.string.isRequired,
