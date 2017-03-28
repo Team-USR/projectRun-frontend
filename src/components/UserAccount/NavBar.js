@@ -21,12 +21,12 @@ export default function NavBar(props) {
       <Navbar.Collapse>
         <Nav pullRight>
           <LinkContainer to="/my-quizzes">
-            <NavItem>
+            <NavItem id="quiz-nav">
               My Quizzes
             </NavItem>
           </LinkContainer>
           <LinkContainer to="/my-classes">
-            <NavItem>
+            <NavItem id="class-nav">
               My Classes
             </NavItem>
           </LinkContainer>

@@ -52,13 +52,13 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-function userLoginInProgress() {
+export function userLoginInProgress() {
   return {
     type: USER_LOGIN_IN_PROGRESS,
   };
 }
 
-function userLoginSuccesful(auth, user) {
+export function userLoginSuccesful(auth, user) {
   return {
     type: USER_LOGIN_SUCCESFUL,
     auth,
@@ -66,7 +66,7 @@ function userLoginSuccesful(auth, user) {
   };
 }
 
-function userLoginFailed(error) {
+export function userLoginFailed(error) {
   return {
     type: USER_LOGIN_FAILED,
     error,
@@ -110,19 +110,19 @@ export function loginUser(user) {
   };
 }
 
-function userSignupInProgress() {
+export function userSignupInProgress() {
   return {
     type: USER_SIGNUP_IN_PROGRESS,
   };
 }
 
-function userSignupSuccesful() {
+export function userSignupSuccesful() {
   return {
     type: USER_SIGNUP_SUCCESFUL,
   };
 }
 
-function userSignupFailed(error) {
+export function userSignupFailed(error) {
   return {
     type: USER_SIGNUP_FAILED,
     error,

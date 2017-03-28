@@ -90,6 +90,7 @@ export default class QuizSessionViewer extends Component {
               <div className="col-md-3 rightSection">
                 <h5>In progress</h5>
                 <Button
+                  id="continueQuizButton"
                   className=""
                   onClick={() => this.props.handleStartButton()}
                 >
@@ -117,7 +118,12 @@ export default class QuizSessionViewer extends Component {
               <h5>{}</h5>
             </div>
             <div className="col-md-3 rightSection">
-              <Button onClick={() => this.props.handleStartButton()}>Start</Button>
+              <Button
+                id="startQuizButton"
+                onClick={() => this.props.handleStartButton()}
+              >
+                Start
+              </Button>
             </div>
           </div>
         </div>,
