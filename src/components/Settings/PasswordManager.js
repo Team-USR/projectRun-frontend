@@ -2,8 +2,15 @@ import React from 'react';
 import { Form, FormGroup, Col,
   ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
 
+/**
+ * Form component for password reset to be served by /settings
+ * @type {Object}
+ */
 export default class PasswordManager extends React.Component {
-
+  /**
+   * Initializes the state and binds the functions
+   * @param  {Object} props inherited properties
+   */
   constructor(props) {
     super(props);
 
@@ -14,7 +21,10 @@ export default class PasswordManager extends React.Component {
     this.validateNewPassword = this.validateNewPassword.bind(this);
     this.validateConfirmPassword = this.validateConfirmPassword.bind(this);
   }
-
+  /**
+   * Input validator for the new password
+   * @return {Object} valid or not and, if not, the reason why
+   */
   validateNewPassword() {
     let validateNew = {};
     if (this.props.currentPassword === '' && this.props.newPassword === '') {
@@ -50,7 +60,10 @@ export default class PasswordManager extends React.Component {
     }
     return validateNew;
   }
-
+  /**
+   * Password confirmation input validator
+   * @return {Object} valid or not, and if not, the reason why
+   */
   validateConfirmPassword() {
     let validateConfirm = {};
     if (this.props.confirmPassword === '') {
@@ -76,8 +89,15 @@ export default class PasswordManager extends React.Component {
     }
     return validateConfirm;
   }
-
+  /**
+   * renders the form
+   * @return {Object} React Component
+   */
   render() {
+    /**
+     * build the error element
+     * @type {Object}
+     */
     let error;
     if (this.props.resetError) {
       error = (
@@ -85,6 +105,10 @@ export default class PasswordManager extends React.Component {
           <ControlLabel className="text-danger">{this.props.resetError}</ControlLabel>
         </Col>);
     }
+    /**
+     * Returns the actual form
+     * @type {Object}
+     */
     return (
       <div className="settings_tab">
         <h2>Change password</h2>

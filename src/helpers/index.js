@@ -1,5 +1,11 @@
 import moment from 'moment';
 
+/**
+ * Finds the highest score of all sessions
+ * submitted by a user for a quiz
+ * @param  {array} marks array of quiz session and score objects
+ * @return {Object}      quiz session with the highest mark
+ */
 export function findHighestMark(marks) {
   return marks.reduce((prev, curr) => {
     if (curr.score >= prev.score) {
@@ -9,6 +15,11 @@ export function findHighestMark(marks) {
   });
 }
 
+/**
+ * Formats strings to be displayed in the app
+ * @param  {String} key key received from the api
+ * @return {String}     formated key
+ */
 function formatKeys(key) {
   switch (key) {
     case 'in_progress':
@@ -26,6 +37,12 @@ function formatKeys(key) {
   }
 }
 
+/**
+ * Formats the requested api data to fit the pie chart
+ * data requirements for students
+ * @param  {array} quizzes api response
+ * @return {array}         name and value objects
+ */
 export function formatDataForStudentQuizPie(quizzes) {
   const data = quizzes.reduce((acc, next) => {
     const toReturn = acc;
@@ -44,6 +61,12 @@ export function formatDataForStudentQuizPie(quizzes) {
   return dataAsArray;
 }
 
+/**
+ * Formats the requested api data to fit the pie chart
+ * data requirements for teachers
+ * @param  {array} quizzes api response
+ * @return {array}         name and value objects
+ */
 export function formatDataForTeacherQuizPie(quizzes) {
   const data = quizzes.reduce((acc, next) => {
     const toReturn = acc;
@@ -65,17 +88,35 @@ export function formatDataForTeacherQuizPie(quizzes) {
   return dataAsArray;
 }
 
+/**
+ * Parsing function for extracting the session date from
+ * api response
+ * @param  {String} lastUpdated long, useless string
+ * @return {Object}             moment date object
+ */
 function parseSessionDate(lastUpdated) {
   const dateMatcher = lastUpdated.match(/\d\d\/\d\d\/\d\d\d\d/g);
   const hourMatcher = lastUpdated.match(/\d\d:\d\d((AM)|(PM))/);
   return moment(`${dateMatcher[0]} ${hourMatcher[0]}`, 'MM/DD/YYYY hh:mma');
 }
 
+/**
+ * Comparator to be used by a sort function
+ * @param  {String} lastUpdated1 api returned string
+ * @param  {String} lastUpdated2 api returned string
+ * @return {number}              -1 if a < b, 0 if a == b, 1 if a > b
+ */
 export function compareSubmitDates(lastUpdated1, lastUpdated2) {
   return moment.duration(parseSessionDate(lastUpdated1)
   .diff(parseSessionDate(lastUpdated2))).asSeconds();
 }
 
+/**
+ * Formats the requested api data to fit the line chart
+ * data requirements for teachers
+ * @param  {array} data api response
+ * @return {array}         name, value and date objects
+ */
 export function getLastHighestGrades(data) {
   const dataObj = data.reduce((accumulator, next) => {
     const acc = accumulator;
@@ -109,6 +150,11 @@ export function getLastHighestGrades(data) {
   }));
 }
 
+/**
+ * Filter useless data and parse left data to be used by line charts
+ * @param  {array} averages api response
+ * @return {array}          name and value objects
+ */
 export function formatAveragePerCreatedClass(averages) {
   const filtered = averages.filter(myClass => myClass.average !== null);
   if (filtered.length === 0) {
