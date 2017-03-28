@@ -25,8 +25,8 @@ export default class CrossQuiz extends Component {
     const hints = this.props.question.hints;
     const width = this.props.question.width;
     const height = this.props.question.height;
-    let newDownHints = [];
-    let newAcrossHints = [];
+    const newDownHints = [];
+    const newAcrossHints = [];
 
     // Split Down and Accross Hints into 2 arrays
     hints.map((obj) => {
@@ -47,9 +47,6 @@ export default class CrossQuiz extends Component {
       }
       matrix[i] = row;
     }
-
-    newAcrossHints = newAcrossHints.reverse();
-    newDownHints = newDownHints.reverse();
 
     this.setState({
       acrossHints: newAcrossHints,

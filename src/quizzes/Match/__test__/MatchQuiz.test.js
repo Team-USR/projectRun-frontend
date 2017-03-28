@@ -10,6 +10,7 @@ const questionToBeSent = {
   match_default: 'Choose an option',
   left: [{ id: 'abc', answer: 'left1' }],
   right: [{ id: '123', answer: 'right1' }],
+  points: 2,
 };
 
 const matchQuiz = (

@@ -1,8 +1,15 @@
 import React from 'react';
 import { Form, FormGroup, Col, ControlLabel, FormControl, Button } from 'react-bootstrap';
 
+/**
+ * Forgot password form
+ * @type {Object}
+ */
 export default class ForgotPassword extends React.Component {
-
+  /**
+   * Returns the form to be completed by the user
+   * @return {Object}
+   */
   render() {
     return (
       <Form horizontal>

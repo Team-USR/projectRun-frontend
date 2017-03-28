@@ -22,6 +22,11 @@ const styles = {
     marginTop: 100,
   },
 };
+/*
+  Component which wrapps a quizz and all it's questions while being into the review mode.
+  This state is obtained after a user creates a quizz. In this component the user is able to see
+  a generated quiz with a specific id and is able to choose to edit it
+*/
 export default class QuizCreatorReviewer extends Component {
   constructor() {
     super();
@@ -38,6 +43,10 @@ export default class QuizCreatorReviewer extends Component {
     };
     this.isReviewMode = this.isReviewMode.bind(this);
   }
+  /*
+    Makes the request to the backend when the component is mounted on the screen,
+    Retrieves the data to be further displayed on the screen.
+  */
   componentWillMount() {
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}/edit`,
@@ -60,6 +69,10 @@ export default class QuizCreatorReviewer extends Component {
       this.props.handleError('default');
     });
   }
+  /*
+   When the quiz id is changed the method receives new props and makes a new request in order
+   to update the data on the screen.
+  */
   componentWillReceiveProps(nextProps) {
     if (this.props.quizID !== nextProps.quizID) {
       this.setState({ loadingQuiz: true });
@@ -81,6 +94,9 @@ export default class QuizCreatorReviewer extends Component {
       });
     }
   }
+  /*
+   Makes a post request that publishes a quiz in order to be available to the students.
+  */
   publishQuiz() {
     this.setState({ loadingPublishing: true });
     axios({
@@ -89,7 +105,6 @@ export default class QuizCreatorReviewer extends Component {
       method: 'post',
     })
     .then((response) => {
-//      console.log(response);
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
@@ -106,6 +121,12 @@ export default class QuizCreatorReviewer extends Component {
     const newState = !this.state.reviewState;
     this.setState({ reviewState: newState });
   }
+  /*
+    Renders a certain type of question on the screen being given the index and the
+    question object
+    @param question [actual question object containing the information to be displayed]
+    @param index [index of the question to be displayed]
+  */
   renderQuestions(question, index) {
     const answersAttributes = question.answers;
     if (question.type === 'multiple_choice') {
@@ -164,7 +185,6 @@ export default class QuizCreatorReviewer extends Component {
       );
     }
     if (question.type === 'mix') {
-      //  console.log(question);
       return (
         <MixQuiz
           question={question}
@@ -214,9 +234,10 @@ export default class QuizCreatorReviewer extends Component {
     }
     return ('');
   }
+  /*
+    Render method that show all the components on the screen
+  */
   render() {
-  //  console.log(this.state.quizInfo);
-  //    console.log("RENDER QUIZ "+ this.props.quizID, this.state.quizInfo.title);
     if (this.state.error === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Error</h1>

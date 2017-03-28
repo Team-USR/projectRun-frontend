@@ -21,6 +21,9 @@ const styles = {
 };
 let id = 0;
 let displayIndex = 0;
+/*
+ Wrapper component that enables a certain quiz to be eddited and saved.
+*/
 export default class QuizEditorMainPage extends Component {
   constructor() {
     super();
@@ -57,6 +60,10 @@ export default class QuizEditorMainPage extends Component {
     this.changeReleaseDate = this.changeReleaseDate.bind(this);
     this.setNegativeMarking = this.setNegativeMarking.bind(this);
   }
+  /*
+    Makes a request in the backend in order to retrieve a quiz to be editted
+    given the quizID parameter through props.
+  */
   componentWillMount() {
     id = 0;
     this.setState({ loadingQuiz: true });
@@ -89,6 +96,11 @@ export default class QuizEditorMainPage extends Component {
        this.props.handleError('default');
      });
   }
+  /*
+   Makes a new request when the component receives
+  a new id and needs to render a new quiz on the screen
+  @param nextProps@S
+  */
   componentWillReceiveProps(nextProps) {
     if (this.props.quizID !== nextProps.quizID) {
       this.setState({ loadingQuiz: true });
@@ -117,10 +129,16 @@ export default class QuizEditorMainPage extends Component {
       });
     }
   }
+  /*
+    Resets the id of the displayed question when the component is unmounted from the screen.
+  */
   componentWillUnmount() {
     id = 0;
     displayIndex = 0;
   }
+  /*
+    Edits the negative marking field
+  */
   setNegativeMarking() {
     const value = this.state.submitedQuestions.quiz.negative_marking;
     const newValue = !value;
@@ -128,6 +146,11 @@ export default class QuizEditorMainPage extends Component {
     generatedQuiz.quiz.negative_marking = newValue;
     this.setState({ submitedQuestions: generatedQuiz });
   }
+  /*
+    Edits the points field.
+    @param event
+    @param index {Number} [index of the question that needs to have it's points updated]
+  */
   setPoints(event, index) {
     let realScore = event.target.value;
     const e = event;
@@ -144,7 +167,14 @@ export default class QuizEditorMainPage extends Component {
     }
     this.setState({ submitedQuestions: inputQ });
   }
+  /*
+    Removes a question from the quiz and all of it's content.
+    @param index {Number} [index of the question that needs to be removed]
+  */
   removeQuiz(index) {
+    const thisError = this.state.hasErrors;
+    thisError[index + 1] = false;
+    this.setState({ hasErrors: thisError });
     displayIndex = 0;
     const remQuestions = this.state.questions;
     remQuestions[index] = null;
@@ -159,6 +189,10 @@ export default class QuizEditorMainPage extends Component {
       this.setState({ inputQuestions: inputQuestion });
     }
   }
+  /*
+    Validates the title of the quiz
+    @return {String} error  message according to the input of the user
+  */
   checkCorectnessTitle(generatedQuiz) {
     const thisObject = this.state.errors;
     thisObject.quiz.title = '';
@@ -177,12 +211,12 @@ export default class QuizEditorMainPage extends Component {
       thisError[0] = false;
       this.setState({ hasErrors: thisError });
     }
-    const pattern = /^\d+$/;
-    if (pattern.test(generatedQuiz.quiz.attempts) === false) {
-      thisObject.quiz.title += 'Attempts field needs to be a number!';
-      this.setState({ errors: thisObject, attemptsErrors: true });
-    }
   }
+  /*
+    General validation method that calls separate other validation methods according to
+    the type of the element that needs to be checked for errors
+    @return {String} [error message]
+  */
   checkCorectness(element, index) {
     const questions = this.state.submitedQuestions;
     let errorMessage = '';
@@ -212,6 +246,11 @@ export default class QuizEditorMainPage extends Component {
     thisObject.quiz.questions_attributes[index] = errorMessage;
     this.setState({ errors: thisObject });
   }
+  /*
+    Prepares the final object in order to be saved to the backend
+    Checks if the validations passes and no errors are currently displayed on the screen
+    Then it makes the patch request to the backend and updates the quiz.
+  */
   isReviewMode() {
     const sQuestions = this.state.submitedQuestions;
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(
@@ -245,11 +284,15 @@ export default class QuizEditorMainPage extends Component {
     const newState = !this.state.resultsState;
     this.setState({ resultsState: newState });
   }
-
+  /*
+  Closes the modal
+  */
   closeModal() {
     this.setState({ showModal: false });
   }
-
+  /*
+  Opens a modal given it's content.
+  */
   openModal(content) {
     if (content) {
       this.setState({ showModal: true, modalContent: content });
@@ -257,7 +300,9 @@ export default class QuizEditorMainPage extends Component {
       this.setState({ showModal: true });
     }
   }
-
+  /*
+     Collects the question data when it is eddited or added to the quiz
+  */
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -294,7 +339,9 @@ export default class QuizEditorMainPage extends Component {
     this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
-
+  /*
+  Separate method that collects data for the cloze question.
+  */
   collectClozeObject(questionID, sentenceAttributes, gapsAttributes, questionTitle) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -321,7 +368,12 @@ export default class QuizEditorMainPage extends Component {
     this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
-
+  /*
+    Separate method that collects the data from the mix question
+    @param data
+    @param questionTitle
+    @param questionID
+  */
   collectMixObject(data, questionTitle, questionID) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -346,7 +398,9 @@ export default class QuizEditorMainPage extends Component {
     this.setState({ submitedQuestions: inputQ });
     // console.log(questionObject);
   }
-
+  /*
+    Collects the data from the Cross child component
+  */
   collectCrossObject(question, metaAtributes, rowsAttributes, hintsAttributes, questionID) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -367,13 +421,14 @@ export default class QuizEditorMainPage extends Component {
       rows_attributes: rowsAttributes,
       hints_attributes: hintsAttributes,
     };
-    // console.log(newQuestion);
-
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
     this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
-
+  /*
+    Adds a question to the quiz depending on the type of question that the user
+    wants to add.
+  */
   addQuiz(quizType, questionObj) {
     displayIndex = 0;
     const buttonGroup = (
@@ -486,20 +541,25 @@ export default class QuizEditorMainPage extends Component {
 
     inputQuestionList.push(inputQuestion);
     questionList.push(questionObject);
-
-    // console.log(questionList);
     this.setState({ questions: questionList, inputQuestions: inputQuestionList });
     id += 1;
   }
   scrollToBottom() {
     this.scroller2.scrollIntoView({ block: 'end', behavior: 'smooth' });
   }
+  /*
+    Edits the title of the quiz
+    @param event
+  */
   changeTitle(event) {
     const generatedQuiz = this.state.submitedQuestions;
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
     this.checkCorectnessTitle(generatedQuiz);
   }
+  /*
+    Edits the number of attempts for the quiz.
+  */
   changeAttempts(event) {
     let realAttempts = event.target.value;
     const e = event;
@@ -512,13 +572,17 @@ export default class QuizEditorMainPage extends Component {
     this.setState({ submitedQuestions: attempted });
     this.checkCorectnessTitle(attempted);
   }
+  /*
+    Edits the release date
+  */
   changeReleaseDate(value) {
-//    console.log(value);
     const releaseDate = this.state.submitedQuestions;
     releaseDate.quiz.release_date = value;
     this.setState({ submitedQuestions: releaseDate, defaultDate: value });
   }
-
+  /*
+    Calls the render group method while mapping through the array of questions.
+  */
   renderQuestions() {
     displayIndex = 0;
     return (
@@ -526,7 +590,10 @@ export default class QuizEditorMainPage extends Component {
          this.renderGroup(object, index))
     );
   }
-
+  /*
+    Decides if to render or not an error on a specific question
+    @param index {Number} [index of the question that has to be checked for errors]
+  */
   renderQuestionError(index) {
     if (this.state.errors.quiz.questions_attributes &&
       this.state.errors.quiz.questions_attributes[index] !== undefined) {
@@ -534,7 +601,10 @@ export default class QuizEditorMainPage extends Component {
     }
     return '';
   }
-
+  /*
+  Renders a block containing an index for a question , the main block of the question,
+  the points field and the delete button
+  */
   renderGroup(object, index) {
     if (this.state.questions[index]) {
       displayIndex += 1;
@@ -575,7 +645,9 @@ export default class QuizEditorMainPage extends Component {
     }
     return ('');
   }
-
+  /*
+   Returns a panel containing the edit and save buttons
+  */
   renderSubmitPanel() {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
@@ -596,13 +668,11 @@ export default class QuizEditorMainPage extends Component {
 
     return ('');
   }
+  /*
+  Main render function
+  */
   render() {
-  //  console.log(this.state.submitedQuestions);
-  //  console.log("start rendering");
-//  console.log("submiteed",this.state.submitedQuestions);
     const submit = this.state.submitedQuestions;
-  //  console.log(this.state.questions);
-  //  console.log("end rendering");
     if (this.state.error === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>
@@ -612,8 +682,6 @@ export default class QuizEditorMainPage extends Component {
       return <BrandSpinner />;
     } else
     if (!this.state.reviewState && this.state.loading === false) {
-    //  console.log("ATTEMPTS", submit.quiz.attempts);
-    //  console.log("TITLE",submit.quiz.title);
       return (
         <div className="mainQuizGeneratorBlock">
           <h1> Quiz editor </h1>

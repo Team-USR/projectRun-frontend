@@ -3,6 +3,10 @@ import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { GAP_MATCHER } from '../../constants';
 import { stripGapNo } from '../../helpers/Cloze';
 
+/**
+ * Formats the sentences if the creator forgot to add periods
+ * @param {array} words words in a cloze sentence
+ */
 function addPeriod(words) {
   const last = words.pop();
   if (!last.match(GAP_MATCHER)) {
@@ -15,7 +19,11 @@ function addPeriod(words) {
 }
 
 export default class ClozeSentence extends React.Component {
-
+  /**
+   * Initializes the state
+   * @param  {Object} props inherited properties
+   * @return {undefined}
+   */
   constructor(props) {
     super(props);
 
@@ -23,11 +31,19 @@ export default class ClozeSentence extends React.Component {
       studentReview: props.studentReview,
     };
   }
-
+  /**
+   * Switches between the student review and quiz view state
+   * @param  {Object} nextProps new props
+   * @return {undefined}
+   */
   componentWillReceiveProps(nextProps) {
     this.setState({ studentReview: nextProps.studentReview });
   }
-
+  /**
+   * Renders the review mode for the sentence
+   * to be used by teachers in QuizEditor
+   * @return {Object}
+   */
   renderReview() {
     const words = addPeriod(this.props.sentence.split(/\s/));
     const hintsCopy = this.props.hints.reverse();
@@ -36,6 +52,10 @@ export default class ClozeSentence extends React.Component {
     return (
       words.map((word) => {
         if (!word.match(GAP_MATCHER)) return `${word} `;
+        /**
+         * Tooltip to apear when hovering over the gap
+         * @type {Object}
+         */
         const tooltip = <Tooltip id={`${word}`} key={`tooltip-${word}-${hintsCopy.length}`}>{hintsCopy.pop() || 'No hints!'}</Tooltip>;
         return (
           <OverlayTrigger id="tooltip" key={`overlay-${word}-${hintsCopy.length}`} placement="top" overlay={tooltip}>
@@ -51,7 +71,11 @@ export default class ClozeSentence extends React.Component {
       })
     );
   }
-
+  /**
+   * Renders the view mode for the sentence, to be solved
+   * by students or to display their result
+   * @return {Object}
+   */
   renderView() {
     const words = addPeriod(this.props.sentence.split(/\s/));
     const hintsCopy = this.props.hints.map(x => x).reverse();
@@ -59,6 +83,10 @@ export default class ClozeSentence extends React.Component {
     return (
       words.map((word) => {
         if (!word.match(GAP_MATCHER)) return `${word} `;
+        /**
+         * Tooltip to apear when hovering over the gap
+         * @type {Object}
+         */
         const tooltip = <Tooltip id={word} key={`tooltip-${word}-${hintsCopy.length}`}>{hintsCopy.pop() || 'No hint!'}</Tooltip>;
         const gapNo = stripGapNo(word);
         return (
@@ -78,7 +106,10 @@ export default class ClozeSentence extends React.Component {
       })
     );
   }
-
+  /**
+   * Renders a sentence
+   * @return {Object}
+   */
   render() {
     return (
       <li key={this.props.index + 1} style={{ marginTop: '8px' }}>

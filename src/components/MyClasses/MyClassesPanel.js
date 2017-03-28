@@ -104,7 +104,6 @@ export default class MyClassesPanel extends Component {
           data: searchedItem,
         })
       .then((response) => {
-//        console.log(response);
         const retrievedStudents = [];
         let best = {};
         if (response.data.best_match_name[0]) {

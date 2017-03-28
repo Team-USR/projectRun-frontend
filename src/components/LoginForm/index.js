@@ -5,8 +5,16 @@ import cookie from 'react-cookie';
 import Toggle from 'react-toggle';
 import { STUDENT, TEACHER } from '../../constants';
 
-
+/**
+ * LoginForm component, used by the /login router
+ * @param {Object} props inherited props
+ */
 export default function LoginForm(props) {
+  /**
+   * Login user on enter press in password input
+   * @param  {event} e event
+   * @return {bool}   last key pressed is enter or not
+   */
   function loginUser(e) {
     if (e.which === 13 || e.keyCode === 13) {
       props.submitLogin();
@@ -14,12 +22,19 @@ export default function LoginForm(props) {
     }
     return true;
   }
-
+  /**
+   * displays any request error
+   * @type {Object}
+   */
   let error;
   if (props.loginError) {
     error = <h4 className="text-danger text-center">{props.loginError}</h4>;
   }
   let isTeacher = false;
+  /**
+   * Returns the actual form
+   * @type {Object}
+   */
   return (
     <div className="loginPage">
       <div className="loginWrapper cardSection">

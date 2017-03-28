@@ -4,10 +4,21 @@ import { ClozeForm, ClozeList } from './index';
 import { GAP_MATCHER, HINT_MATCHER } from '../../constants';
 import { getNOfGaps, buildRawSentence, findTokens, buildToSendQuestions } from '../../helpers/Cloze';
 
+/**
+ * Main component for creating Fill in the gaps questions
+ * @type {Object}
+ */
 export default class ClozeGenerator extends React.Component {
-
+  /**
+   * Initializes the component
+   * @param  {Object} props inherited properties
+   * @return {undefined}
+   */
   constructor(props) {
     super(props);
+    /*
+    If rendered in QuizCreator
+     */
     if (!props.editorContent || Object.keys(props.editorContent).length === 0) {
       this.state = {
         current: 0,
@@ -17,6 +28,9 @@ export default class ClozeGenerator extends React.Component {
         toSendQuestions: [],
       };
     } else {
+      /*
+      If rendered in QuizEditor, add default values
+       */
       const gapsCopy = props.editorContent.gaps.slice();
       const gapsAttributes = props.editorContent.gaps.map((gap, ind) => ({
         no: ind,
@@ -47,7 +61,10 @@ export default class ClozeGenerator extends React.Component {
     this.addQuestion = this.addQuestion.bind(this);
     this.removeQuestion = this.removeQuestion.bind(this);
   }
-
+  /**
+   * In QuizEditor, update the parent state with the inherited default values
+   * @return {undefined}
+   */
   componentWillMount() {
     if (this.editorContent && Object.keys(this.props.editorContent).length > 0) {
       this.props.updateParent(this.props.index,
@@ -56,11 +73,20 @@ export default class ClozeGenerator extends React.Component {
         this.props.editorContent.question);
     }
   }
+  /**
+   * Add Fill in the gap sentence to the already existing list of sentence
+   * to be solved in the question and updates the parent
+   * @param {string} text sentence text, containing gap and hint tokens
+   */
   addQuestion(text) {
     const question = {
       no: this.state.current,
       question: text,
     };
+    /**
+     * Extract the important information(gap, hint) from the received string
+     * @type {RegExp}
+     */
     const gapsAndHintsMatcher = new RegExp(`${GAP_MATCHER.source}|${HINT_MATCHER.source}`, 'g');
     const gapsAndHints = text.match(gapsAndHintsMatcher);
     const gaps = findTokens(gapsAndHints, this.state.current);
@@ -86,7 +112,12 @@ export default class ClozeGenerator extends React.Component {
       this.questionTitle.value,
     );
   }
-
+  /**
+   * Removes a sentence from the list of existing sentences
+   * and updates the parent with the change
+   * @param  {Object} delQ containing sentence index and its text
+   * @return {undefined}
+   */
   removeQuestion(delQ) {
     const newGapAttr = this.state.gapsAttributes.filter(g => g.no !== delQ.no);
     const newQuestions = this.state.questions.filter(q => q !== delQ);
@@ -111,7 +142,10 @@ export default class ClozeGenerator extends React.Component {
         return { gap_text: g.gap_text };
       }), this.questionTitle.value);
   }
-
+  /**
+   * Saves the new question title in state and updates the parent
+   * @return {undefined}
+   */
   changeQuestionTitle() {
     this.setState({ question: this.questionTitle.value });
     this.props.updateParent(this.props.index,
@@ -119,7 +153,10 @@ export default class ClozeGenerator extends React.Component {
       this.state.gapsAttributes,
       this.questionTitle.value);
   }
-
+  /**
+   * Returns the Generator Component
+   * @return {Object}
+   */
   render() {
     return (
       <Form horizontal>
