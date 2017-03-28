@@ -149,7 +149,6 @@ export default class MyClassesPage extends Component {
     });
   }
   updateAllStudents(object) {
-//    console.log("ALMOST UDPATED", object);
     this.setState({ allStudents: object });
   }
 

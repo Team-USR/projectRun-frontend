@@ -67,7 +67,6 @@ export default class MultipleChoiceQuizGenerator extends Component {
     this.setState({ answers_choices: choicesTemp });
   }
   renderAnswers(index, answersToComplete) {
-    // console.log("multiple",answersToComplete);
     if (this.state.answers_choices[index] === null) {
       displayIndex -= 1;
     }

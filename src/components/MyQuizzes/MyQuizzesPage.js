@@ -20,7 +20,6 @@ export default class MyQuizzesPage extends Component {
       contentLoading: true,
       submittedQuizzes: [],
       userT: STUDENT,
-
       showModal: false,
       modalContent: {
         header: 'Error!',
@@ -51,10 +50,7 @@ export default class MyQuizzesPage extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
-//      console.log(response.data);
       const newSideBarContent = { session: response.data };
-  //  console.log("My quizzes", response.data);
-  //  this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
       setTimeout(() => {
         this.setState({
           sideBarContent: newSideBarContent,
@@ -115,7 +111,7 @@ export default class MyQuizzesPage extends Component {
     const settingUserType = cookie.load('userType');
     if (settingUserType) {
       this.setState({ userT: settingUserType });
-      if (settingUserType === TEACHER) { // CHANGE TO TEACHER
+      if (settingUserType === TEACHER) {
         this.requestTeacherData();
       }
       if (settingUserType === STUDENT) {
@@ -229,7 +225,7 @@ export default class MyQuizzesPage extends Component {
       if (this.state.panelType === 'viewer') {
         element = (<QuizViewerMainPage
           userToken={this.props.userToken}
-          quizID={this.state.currentID} // this.state.currentID
+          quizID={this.state.currentID}
           handleSubmitButton={() => { this.reloadBar(); this.updateCurrentQuiz('viewer'); }}
           reloadSideBar={() => this.reloadBar()}
           handleError={type => this.updateCurrentQuiz(type)}

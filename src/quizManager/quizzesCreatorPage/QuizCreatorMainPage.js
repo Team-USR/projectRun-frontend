@@ -119,11 +119,6 @@ export default class QuizCreatorMainPage extends Component {
       thisError[0] = false;
       this.setState({ hasErrors: thisError });
     }
-    const pattern = /^\d+$/;
-    if (pattern.test(generatedQuiz.quiz.attempts) === false) {
-      thisObject.quiz.title += 'Attempts field needs to be a number!';
-      this.setState({ errors: thisObject, attemptsErrors: true });
-    }
   }
   checkCorectness(element, index) {
     const questions = this.state.submitedQuestions;
@@ -162,7 +157,7 @@ export default class QuizCreatorMainPage extends Component {
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
        element !== null);
     if (this.state.hasErrors.filter(item => item === true).length === 0 &&
-     filteredQuestions.length > 0 && this.state.attemptsErrors === false) {
+     filteredQuestions.length > 0) {
       this.setState({ submitedQuestions: filteredQuestions });
       axios({
         url: `${API_URL}/quizzes`,
@@ -321,7 +316,6 @@ export default class QuizCreatorMainPage extends Component {
     const answ = '';
     const inputQuestion = { id, ques, answ };
     if (quizType === 'multiple_choice') {
-    //  console.log(id);
       const question = (
         <MultipleChoiceQuizGenerator
           handleInput={(questionI, answers) => this.handleInput(questionI, answers, id)}
@@ -333,7 +327,6 @@ export default class QuizCreatorMainPage extends Component {
         />);
       questionObject = { id, question, buttonGroup };
     }
-
     if (quizType === 'single_choice') {
       const question = (
         <SingleChoiceQuizGenerator
@@ -618,8 +611,6 @@ export default class QuizCreatorMainPage extends Component {
     if (this.state.loading === true) {
       return <BrandSpinner />;
     }
-
-
     return ('');
   }
 }

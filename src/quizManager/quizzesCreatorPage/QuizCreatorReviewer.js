@@ -89,7 +89,6 @@ export default class QuizCreatorReviewer extends Component {
       method: 'post',
     })
     .then((response) => {
-//      console.log(response);
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
@@ -164,7 +163,6 @@ export default class QuizCreatorReviewer extends Component {
       );
     }
     if (question.type === 'mix') {
-      //  console.log(question);
       return (
         <MixQuiz
           question={question}
@@ -215,8 +213,6 @@ export default class QuizCreatorReviewer extends Component {
     return ('');
   }
   render() {
-  //  console.log(this.state.quizInfo);
-  //    console.log("RENDER QUIZ "+ this.props.quizID, this.state.quizInfo.title);
     if (this.state.error === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Error</h1>

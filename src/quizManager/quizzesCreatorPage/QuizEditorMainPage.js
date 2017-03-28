@@ -178,11 +178,6 @@ export default class QuizEditorMainPage extends Component {
       thisError[0] = false;
       this.setState({ hasErrors: thisError });
     }
-    const pattern = /^\d+$/;
-    if (pattern.test(generatedQuiz.quiz.attempts) === false) {
-      thisObject.quiz.title += 'Attempts field needs to be a number!';
-      this.setState({ errors: thisObject, attemptsErrors: true });
-    }
   }
   checkCorectness(element, index) {
     const questions = this.state.submitedQuestions;
@@ -370,8 +365,6 @@ export default class QuizEditorMainPage extends Component {
       rows_attributes: rowsAttributes,
       hints_attributes: hintsAttributes,
     };
-    // console.log(newQuestion);
-
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
     this.setState({ submitedQuestions: inputQ });
   }
@@ -488,8 +481,6 @@ export default class QuizEditorMainPage extends Component {
 
     inputQuestionList.push(inputQuestion);
     questionList.push(questionObject);
-
-    // console.log(questionList);
     this.setState({ questions: questionList, inputQuestions: inputQuestionList });
     id += 1;
   }
@@ -515,7 +506,6 @@ export default class QuizEditorMainPage extends Component {
     this.checkCorectnessTitle(attempted);
   }
   changeReleaseDate(value) {
-//    console.log(value);
     const releaseDate = this.state.submitedQuestions;
     releaseDate.quiz.release_date = value;
     this.setState({ submitedQuestions: releaseDate, defaultDate: value });
@@ -599,12 +589,7 @@ export default class QuizEditorMainPage extends Component {
     return ('');
   }
   render() {
-  //  console.log(this.state.submitedQuestions);
-  //  console.log("start rendering");
-//  console.log("submiteed",this.state.submitedQuestions);
     const submit = this.state.submitedQuestions;
-  //  console.log(this.state.questions);
-  //  console.log("end rendering");
     if (this.state.error === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>
@@ -614,8 +599,6 @@ export default class QuizEditorMainPage extends Component {
       return <BrandSpinner />;
     } else
     if (!this.state.reviewState && this.state.loading === false) {
-    //  console.log("ATTEMPTS", submit.quiz.attempts);
-    //  console.log("TITLE",submit.quiz.title);
       return (
         <div className="mainQuizGeneratorBlock">
           <h1> Quiz editor </h1>

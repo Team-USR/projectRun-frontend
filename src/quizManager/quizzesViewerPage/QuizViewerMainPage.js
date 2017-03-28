@@ -22,6 +22,11 @@ const styles = {
     marginTop: 100,
   },
 };
+/*
+ This component is the main wrapper for all types of quizzes.
+ It renders them according to the API request and displays them to
+ the students in order to solve them.
+ */
 export default class QuizViewerMainPage extends Component {
   constructor() {
     super();
@@ -43,7 +48,6 @@ export default class QuizViewerMainPage extends Component {
     this.saveSession = this.saveSession.bind(this);
   }
   componentWillMount() {
-//    console.log("mount");
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}`,
       headers: this.props.userToken,
@@ -53,7 +57,6 @@ export default class QuizViewerMainPage extends Component {
         loadingQuiz: false,
         quizInfo: response.data.quiz,
         session: response.data.quiz_session,
-      //  answers: response.data.quiz_session,
       });
       this.loadSession();
     }, 510))
@@ -64,8 +67,6 @@ export default class QuizViewerMainPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-  //  console.log("HOLA");
-  //  console.log("SESSSION", this.state.session);
     if (this.props.quizID !== nextProps.quizID) {
       this.setState({ loadingQuiz: true });
       axios({
@@ -77,7 +78,6 @@ export default class QuizViewerMainPage extends Component {
           loadingQuiz: false,
           quizInfo: response.data.quiz,
           session: response.data.quiz_session,
-        //  answers: response.data.quiz_session,
         });
         this.loadSession();
       }, 510));
@@ -130,8 +130,6 @@ export default class QuizViewerMainPage extends Component {
     this.setState({ answers: q });
   }
   saveSession() {
-  //  this.setState({ loadingQuiz: true });
-    // console.log(this.state.answers);
     this.setState({ savedSession: true });
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}/save`,
@@ -147,7 +145,6 @@ export default class QuizViewerMainPage extends Component {
     }, 510));
   }
   isResultsMode() {
-    // console.log("POST: ", this.state.answers);
     axios({
       url: `${API_URL}/quizzes/${this.state.quizInfo.id}/submit`,
       data: this.state.answers,
@@ -169,7 +166,6 @@ export default class QuizViewerMainPage extends Component {
         score: response.data.points,
         totalScore: response.data.total_points });
       this.props.reloadSideBar();
-      // console.log(this.state.score);
     });
   }
   collectAnswers(id, answers, type, index) {

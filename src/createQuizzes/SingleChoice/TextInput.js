@@ -8,7 +8,6 @@ export default class TextInput extends Component {
   }
   handleChange(event) {
     this.setState({ value: event.target.value });
-  //  this.props.callbackParent(event.target.value);
   }
   render() {
     return (
