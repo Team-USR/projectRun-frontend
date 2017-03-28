@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Button, Col } from 'react-bootstrap';
-
+/**
+* Component that renders an alternative solution for a mix question
+*/
 export default function AlternateSolution(props) {
   return (
     <div className="AlternateSolutionWrapper">

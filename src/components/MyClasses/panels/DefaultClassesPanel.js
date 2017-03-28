@@ -4,8 +4,15 @@ import { STUDENT, TEACHER } from '../../../constants';
 import { LineCh } from '../../Charts';
 
 let margin = 0;
+/**
+ * Component used to provide default values when rendering a class
+ * @type {Object}
+ */
 export default class DefaultClassesPanel extends Component {
-
+  /**
+   * Renders different headers depending on the type of user
+   * @return {Object} html entity
+   */
   renderHeader() {
     if (this.props.userType === TEACHER) {
       margin = 600;
@@ -17,7 +24,10 @@ export default class DefaultClassesPanel extends Component {
     }
     return (null);
   }
-
+  /**
+   * Renders charts using data about classess and students
+   * @return {Object} html entity
+   */
   renderCharts() {
     if (this.props.userType === TEACHER) {
       if (this.props.averagePerCreatedClass.length > 0) {
@@ -36,6 +46,10 @@ export default class DefaultClassesPanel extends Component {
     }
     return '';
   }
+  /**
+   * Renders classes on the sidebar
+   * @return {Array} Array of html entities containing classes names
+   */
   renderAllClasses() {
     return this.props.classes.map((item, index) =>
        (
@@ -49,7 +63,10 @@ export default class DefaultClassesPanel extends Component {
       ),
     );
   }
-
+  /**
+   * Component main render method
+   * @return {Object} Component instance
+   */
   render() {
     return (
       <div>
