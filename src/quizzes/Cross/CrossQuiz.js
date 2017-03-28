@@ -34,7 +34,7 @@ export default class CrossQuiz extends Component {
   * This function is called before 'render()'
   * It also prepares the hints arrays and hint matrix numbers
   * It checks if the component receives the sessionAnswers prop
-  * in order to store the saved answers from the preious Cross quiz session
+  * in order to store the saved answers from the previous Cross quiz session
   */
   componentWillMount() {
     const hints = this.props.question.hints;
