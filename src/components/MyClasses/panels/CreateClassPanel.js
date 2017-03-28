@@ -1,19 +1,30 @@
 import React, { PropTypes, Component } from 'react';
 import { Button } from 'react-bootstrap';
-
+/**
+ * Component handling creating a class
+ * @type {Object}
+ */
 export default class CreateClassPanel extends Component {
-
+  /**
+   * Component constructor
+   */
   constructor() {
     super();
     this.state = {
       newClassTitle: '',
     };
   }
-
+  /**
+   * Event handler to update the state
+   * @param  {Event} e event containing the new value
+   */
   handleInputChange(e) {
     this.setState({ newClassTitle: e.target.value });
   }
-
+  /**
+   * Component main render method
+   * @return {Object} Component instance
+   */
   render() {
     return (
       <div>

@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
-
+/**
+ * Function that generates a button with the text set to a text prop value
+ * @param {Object} props html button tag configured as described above
+ */
 export default function WordButton(props) {
   if (props.reviewState || props.resultsState) {
     return (
