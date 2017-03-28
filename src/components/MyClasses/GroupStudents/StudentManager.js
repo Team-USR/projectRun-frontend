@@ -1,8 +1,15 @@
 import React, { PropTypes, Component } from 'react';
 import { Button } from 'react-bootstrap';
-
+/**
+ * Component that renders a button listing the student name received from props
+ * with an icon depending type prop received
+ * @type {Object}
+ */
 export default class StudentManager extends Component {
-
+  /**
+   * Method that renders a button with the student name and a gliphicon
+   * @return {Object} object of html elements containing the button
+   */
   renderButton() {
     if (this.props.type === 'add') {
       return (
@@ -27,7 +34,10 @@ export default class StudentManager extends Component {
     }
     return (null);
   }
-
+  /**
+   * Component render method
+   * @return {Object} component instance
+   */
   render() {
     return (
       <div className="studentManagerWrapper">

@@ -5,8 +5,14 @@ import { Button, Col, NavItem, Tabs, Tab, Clearfix } from 'react-bootstrap';
 import { StudentManager } from '../GroupStudents';
 import { SearchSpinner } from '../../../components/utils';
 import { API_URL } from '../../../constants';
-
+/**
+ * Component that manages students relating to a class
+ * @type {Object}
+ */
 export default class StudentsPanel extends Component {
+  /**
+   * Component constructor
+   */
   constructor() {
     super();
     this.state = { value: '',
@@ -32,7 +38,9 @@ export default class StudentsPanel extends Component {
     this.sendInvite = this.sendInvite.bind(this);
     this.inviteStudents = this.inviteStudents.bind(this);
   }
-
+  /**
+   * Method that updates the component state before mounting
+   */
   componentWillMount() {
     this.setState({
       loadingSearch: this.props.loadingSearch,
@@ -44,7 +52,10 @@ export default class StudentsPanel extends Component {
       studentsInvited: this.props.invitedList,
     });
   }
-
+  /**
+   * Method that updates the states when it receives new props
+   * @param  {Object} nextProps new props
+   */
   componentWillReceiveProps(nextProps) {
     this.setState({
       loadingSearch: nextProps.loadingSearch,
@@ -55,7 +66,11 @@ export default class StudentsPanel extends Component {
       studentsInvited: nextProps.invitedList,
     });
   }
-
+  /**
+   * Returns unenrolled students
+   * @param  {Array} allStudents array of students
+   * @return {Array}             array of unenrolled students
+   */
   getUnenrolledStudents(allStudents) {
     const newStudentsObj = {};
     this.props.students.map((obj) => {
@@ -69,11 +84,16 @@ export default class StudentsPanel extends Component {
       return false;
     });
   }
-
+  /**
+   * Event handler to update state
+   * @param  {event} event event that contains the new value
+   */
   changeInput(event) {
     this.setState({ value: event.target.value });
   }
-
+  /**
+   * event handler that updates the state with the new csv chosen when prompted
+   */
   importCSV() {
     this.setState({ csvData: [], showSpecial: false, showContainer: false });
     let fileToParse = this.csv.files[0];
@@ -82,22 +102,21 @@ export default class StudentsPanel extends Component {
       this.setState({ csvData: [] });
     }
     this.setState({ file: fileToParse, errorMessage: '', loadedMessage: '' });
-    // console.log(fileToParse);
   }
-
+  /**
+   * Event handler that updates the state with the emails read from the csv file
+   * or updates an error message in the state if the file input was empty.
+   */
   parseFile() {
     this.setState({ showSpecial: false });
     if (Object.keys(this.state.file).length === 0 && this.state.file.constructor === Object) {
       this.setState({ errorMessage: 'File input cannot be empty!' });
-      // console.log('empty object');
       return;
     }
-    // console.log('not empty');
     Papa.parse(this.state.file, {
       header: true,
       dynamicTyping: true,
       complete: (results) => {
-        // console.log(results.data[0].email);
         const emptyArray = [];
         const partialArray = [];
         results.data.map((object, index) => {
@@ -118,7 +137,10 @@ export default class StudentsPanel extends Component {
       },
     });
   }
-
+  /**
+   * Returns an array of hmtl elements containing the emails from the CSV file.
+   * @return {array} Array of html elements
+   */
   showCsvData() {
     const emptyArray = [];
     if (!this.state.showSpecial) {
@@ -136,14 +158,20 @@ export default class StudentsPanel extends Component {
     const toReturn = this.state.csvRows;
     return toReturn;
   }
-
+  /**
+   * Methods that renders a header depending on the length of the CSV data.
+   * @return {string} message
+   */
   showLabel() {
     if (this.state.csvData.length !== 0) {
       return (<h4> Retrieved students from file:</h4>);
     }
     return ('');
   }
-
+  /**
+   * Returns an html button if data length isn't 0, else empty string.
+   * @return {String} Button or empty string.
+   */
   showAddButton() {
     if (this.state.csvData.length !== 0 && this.state.send) {
       return (<Col md={12} className="invite_students">
@@ -151,7 +179,10 @@ export default class StudentsPanel extends Component {
     }
     return ('');
   }
-
+  /**
+   * Adds a student to the class and updates the state accordingly
+   * @param {Number} id Student id
+   */
   addStudent(id) {
     //    console.log(id);
     //    console.log('ADD', this.state.unenrolledStudents);
@@ -176,7 +207,10 @@ export default class StudentsPanel extends Component {
       this.props.forceFilter(this.state.currentSearched);
     }
   }
-
+  /**
+   * Removes a student from the class and updates the state accordingly
+   * @param  {Number} id Student id
+   */
   removeStudent(id) {
     let newIndex = -1;
     this.state.enrolledStudents.map((item, index) => {
@@ -198,7 +232,10 @@ export default class StudentsPanel extends Component {
       this.props.forceFilter(this.state.currentSearched);
     }
   }
-
+  /**
+   * Approves a student request to join the classId
+   * @param  {Object} object object containing the data required to make a requests
+   */
   approveStudent(object) {
     const sendObject = { email: object.email };
     axios({
@@ -209,22 +246,22 @@ export default class StudentsPanel extends Component {
     })
     .then(() => {
       const requests = this.state.requestsList;
-    //  const newEnrolledObj = this.state.enrolledStudents;
       this.state.requestsList.map((item, index) => {
         if (item.id === object.id) {
           requests.splice(index, 1);
-        //  newEnrolledObj.push(this.state.requestsList[index]);
         }
         return 0;
       });
       this.setState({
         requestsList: requests,
-      //  enrolledStudents: newEnrolledObj
       });
       this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
     });
   }
-
+  /**
+   * Rejects a student's request to join the classId
+   * @param  {Object} object object containing required data to make the request
+   */
   declineStudents(object) {
     const sendObject = { email: object.email };
     axios({
@@ -235,27 +272,30 @@ export default class StudentsPanel extends Component {
     })
     .then(() => {
       const requests = this.state.requestsList;
-    //  const newEnrolledObj = this.state.enrolledStudents;
       this.state.requestsList.map((item, index) => {
         if (item.id === object.id) {
           requests.splice(index, 1);
-        //  newEnrolledObj.push(this.state.requestsList[index]);
         }
         return 0;
       });
       this.setState({
         requestsList: requests,
-      //  enrolledStudents: newEnrolledObj
       });
       this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
     });
   }
-
+  /**
+   * Sends the event value to a parent method
+   * @param  {event} event event containing the new value
+   */
   handleSearch(event) {
     this.props.manageSearch(event.target.value);
     this.setState({ currentSearched: event.target.value });
   }
-
+  /**
+   * Adds a student to the class if the email is registered, else it sends an
+   * email invitation.
+   */
   sendInvite() {
     const inputValue = this.state.value;
     const myObject = { users: [inputValue] };
@@ -276,7 +316,11 @@ export default class StudentsPanel extends Component {
     });
     this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
   }
-
+  /**
+   * Every element in the array is an email address, and based on it, the
+   * student is either added to the class if the email is registered on the platform,
+   * else an invitation email is sent to that address
+   */
   inviteStudents() {
     const userEmails = this.state.csvData;
     const myObject = { users: userEmails };
@@ -322,7 +366,11 @@ export default class StudentsPanel extends Component {
     });
     this.props.refreshStudents(this.props.classId, 'manage_studens_panel');
   }
-
+  /**
+   * Method that renders the students that are invited to the class
+   * @return {Array} array of html elements containing the email addresses of
+   * the invited students.
+   */
   renderInvitedStudents() {
     const arrayToRet = [];
     this.state.studentsInvited.map((element, index) => {
@@ -332,11 +380,16 @@ export default class StudentsPanel extends Component {
     });
     return arrayToRet;
   }
-
+  /**
+   * method that renders a message relating to the invites
+   */
   renderStudentInvite() {
     return (<h4 className="invite_message">{this.state.studentInviteMessage}</h4>);
   }
-
+  /**
+   * Method that renders the enrolled students in a class
+   * @return {Array} array of html elements containing the enrolled students
+   */
   renderEnrolledStudents() {
     if (this.state.loadingSearch === true) {
       return <SearchSpinner />;
@@ -360,7 +413,11 @@ export default class StudentsPanel extends Component {
     }
     return (null);
   }
-
+  /**
+   * Method that renders the unenrolled students from a class
+   * @return {Array} array of html elements containing the unenrolled students
+   * from a certain class
+   */
   renderUnenrolledStudents() {
     if (this.state.loadingSearch === true) {
       return <SearchSpinner />;
@@ -385,7 +442,10 @@ export default class StudentsPanel extends Component {
     }
     return (null);
   }
-
+  /**
+   * Method that renders the search bar used to search for a student
+   * @return {Object} html element containing the input element
+   */
   renderSearchBar() {
     return (
       <NavItem key={'searchBar'} >
@@ -399,7 +459,11 @@ export default class StudentsPanel extends Component {
       </NavItem>
     );
   }
-
+  /**
+   * Method that renders enrolled and unenrolled students.
+   * @return {Object} html element containing the enrolled and unenrolled
+   * students
+   */
   renderSearchStudent() {
     return (
       <div>
@@ -429,7 +493,10 @@ export default class StudentsPanel extends Component {
       </div>
     );
   }
-
+  /**
+   * Method that rneders the tab that handles the student Invite
+   * @return {Object} html element containing the invite student panel
+   */
   renderInviteStudent() {
     return (
       <div className="main_container">
@@ -460,7 +527,10 @@ export default class StudentsPanel extends Component {
       </div>
     );
   }
-
+  /**
+   * Method that renders the students requests panel
+   * @return {Object} html element containing the students requests panel
+   */
   renderRequestsPanel() {
     return (
       <div key={'manageRequests'}>
@@ -503,7 +573,10 @@ export default class StudentsPanel extends Component {
       </div>
     );
   }
-
+  /**
+   * Method that renders the tab managing the importing of students
+   * @return {Object} html element containing the students importing tab
+   */
   renderImportStudents() {
     let myStyle;
     if (this.state.showContainer) {
@@ -546,7 +619,10 @@ export default class StudentsPanel extends Component {
       </div>
     );
   }
-
+  /**
+   * Component main render method
+   * @return {Object} Component instance
+   */
   render() {
     return (
       <div className="studentsPanelWrapper">

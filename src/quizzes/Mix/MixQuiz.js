@@ -2,8 +2,15 @@ import React, { PropTypes, Component } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { WordButton } from './index';
 
-
+/**
+ * Component that renders a Mix quiz
+ * @type {Object}
+ */
 export default class MixQuiz extends Component {
+  /**
+   * Component constructor
+   * @param  {Object} props object received from the parent
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -12,6 +19,10 @@ export default class MixQuiz extends Component {
       bottomArray: [],
     };
   }
+  /**
+   * Special React method that is called before the component has mounted and
+   * fills the state with data received from props if the user is not in teacher mode
+   */
   componentWillMount() {
     const emptyArray = [];
     const wordArray = [];
@@ -54,7 +65,11 @@ export default class MixQuiz extends Component {
       topArray: sessionArray,
     });
   }
-
+  /**
+   * Event handler that moves a button from a "solution" state to a "not-used" one
+   * and vice-versa and sends the new states to the parent.
+   * @param  {Number} index the index of the button clicked
+   */
   handleClick(index) {
     const bArray = this.state.bottomArray;
     const tArray = this.state.topArray;
@@ -75,7 +90,11 @@ export default class MixQuiz extends Component {
     solutionSoFar.push(this.props.question.words[position]));
     this.props.callbackParent(this.props.question.id, solutionSoFar);
   }
-
+  /**
+   * Method that creates an array of html elements based on the array received
+   * @param  {Array} iArray array of positions
+   * @return {Array}        array of html elements
+   */
   renderButtons(iArray) {
     const returnedArray = [];
     for (let i = 0; i < iArray.length; i += 1) {
@@ -90,7 +109,12 @@ export default class MixQuiz extends Component {
     }
     return returnedArray;
   }
-  // this.props.correctAnswer.correct_sentences gives the solutions array;
+  /**
+   * Method that renders content depending on the user mode. If the mode is set
+   * to teacher, the body rendered contains the current attempt at solving the
+   * quiz, else it renders the solutions to the quiz
+   * @return {Array} array of html elements
+   */
   renderBody() {
     if (!this.props.teacherView) {
       return (<div>
@@ -133,7 +157,10 @@ export default class MixQuiz extends Component {
       </div>
     );
   }
-
+  /**
+   * Component render method
+   * @return {Array} Component instance
+   */
   render() {
     if (this.props.resultsState) {
       const correctAnswer = this.props.correctAnswer;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import { AlternateSolution, MixQuizGenerator } from '../index';
 
 describe('<MixQuizGenerator />', () => {
@@ -21,5 +21,13 @@ describe('<MixQuizGenerator />', () => {
   });
   it('should render the title received from a prop object', () => {
     expect(shallow(tag).containsMatchingElement(<input value="MixTest" />)).toEqual(true);
+  });
+  it('should have the correct index prop', () => {
+    expect(shallow(tag).instance().props.index).toEqual(1);
+  });
+  it('should add an AlternateSolution component on click', () => {
+    const asd = mount(tag);
+    asd.find('.add_solution').simulate('click');
+    expect(asd.state().alternateSolutions.length).toBe(3);
   });
 });
