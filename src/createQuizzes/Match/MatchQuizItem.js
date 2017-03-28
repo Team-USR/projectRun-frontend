@@ -1,10 +1,16 @@
 import React, { PropTypes } from 'react';
 import { Button, Col } from 'react-bootstrap';
 
+/**
+* Function used for displaying the a single item from the JMatch list
+* It builds 2 textareas, for left and for right matching items.
+* The items can be deleted by pressing 'deleteMatchItemBtn' Button
+* @param {Object} props The object of the Match Item properties.
+* @return {Object} component The MatchQuizItem Component
+*/
 export default function MatchQuizItem(props) {
   const quizID = `quizItem + ${props.id}`;
   return (
-
     <Col md={12} className="quizItem" id={quizID} key={quizID}>
       <Col md={1}>
         <div className="itemIndex">

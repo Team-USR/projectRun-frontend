@@ -392,7 +392,9 @@ export default class QuizzesPanel extends Component {
             className="enjoy-css"
             onClick={() =>
               this.props.handleSaveAssignedQuizzes(this.state.selectedQuizzes)}
-          > Save </Button>
+          >
+            Save
+          </Button>
         </Col>
       </div>
     );

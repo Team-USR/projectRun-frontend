@@ -1,8 +1,17 @@
 import React, { PropTypes, Component } from 'react';
 import { Button } from 'react-bootstrap';
 
+/**
+ * Component that renders a button listing the quiz title received from props
+ * with an icon depending type prop received
+ * @type {Object}
+ */
 export default class QuizManager extends Component {
 
+  /**
+   * Method that renders a button with the quiz title and a gliphicon
+   * @return {Object} object of html elements containing the button
+   */
   renderButton() {
     if (this.props.type === 'add') {
       return (
@@ -28,6 +37,10 @@ export default class QuizManager extends Component {
     return (null);
   }
 
+  /**
+   * Component render method
+   * @return {Object} component instance
+   */
   render() {
     return (
       <div className="quizManagerWrapper">
