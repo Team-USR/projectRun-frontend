@@ -6,8 +6,15 @@ import { Tabs, Tab, Grid, Col, Row } from 'react-bootstrap';
 import { STUDENT, TEACHER, API_URL } from '../../constants';
 import { PasswordManager } from './';
 
-
+/*
+* Component that manages the content from the Settings page.
+*/
 export default class SettingsPage extends Component {
+
+  /**
+  * This is the Main Constructor for Settings
+  * @param {Object} props object of properties
+  */
   constructor(props) {
     super(props);
     this.state = {
@@ -22,6 +29,11 @@ export default class SettingsPage extends Component {
     };
   }
 
+  /**
+  * This function is called before 'render()'
+  * It loads the cookies and checks if the
+  * user is TEACHER or STUDENT to set the userType
+  */
   componentWillMount() {
     const settingUserType = cookie.load('userType');
     const user = cookie.load('username');
@@ -32,6 +44,11 @@ export default class SettingsPage extends Component {
     }
   }
 
+  /**
+  * This is an async function which makes a PUT request
+  * in order to change the password
+  * It catches the error and display a meesage
+  */
   async changePassword() {
     await axios({
       url: `${API_URL}/users/password`,
@@ -52,18 +69,37 @@ export default class SettingsPage extends Component {
     .catch(err => this.setState({ err: err.response.data.errors.full_messages.join(', ') }));
   }
 
+  /**
+  * Function called everytime when user types in Current password input
+  * It stores the value of the input
+  * @param {Event} e The event triggerd on key press
+  */
   handleCurrentPassword(e) {
     this.setState({ currentPassword: e.target.value });
   }
 
+  /**
+  * Function called everytime when user types in New password input
+  * It stores the value of the input
+  * @param {Event} e The event triggerd on key press
+  */
   handleNewPassword(e) {
     this.setState({ newPassword: e.target.value });
   }
 
+  /**
+  * Function called everytime when user types in Confirm password input
+  * It stores the value of the input
+  * @param {Event} e The event triggerd on key press
+  */
   handleConfirmPassword(e) {
     this.setState({ confirmPassword: e.target.value });
   }
 
+  /**
+  * Function which is used to toggle between TEACHER
+  * and STUDENT Mode, adding and removing the cookies
+  */
   changeUserType() {
     if (this.state.isTeacher) {
       cookie.save('userType', STUDENT);
@@ -80,6 +116,12 @@ export default class SettingsPage extends Component {
     cookie.remove('current-session-type');
   }
 
+  /**
+  * Function used for displaying the Probile Tab in Setting Page
+  * It contains user infomration and the Toggle where you can
+  * switch your userType Mode
+  * @return {Object} The Probile Tab Component
+  */
   renderProfileTab() {
     this.profile = [];
     return (
@@ -104,6 +146,12 @@ export default class SettingsPage extends Component {
     );
   }
 
+  /**
+  * Function used for displaying the Password Tab in Setting Page
+  * It contains the PasswordManagerComponent and passes all
+  * event handlers to it
+  * @return {Object} The Password Tab Component
+  */
   renderPasswordTab() {
     return (
       <PasswordManager
@@ -121,19 +169,15 @@ export default class SettingsPage extends Component {
     );
   }
 
-  renderPrefTab() {
-    this.preferences = [];
-    return (
-      <div>
-        <h1><b>Preferences</b></h1>
-      </div>
-    );
-  }
-
+  /**
+  * This is the main render function which is in charge of displaying
+  * the Tabs in Setting Page. It calls the renderProfileTab() and
+  * renderPasswordTab() functions to render them
+  * @return {Object} The Settings Component
+  */
   render() {
     const profileTab = this.renderProfileTab();
     const passwordTab = this.renderPasswordTab();
-//    const prefTab = this.renderPrefTab();
     return (
       <Grid className="options_container">
         <Row>
@@ -152,10 +196,6 @@ export default class SettingsPage extends Component {
                   <h3>Password updated!</h3>
                   : passwordTab }
               </Tab>
-              {//  <Tab eventKey={3} title="Preferences">
-              //   { prefTab }
-              // </Tab>
-            }
             </Tabs>
           </Col>
         </Row>
