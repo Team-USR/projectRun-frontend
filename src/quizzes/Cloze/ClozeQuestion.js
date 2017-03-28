@@ -2,9 +2,16 @@ import React from 'react';
 import { ClozeSentence } from './index';
 import { getNOfGaps } from '../../helpers/Cloze';
 
-
+/**
+ * Component to be rendered in QuizViewer
+ * @type {Object}
+ */
 export default class ClozeQuestion extends React.Component {
-
+  /**
+   * Initializes the state
+   * @param  {Object} props inherited properties
+   * @return {undefined}
+   */
   constructor(props) {
     super(props);
     const gaps = props.sentences.map(sentence => sentence.gaps.map(() => ''));
@@ -16,7 +23,11 @@ export default class ClozeQuestion extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
   }
-
+  /**
+   * Update the QuizViewer to QuizReviewer if user submitted the quiz
+   * @param  {Object} nextProps usual props but with right answers on top
+   * @return {undefined}
+   */
   componentWillReceiveProps(nextProps) {
     if (nextProps.resultsState) {
       const copy = nextProps.correctAnswer;
@@ -24,14 +35,22 @@ export default class ClozeQuestion extends React.Component {
     }
     this.setState({ resultsState: nextProps.resultsState });
   }
-
+  /**
+   * Updates the if the users changes one of the answers
+   * @param  {event} e event
+   * @return {undefined}
+   */
   handleChange(e) {
     const newAnswers = this.state.answers;
     newAnswers[e.target.id - 1] = e.target.value.trim();
     this.props.callbackParent(newAnswers);
     this.setState({ answers: newAnswers });
   }
-
+  /**
+   * Renders the review mode for the question
+   * to be used by teachers in QuizEditor
+   * @return {Object}
+   */
   renderReview() {
     return (
       this.props.sentences.map((sentence, ind) =>
@@ -46,7 +65,11 @@ export default class ClozeQuestion extends React.Component {
       )
     );
   }
-
+  /**
+   * Renders the view mode for the question, to be solved
+   * by students or to display their result
+   * @return {Object}
+   */
   renderView() {
     let correctGapsCopy = [];
     if (this.props.resultsState && Object.keys(this.props.correctAnswer).length > 0) {
@@ -71,7 +94,10 @@ export default class ClozeQuestion extends React.Component {
       )
     );
   }
-
+  /**
+   * Renders the question card
+   * @return {Object}
+   */
   render() {
     let validationClass = '';
     if (this.state.resultsState) {

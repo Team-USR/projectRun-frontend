@@ -2,8 +2,16 @@ import React from 'react';
 import { Button, FormGroup, InputGroup, FormControl, Col, ControlLabel } from 'react-bootstrap';
 import { GAP_MATCHER, HINT_MATCHER } from '../../constants';
 
+/**
+ * Input box for adding valid "Fill in the gaps" sentences
+ * @type {Object}
+ */
 export default class ClozeForm extends React.Component {
-
+  /**
+   * Initializes the component
+   * @param  {Object} props inherited properties
+   * @return {undefined}
+   */
   constructor(props) {
     super(props);
 
@@ -14,7 +22,10 @@ export default class ClozeForm extends React.Component {
     this.renderQuestion = this.renderQuestion.bind(this);
     this.checkIfValid = this.checkIfValid.bind(this);
   }
-
+  /**
+   * Allows adding if the to-add sentence has at least one gap and one hint
+   * @return {undefined}
+   */
   checkIfValid() {
     const toAdd = this.content.value;
     if (toAdd.match(GAP_MATCHER) && (toAdd.match(new RegExp(GAP_MATCHER, 'g')) || []).length ===
@@ -24,7 +35,10 @@ export default class ClozeForm extends React.Component {
       this.setState({ valid: false });
     }
   }
-
+  /**
+   * Calls the addQuestion function received as props and resets the validator
+   * @return {undefined}
+   */
   renderQuestion() {
     if (this.content.value) {
       this.props.addQuestion(this.content.value);
@@ -32,7 +46,10 @@ export default class ClozeForm extends React.Component {
       this.setState({ valid: false });
     }
   }
-
+  /**
+   * A way of creating a cloze quiz
+   * @return {Object} input element and add button
+   */
   render() {
     return (
       <FormGroup>
