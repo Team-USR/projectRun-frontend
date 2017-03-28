@@ -795,7 +795,7 @@ export default class CrossQuizGenerator extends Component {
                 <BoardSize
                   styleClass="sizeLabel"
                   id={'boardWidth'}
-                  labelValue={'Witdh'}
+                  labelValue={'Width'}
                   size={this.state.displayWidth}
                   handleSizeChange={e => this.handleWidthChange(e)}
                 />
