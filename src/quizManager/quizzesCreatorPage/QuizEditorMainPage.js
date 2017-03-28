@@ -396,7 +396,6 @@ export default class QuizEditorMainPage extends Component {
     inputQ.quiz.questions_attributes[questionID] = questionObject;
     this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
-    // console.log(questionObject);
   }
   /*
     Collects the data from the Cross child component

@@ -35,7 +35,6 @@ export default class MixQuizGenerator extends Component {
    */
   static formatSolution(solution) {
     let wordsArray = this.splitSentence(solution);
-    //  console.log('arrayOfWords', wordsArray);
     wordsArray = this.createWordsArray(wordsArray);
     let formatedSolution = '';
     wordsArray.map((element) => {
@@ -178,7 +177,6 @@ export default class MixQuizGenerator extends Component {
     const solCopy = this.state.alternateSolutions;
     solCopy.push('');
     this.setState({ alternateSolutions: solCopy });
-    // console.log(this.state.alternateSolutions);
     const formattedObj =
     this.updateFormattedObject(this.state.mainSolution, solCopy);
     this.props.updateParent(formattedObj,
@@ -194,10 +192,8 @@ export default class MixQuizGenerator extends Component {
     const solCopy = this.state.alternateSolutions;
     solCopy[index] = e.target.value;
     this.setState({ alternateSolutions: solCopy });
-    // console.log(this.state.alternateSolutions);
     const formattedObj =
     this.updateFormattedObject(this.state.mainSolution, solCopy);
-    //  console.log(formattedObj);
     this.props.updateParent(formattedObj,
       this.state.mixQuizQuestion, this.props.index);
   }
@@ -210,7 +206,6 @@ export default class MixQuizGenerator extends Component {
     const solCopy = this.state.alternateSolutions;
     solCopy.splice(index, 1);
     this.setState({ alternateSolutions: solCopy });
-    // console.log(this.state.alternateSolutions);
     const formattedObj =
     this.updateFormattedObject(this.state.mainSolution, solCopy);
     this.props.updateParent(formattedObj,

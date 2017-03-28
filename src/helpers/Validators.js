@@ -2,7 +2,8 @@
   Validation function which checks each answer from the multiple choice question.
   Each answer mustn't be empty
   At least one of the answers must be true.
-  @return errorMessage {String} [returns the error message to be displayed underneath the specific question]
+  @return errorMessage {String} [returns the error message
+  to be displayed underneath the specific question]
 */
 export function checkMultiple(element) {
   let errorMessage = '';
