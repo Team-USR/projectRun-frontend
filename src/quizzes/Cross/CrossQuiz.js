@@ -2,8 +2,17 @@ import React, { Component, PropTypes } from 'react';
 import { Col, Clearfix } from 'react-bootstrap';
 import { Board } from './index';
 
-
+/**
+ * Class that renders the entire the Cross Quiz Panel for
+ * Students to solve the quiz, and Teacher to review their create quizzes
+ * @param {Object} props
+ * @type {Object}
+ */
 export default class CrossQuiz extends Component {
+  /**
+  * This is the Main Constructor for CrossQuiz Class
+  * @param {Object} props object of properties
+  */
   constructor(props) {
     super(props);
     this.state = {
@@ -21,6 +30,12 @@ export default class CrossQuiz extends Component {
     this.generateHintsNumbers = this.generateHintsNumbers.bind(this);
   }
 
+  /**
+  * This function is called before 'render()'
+  * It also prepares the hints arrays and hint matrix numbers
+  * It checks if the component receives the sessionAnswers prop
+  * in order to store the saved answers from the preious Cross quiz session
+  */
   componentWillMount() {
     const hints = this.props.question.hints;
     const width = this.props.question.width;
@@ -62,6 +77,13 @@ export default class CrossQuiz extends Component {
     }
   }
 
+  /**
+  * Function called everytime when user types in Square Input
+  * It stores the value of the input
+  * @param {Event, Integerm Integer}
+  *        e   The event triggerd when the Square Inputs is changed
+  *        i, j  Coordinates
+  */
   handleSquareChange(e, i, j) {
     const event = e;
     const target = event.target;
@@ -92,7 +114,11 @@ export default class CrossQuiz extends Component {
     this.props.callbackParent(this.props.id, newBoard);
   }
 
-
+  /**
+  * Function used as a helper to find a word by its coordinates
+  * @param {Array, Integer, Integer} hints, x, y
+  * @return {Object}  hints[i] or -1
+  */
   findWordByPosition(hints, x, y) {
     this.h = this.props.question.hints;
     for (let i = 0; i < hints.length; i += 1) {
@@ -103,6 +129,12 @@ export default class CrossQuiz extends Component {
     return -1;
   }
 
+  /**
+  * Function used as a helper to generate the matrix of
+  * numbers from the beggining of the word in a Board
+  * @param {Array, Array} matrix, hints
+  * @return {Object}  hints[i] or -1
+  */
   generateHintsNumbers(matrix, hints) {
     const hintsNoMatrix = matrix;
 
@@ -121,6 +153,11 @@ export default class CrossQuiz extends Component {
     this.setState({ hintsNumbers: hintsNoMatrix });
   }
 
+
+  /**
+  * This function renders each item from the Down Hints Array
+  * @return {Object} item  The Down word and its Hint
+  */
   renderDownHints() {
     const downHints = this.state.downHints;
     const hintsNumbers = this.state.hintsNumbers;
@@ -145,6 +182,10 @@ export default class CrossQuiz extends Component {
     );
   }
 
+  /**
+  * This function renders each item from the Across Hints Array
+  * @return {Object} item  The Across word and its Hint
+  */
   renderAcrossHints() {
     const acrossHints = this.state.acrossHints;
     const hintsNumbers = this.state.hintsNumbers;
@@ -170,6 +211,11 @@ export default class CrossQuiz extends Component {
     );
   }
 
+  /**
+  * Function that renders the Board using the Board Component
+  * All the Event handlers are sent via its props
+  * @return {Object} The Board Wrapper
+  */
   renderBoard() {
     return (
       <div className="crossBoard">
@@ -190,10 +236,16 @@ export default class CrossQuiz extends Component {
     );
   }
 
+  /**
+  * This is the main render function which is in charge of displaying
+  * the Cross Quiz Viewer Component. It calls the renderBoard(),
+  * renderAcrossHints() and renderDownHints() functions to render
+  * the Board, the words and the hints.
+  * @return {Object}  The Cross Quiz Viewer Component
+  */
   render() {
     const crossQuizQuestion = this.state.crossQuizQuestion;
     const quizIndex = this.state.crossQuizIndex;
-
 
     this.answerClass = '';
 
