@@ -3,7 +3,17 @@ import { Button, Col, Clearfix } from 'react-bootstrap';
 import { ModalError } from '../../components/utils';
 import { Board, Crossword, BoardSize } from './index';
 
+/**
+ * Class that renders the entire the Cross Quiz GEnerator for
+ * Teacher Create and Edit Cross quizzes
+ * @param {Object} props
+ * @type {Object}
+ */
 export default class CrossQuizGenerator extends Component {
+  /**
+  * This is the Main Constructor for CrossQuiz Generator Class
+  * @param {Object} props object of properties
+  */
   constructor(props) {
     super(props);
     const minimumBoardSize = 8;
@@ -40,12 +50,17 @@ export default class CrossQuizGenerator extends Component {
     this.closeModal = this.closeModal.bind(this);
   }
 
+  /**
+  * This function is called before 'render()'
+  * It also prepares the hints arrays and hint matrix numbers
+  * It checks if the component receives the content prop
+  * in order to store the saved Cross quiz session
+  */
   componentWillMount() {
     const content = this.props.content;
     this.handleResizeBoard();
 
     if (content) {
-      // console.log('reviewState');
       const board = content.rows.map(value => ({ row: value }));
       this.generateWordsForEditor(board, false);
 
@@ -74,6 +89,11 @@ export default class CrossQuizGenerator extends Component {
     }
   }
 
+  /**
+  * Function used as a helper to find a Hint by its coordinates
+  * @param {Integer, Integer, Bool} x, y, isAcross
+  * @return {Object}  hints[i] or -1
+  */
   getHintByCoordintes(x, y, isAcross) {
     if (this.props.content) {
       const hints = this.props.content.hints;
@@ -86,6 +106,14 @@ export default class CrossQuizGenerator extends Component {
     return -1;
   }
 
+  /**
+  * Function used as a helper to get a word and
+  * its starting positions in a Board
+  * It takes a string and uses getHintByCoordintes() Function
+  * to make a link between generated words and existing hints
+  * @param {Strin, Integer, Integer, String} myString, x, y, type
+  * @return {Array}  generatedWords The array of words and its hints
+  */
   getWordsAndPositions(myString, x, y, type) {
     let isAcross = true;
     if (type === 'down') {
@@ -160,9 +188,13 @@ export default class CrossQuizGenerator extends Component {
     return generatedWords;
   }
 
+  /**
+  * This function updates the hintsAttributes to fit the POST request
+  * @param {Array, Array} acrossWords, acrossWords
+  * @return {Array}  newHintsAttributes The updated array of hints
+  */
   updateHintsAttributes(acrossWords, downWords) {
     const newHintsAttributes = [];
-
 
     acrossWords.map((array) => {
       array.map((obj) => {
@@ -199,13 +231,14 @@ export default class CrossQuizGenerator extends Component {
       return array;
     });
 
-    // console.log('this', newHintsAttributes);
-    // console.log(this.state);
     this.setState({ hintsAttributes: newHintsAttributes });
     return newHintsAttributes;
   }
 
-  /* Function called everytime when user types in Quiz Title Input */
+  /**
+  * Function called everytime when user types in Quiz Title Input
+  * @param {Event} e  The event triggerd when the Title Inputs is changed
+  */
   handleQuestionInputChange(e) {
     const target = e.target;
     const value = target.value;
@@ -225,10 +258,15 @@ export default class CrossQuizGenerator extends Component {
       questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
   }
 
+  /**
+  * Function called everytime when user types in Square Input
+  * It stores the value of the input adn updates the generated words
+  * and hints. It also trigger the validation function from itr parent.
+  * @param {Event, Integerm Integer}
+  *        e   The event triggerd when the Square Inputs is changed
+  *        i, j  Coordinates
+  */
   handleSquareChange(e, i, j) {
-    // console.log(this.state.downWords);
-    // console.log(this.state.acrossWords);
-
     const event = e;
     const target = event.target;
     const value = target.value;
@@ -269,6 +307,11 @@ export default class CrossQuizGenerator extends Component {
       questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
   }
 
+  /**
+  * Function called when the user click and confirm the Generation Button
+  * It uses Crossword Component from CrossAutoGenerator to take
+  * the input words and create a Cross Board
+  */
   confirmGenerateBoard() {
     if (this.state.inputWords.length < 2) {
       this.openModal({
@@ -353,6 +396,10 @@ export default class CrossQuizGenerator extends Component {
     }
   }
 
+  /*
+  * Function caled as a handler for Generate Board click
+  * It opens a Modal and ask user for Generate Confirmation
+  */
   handleGenerateBoard() {
     this.openModal({
       header: 'Generate the Board ? ',
@@ -361,6 +408,11 @@ export default class CrossQuizGenerator extends Component {
     });
   }
 
+
+  /**
+  * Function called when the user click and confirm the Clear Board Button
+  * It regenerates a new Clean board and clear the Words and Hints
+  */
   confirmClearBoard() {
     const newBoard = this.state.boardValues;
     const currentWidth = this.state.boardWidth;
@@ -388,10 +440,13 @@ export default class CrossQuizGenerator extends Component {
     this.props.updateParent(
       questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
 
-
     this.closeModal();
   }
 
+  /*
+  * Function called as a handler for Clear Board click
+  * It opens a Modal and ask user for Clear Board Confirmation
+  */
   handleClearBoard() {
     this.openModal({
       header: 'Clear the Board ? ',
@@ -400,6 +455,12 @@ export default class CrossQuizGenerator extends Component {
     });
   }
 
+  /**
+  * Function used as a helper to check if the board can be
+  * resized without cropping the current words
+  * @param {Array, Integer, Integer} newBoard, newBoardWidth, newBoardHeight
+  * @return {Bool}
+  */
   checkIfCropped(newBoard, newBoardWidth, newBoardHeight) {
     let maxRow = 0;
     let maxCol = 0;
@@ -442,6 +503,12 @@ export default class CrossQuizGenerator extends Component {
     return true;
   }
 
+  /*
+  * Function called as a handler for Resize Board click
+  * It check the diemnsions of the board wich are min 1x1 and max 25x25
+  * It opens a Modal depending on the error and
+  * resizes the Board if everything is correc
+  */
   handleResizeBoard() {
     if (isNaN(this.boardHeight) || isNaN(this.boardWidth) ||
       this.boardHeight < 1 || this.boardWidth < 1) {
@@ -507,6 +574,11 @@ export default class CrossQuizGenerator extends Component {
     }
   }
 
+  /**
+  * Function called everytime when user types in Height Input
+  * It stores the value of the input
+  * @param {Event} e The event triggerd when the Height Inputs is changed
+  */
   handleHeightChange(e) {
     const target = e.target;
     const value = parseInt(target.value, 10);
@@ -514,6 +586,11 @@ export default class CrossQuizGenerator extends Component {
     this.setState({ displayHeight: value });
   }
 
+  /**
+  * Function called everytime when user types in Width Input
+  * It stores the value of the input
+  * @param {Event} e The event triggerd when the Width Inputs is changed
+  */
   handleWidthChange(e) {
     const target = e.target;
     const value = parseInt(target.value, 10);
@@ -521,6 +598,15 @@ export default class CrossQuizGenerator extends Component {
     this.setState({ displayWidth: value });
   }
 
+  /**
+  * Function called everytime when user types in Hint Input
+  * It stores the value of the input adn updates the generated words
+  * and hints. It also trigger the validation function from itr parent.
+  * @param {Event, Integer, Integer, String}
+  *        e   The event triggerd when the Square Inputs is changed
+  *        i, j  Coordinates
+  *        clueType  down or across
+  */
   handleClueChange(e, x, y, clueType) {
     const target = e.target;
     const value = target.value;
@@ -550,10 +636,13 @@ export default class CrossQuizGenerator extends Component {
     // Send Match Data to MainQuizGenerator
     this.props.updateParent(
       questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
-
-    // console.log(this.state.acrossWords);
   }
 
+  /**
+  * Function called everytime when user types in Words Textarea
+  * It stores the value of the input and split the words by newline
+  * @param {Event} e The event triggerd when the Words Textarea is changed
+  */
   handleInputWordsChange(e) {
     const target = e.target;
     const value = target.value;
@@ -572,6 +661,12 @@ export default class CrossQuizGenerator extends Component {
     this.setState({ inputWords: wordsArray });
   }
 
+
+  /**
+  * Function used to generate the board, words and hints for editor
+  * It is calle only once in componentWillMount it ther is content prop.
+  * @param {Array, Bool} board, clearHints
+  */
   generateWordsForEditor(board, clearHints) {
     let newAcrossWords = [];
     let newDownWords = [];
@@ -648,9 +743,12 @@ export default class CrossQuizGenerator extends Component {
     });
   }
 
+  /**
+  * Function used to generate the board, words and hints for Cross Generator
+  * It is called every time user types in the board
+  * @param {Array, Integer, Integer} board, rom, col
+  */
   generateWords(board, row, col) {
-    // console.log('generateWords - BOARD', board);
-
     const rowString = board[row].row;
     const newAcrossWords = this.state.acrossWords;
     newAcrossWords[row] = this.getWordsAndPositions(rowString, row, col, 'across');
@@ -664,15 +762,20 @@ export default class CrossQuizGenerator extends Component {
     const newDownWords = this.state.downWords;
     newDownWords[col] = this.getWordsAndPositions(colString, row, col, 'down');
 
-    // console.log(newAcrossWords, newDownWords);
-
     this.setState({ downWords: newDownWords, acrossWords: newAcrossWords });
   }
 
+  /**
+  * Function called to close the Error Modal
+  */
   closeModal() {
     this.setState({ showModal: false });
   }
 
+  /**
+  * Function called to open the Error Modal
+  * @param {OBject} content Header, Body, Footer, ModalProps
+  */
   openModal(content) {
     if (content) {
       this.setState({ showModal: true, modalContent: content });
@@ -681,6 +784,11 @@ export default class CrossQuizGenerator extends Component {
     }
   }
 
+  /**
+  * Function that renders the Board using the Board Component
+  * All the Event handlers are sent via its props
+  * @return {Object} The Board Wrapper
+  */
   renderBoard() {
     let board = (null);
     if (this.state.showBoard) {
@@ -699,6 +807,11 @@ export default class CrossQuizGenerator extends Component {
     return board;
   }
 
+  /**
+  * Function that renders each Clue and Word pairs
+  * The text for labels is transformed tot uppercase
+  * @return {Object, Integer, Integer, String} obj, x, y, clueType
+  */
   renderClue(obj, x, y, clueType) {
     let hintValue = '';
 
@@ -724,6 +837,11 @@ export default class CrossQuizGenerator extends Component {
     );
   }
 
+  /**
+  * Function used to render the list of generated Words
+  * It calls the function 'renderClue()' for each item
+  * @return {Object} The Hints Wrapper
+  */
   renderGeneratedWords() {
     if (this.state.showBoard) {
       return (
@@ -749,6 +867,13 @@ export default class CrossQuizGenerator extends Component {
     return (null);
   }
 
+  /**
+  * This is the main render function which is in charge of displaying
+  * the Cross Quiz GEnerator Component. It calls the renderBoard(),
+  * renderGeneratedWords() functions to render the Board, the words and the hints.
+  * All the handlers are sent via the props
+  * @return {Object}  The Cross Quiz Viewer Component
+  */
   render() {
     let textAreaContent = '';
     if (this.state.textAreaContent) {
