@@ -28,7 +28,7 @@ export default class CreateClassPanel extends Component {
   render() {
     return (
       <div>
-        <h1><b> Create a new class</b></h1>
+        <h1><b> Create a class</b></h1>
         <hr />
         <div className="container text-left">
           <div className="col-md-8 col-md-push-2">

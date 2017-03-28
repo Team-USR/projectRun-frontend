@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 const mapStateToProps = state => ({
   name: state.auth.name,
 });
-
+/*
+  Home page displaying a welcome message
+*/
 function HomePageComp(props) {
   return (
     <div className="homePageWrapper">

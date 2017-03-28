@@ -1,8 +1,12 @@
 import React, { PropTypes, Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-
+/*
+ Component representing the modal dialog for displaying errors
+*/
 export default class ModalError extends Component {
-
+  /*
+    Renders the buttons according to the props
+  */
   renderButtons() {
     const buttonsWrapper = [];
 
@@ -85,7 +89,10 @@ export default class ModalError extends Component {
 
     return buttonsWrapper;
   }
-
+  /*
+  Main render function where the title the content and the body is renderd
+  Below the buttons are rendered as well.
+  */
   render() {
     return (
       <Modal show={this.props.show} onHide={() => this.props.close()}>
