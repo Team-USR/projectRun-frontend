@@ -95,7 +95,7 @@ export default class SideBarClasses extends Component {
     return (null);
   }
   /*
-  Main render function 
+  Main render function
   */
   render() {
     let createClassButton = (null);
