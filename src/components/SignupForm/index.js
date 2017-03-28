@@ -5,13 +5,13 @@ import { LinkContainer } from 'react-router-bootstrap';
 export default function SignupForm(props) {
   let error;
   if (props.signupError) {
-    error = <h3 className="invalidHeader">{props.signupError}</h3>;
+    error = <h4 className="text-danger text-center">{props.signupError}</h4>;
   }
 
   return (
     <div className="loginPage">
-      {error}
       <div className="signupWrapper cardSection">
+        {error}
         <form>
           <ControlLabel className="loginLabel">Name</ControlLabel>
           <FormControl
@@ -40,13 +40,13 @@ export default function SignupForm(props) {
         <div className="signupButtonWrapper">
           <ButtonGroup style={{ float: 'right' }}>
             <LinkContainer to={'/login'}>
-              <Button>Login</Button>
+              <Button>Log in</Button>
             </LinkContainer>
             <Button
               type="submit"
               onClick={props.submitSignup}
             >
-            Signup
+            Sign up
           </Button>
           </ButtonGroup>
         </div>

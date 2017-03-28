@@ -11,5 +11,12 @@
   }
   .question_heading{
     text-align: right;
+    line-height: 11px;
+  }
+  .question_wrapper{
+    margin-top:10px;
+    .question_line{
+      line-height: 34px;
+    }
   }
 }

@@ -113,7 +113,7 @@ export default class SingleChoiceQuizGenerator extends Component {
         <h3 className="question_title">Single choice question</h3>
         <div className="">
           <Col md={12} >
-            <Col md={3} >
+            <Col md={3} className="questionInput">
               <h4 style={{ marginBottom: 5 }}>
             Question:
             </h4>
