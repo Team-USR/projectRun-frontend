@@ -26,7 +26,7 @@ export default function NavBar(props) {
             </NavItem>
           </LinkContainer>
           <LinkContainer to="/my-classes">
-            <NavItem>
+            <NavItem id="class-nav">
               My Classes
             </NavItem>
           </LinkContainer>
