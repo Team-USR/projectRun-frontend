@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
-
+/*
+  Component that renders the question and the id of the single choice.
+*/
 export default function Question(props) {
   return (
     <h3>{props.index + 1}. {props.question}</h3>

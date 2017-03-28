@@ -2,8 +2,14 @@ import React, { PropTypes, Component } from 'react';
 import { Button, Col, NavItem } from 'react-bootstrap';
 import { QuizManager } from '../GroupQuizzes';
 
-
+/**
+ * Component that manages the quizzes assigned to a class
+ * @type {Object}
+ */
 export default class QuizzesPanel extends Component {
+  /**
+   * Component constructor
+   */
   constructor() {
     super();
     this.state = {
@@ -18,16 +24,23 @@ export default class QuizzesPanel extends Component {
     };
     this.handleSearch = this.handleSearch.bind(this);
   }
-
+  /**
+   * Method that sets state from props before the component mounts
+   */
   componentWillMount() {
     this.setState({
       selectedQuizzes: this.props.quizzes,
       allQuizzes: this.props.allQuizzes,
       availableQuizzes: this.getAvailableQuizzes(this.props.allQuizzes),
     });
-//    console.log("AVAILABLE", this.props.quizzes);
     this.filterItems('');
   }
+  /**
+   * Returns a lost of the available quizzes based on an array received as a
+   * parameter.
+   * @param  {Array} all array of objects describing quizzes id and title
+   * @return {Array}     array of objects
+   */
   getAvailableQuizzes(all) {
     const newQuizzesObj = {};
     this.props.quizzes.map((obj) => {
@@ -42,6 +55,10 @@ export default class QuizzesPanel extends Component {
       return false;
     });
   }
+  /**
+   * Filters Quizzes based on the current input in the search bar.
+   * @param  {String} value input value
+   */
   filterItems(value) {
     this.setState({ currentlySearched: value });
     let found = false;
@@ -86,10 +103,18 @@ export default class QuizzesPanel extends Component {
       filteredSelected: filterSelected,
     });
   }
+  /**
+   * Event handler that updates the state
+   * @param  {event} event event containing the new value
+   */
   handleSearch(event) {
     this.filterItems(event.target.value);
     this.setState({ currentSearched: event.target.value });
   }
+  /**
+   * Adds the quiz with the id received as a parameter.
+   * @param {Number} id Quiz id
+   */
   addQuiz(id) {
     let newIndex = -1;
     this.state.availableQuizzes.map((item, index) => {
@@ -110,6 +135,10 @@ export default class QuizzesPanel extends Component {
     });
     this.filterItems(this.state.currentlySearched);
   }
+  /**
+   * Removes the quiz with the id received as a parameter
+   * @param  {Number} id Quiz id
+   */
   removeQuiz(id) {
     let newIndex = -1;
     this.state.selectedQuizzes.map((item, index) => {
@@ -130,7 +159,10 @@ export default class QuizzesPanel extends Component {
     });
     this.filterItems(this.state.currentlySearched);
   }
-
+  /**
+   * Shows more quizzes depending on the type received as a parameter
+   * @param  {String} listType selected or available
+   */
   showMore(listType) {
     this.listType = listType;
     if (listType === 'selected') {
@@ -146,6 +178,11 @@ export default class QuizzesPanel extends Component {
       }
     }
   }
+  /**
+   * Shows less in the selected quizzes column or available based on the type
+   * received as a parameter
+   * @param  {String} listType selected or available
+   */
   showLess(listType) {
     this.listType = listType;
     if (listType === 'selected') {
@@ -161,6 +198,12 @@ export default class QuizzesPanel extends Component {
       }
     }
   }
+  /**
+   * Renders a specific html element based on the type received as a
+   * parameter
+   * @param  {String} listType selected or available
+   * @return {Object}          html element containing show more/less buttons
+   */
   handleListButton(listType) {
     this.listType = listType;
     const element = [];
@@ -236,6 +279,11 @@ export default class QuizzesPanel extends Component {
     }
     return element;
   }
+  /**
+   * Renders the quizzes available for a class
+   * @return {Object} html entity containing the quizzes available for a
+   * class
+   */
   renderAvailableQuizzes() {
     if (this.state.availableQuizzes.length === 0) {
       return <h4>All your quizzes have been assigned!</h4>;
@@ -262,6 +310,11 @@ export default class QuizzesPanel extends Component {
     },
     );
   }
+  /**
+   * Renders the quizzes selected for a class
+   * @return {Object} html entity containing the selected quizzes in a certain
+   * class
+   */
   renderSelectedQuizzes() {
     if (this.state.selectedQuizzes.length === 0) {
       return <h4>There are no quizzes assigned to this class!</h4>;
@@ -287,6 +340,10 @@ export default class QuizzesPanel extends Component {
     },
     );
   }
+  /**
+   * Renders the search bar user for searching quizzes
+   * @return {Object} html entity containing an input
+   */
   renderSearchBar() {
     return (
       <NavItem key={'searchBar'} >
@@ -300,6 +357,10 @@ export default class QuizzesPanel extends Component {
       </NavItem>
     );
   }
+  /**
+   * Component render method
+   * @return {Object} Component instance
+   */
   render() {
     return (
       <div className="quizPanelWrapper">
@@ -331,7 +392,9 @@ export default class QuizzesPanel extends Component {
             className="enjoy-css"
             onClick={() =>
               this.props.handleSaveAssignedQuizzes(this.state.selectedQuizzes)}
-          > Save </Button>
+          >
+            Save
+          </Button>
         </Col>
       </div>
     );

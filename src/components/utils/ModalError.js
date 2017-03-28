@@ -1,8 +1,12 @@
 import React, { PropTypes, Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-
+/*
+ Component representing the modal dialog for displaying errors
+*/
 export default class ModalError extends Component {
-
+  /*
+    Renders the buttons according to the props
+  */
   renderButtons() {
     const buttonsWrapper = [];
 
@@ -23,7 +27,7 @@ export default class ModalError extends Component {
       buttonsWrapper.push((
         <Button
           key={'clear_button'}
-          className="red_button"
+          className="clearButton"
           onClick={() => this.props.confirmClearBoard()}
         >
           Clear Board
@@ -71,10 +75,24 @@ export default class ModalError extends Component {
         </Button>
       ));
     }
+    if (buttons.indexOf('ok') !== -1) {
+      buttonsWrapper.push((
+        <Button
+          key={'ok_button'}
+          className="okButton"
+          onClick={() => this.props.close()}
+        >
+          OK
+        </Button>
+      ));
+    }
 
     return buttonsWrapper;
   }
-
+  /*
+  Main render function where the title the content and the body is renderd
+  Below the buttons are rendered as well.
+  */
   render() {
     return (
       <Modal show={this.props.show} onHide={() => this.props.close()}>

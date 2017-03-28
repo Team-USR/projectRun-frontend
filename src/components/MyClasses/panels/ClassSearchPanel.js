@@ -5,8 +5,15 @@ import { SearchSpinner } from '../../../components/utils';
 import { API_URL } from '../../../constants';
 
 let timeout = null;
+/**
+ * Component managing searching classes
+ * @type {Object}
+ */
 export default class ClassSearchPanel extends React.Component {
-
+  /**
+   * Component constructor
+   * @param  {Object} props props from parent
+   */
   constructor(props) {
     super(props);
 
@@ -22,7 +29,9 @@ export default class ClassSearchPanel extends React.Component {
 
     this.updateSearch = this.updateSearch.bind(this);
   }
-
+  /**
+   * Method that updates the state before the component mounts
+   */
   componentWillMount() {
     this.setState({
       foundClasses: this.props.searchedClasses,
@@ -34,6 +43,10 @@ export default class ClassSearchPanel extends React.Component {
     });
     this.loadPendingRequests();
   }
+  /**
+   * Method that runs when the props updates
+   * @param  {Object} nextProps new props
+   */
   componentWillReceiveProps(nextProps) {
     this.setState({
       foundClasses: nextProps.searchedClasses,
@@ -43,6 +56,9 @@ export default class ClassSearchPanel extends React.Component {
       sentClasses: nextProps.sentClasses,
     });
   }
+  /**
+   * Loads the pending classes requests
+   */
   loadPendingRequests() {
     axios({
       url: `${API_URL}/users/mine/requests`,
@@ -61,12 +77,19 @@ export default class ClassSearchPanel extends React.Component {
       this.setState({ pendingClasses: classes, sentClasses: sentClassesBools });
     });
   }
-
+  /**
+   * Event handler that updates the state with the new value from the input
+   * @param  {event} event event containing the new value
+   */
   updateSearch(event) {
     const searchedTerm = event.target.value;
     this.props.searchClassForInvite(searchedTerm);
     this.setState({ searchTerm: event.target.value });
   }
+  /**
+   * Method that renders the pending classes
+   * @return {Object} html entity containing the pending classes
+   */
   renderPendingClasses() {
     const element = [];
     if (this.state.pendingClasses.length > 0) {
@@ -120,9 +143,13 @@ export default class ClassSearchPanel extends React.Component {
     }
     return element;
   }
+  /**
+   * Returns an error message.
+   * @return {Object} html entity
+   */
   renderError() {
     if (this.state.moveToPendingError === true) {
-      return (<h4 style={{ color: 'red' }}>This class has been already selected</h4>);
+      return (<h4 style={{ color: '#d10c0f' }}>This class has been already selected</h4>);
     }
     if (timeout !== null) {
       clearTimeout(timeout);
@@ -134,6 +161,10 @@ export default class ClassSearchPanel extends React.Component {
     }, 4000);
     return (null);
   }
+  /**
+   * renders classes found
+   * @return {Object} html entity
+   */
   renderFoundClasses() {
     if (this.state.loadingClassesSearch) {
       return (
@@ -163,6 +194,10 @@ export default class ClassSearchPanel extends React.Component {
     }
     return (element);
   }
+  /**
+   * Component main render Method
+   * @return {Object} Component instance
+   */
   render() {
     return (
       <div className="classSearchPanelWrapper">

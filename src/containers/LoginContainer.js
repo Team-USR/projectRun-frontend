@@ -4,7 +4,15 @@ import LoginForm from '../components/LoginForm';
 import { BrandSpinner } from '../components/utils';
 import * as userActions from '../redux/modules/user';
 
+/**
+ * LoginForm container to be connected to the Redux store
+ * @type {Object}
+ */
 class LoginContainer extends React.Component {
+  /**
+   * Initializes the container
+   * @param  {Object} props inherited properties
+   */
   constructor(props) {
     super(props);
 
@@ -17,22 +25,36 @@ class LoginContainer extends React.Component {
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
   }
-
+  /**
+   * Saves input from email field into state
+   * @param  {event} e event
+   * @return {undefined}
+   */
   handleEmailChange(e) {
     this.setState({ email: e.target.value });
   }
-
+  /**
+   * Saves input from password field into state
+   * @param  {event} e event
+   * @return {undefined}
+   */
   handlePasswordChange(e) {
     this.setState({ password: e.target.value });
   }
-
+  /**
+   * Calls the login function received as props
+   * @return {undefined}
+   */
   handleLogin() {
     this.props.loginUser({
       email: this.state.email,
       password: this.state.password,
     });
   }
-
+  /**
+   * Renders the LoginForm container
+   * @return {Object}
+   */
   render() {
     if (!this.props.auth.loginInProgress) {
       return (
@@ -62,6 +84,10 @@ LoginContainer.propTypes = {
   }).isRequired,
 };
 
+/**
+ * Connects component to store
+ * @type {Object}
+ */
 export default connect(
   state => ({ auth: state.auth }),
   userActions,

@@ -11,7 +11,7 @@ import { CrossQuizGenerator } from '../../createQuizzes/Cross';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner, ModalError } from '../../components/utils';
-import { checkMix, checkMultiple, checkCloze } from '../../helpers/Validators';
+import { checkMatch, checkMix, checkMultiple, checkCloze, checkCross } from '../../helpers/Validators';
 
 const styles = {
   loading: {
@@ -21,6 +21,9 @@ const styles = {
 };
 let id = 0;
 let displayIndex = 0;
+/*
+  This component is the main wrapper for all quizzes that needs to be created.
+*/
 export default class QuizCreatorMainPage extends Component {
   constructor() {
     super();
@@ -38,6 +41,8 @@ export default class QuizCreatorMainPage extends Component {
       defaultDate: '01-01-2017',
       errors: { quiz: { title: '', questions_attributes: [] } },
       hasErrors: [],
+      pointsErrors: [],
+      attemptsErrors: false,
       showModal: false,
       modalContent: {
         header: 'Error!',
@@ -57,6 +62,10 @@ export default class QuizCreatorMainPage extends Component {
     id = 0;
     displayIndex = 0;
   }
+  /*
+  Method that sets the negative marking field withing the final object
+  that will be sent to the backend
+  */
   setNegativeMarking() {
     const value = this.state.submitedQuestions.quiz.negative_marking;
     const newValue = !value;
@@ -64,33 +73,61 @@ export default class QuizCreatorMainPage extends Component {
     generatedQuiz.quiz.negative_marking = newValue;
     this.setState({ submitedQuestions: generatedQuiz });
   }
+  /*
+  Method that sets the points into the final object that will be sent to the backend
+  Receives the event from the input which is the number of points written by the user
+  and the index of the question that needs to be updated.
+  */
   setPoints(event, index) {
+    let realScore = event.target.value;
+    const e = event;
+    if (isNaN(event.target.value) || event.target.value === '' || event.target.value === undefined || event.target.value === null) {
+      e.target.value = '';
+      realScore = 0;
+    }
     const inputQ = this.state.submitedQuestions;
     if (inputQ.quiz.questions_attributes && inputQ.quiz.questions_attributes[index] &&
     inputQ.quiz.questions_attributes[index].points !== undefined) {
-      inputQ.quiz.questions_attributes[index].points = event.target.value;
+      inputQ.quiz.questions_attributes[index].points = realScore;
     } else {
-      inputQ.quiz.questions_attributes[index] = { points: event.target.value };
+      inputQ.quiz.questions_attributes[index] = { points: realScore };
     }
 
     this.setState({ submitedQuestions: inputQ });
   }
-
-  // checkMix(element) {
-  //   return "da";
-  // }
-
+  /*
+    Validator function for points, uses a reggex code in order to check if the
+    input is a number or not. Applys only for some web browswers which does
+    not support input type = 'number' from the input
+  */
+  checkCorectnessPoints(index) {
+    const thisObject = this.state.pointsErrors;
+    thisObject[index] = false;
+    const pattern = /^\d+$/;
+    const toTest = this.state.submitedQuestions.quiz.questions_attributes[index].points;
+    if (
+      pattern.test(toTest.toString()) === false) {
+      thisObject[index] = true;
+    }
+    this.setState({ pointsErrors: thisObject });
+  }
+  /*
+  Method that validates the title of the quiz. If it is empty it will
+  return a string containing the error.
+  Receives the quiz object in the params.
+  */
   checkCorectnessTitle(generatedQuiz) {
+    const thisObject = this.state.errors;
+    thisObject.quiz.title = '';
+    this.setState({ errors: thisObject, attemptsErrors: false, pointsErrors: false });
     if (generatedQuiz.quiz.title === '') {
-      const thisObject = this.state.errors;
-      thisObject.quiz.title = 'Title is empty!';
+      thisObject.quiz.title = 'Title is empty! \n';
       this.setState({ errors: thisObject });
       const thisError = this.state.hasErrors;
       thisError[0] = true;
       this.setState({ hasErrors: thisError });
     }
     if (generatedQuiz.quiz.title !== '') {
-      const thisObject = this.state.errors;
       thisObject.quiz.title = '';
       this.setState({ errors: thisObject });
       const thisError = this.state.hasErrors;
@@ -98,14 +135,16 @@ export default class QuizCreatorMainPage extends Component {
       this.setState({ hasErrors: thisError });
     }
   }
+  /*
+  Main validator method, checks for each element and index.
+  */
   checkCorectness(element, index) {
     const questions = this.state.submitedQuestions;
     let errorMessage = '';
     this.checkCorectnessTitle(questions);
     const thisObject = this.state.errors;
     if (element.type === 'match') {
-      // TODO: check for errors method(element)
-      //  errorMessage = this.checkMatch(element); --returns string describing error
+      errorMessage = checkMatch(element);
     } else if (element.type === 'multiple_choice' || element.type === 'single_choice') {
       errorMessage = checkMultiple(element);
     } else if (element.type === 'mix') {
@@ -113,8 +152,7 @@ export default class QuizCreatorMainPage extends Component {
     } else if (element.type === 'cloze') {
       errorMessage = checkCloze(element);
     } else if (element.type === 'cross') {
-        // TODO: check for errors
-        //  errorMessage = this.checkCross(element); --returns string describing error
+      errorMessage = checkCross(element);
     }
     if (errorMessage !== '') {
       const thisError = this.state.hasErrors;
@@ -129,7 +167,10 @@ export default class QuizCreatorMainPage extends Component {
     thisObject.quiz.questions_attributes[index] = errorMessage;
     this.setState({ errors: thisObject });
   }
-
+  /*
+    Method that prepares the final object for the post request in order to generate
+    a quiz
+  */
   isReviewMode() {
     const sQuestions = this.state.submitedQuestions;
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(element =>
@@ -144,33 +185,36 @@ export default class QuizCreatorMainPage extends Component {
         data: this.state.submitedQuestions,
       })
       .then((response) => {
-      //  const resultID = response.data.id;
-      //  console.log("Result id", resultID);
         if (!response || (response && response.status !== 200)) {
           this.setState({ errorState: true });
         }
         this.props.handlePublish(response.data.id.toString());
         this.props.handleSubmitButton();
-    //    this.setState({ generatedQuizID: resultID, loading: loadingFalse });
       });
     } else {
-      // window.alert('Quiz has errors');
       this.openModal({
         header: 'Oops! You\'ve missed something!',
         body: 'The quiz contains some blank spaces and cannot be submitted. Please check the fields!',
-        buttons: ['close'],
+        buttons: ['ok'],
       });
     }
   }
+  /*
+  Method that sets the results state according to the buttons pressed
+  */
   isResultsMode() {
     const newState = !this.state.resultsState;
     this.setState({ resultsState: newState });
   }
-
+  /*
+  Method that closes the modal dialog
+  */
   closeModal() {
     this.setState({ showModal: false });
   }
-
+  /*
+  Opens the modal dialog when the users tries to save a quiz that contains errors
+  */
   openModal(content) {
     if (content) {
       this.setState({ showModal: true, modalContent: content });
@@ -178,7 +222,16 @@ export default class QuizCreatorMainPage extends Component {
       this.setState({ showModal: true });
     }
   }
-
+  /*
+   Function that collects all the object data in oreder to populate the
+   final object that is going to be submitted. This will contain all the questions
+   that were inserted by the user in the teacher mode.
+   @param answersAttributes {Object} [object containg data collected from the inputed object]
+   @param question {String}
+   @param type {String} type of the quiz so the method will collect the data in an appropiate
+   manner
+   @param questionID {Number} id of the question.
+  */
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -207,7 +260,14 @@ export default class QuizCreatorMainPage extends Component {
     this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
-
+  /*
+    Collects the inputed data from the cross quizz component.
+    @param question {String} [question title]
+    @param metaAtributes {Object}
+    @param rowsAttributes {Object}
+    @param hintsAttributes {Object}
+    @param questionID {Number}
+  */
   collectCrossObject(question, metaAtributes, rowsAttributes, hintsAttributes, questionID) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -215,7 +275,6 @@ export default class QuizCreatorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-
     const newQuestion = {
       question,
       type: 'cross',
@@ -226,9 +285,15 @@ export default class QuizCreatorMainPage extends Component {
     };
 
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
-
+  /*
+    Collects cloze object inputed information from the child component and adds it
+    to the final object that is prepared to be sent to the backend.
+    @param questionID {Number} [id of the question]
+    @param sentenceAttributes {Object} [object containg the attributes of the cloze question]
+  */
   collectClozeObject(questionID, sentenceAttributes, gapsAttributes, questionTitle) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -249,7 +314,12 @@ export default class QuizCreatorMainPage extends Component {
     this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
-
+  /*
+    Collects all the data for a mix quiz question
+    @param data body data for the mix question
+    @param questionTitle title of the question
+    @param questionID id of the question.
+  */
   collectMixObject(data, questionTitle, questionID) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -257,9 +327,6 @@ export default class QuizCreatorMainPage extends Component {
        inputQ.quiz.questions_attributes[questionID].points) {
       pointsAssigned = inputQ.quiz.questions_attributes[questionID].points;
     }
-    // if (inputQ.quiz.questions_attributes[questionID] === undefined) {
-    //   pointsAssigned = this.state.quizInfo.questions[questionID].points;
-    // }
     const questionObject = {
       question: questionTitle,
       type: 'mix',
@@ -269,13 +336,14 @@ export default class QuizCreatorMainPage extends Component {
     inputQ.quiz.questions_attributes[questionID] = questionObject;
     this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
-    //  console.log(inputQ);
-    // console.log(questionObject);
   }
 
+  /*
+    Adds a quiz on the screen depening on the choosen pressed button.
+    @param type of the quiz so the method will know which type of quiz
+    to the screen.
+  */
   addQuiz(quizType) {
-  //  console.log(id);
-
     displayIndex = 0;
 
     const buttonGroup = (
@@ -294,7 +362,6 @@ export default class QuizCreatorMainPage extends Component {
     const answ = '';
     const inputQuestion = { id, ques, answ };
     if (quizType === 'multiple_choice') {
-    //  console.log(id);
       const question = (
         <MultipleChoiceQuizGenerator
           handleInput={(questionI, answers) => this.handleInput(questionI, answers, id)}
@@ -306,7 +373,6 @@ export default class QuizCreatorMainPage extends Component {
         />);
       questionObject = { id, question, buttonGroup };
     }
-
     if (quizType === 'single_choice') {
       const question = (
         <SingleChoiceQuizGenerator
@@ -377,17 +443,36 @@ export default class QuizCreatorMainPage extends Component {
   scrollToBottom() {
     this.scroller.scrollIntoView({ block: 'end', behavior: 'smooth' });
   }
+  /*
+    Changes the title parameter in the final object that will be submitted
+    @param event input event that holds the inputed data.
+  */
   changeTitle(event) {
     const generatedQuiz = this.state.submitedQuestions;
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
     this.checkCorectnessTitle(generatedQuiz);
   }
+  /*
+   Changes the number of attempts for a quiz.
+   @param event event from input
+  */
   changeAttempts(event) {
+    let realAttempts = event.target.value;
+    const e = event;
+    if (isNaN(event.target.value) || event.target.value === '' || event.target.value === undefined || event.target.value === null) {
+      e.target.value = '';
+      realAttempts = 0;
+    }
     const attempted = this.state.submitedQuestions;
-    attempted.quiz.attempts = event.target.value;
+    attempted.quiz.attempts = realAttempts;
     this.setState({ submitedQuestions: attempted });
+    this.checkCorectnessTitle(attempted);
   }
+  /*
+    Changes the release date for a quiz
+    @param value {String} [date in the string format sent from the Calendar component]
+  */
   changeReleaseDate(value) {
     const releaseDate = this.state.submitedQuestions;
     releaseDate.quiz.release_date = value;
@@ -400,7 +485,14 @@ export default class QuizCreatorMainPage extends Component {
       this.setState({ inputQuestions: inputQuestion });
     }
   }
+  /*
+    Removes a question with a certain index from the quiz.
+    @param index {Number}
+  */
   removeQuiz(index) {
+    const thisError = this.state.hasErrors;
+    thisError[index + 1] = false;
+    this.setState({ hasErrors: thisError });
     displayIndex = 0;
     const remQuestions = this.state.questions;
     remQuestions[index] = null;
@@ -408,7 +500,10 @@ export default class QuizCreatorMainPage extends Component {
     sQuestions.quiz.questions_attributes[index] = null;
     this.setState({ questions: remQuestions, submitedQuestions: sQuestions });
   }
-
+  /*
+    For each questions it renders the error string after the validation has been made.
+    @param index {Number}
+  */
   renderQuestionError(index) {
     if (this.state.errors.quiz.questions_attributes &&
       this.state.errors.quiz.questions_attributes[index] !== undefined) {
@@ -416,7 +511,13 @@ export default class QuizCreatorMainPage extends Component {
     }
     return '';
   }
-
+  /*
+   @return Computes and returnes a component containing a whole card with a
+   certain type of question. It displays the index of the question, the content,
+   an input to change the points allocated and a delete button.
+   @param object {Object}
+   @param index {Number}
+  */
   renderGroup(object, index) {
     if (this.state.questions[index]) {
       displayIndex += 1;
@@ -442,6 +543,9 @@ export default class QuizCreatorMainPage extends Component {
               </div>
             </Col>
           </Col>
+          <h5 className="error_message" key={`pointserror${index}`}>
+            {(this.state.pointsErrors[index] && 'Invalid points input')}
+          </h5>
           <div>
             {this.renderQuestionError(index).split('\n').map((errtext, i) =>
               <h5 className="error_message" key={`errtext${index}${i + 1}`}>{errtext}</h5>)}
@@ -452,7 +556,11 @@ export default class QuizCreatorMainPage extends Component {
     }
     return ('');
   }
-
+  /*
+  Returns a group of buttons that appear below the created quizzes.
+  Edit or save depending the state in which the user is
+  while creating the quiz, either review or results
+  */
   renderSubmitPanel() {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
@@ -473,6 +581,9 @@ export default class QuizCreatorMainPage extends Component {
 
     return ('');
   }
+  /*
+   Calls the render group method and while mapping through all the questions.
+  */
   renderQuestions() {
     displayIndex = 0;
     return (
@@ -480,6 +591,9 @@ export default class QuizCreatorMainPage extends Component {
          this.renderGroup(object, index))
     );
   }
+  /*
+  render method where all components are rendered into the DOM.
+  */
   render() {
     if (this.state.errorState === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
@@ -545,7 +659,9 @@ export default class QuizCreatorMainPage extends Component {
                 </Col>
               </Col>
               <Col md={12}>
-                <h5 className="error_message">{this.state.errors.quiz.title} </h5>
+                {
+                this.state.errors.quiz.title.split('\n').map((errtext, i) =>
+                  <h5 className="error_message" key={`errorTitle${i + 1}`}>{errtext}</h5>)}
               </Col>
             </div>
           </label>
@@ -579,8 +695,6 @@ export default class QuizCreatorMainPage extends Component {
     if (this.state.loading === true) {
       return <BrandSpinner />;
     }
-
-
     return ('');
   }
 }

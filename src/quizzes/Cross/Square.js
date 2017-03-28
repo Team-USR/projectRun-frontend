@@ -1,5 +1,13 @@
 import React, { PropTypes } from 'react';
 
+/**
+ * Function that renders a Square of the Board for Viewer and Reviwer
+ * It receives its type from props and renders an input,
+*  black, or static square for the Board
+ * @param {Object} props
+ * @return {Object} square
+ * @type {Object}
+ */
 export default function Square(props) {
   let hintNo = '';
   if (props.hintNumber !== 0) {

@@ -1,10 +1,15 @@
 import React, { Component, PropTypes } from 'react';
-
+/*
+  Component that represents a single choice
+*/
 class Choice extends Component {
   constructor() {
     super();
     this.state = { checked: false, selected: null, index: null, id: null };
   }
+  /*
+    When mounting it decides if the checkbox has a default value or not in the case of the reviewer
+  */
   componentWillMount() {
     if (this.props.defaultValue !== null) {
       this.setState({
@@ -19,6 +24,10 @@ class Choice extends Component {
       }
     }
   }
+  /*
+    Disables the radio box if other radio box has been selected.
+    When new props are received the function is called given the new data.
+  */
   componentWillReceiveProps(nextProps) {
     if (nextProps.defaultValue !== null) {
       this.setState({ checked: nextProps.defaultValue, index: nextProps.value, id: nextProps.id });
@@ -33,10 +42,17 @@ class Choice extends Component {
       }
     }
   }
+  /*
+   Handles the change of the checbox and updates the parent component.
+  */
   onStateChanged() {
     this.setState({ selected: this.state.index });
     this.props.callbackParent(true, this.state.id, this.state.index);
   }
+  /*
+    Renders the checkbox on the screen depening on the state (reviewState or not)
+    ex: reviewState: checkbox disabled
+  */
   renderLabel(value, choiceText, inReview) {
     if (inReview) {
       return (
@@ -51,7 +67,6 @@ class Choice extends Component {
         />
       );
     }
-//    console.log(this.state.checked);
     return (
       <input
         className="inputChoice"
@@ -67,7 +82,7 @@ class Choice extends Component {
     const { value, choiceText, inReview } = this.props;
     return (
       <div>
-        <label htmlFor="0">
+        <label htmlFor={this.props.id}>
           <div className="singleMultipleChoice">
             {this.renderLabel(value, choiceText, inReview)}
             <span className="choiceName">

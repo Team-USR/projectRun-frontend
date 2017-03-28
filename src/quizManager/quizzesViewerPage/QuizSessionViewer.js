@@ -4,6 +4,9 @@ import { Button } from 'react-bootstrap';
 import { API_URL } from '../../constants';
 import { BrandSpinner } from '../../components/utils';
 
+/*
+ Component that contains list of all sessions being renderd
+*/
 export default class QuizSessionViewer extends Component {
   constructor() {
     super();
@@ -15,6 +18,10 @@ export default class QuizSessionViewer extends Component {
       displayedAttempts: null,
     };
   }
+  /*
+   Component will mount method will make a request to the backend to retrieve a list of sessions
+   for a quiz id that is being passed through props.
+  */
   componentWillMount() {
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}/start`,
@@ -33,6 +40,11 @@ export default class QuizSessionViewer extends Component {
       this.props.handleError('default');
     });
   }
+  /*
+    In case there the component needs to change the session list that is rendered,
+    it will receive a new props and make a new request in order to get the new content
+    @param nextProps
+  */
   componentWillReceiveProps(nextProps) {
     if (nextProps.quizID !== this.props.quizID) {
       this.setState({ loading: true });
@@ -54,6 +66,10 @@ export default class QuizSessionViewer extends Component {
       });
     }
   }
+  /*
+    Method that renders each session item from the list and wrap it into
+    a session card.
+  */
   renderSessionCards() {
     const element = [];
     let inprogress = 0;
@@ -90,6 +106,7 @@ export default class QuizSessionViewer extends Component {
               <div className="col-md-3 rightSection">
                 <h5>In progress</h5>
                 <Button
+                  id="continueQuizButton"
                   className=""
                   onClick={() => this.props.handleStartButton()}
                 >
@@ -117,7 +134,12 @@ export default class QuizSessionViewer extends Component {
               <h5>{}</h5>
             </div>
             <div className="col-md-3 rightSection">
-              <Button onClick={() => this.props.handleStartButton()}>Start</Button>
+              <Button
+                id="startQuizButton"
+                onClick={() => this.props.handleStartButton()}
+              >
+                Start
+              </Button>
             </div>
           </div>
         </div>,
@@ -125,6 +147,9 @@ export default class QuizSessionViewer extends Component {
     }
     return element.reverse();
   }
+  /*
+  Render method that displays all the data on the screen.
+  */
   render() {
     if (this.state.loading) {
       return <BrandSpinner />;

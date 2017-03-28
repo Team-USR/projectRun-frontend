@@ -3,6 +3,10 @@ import { Navbar, Nav, NavDropdown, MenuItem, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 
+/*
+  Navbar function returning an html entitity containing the nav bar
+  @return {Object} html
+*/
 export default function NavBar(props) {
   return (
     <Navbar inverse collapseOnSelect className="topNabBarWrapper">
@@ -21,12 +25,12 @@ export default function NavBar(props) {
       <Navbar.Collapse>
         <Nav pullRight>
           <LinkContainer to="/my-quizzes">
-            <NavItem>
+            <NavItem id="quiz-nav">
               My Quizzes
             </NavItem>
           </LinkContainer>
           <LinkContainer to="/my-classes">
-            <NavItem>
+            <NavItem id="class-nav">
               My Classes
             </NavItem>
           </LinkContainer>
@@ -35,7 +39,9 @@ export default function NavBar(props) {
               <MenuItem>Settings</MenuItem>
             </LinkContainer>
             <MenuItem divider />
-            <MenuItem >Help</MenuItem>
+            <LinkContainer to="/help">
+              <MenuItem>Help</MenuItem>
+            </LinkContainer>
           </NavDropdown>
           <LinkContainer onClick={props.onLogout} to="/home">
             <NavItem >

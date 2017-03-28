@@ -11,8 +11,7 @@ import { CrossQuizGenerator } from '../../createQuizzes/Cross';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner, ModalError } from '../../components/utils';
-import { checkMix, checkMultiple, checkCloze } from '../../helpers/Validators';
-
+import { checkMatch, checkMix, checkMultiple, checkCloze, checkCross } from '../../helpers/Validators';
 
 const styles = {
   loading: {
@@ -22,6 +21,9 @@ const styles = {
 };
 let id = 0;
 let displayIndex = 0;
+/*
+ Wrapper component that enables a certain quiz to be eddited and saved.
+*/
 export default class QuizEditorMainPage extends Component {
   constructor() {
     super();
@@ -41,6 +43,8 @@ export default class QuizEditorMainPage extends Component {
       defaultDate: '01-01-2017',
       errors: { quiz: { title: '', questions_attributes: [] } },
       hasErrors: [],
+      pointsErrors: false,
+      attemptsErrors: false,
       showModal: false,
       modalContent: {
         header: 'Error!',
@@ -56,6 +60,10 @@ export default class QuizEditorMainPage extends Component {
     this.changeReleaseDate = this.changeReleaseDate.bind(this);
     this.setNegativeMarking = this.setNegativeMarking.bind(this);
   }
+  /*
+    Makes a request in the backend in order to retrieve a quiz to be editted
+    given the quizID parameter through props.
+  */
   componentWillMount() {
     id = 0;
     this.setState({ loadingQuiz: true });
@@ -88,6 +96,11 @@ export default class QuizEditorMainPage extends Component {
        this.props.handleError('default');
      });
   }
+  /*
+   Makes a new request when the component receives
+  a new id and needs to render a new quiz on the screen
+  @param nextProps@S
+  */
   componentWillReceiveProps(nextProps) {
     if (this.props.quizID !== nextProps.quizID) {
       this.setState({ loadingQuiz: true });
@@ -116,10 +129,16 @@ export default class QuizEditorMainPage extends Component {
       });
     }
   }
+  /*
+    Resets the id of the displayed question when the component is unmounted from the screen.
+  */
   componentWillUnmount() {
     id = 0;
     displayIndex = 0;
   }
+  /*
+    Edits the negative marking field
+  */
   setNegativeMarking() {
     const value = this.state.submitedQuestions.quiz.negative_marking;
     const newValue = !value;
@@ -127,17 +146,35 @@ export default class QuizEditorMainPage extends Component {
     generatedQuiz.quiz.negative_marking = newValue;
     this.setState({ submitedQuestions: generatedQuiz });
   }
+  /*
+    Edits the points field.
+    @param event
+    @param index {Number} [index of the question that needs to have it's points updated]
+  */
   setPoints(event, index) {
+    let realScore = event.target.value;
+    const e = event;
+    if (isNaN(event.target.value) || event.target.value === '' || event.target.value === undefined || event.target.value === null) {
+      e.target.value = '';
+      realScore = 0;
+    }
     const inputQ = this.state.submitedQuestions;
     if (inputQ.quiz.questions_attributes && inputQ.quiz.questions_attributes[index] &&
     inputQ.quiz.questions_attributes[index].points !== undefined) {
-      inputQ.quiz.questions_attributes[index].points = event.target.value;
+      inputQ.quiz.questions_attributes[index].points = realScore;
     } else {
-      inputQ.quiz.questions_attributes[index] = { points: event.target.value };
+      inputQ.quiz.questions_attributes[index] = { points: realScore };
     }
     this.setState({ submitedQuestions: inputQ });
   }
+  /*
+    Removes a question from the quiz and all of it's content.
+    @param index {Number} [index of the question that needs to be removed]
+  */
   removeQuiz(index) {
+    const thisError = this.state.hasErrors;
+    thisError[index + 1] = false;
+    this.setState({ hasErrors: thisError });
     displayIndex = 0;
     const remQuestions = this.state.questions;
     remQuestions[index] = null;
@@ -152,17 +189,22 @@ export default class QuizEditorMainPage extends Component {
       this.setState({ inputQuestions: inputQuestion });
     }
   }
+  /*
+    Validates the title of the quiz
+    @return {String} error  message according to the input of the user
+  */
   checkCorectnessTitle(generatedQuiz) {
+    const thisObject = this.state.errors;
+    thisObject.quiz.title = '';
+    this.setState({ errors: thisObject, attemptsErrors: false, pointsErrors: false });
     if (generatedQuiz.quiz.title === '') {
-      const thisObject = this.state.errors;
-      thisObject.quiz.title = 'Title is empty!';
+      thisObject.quiz.title = 'Title is empty! \n';
       this.setState({ errors: thisObject });
       const thisError = this.state.hasErrors;
       thisError[0] = true;
       this.setState({ hasErrors: thisError });
     }
     if (generatedQuiz.quiz.title !== '') {
-      const thisObject = this.state.errors;
       thisObject.quiz.title = '';
       this.setState({ errors: thisObject });
       const thisError = this.state.hasErrors;
@@ -170,14 +212,18 @@ export default class QuizEditorMainPage extends Component {
       this.setState({ hasErrors: thisError });
     }
   }
+  /*
+    General validation method that calls separate other validation methods according to
+    the type of the element that needs to be checked for errors
+    @return {String} [error message]
+  */
   checkCorectness(element, index) {
     const questions = this.state.submitedQuestions;
     let errorMessage = '';
     this.checkCorectnessTitle(questions);
     const thisObject = this.state.errors;
     if (element.type === 'match') {
-      // TODO: check for errors method(element)
-      //  errorMessage = this.checkMatch(element); --returns string describing error
+      errorMessage = checkMatch(element);
     } else if (element.type === 'multiple_choice' || element.type === 'single_choice') {
       errorMessage += checkMultiple(element);
     } else if (element.type === 'mix') {
@@ -185,8 +231,7 @@ export default class QuizEditorMainPage extends Component {
     } else if (element.type === 'cloze') {
       errorMessage = checkCloze(element);
     } else if (element.type === 'cross') {
-        // TODO: check for errors
-        //  errorMessage = this.checkCross(element); --returns string describing error
+      errorMessage = checkCross(element);
     }
     if (errorMessage !== '') {
       const thisError = this.state.hasErrors;
@@ -201,6 +246,11 @@ export default class QuizEditorMainPage extends Component {
     thisObject.quiz.questions_attributes[index] = errorMessage;
     this.setState({ errors: thisObject });
   }
+  /*
+    Prepares the final object in order to be saved to the backend
+    Checks if the validations passes and no errors are currently displayed on the screen
+    Then it makes the patch request to the backend and updates the quiz.
+  */
   isReviewMode() {
     const sQuestions = this.state.submitedQuestions;
     const filteredQuestions = sQuestions.quiz.questions_attributes.filter(
@@ -226,7 +276,7 @@ export default class QuizEditorMainPage extends Component {
       this.openModal({
         header: 'Oops! You\'ve missed something!',
         body: 'The quiz contains some blank spaces and cannot be submitted. Please check the fields!',
-        buttons: ['close'],
+        buttons: ['ok'],
       });
     }
   }
@@ -234,11 +284,15 @@ export default class QuizEditorMainPage extends Component {
     const newState = !this.state.resultsState;
     this.setState({ resultsState: newState });
   }
-
+  /*
+  Closes the modal
+  */
   closeModal() {
     this.setState({ showModal: false });
   }
-
+  /*
+  Opens a modal given it's content.
+  */
   openModal(content) {
     if (content) {
       this.setState({ showModal: true, modalContent: content });
@@ -246,7 +300,9 @@ export default class QuizEditorMainPage extends Component {
       this.setState({ showModal: true });
     }
   }
-
+  /*
+     Collects the question data when it is eddited or added to the quiz
+  */
   collectObject(answersAttributes, question, type, questionID) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -283,7 +339,9 @@ export default class QuizEditorMainPage extends Component {
     this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
-
+  /*
+  Separate method that collects data for the cloze question.
+  */
   collectClozeObject(questionID, sentenceAttributes, gapsAttributes, questionTitle) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -310,7 +368,12 @@ export default class QuizEditorMainPage extends Component {
     this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
-
+  /*
+    Separate method that collects the data from the mix question
+    @param data
+    @param questionTitle
+    @param questionID
+  */
   collectMixObject(data, questionTitle, questionID) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -333,9 +396,10 @@ export default class QuizEditorMainPage extends Component {
     inputQ.quiz.questions_attributes[questionID] = questionObject;
     this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
-    // console.log(questionObject);
   }
-
+  /*
+    Collects the data from the Cross child component
+  */
   collectCrossObject(question, metaAtributes, rowsAttributes, hintsAttributes, questionID) {
     const inputQ = this.state.submitedQuestions;
     let pointsAssigned = 0;
@@ -356,12 +420,14 @@ export default class QuizEditorMainPage extends Component {
       rows_attributes: rowsAttributes,
       hints_attributes: hintsAttributes,
     };
-    // console.log(newQuestion);
-
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
-
+  /*
+    Adds a question to the quiz depending on the type of question that the user
+    wants to add.
+  */
   addQuiz(quizType, questionObj) {
     displayIndex = 0;
     const buttonGroup = (
@@ -474,32 +540,48 @@ export default class QuizEditorMainPage extends Component {
 
     inputQuestionList.push(inputQuestion);
     questionList.push(questionObject);
-
-    // console.log(questionList);
     this.setState({ questions: questionList, inputQuestions: inputQuestionList });
     id += 1;
   }
   scrollToBottom() {
     this.scroller2.scrollIntoView({ block: 'end', behavior: 'smooth' });
   }
+  /*
+    Edits the title of the quiz
+    @param event
+  */
   changeTitle(event) {
     const generatedQuiz = this.state.submitedQuestions;
     generatedQuiz.quiz.title = event.target.value;
     this.setState({ submitedQuestions: generatedQuiz });
     this.checkCorectnessTitle(generatedQuiz);
   }
+  /*
+    Edits the number of attempts for the quiz.
+  */
   changeAttempts(event) {
+    let realAttempts = event.target.value;
+    const e = event;
+    if (isNaN(event.target.value) || event.target.value === '' || event.target.value === undefined || event.target.value === null) {
+      e.target.value = '';
+      realAttempts = 0;
+    }
     const attempted = this.state.submitedQuestions;
-    attempted.quiz.attempts = event.target.value;
+    attempted.quiz.attempts = realAttempts;
     this.setState({ submitedQuestions: attempted });
+    this.checkCorectnessTitle(attempted);
   }
+  /*
+    Edits the release date
+  */
   changeReleaseDate(value) {
-//    console.log(value);
     const releaseDate = this.state.submitedQuestions;
     releaseDate.quiz.release_date = value;
     this.setState({ submitedQuestions: releaseDate, defaultDate: value });
   }
-
+  /*
+    Calls the render group method while mapping through the array of questions.
+  */
   renderQuestions() {
     displayIndex = 0;
     return (
@@ -507,7 +589,10 @@ export default class QuizEditorMainPage extends Component {
          this.renderGroup(object, index))
     );
   }
-
+  /*
+    Decides if to render or not an error on a specific question
+    @param index {Number} [index of the question that has to be checked for errors]
+  */
   renderQuestionError(index) {
     if (this.state.errors.quiz.questions_attributes &&
       this.state.errors.quiz.questions_attributes[index] !== undefined) {
@@ -515,7 +600,10 @@ export default class QuizEditorMainPage extends Component {
     }
     return '';
   }
-
+  /*
+  Renders a block containing an index for a question , the main block of the question,
+  the points field and the delete button
+  */
   renderGroup(object, index) {
     if (this.state.questions[index]) {
       displayIndex += 1;
@@ -556,7 +644,9 @@ export default class QuizEditorMainPage extends Component {
     }
     return ('');
   }
-
+  /*
+   Returns a panel containing the edit and save buttons
+  */
   renderSubmitPanel() {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
@@ -577,13 +667,11 @@ export default class QuizEditorMainPage extends Component {
 
     return ('');
   }
+  /*
+  Main render function
+  */
   render() {
-  //  console.log(this.state.submitedQuestions);
-  //  console.log("start rendering");
-//  console.log("submiteed",this.state.submitedQuestions);
     const submit = this.state.submitedQuestions;
-  //  console.log(this.state.questions);
-  //  console.log("end rendering");
     if (this.state.error === true) {
       return (<div className="mainQuizViewerBlock" style={styles.loading}>
         <h1>Connection error...</h1>
@@ -593,8 +681,6 @@ export default class QuizEditorMainPage extends Component {
       return <BrandSpinner />;
     } else
     if (!this.state.reviewState && this.state.loading === false) {
-    //  console.log("ATTEMPTS", submit.quiz.attempts);
-    //  console.log("TITLE",submit.quiz.title);
       return (
         <div className="mainQuizGeneratorBlock">
           <h1> Quiz editor </h1>
@@ -653,7 +739,9 @@ export default class QuizEditorMainPage extends Component {
                 </Col>
               </Col>
               <Col md={12}>
-                <h5 className="error_message">{this.state.errors.quiz.title} </h5>
+                {
+                this.state.errors.quiz.title.split('\n').map((errtext, i) =>
+                  <h5 className="error_message" key={`errorTitle${i + 1}`}>{errtext}</h5>)}
               </Col>
             </div>
           </label>

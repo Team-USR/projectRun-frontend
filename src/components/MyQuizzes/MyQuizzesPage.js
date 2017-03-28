@@ -9,6 +9,9 @@ import { BrandSpinner, ModalError } from '../utils';
 import { DefaultQuizzesPanel } from './panels';
 import { getLastHighestGrades } from '../../helpers';
 
+/*
+   Component that manages the content from the My Quizzes page.
+*/
 export default class MyQuizzesPage extends Component {
   constructor(props) {
     super(props);
@@ -20,7 +23,6 @@ export default class MyQuizzesPage extends Component {
       contentLoading: true,
       submittedQuizzes: [],
       userT: STUDENT,
-
       showModal: false,
       modalContent: {
         header: 'Error!',
@@ -30,6 +32,11 @@ export default class MyQuizzesPage extends Component {
       },
     };
   }
+  /*
+    Calls specific methods to request the data according to the user type ( Student or Teacher )
+    in order to populate the sidebar with the personal quizzes ( for teacher : quizzes created,
+  for student: quizzes assigned to )
+  */
   componentWillMount() {
     const settingUserType = cookie.load('userType');
     if (settingUserType) {
@@ -42,6 +49,9 @@ export default class MyQuizzesPage extends Component {
       }
     } else this.requestStudentData();
   }
+  /*
+    Requests the data to populate the sidebar for the student mode.
+  */
   requestStudentData() {
     axios({
       url: `${API_URL}/users/mine/quizzes`,
@@ -51,10 +61,7 @@ export default class MyQuizzesPage extends Component {
       if (!response || (response && response.status !== 200)) {
         this.setState({ errorState: true });
       }
-//      console.log(response.data);
       const newSideBarContent = { session: response.data };
-  //  console.log("My quizzes", response.data);
-  //  this.setState({ sideBarContent: newSideBarContent, loadingSideBar: false });
       setTimeout(() => {
         this.setState({
           sideBarContent: newSideBarContent,
@@ -83,6 +90,9 @@ export default class MyQuizzesPage extends Component {
       this.setState({ submittedQuizzes: highestGradeSessions });
     });
   }
+  /*
+    Requests the data to populate the teacher sidebar and the main content.
+  */
   requestTeacherData() {
     axios({
       url: `${API_URL}/quizzes/mine`,
@@ -111,11 +121,15 @@ export default class MyQuizzesPage extends Component {
       this.setState({ panelType: 'default' });
     });
   }
+  /*
+    Calls methods according to the user type in order to make new requests
+    so the sidebar can be updated when the user makes a certain action.
+  */
   reloadBar() {
     const settingUserType = cookie.load('userType');
     if (settingUserType) {
       this.setState({ userT: settingUserType });
-      if (settingUserType === TEACHER) { // CHANGE TO TEACHER
+      if (settingUserType === TEACHER) {
         this.requestTeacherData();
       }
       if (settingUserType === STUDENT) {
@@ -123,15 +137,23 @@ export default class MyQuizzesPage extends Component {
       }
     } else this.requestStudentData();
   }
+  /*
+    Method that saves the current quiz in the cookie
+    so it can be displayed directly in case the user refreshes the page.
+  */
   updateCurrentQuiz(panelT) {
     this.setState({ panelType: panelT });
     cookie.save('current-session-type', panelT);
   }
-
+  /*
+  Closes the modal panel
+  */
   closeModal() {
     this.setState({ showModal: false });
   }
-
+  /*
+  Opens the modal panel
+  */
   openModal(content) {
     if (content) {
       this.setState({ showModal: true, modalContent: content });
@@ -139,7 +161,9 @@ export default class MyQuizzesPage extends Component {
       this.setState({ showModal: true });
     }
   }
-
+  /*
+   Confirm the delete of a quiz when pressing on the modal button
+  */
   confirmDeleteQuiz(id) {
     if (id) {
       axios({
@@ -159,7 +183,9 @@ export default class MyQuizzesPage extends Component {
     }
     this.closeModal();
   }
-
+  /*
+    Opens a modal that asks to delete a quiz according to the id.
+  */
   deleteThisQuiz(id) {
     this.openModal({
       header: 'Delete this quiz?',
@@ -168,14 +194,24 @@ export default class MyQuizzesPage extends Component {
       modalProps: { quizId: id },
     });
   }
+  /*
+    Saves the current quiz id in the cookie for later use.
+  */
   saveCurrentQuiz(id) {
     this.id = id;
     this.setState({ currentID: id.toString() });
     cookie.save('current-session-id', id);
   }
+  /*
+    handles the click of the title in the sidebar in both student and teacher mode
+  */
   handleSideBarTitleClick() {
     this.updateCurrentQuiz('default');
   }
+  /*
+    Decides which panel should be renderd according to the selected panels
+    and  according to the user type currently on.
+  */
   renderQuizContent() {
     let element = <h1><b> My Quizzes</b></h1>;
     if (this.state.panelType === 'default') {
@@ -229,7 +265,7 @@ export default class MyQuizzesPage extends Component {
       if (this.state.panelType === 'viewer') {
         element = (<QuizViewerMainPage
           userToken={this.props.userToken}
-          quizID={this.state.currentID} // this.state.currentID
+          quizID={this.state.currentID}
           handleSubmitButton={() => { this.reloadBar(); this.updateCurrentQuiz('viewer'); }}
           reloadSideBar={() => this.reloadBar()}
           handleError={type => this.updateCurrentQuiz(type)}
@@ -238,7 +274,9 @@ export default class MyQuizzesPage extends Component {
     }
     return element;
   }
-
+  /*
+  Main render method
+  */
   render() {
     if (this.state.loadingSideBar === true) {
       return (<BrandSpinner />);

@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { QuestionWrapper } from './index';
-
+/*
+  Main single choice component
+*/
 class SingleChoiceQuiz extends Component {
   constructor() {
     super();
@@ -11,10 +13,20 @@ class SingleChoiceQuiz extends Component {
       correctAnswers: [],
     };
   }
+  /*
+  Listents when the child components are chaning
+  */
   onChildChanged(newState) {
     this.setState({ answers: newState });
     this.props.callbackParent(this.props.question.id, newState);
   }
+
+  /*
+  Generates a question wrapper that contains the main body if this type of question
+  @param question {Object}
+  @param index {Number}
+  @param reviewState {Boolean}
+  */
   renderQuestion(question, index, reviewState, resultsState) {
     return (
       <QuestionWrapper
@@ -31,7 +43,9 @@ class SingleChoiceQuiz extends Component {
       />
     );
   }
-
+  /*
+    Main render function
+  */
   render() {
     const { index, question, reviewState, resultsState } = this.props;
     return (

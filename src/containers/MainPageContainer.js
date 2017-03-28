@@ -6,11 +6,19 @@ import demolaptop from '../assets/images/demolaptop.png';
 import demomac from '../assets/images/demomac.png';
 import demogroups from '../assets/images/demogroups.png';
 
+/**
+ * Container of the component to be served by /home, connected to store
+ * @param {Object} props inherited props
+ */
 function MainPage(props) {
   MainPage.propTypes = {
     goToLogin: React.PropTypes.func.isRequired,
     goToSignup: React.PropTypes.func.isRequired,
   };
+  /**
+   * Returns the home page of the web app
+   * @return {Object}  the initial page is rendered here as static text
+   */
   return (
     <div className="MainPageContainer">
       <section className="logoSection">
@@ -20,7 +28,7 @@ function MainPage(props) {
         </div>
         <hr />
         <ButtonToolbar className="loginButton">
-          <Button onClick={() => props.goToLogin()} >Log in</Button>
+          <Button id="loginButton" onClick={() => props.goToLogin()} >Log in</Button>
         </ButtonToolbar>
       </section>
       <div className="laptopContainer">
@@ -33,7 +41,7 @@ function MainPage(props) {
             className="registerButton"
             onClick={() => props.goToSignup()}
           >
-          Sign up now
+            Sign up
           </Button>
         </section>
         <img src={demolaptop} alt="" />
@@ -123,18 +131,35 @@ function MainPage(props) {
   );
 }
 
-const mapStoreToProps = dispatch => ({
+/**
+ * Maps the dispatch action handler of the store to the container
+ * @param  {function} dispatch redux action dispatcher
+ * @return {undefined}
+ */
+const mapDispatchToProps = dispatch => ({
+  /**
+   * Redirects the user to /login
+   * @return {Object} new store state
+   */
   goToLogin: () => {
     dispatch(push('/login'));
   },
+  /**
+   * Redirects the user to /signup
+   * @return {Object} new store state
+   */
   goToSignup: () => {
     dispatch(push('/signup'));
   },
 });
 
+/**
+ * Connects container to store
+ * @type {Object}
+ */
 const MainPageContainer = connect(
   null,
-  mapStoreToProps,
+  mapDispatchToProps,
 )(MainPage);
 
 export default MainPageContainer;

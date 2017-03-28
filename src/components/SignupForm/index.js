@@ -2,12 +2,23 @@ import React from 'react';
 import { ControlLabel, form, FormControl, Button, ButtonGroup } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
+/**
+ * Signup component to be served by /signup
+ * @param {Object} props inherited properties
+ */
 export default function SignupForm(props) {
+  /**
+   * Any signup request error
+   * @type {Object}
+   */
   let error;
   if (props.signupError) {
     error = <h4 className="text-danger text-center">{props.signupError}</h4>;
   }
-
+  /**
+   * Returns the actual form
+   * @type {Object}
+   */
   return (
     <div className="loginPage">
       <div className="signupWrapper cardSection">

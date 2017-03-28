@@ -3,6 +3,9 @@ import { Button, Col } from 'react-bootstrap';
 
 let answer;
 let isCorrect;
+/*
+   Component that represents the choice input field
+*/
 export default class ChoiceInput extends Component {
   constructor() {
     super();
@@ -11,23 +14,35 @@ export default class ChoiceInput extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleAnswerChange = this.handleAnswerChange.bind(this);
   }
+  /*
+  When first mounted it checks if there are any answers that needs to be
+  completed( the case when this component is mounted from the editor)
+  */
   componentWillMount() {
     if (this.props.answersToComplete !== undefined) {
       answer = this.props.answersToComplete.answer;
       isCorrect = this.props.answersToComplete.is_correct;
       if (isCorrect === undefined) isCorrect = false;
-  //    console.log(isCorrect);
-    //  console.log("answers",answer);
       this.setState({ choice: answer, answer: isCorrect });
     }
   }
+  /*
+    When the component was finally mounted the parent will be updated with the content of the input
+  */
   componentDidMount() {
     this.props.callbackParentInput(this.props.ind, this.state.choice, this.state.answer);
   }
+  /*
+  Handle the change when a choice needs to be deleted and updates the parent.
+  */
   onDelete() {
     this.setState({ choice: '' });
     this.props.callbackParent(this.props.ind);
   }
+  /*
+    Handles the change of the input and updates the parent.
+    @param event
+  */
   handleChange(event) {
     this.setState({ choice: event.target.value });
     this.props.callbackParentInput(this.props.ind, event.target.value, this.state.answer);
@@ -37,7 +52,9 @@ export default class ChoiceInput extends Component {
     this.setState({ answer: correct });
     this.props.callbackParentInput(this.props.ind, this.state.choice, correct);
   }
-
+  /*
+  Main render function
+  */
   render() {
     const { displayedIndex } = this.props;
 

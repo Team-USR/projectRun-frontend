@@ -15,6 +15,9 @@ import { LineCh } from '../Charts';
 
 let timeout = null;
 let classesTimeout = null;
+/*
+  My Classes Panel component
+*/
 export default class MyClassesPanel extends Component {
   constructor() {
     super();
@@ -30,6 +33,9 @@ export default class MyClassesPanel extends Component {
       highestMarks: [],
     };
   }
+  /*
+    Retrieveing the class marks  and setting the local state to contain the mark data.
+  */
   async componentWillMount() {
     if (this.props.classId.length > 0 && this.props.userType === STUDENT) {
       const data = await this.props.getClassMarks(this.props.classId);
@@ -42,6 +48,9 @@ export default class MyClassesPanel extends Component {
       filteredAllStudents: this.props.allStudents,
     });
   }
+  /*
+   When new data is received the new class marks is being updated
+  */
   async componentWillReceiveProps(nextProps) {
     if (this.props.classId.length > 0 && this.props.userType === STUDENT) {
       const data = await this.props.getClassMarks(this.props.classId);
@@ -54,6 +63,10 @@ export default class MyClassesPanel extends Component {
       filteredAllStudents: nextProps.allStudents,
     });
   }
+  /*
+  Search function for the classes. Filters all the classes and displays the most
+  relevant.
+  */
   filterItems(value) {
     let found = false;
     let filtered = this.props.content.students.filter((item) => {
@@ -88,6 +101,11 @@ export default class MyClassesPanel extends Component {
       filteredStudents: filtered,
       filteredAllStudents: filteredAll });
   }
+  /*
+  Makes a request to search for a user after a certain amount of time after the
+  user stops writting in the serach bar. The results will be shown on the panel
+  in an order from the most relevant to the least relevant by name and by email.
+  */
   manageSearch(value) {
     this.filterItems(value);
     if (timeout !== null) {
@@ -104,7 +122,6 @@ export default class MyClassesPanel extends Component {
           data: searchedItem,
         })
       .then((response) => {
-//        console.log(response);
         const retrievedStudents = [];
         let best = {};
         if (response.data.best_match_name[0]) {
@@ -166,6 +183,9 @@ export default class MyClassesPanel extends Component {
       this.setState({ loadingSearch: false });
     }
   }
+  /*
+    After a request is made the class is moved to the pending list
+  */
   moveToRequests(item) {
     const pendingList = this.state.pendingClasssesRequests;
     let duplicate = false;
@@ -184,6 +204,10 @@ export default class MyClassesPanel extends Component {
       this.setState({ pendingClasssesRequests: pendingList, moveToPendingError: false });
     }
   }
+  /*
+  Makes a post request in order for the student to send a join request into
+  a class.
+  */
   sendInvitation(classId) {
     axios({
       url: `${API_URL}/groups/${classId}/request_join`,
@@ -196,6 +220,12 @@ export default class MyClassesPanel extends Component {
       this.setState({ sentClasses: sent });
     });
   }
+  /*
+    Makes a request to search for a class in order to request an invitation.
+    The request is made after a certain amount of time after the user stops
+    writting in the search bar.
+    @param className {String} [class name]
+  */
   searchClassForInvite(className) {
     if (classesTimeout !== null) {
       clearTimeout(classesTimeout);
@@ -245,6 +275,10 @@ export default class MyClassesPanel extends Component {
       this.setState({ loadingClassesSearch: false });
     }
   }
+  /*
+  Renders the DefaultClassesPanel component and send's it
+  it's props
+  */
   renderPanel() {
     let element = (
       <DefaultClassesPanel
@@ -389,7 +423,9 @@ export default class MyClassesPanel extends Component {
     }
     return element;
   }
-
+  /*
+  Main render method.
+  */
   render() {
     return (
       <div className="groupPanelWrapper">

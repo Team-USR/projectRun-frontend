@@ -1,8 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 
+/**
+ * Component that shows class information about its students
+ * @type {Array}
+ */
 export default class GroupStudents extends Component {
-
+/**
+ * Method creates and returns an array of the students enrolled in a class. Shows
+ * only a message if there are no students.
+ * @return {array} Array of html elements
+ */
   renderStudents() {
     const returnComponent = [];
     if (this.props.students.length === 0) {
@@ -26,7 +34,10 @@ export default class GroupStudents extends Component {
     }
     return returnComponent;
   }
-
+  /**
+   * Component render method
+   * @return {Object} component instance
+   */
   render() {
     return (
       <div className="groupSectionWrapper">
