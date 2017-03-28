@@ -490,6 +490,9 @@ export default class QuizCreatorMainPage extends Component {
     @param index {Number}
   */
   removeQuiz(index) {
+    const thisError = this.state.hasErrors;
+    thisError[index + 1] = false;
+    this.setState({ hasErrors: thisError });
     displayIndex = 0;
     const remQuestions = this.state.questions;
     remQuestions[index] = null;
