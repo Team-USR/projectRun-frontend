@@ -1,3 +1,9 @@
+/*
+  Validation function which checks each answer from the multiple choice question.
+  Each answer mustn't be empty
+  At least one of the answers must be true.
+  @return errorMessage {String} [returns the error message to be displayed underneath the specific question]
+*/
 export function checkMultiple(element) {
   let errorMessage = '';
   let atLeastOneTrue = false;
@@ -20,7 +26,10 @@ export function checkMultiple(element) {
   errorMessage += answerFields;
   return errorMessage;
 }
-
+/*
+  Checks if the question is empty and if the alternate solution contains all the main solution
+  characters
+*/
 export function checkMix(element) {
   const solArray = element.sentences_attributes;
   let mainSol = '';
@@ -46,7 +55,9 @@ export function checkMix(element) {
   }
   return '';
 }
-
+/*
+  Validates if the cloze question has at least one valid sentence and if the question has a title
+*/
 export function checkCloze(element) {
   if (element.gaps_attributes.length === 0) {
     return 'The question should contain at least one valid sentence!';
@@ -55,7 +66,10 @@ export function checkCloze(element) {
   }
   return '';
 }
-
+/*
+ Checks if a question has an empty title and if it has at least one left-right element.
+ @return errorMessage {String} [return a string containing the error message]
+*/
 export function checkMatch(element) {
   let errorMessage = '';
 
@@ -91,9 +105,12 @@ export function checkMatch(element) {
   }
   return errorMessage;
 }
-
+/*
+  Validates the question input and each hints. They musn't be empty.
+  Width and Height and board have default values.
+  @param element
+*/
 export function checkCross(element) {
-  // console.log('Valid', element);
   let errorMessage = '';
 
   if (element !== undefined) {
