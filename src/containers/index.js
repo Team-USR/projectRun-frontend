@@ -5,3 +5,4 @@ export { default as MyQuizzesContainer } from './MyQuizzesContainer';
 export { default as MyClassesContainer } from './MyClassesContainer';
 export { default as SettingsContainer } from './SettingsContainer';
 export { default as MainPageContainer } from './MainPageContainer';
+export { default as HelpContainer } from './HelpContainer';
