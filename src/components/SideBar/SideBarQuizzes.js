@@ -2,6 +2,9 @@ import React, { PropTypes, Component } from 'react';
 import { Nav, NavItem, Button, Accordion, Panel } from 'react-bootstrap';
 import { STUDENT, TEACHER } from '../../constants';
 
+/*
+  Component that contains the quizzes version of the sidebar
+*/
 export default class SideBarQuizzes extends Component {
   constructor() {
     super();
@@ -11,12 +14,25 @@ export default class SideBarQuizzes extends Component {
       activePanel: null,
     };
   }
+  /*
+  Mounting the component and setting the content of the sidebar according to the recieved
+  content from the parent props
+  */
   componentWillMount() {
     this.setState({ content: this.props.content });
   }
+  /*
+  Updating the current state of the component when the props will change.
+  */
   componentWillReceiveProps(nextProps) {
     this.setState({ content: nextProps.content });
   }
+  /*
+  Search function that looks through the quizzes from the sidebar and filters them.
+  It also calls some functions to decide which panel to expand from the Accordion based
+  on the number of the results.
+  @param event
+  */
   filterItems(event) {
     let found = false;
     let filteredContent = this.props.content.filter((item) => {
@@ -49,6 +65,10 @@ export default class SideBarQuizzes extends Component {
     }
     this.setState({ content: filteredContent });
   }
+  /*
+  Decides which panel to expand in the accordion based on the number of the
+  results from each panel. (Teacher mode);
+  */
   deciceActiveTeacherPanel(filteredContent) {
     this.filteredContent = filteredContent;
     let con = filteredContent;
@@ -82,6 +102,10 @@ export default class SideBarQuizzes extends Component {
       this.setState({ activePanel: '2' });
     }
   }
+  /*
+  Decide which panel to expand from the sidebar Accordion according to the
+  largest number of results after the search is made. (Student mode)
+  */
   decideActiveStudentPanel(filteredContent) {
     this.filteredContent = filteredContent;
     let con = filteredContent;
@@ -119,6 +143,9 @@ export default class SideBarQuizzes extends Component {
       this.setState({ activePanel: '3' });
     }
   }
+  /*
+  Renders the search bar that filters quizzes
+  */
   renderSearchBar() {
     let myStyle;
     if (this.props.userType === STUDENT) {
@@ -141,6 +168,11 @@ export default class SideBarQuizzes extends Component {
       </NavItem>
     );
   }
+  /*
+  Main render method where the sidebar is constructed based on the usertype currently on.
+  Each usertype has a different sidebar view and it's structure in 2 separate ways.
+  This function also limits the number of quizzes that can be displayed in the sidebar.
+  */
   render() {
     const content = this.state.content;
     if (this.props.userType === TEACHER) {
