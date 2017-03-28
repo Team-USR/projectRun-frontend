@@ -1,7 +1,15 @@
 import React from 'react';
 import { Button, Col } from 'react-bootstrap';
 
+/**
+ * List component for rendering Fill in the gaps sentences
+ * @param {Object} props inherited properties
+ */
 export default function ClozeList(props) {
+  /**
+   * Returns the list component
+   * @return {Object}
+   */
   return (
     <Col md={12}>
       <ul className="cloze-sentences">

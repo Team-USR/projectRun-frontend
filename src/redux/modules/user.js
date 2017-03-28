@@ -15,6 +15,10 @@ const USER_SIGNUP_FAILED = 'USER_SIGNUP_FAILED';
 
 const CHANGE_USER_TYPE = 'CHANGE_USER_TYPE';
 
+/**
+ * Initialize user store if cookies are saved from a previous log in
+ * @type {Object}
+ */
 let initialState = {};
 if (cookie.load('access-token') != null) {
   initialState = {
@@ -29,6 +33,13 @@ if (cookie.load('access-token') != null) {
   };
 }
 
+/**
+ * The main reducer for the redux store, that handles
+ * the user management
+ * @param  {Object} [state=initialState] the state of the store
+ * @param  {Object} action               object containg an action type
+ * @return {Object}                      new store state
+ */
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case USER_LOGIN_IN_PROGRESS:
@@ -51,13 +62,23 @@ export default function reducer(state = initialState, action) {
       return state;
   }
 }
-
+/**
+ * Sets the store state to login in progress
+ * @return {Object} action type
+ */
 export function userLoginInProgress() {
   return {
     type: USER_LOGIN_IN_PROGRESS,
   };
 }
 
+/**
+ * Acknowledges user login, storing the server
+ * response inside the store
+ * @param  {Object} auth server response
+ * @param  {Object} user server response
+ * @return {Object}      new store state
+ */
 export function userLoginSuccesful(auth, user) {
   return {
     type: USER_LOGIN_SUCCESFUL,
@@ -66,6 +87,12 @@ export function userLoginSuccesful(auth, user) {
   };
 }
 
+/**
+ * Sets the state to login failed and
+ * displays the error
+ * @param  {Object} error server response
+ * @return {Object}       new store state
+ */
 export function userLoginFailed(error) {
   return {
     type: USER_LOGIN_FAILED,
@@ -73,6 +100,13 @@ export function userLoginFailed(error) {
   };
 }
 
+/**
+ * Collects the form data and sends the login
+ * request to the backend, redirecting the user
+ * to the home page if successful
+ * @param  {Object} user login form data
+ * @return {Object}      new store state
+ */
 export function loginUser(user) {
   return async (dispatch) => {
     try {
@@ -110,25 +144,43 @@ export function loginUser(user) {
   };
 }
 
+/**
+ * Sets the store state to signup is progress
+ * @return {Object} new store state
+ */
 export function userSignupInProgress() {
   return {
     type: USER_SIGNUP_IN_PROGRESS,
   };
 }
 
+/**
+ * Sets the store state to sign up successful
+ * @return {Object} new store state
+ */
 export function userSignupSuccesful() {
   return {
     type: USER_SIGNUP_SUCCESFUL,
   };
 }
-
+/**
+ * Sets the store state to sign up failed
+ * @param  {Object} error server response
+ * @return {Object}       new store state
+ */
 export function userSignupFailed(error) {
   return {
     type: USER_SIGNUP_FAILED,
     error,
   };
 }
-
+/**
+ * Collects the signup form data and sends
+ * a request to the server, redirecting the user
+ * to the login page if successful
+ * @param  {Object} user sign up form data
+ * @return {Object}      new store state
+ */
 export function signupUser(user) {
   return async (dispatch) => {
     try {
@@ -151,6 +203,10 @@ export function signupUser(user) {
   };
 }
 
+/**
+ * Removes existing user cookies and overwrites the store state
+ * @return {Object} new store state
+ */
 export function logoutUser() {
   cookie.remove('access-token');
   cookie.remove('client');
@@ -166,7 +222,13 @@ export function logoutUser() {
     type: USER_LOGOUT,
   };
 }
-
+/**
+ * Used by the toggle inside settings,
+ * it allows users to swap between their
+ * account types
+ * @param  {String} userType STUDENT or TEACHER
+ * @return {Object}          new store state
+ */
 export function changeUserType(userType) {
   return {
     type: CHANGE_USER_TYPE,

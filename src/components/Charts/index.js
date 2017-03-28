@@ -3,6 +3,10 @@ import { PieChart, Pie, LineChart, XAxis, YAxis, Tooltip, Line, Cell, Text, Lege
 import QuizDot from './QuizDot';
 import { CHART_COLOR } from '../../constants';
 
+/**
+ * The tooltip used for submitted quizes chart
+ * @param {object} props inherited from the library component
+ */
 function CustomTooltip(props) {
   CustomTooltip.propTypes = {
     active: React.PropTypes.bool,
@@ -20,7 +24,11 @@ function CustomTooltip(props) {
     payload: [],
     active: false,
   };
-
+  /**
+   * Renders the tooltip if the user hovers the line chart
+   * @param  {Object} props inherited properties
+   * @return {Object}       the JSX component
+   */
   if (props.active) {
     return (
       <div className="tooltip-container">
@@ -33,6 +41,10 @@ function CustomTooltip(props) {
   return null;
 }
 
+/**
+ * A line chart Recharts LineChart component
+ * @param {Object} props inherited properties
+ */
 export function LineCh(props) {
   LineCh.propTypes = {
     data: React.PropTypes.arrayOf(React.PropTypes.shape({
@@ -48,6 +60,10 @@ export function LineCh(props) {
     color: CHART_COLOR,
     placeholder: '',
   };
+  /**
+   * Render chart if data is available or return text placeholder
+   * @type {Object}
+   */
   return props.data.length > 0 ? (
     <LineChart width={window.innerWidth - 350} height={450} data={props.data}>
       <XAxis
@@ -73,6 +89,11 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 
 const RADIAN = Math.PI / 180;
 
+/**
+ * Positions percentages inside the pie chart
+ * @param  {Object} pie default props
+ * @return {Object}     JSX text element
+ */
 function renderLabel(pie) {
   const radius = pie.innerRadius + ((pie.outerRadius - pie.innerRadius) * 0.5);
   const x = pie.cx + (radius * Math.cos(-pie.midAngle * RADIAN));
@@ -85,7 +106,16 @@ function renderLabel(pie) {
   );
 }
 
+/**
+ * A pie chart extending Recharts PieChart component
+ * @param {Object} props inherited properties
+ */
 export function PieCh(props) {
+  /**
+   * Renders pie chart if data is available
+   * @param  {Object} PieChart Recharts component
+   * @return {Object}          custom pie chart
+   */
   return (
     <PieChart width={700} height={450}>
       <Pie
