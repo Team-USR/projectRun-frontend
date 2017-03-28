@@ -2,8 +2,17 @@ import React, { PropTypes, Component } from 'react';
 import { Button } from 'react-bootstrap';
 import { TEACHER, STUDENT } from '../../../constants';
 
+/**
+ * Component that shows class information about its assigned quizzes
+ * @type {Array}
+ */
 export default class GroupQuizzes extends Component {
 
+  /**
+   * Method creates and returns an array of the assinged quizzes for a class.
+   * Shows only a message if there are no quizzes.
+   * @return {array} Array of html elements
+   */
   renderQuizzes() {
     const returnComponent = [];
     if (this.props.quizzes.length === 0) {
@@ -29,6 +38,10 @@ export default class GroupQuizzes extends Component {
     return returnComponent;
   }
 
+  /**
+   * Method that renders the Manage Quizzes Button only on Teacher Mode
+   * @return {Object} component instance
+   */
   renderManageButton() {
     if (this.props.userType === TEACHER) {
       return (
@@ -42,6 +55,10 @@ export default class GroupQuizzes extends Component {
     return (null);
   }
 
+  /**
+   * Component render method
+   * @return {Object} component instance
+   */
   render() {
     return (
       <div className="groupSectionWrapper">
