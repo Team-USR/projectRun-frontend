@@ -184,8 +184,6 @@ export default class StudentsPanel extends Component {
    * @param {Number} id Student id
    */
   addStudent(id) {
-    //    console.log(id);
-    //    console.log('ADD', this.state.unenrolledStudents);
     let newIndex = -1;
     this.state.unenrolledStudents.map((item, index) => {
       if (item.id === id) {

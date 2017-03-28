@@ -3,6 +3,10 @@ import { Navbar, Nav, NavDropdown, MenuItem, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 
+/*
+  Navbar function returning an html entitity containing the nav bar
+  @return {Object} html
+*/
 export default function NavBar(props) {
   return (
     <Navbar inverse collapseOnSelect className="topNabBarWrapper">

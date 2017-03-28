@@ -7,9 +7,14 @@ import { MyClassesPanel } from './index';
 import { BrandSpinner, ModalError } from '../utils';
 
 import { formatAveragePerCreatedClass } from '../../helpers';
-
+/**
+*  Main component that handles most of the logic from the My classes Page
+*/
 export default class MyClassesPage extends Component {
-
+/**
+* Main constructor where the state is initialized
+* @props
+*/
   constructor(props) {
     super(props);
 
@@ -43,7 +48,10 @@ export default class MyClassesPage extends Component {
       },
     };
   }
-
+  /*
+  After mounting the component according to the user type there will be called
+  different functions to request the data needed to render the page. (Student/Teacher)
+  */
   componentWillMount() {
     const settingUserType = cookie.load('userType');
     if (settingUserType) {
@@ -59,7 +67,13 @@ export default class MyClassesPage extends Component {
       this.requestStudentData();
     }
   }
-
+  /*
+  Makes a request to retrieve all the quizzes from a class
+  given the class id.
+  After the first request is made, a new request retrieving all the sudents,
+  pending requests and invitations regarding a class
+  @param currentClassId {Number} [the id of the class as it is in the backend]
+  */
   getClassContent(currentClassId) {
     this.setState({ loading: true });
     axios({
@@ -117,6 +131,14 @@ export default class MyClassesPage extends Component {
       }, 510);
     });
   }
+  /*
+    Functions that refreshes the student lists by making a new request.
+    This happens after a certain action (ex: remove/add quiz/student) has
+    taken place so the lists/sidebar needs to be refreshed
+    @param currentClassId {Number}
+    @param ptyp {String} [a string representing the panel type that
+    needs to be displayed after the refresh]
+  */
   refreshStudents(currentClassId, ptyp) {
     axios({
       url: `${API_URL}/groups/${currentClassId}/quizzes`,
@@ -148,14 +170,22 @@ export default class MyClassesPage extends Component {
       this.setState({ panelType: 'my_classes_default_panel' });
     });
   }
+  /*
+    Updates the student state with a new object
+  */
   updateAllStudents(object) {
     this.setState({ allStudents: object });
   }
-
+  /*
+  Close the modal
+  */
   closeModal() {
     this.setState({ showModal: false });
   }
-
+  /*
+  Opens the modal
+  @param content
+  */
   openModal(content) {
     if (content) {
       this.setState({ showModal: true, modalContent: content });
@@ -163,7 +193,10 @@ export default class MyClassesPage extends Component {
       this.setState({ showModal: true });
     }
   }
-
+  /*
+  Makes a request to get the groups created by a teacher and then
+  a new request to retrieve all the quizzes created by a teacher
+  */
   requestTeacherData() {
     axios({
       url: `${API_URL}/users/mine/groups`,
@@ -207,7 +240,9 @@ export default class MyClassesPage extends Component {
       }
     });
   }
-
+  /*
+  Makes a request to retrieve the avarage marks from all groups created by a teacher
+  */
   requestTeacherStatistics() {
     axios({
       url: `${API_URL}/statistics/average_marks_groups`,
@@ -218,7 +253,9 @@ export default class MyClassesPage extends Component {
       });
     });
   }
-
+  /*
+    Makes a request to retrieve all the groups in which a Student is enrolled in
+  */
   requestStudentData() {
     axios({
       url: `${API_URL}/users/mine/groups`,
@@ -253,7 +290,9 @@ export default class MyClassesPage extends Component {
       }
     });
   }
-
+  /*
+    Makes a request to retrieve all the marks for all quizzes from each class earned by a student
+  */
   async requestStudentStatistics(classId) {
     const data = await axios({
       url: `${API_URL}/statistics/marks_groups_quizzes?id=${classId}`,
@@ -261,7 +300,11 @@ export default class MyClassesPage extends Component {
     });
     return data.data;
   }
-
+  /*
+  Reloads the sidebar by making a new request and retriving the new updated groups that
+  needs to be displayed in the sidebar. This function is called every
+  time a change is made in the groups or the quizzes created by a user.
+  */
   reloadBar() {
     this.setState({ loading: true });
     axios({
@@ -286,43 +329,62 @@ export default class MyClassesPage extends Component {
       }, 1200);
     });
   }
-
+  /*
+  Saves in the cookie the current class id and title so they can
+  be used in case the user refreshes the page
+  */
   saveCurrentClass(id, title) {
     this.id = id;
     cookie.save('current-class-id', id);
     cookie.save('current-class-title', title);
   }
-
+  /*
+  Function that handles the click in the title
+  removing the class id and the title from the cookie
+  so after a refresh the user will be redirected to the default panel
+  */
   handleSideBarTitleClick() {
     cookie.remove('current-class-id');
     cookie.remove('current-class-title');
     this.setState({ panelType: 'my_classes_default_panel' });
   }
-
+  /*
+  Handles the click on the user request invite tab
+  */
   handleSearchClassForRequestInvite() {
     this.setState({ panelType: 'show_search_class_panel' });
   }
-
+  /*
+  Handles the click on the manage students from a class tab
+  */
   handleManageStudentsFromClass() {
     this.setState({ panelType: 'manage_studens_panel' });
   }
-
+  /*
+  Handles the click on the manage quizzes from a class tab
+  */
   handleManageQuizzesFromClass() {
     this.setState({ panelType: 'manage_quizzes_panel' });
   }
-
+  /*
+  Handles the click on the side bar class item.
+  */
   handleSideBarClassClick(classId, classTitle) {
     this.getClassContent(classId);
     this.saveCurrentClass(classId, classTitle);
     this.setState({ currentClassId: classId, currentClassTitle: classTitle });
   }
-
+  /*
+  Handles the click on the create class button from the sidebar
+  */
   handleCreateClassClick() {
     cookie.remove('current-class-id');
     cookie.remove('current-class-title');
     this.setState({ panelType: 'create_new_class' });
   }
-
+  /*
+  Makes a request to create a new class
+  */
   handleSaveNewClassClick(newClassTitle) {
     this.setState({ loading: true });
     const newClassObj = { name: newClassTitle };
@@ -336,7 +398,10 @@ export default class MyClassesPage extends Component {
       this.reloadBar();
     });
   }
-
+  /*
+  Makes a request to delete a class given the classId
+  @param classId {Number} [class id]
+  */
   confirmDeleteClass(classId) {
     this.setState({ loading: true });
     axios({
@@ -353,7 +418,9 @@ export default class MyClassesPage extends Component {
 
     this.closeModal();
   }
-
+  /*
+    Opens a modal when the user wants to delete a class
+  */
   handleDeleteClass(deleteClassId) {
     this.openModal({
       header: 'Delete this class?',
@@ -362,7 +429,9 @@ export default class MyClassesPage extends Component {
       modalProps: { classId: deleteClassId },
     });
   }
-
+  /*
+  Makes a request to update the current quizzes assigned to a class
+  */
   handleSaveAssignedQuizzes(newQuizzesArray) {
     this.setState({ loading: true });
     this.newQuizzesArray = [];
@@ -384,7 +453,9 @@ export default class MyClassesPage extends Component {
       }, 1200);
     });
   }
-
+  /*
+    Makes a request to save the current student enrolled in a class
+  */
   handleSaveEnrolledStudents(newStundentsArray) {
     this.setState({ loading: true });
     this.newStundentsArray = newStundentsArray;
@@ -407,6 +478,9 @@ export default class MyClassesPage extends Component {
       }, 1200);
     });
   }
+  /*
+    Function that renders the classes panel
+  */
   renderClassesPanel() {
     const element = (
       <MyClassesPanel
@@ -443,7 +517,9 @@ export default class MyClassesPage extends Component {
       />);
     return element;
   }
-
+  /*
+    Renders the side bar and sending the required props to the SideBarWrapper
+  */
   renderSideBar() {
     const sidebar = (
       <SideBarWrapper
@@ -461,7 +537,9 @@ export default class MyClassesPage extends Component {
 
     return sidebar;
   }
-
+  /*
+  Main render function
+  */
   render() {
     if (this.state.loadingSideBar) {
       return <BrandSpinner />;

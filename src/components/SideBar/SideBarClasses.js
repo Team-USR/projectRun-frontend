@@ -104,7 +104,7 @@ export default class SideBarClasses extends Component {
       (
         <NavItem>
           <Button className="titleButton" onClick={() => this.props.onCreateClassClick()}>
-            <i className="fa fa-plus" aria-hidden="true" />  Create Class
+            <i className="fa fa-plus" aria-hidden="true" />  Create a Class
           </Button>
         </NavItem>
       );
