@@ -10,11 +10,21 @@ const styles = {
   },
 
 };
+/*
+  Wrapper component for the multiple choice question. Contains the question and the answers fields.
+*/
 class QuestionWrapper extends Component {
+  /*
+  Constructor that contains the initial state.
+  */
   constructor() {
     super();
     this.state = { results: [], selected: null };
   }
+  /*
+    Updates the current state and the upper component (parent)
+    when the child components are changed
+  */
   onChildChanged(newState, id, index) {
     this.setState({ selected: index });
     const newArray = this.state.results;
@@ -23,6 +33,9 @@ class QuestionWrapper extends Component {
     this.setState({ results: newArray });
     this.props.callbackParent(id, index);
   }
+  /*
+    Renders a choice component
+  */
   renderChoices(indexQ, choices, inReview) {
     let defaultAnswer = null;
     if (this.props.creatorAnswers !== null && this.props.creatorAnswers[indexQ] != null) {
@@ -47,6 +60,9 @@ class QuestionWrapper extends Component {
       />
     );
   }
+  /*
+  Renders an answer to the screen given the choice id.
+  */
   renderAnswers(choiceID) {
     if (this.props.inResultsState) {
       const tempIndex = this.props.correctAnswer.correct_answers.indexOf(choiceID);
@@ -67,6 +83,9 @@ class QuestionWrapper extends Component {
     }
     return ('');
   }
+  /*
+    Main render function
+  */
   render() {
     const { question, index, inReview } = this.props;
     this.answerClass = '';

@@ -1,24 +1,34 @@
 import React, { Component, PropTypes } from 'react';
-
+/*
+  Component that represents a single choice
+*/
 class Choice extends Component {
 
   constructor() {
     super();
     this.state = { checked: false };
   }
+  /*
+    When mounting it decides if the checkbox has a default value or not in the case of the reviewer
+  */
   componentWillMount() {
     if (this.props.defaultValue !== null && this.props.defaultValue !== undefined) {
-    //  console.log("wtf",this.props.defaultValue);
       this.setState({ checked: this.props.defaultValue });
     }
     this.props.callbackParent(this.props.defaultValue);
   }
+  /*
+   Handles the change of the checbox and updates the parent component.
+  */
   onStateChanged() {
-  //  console.log('changed',this.state.checked);
     const newState = !this.state.checked;
     this.setState({ checked: newState });
     this.props.callbackParent(newState);
   }
+  /*
+    Renders the checkbox on the screen depening on the state (reviewState or not)
+    ex: reviewState: checkbox disabled
+  */
   renderLabel(value, choiceText, inReview) {
     if (inReview) {
       return (
@@ -32,7 +42,6 @@ class Choice extends Component {
         />
       );
     }
-//    console.log(this.state.checked);
     return (
       <input
         className="inputChoice"
@@ -43,6 +52,9 @@ class Choice extends Component {
       />
     );
   }
+  /*
+    Main render method
+  */
   render() {
     const { value, choiceText, inReview } = this.props;
     return (

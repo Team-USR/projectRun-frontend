@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 
-
+/*
+  Component that renders the answer on the screen.
+*/
 export default function Answer(props) {
   const { correctAnswer } = props;
   return (

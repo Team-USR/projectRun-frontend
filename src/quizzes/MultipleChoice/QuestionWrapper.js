@@ -10,11 +10,21 @@ const styles = {
   },
 
 };
+/*
+  Wrapper component for the multiple choice question. Contains the question and the answers fields.
+*/
 class QuestionWrapper extends Component {
+  /*
+  Constructor that contains the initial state.
+  */
   constructor() {
     super();
     this.state = { results: [] };
   }
+  /*
+    Updates the current state and the upper component (parent)
+    when the child components are changed
+  */
   onChildChanged(newState, id, index) {
     let newArray = this.state.results;
     if (newState === true) newArray.push(id);
@@ -24,10 +34,12 @@ class QuestionWrapper extends Component {
     this.setState({ results: newArray });
     this.props.callbackParent(newArray, index);
   }
+  /*
+    Renders a choice component
+  */
   renderChoices(indexQ, choices, inReview) {
     let defaultAnswer = null;
     if (this.props.creatorAnswers !== null && this.props.creatorAnswers[indexQ] != null) {
-    //  console.log("true");
       defaultAnswer = this.props.creatorAnswers[indexQ].is_correct;
     }
     if (this.props.sessionAnswers !== null && this.props.sessionAnswers !== undefined) {
@@ -42,8 +54,6 @@ class QuestionWrapper extends Component {
         });
       }
     }
-
-    // console.log("SESSION",this.props.sessionAnswers);
     return (
       <Choice
         value={indexQ} choiceText={choices.answer}
@@ -55,6 +65,9 @@ class QuestionWrapper extends Component {
       />
     );
   }
+  /*
+  Renders an answer to the screen given the choice id.
+  */
   renderAnswers(choiceID) {
     if (this.props.inResultsState) {
       const tempIndex = this.props.correctAnswer.correct_answers.indexOf(choiceID);
@@ -75,6 +88,9 @@ class QuestionWrapper extends Component {
     }
     return ('');
   }
+  /*
+    Main render function
+  */
   render() {
     const { question, index, inReview } = this.props;
     this.answerClass = '';

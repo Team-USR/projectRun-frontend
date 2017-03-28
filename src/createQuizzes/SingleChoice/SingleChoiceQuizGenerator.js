@@ -3,6 +3,9 @@ import { Button, Col } from 'react-bootstrap';
 import { ChoiceInput } from './index';
 
 let displayIndex = 0;
+/*
+ Single Choice question generator component
+*/
 export default class SingleChoiceQuizGenerator extends Component {
   constructor() {
     super();
@@ -10,12 +13,21 @@ export default class SingleChoiceQuizGenerator extends Component {
     this.addAnswers = this.addAnswers.bind(this);
     this.setQuestion = this.setQuestion.bind(this);
   }
+  /*
+    When first mounted checks if there is any content that has to be displayed( in the case the
+  component is mounted from the editor page and has to populate the field with data)
+  */
   componentWillMount() {
     if (this.props.content) {
       this.initializeAnswers(this.props.content);
       this.setState({ question: this.props.content.question });
     }
   }
+  /*
+  When child components are changing this method updates the parent and works
+  towards the collecting of the final object that needs to be sent to the backend
+  @param indexs {Number} [Index of the choice that has changed]
+  */
   onChildChanged(indexs) {
     const newArray = this.state.answers_choices;
     newArray[indexs] = '';
@@ -31,6 +43,13 @@ export default class SingleChoiceQuizGenerator extends Component {
        this.state.question,
        this.props.index);
   }
+  /*
+    Updates the parent component when the text inputed in the answer fields is changed in
+    any of the answer fields created by the user.
+    @param index {Number}
+    @param answer {Object}
+    @param isCorrect {Boolean}
+  */
   onChildChangedText(index, answer, isCorrect) {
     const newAnswer = { answer, is_correct: isCorrect };
     const newArray = this.state.answers_choices;
@@ -56,22 +75,42 @@ export default class SingleChoiceQuizGenerator extends Component {
       this.state.question,
       this.props.index);
   }
+  /*
+  Sets the question state and updates the parent component providing the question and completing
+  the final object that needs to be send to the backend.
+  @param event
+  */
   setQuestion(event) {
     this.setState({ question: event.target.value });
     this.props.updateParent(this.state.answers_attributes,
        event.target.value,
        this.props.index);
   }
+  /*
+    Adds more answer fields on the screen
+  */
   addAnswers() {
     const choicesTemp = this.state.answers_choices;
     choicesTemp.push(0);
     this.setState({ answers_choices: choicesTemp });
   }
+  /*
+  Initialize the array of answers so the renderer knows
+  how many answer field has to be rendered in the case
+  the component is mounted when coming from the editor.
+  @param content {Object}
+  */
   initializeAnswers(content) {
     const choicesTemp = this.state.answers_choices;
     content.answers.map(() => choicesTemp.push(0));
     this.setState({ answers_choices: choicesTemp });
   }
+  /*
+  Rendering answers on the screen
+  @param index {Number} [index of the answer]
+  @param answersToComplete {array} [array of answers that might be completed
+  in the case that the parent is the editor]
+  */
   renderAnswers(index, answersToComplete) {
     if (this.state.answers_choices[index] === null) {
       displayIndex -= 1;
@@ -98,6 +137,9 @@ export default class SingleChoiceQuizGenerator extends Component {
     }
     return ('');
   }
+  /*
+  Main render function
+  */
   render() {
     let questionText;
     let answersToComplete;

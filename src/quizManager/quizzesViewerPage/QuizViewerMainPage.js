@@ -47,6 +47,9 @@ export default class QuizViewerMainPage extends Component {
     this.isResultsMode = this.isResultsMode.bind(this);
     this.saveSession = this.saveSession.bind(this);
   }
+  /*
+   Makes http request and retrieves a certain quiz which id is received from props
+  */
   componentWillMount() {
     axios({
       url: `${API_URL}/quizzes/${this.props.quizID}`,
@@ -65,7 +68,11 @@ export default class QuizViewerMainPage extends Component {
       this.props.handleError('default');
     });
   }
-
+  /*
+    In case the component receives new props from it's parent it will make a new
+    request and render the new quizz on the screen.
+    @param nextProps
+  */
   componentWillReceiveProps(nextProps) {
     if (this.props.quizID !== nextProps.quizID) {
       this.setState({ loadingQuiz: true });
@@ -83,10 +90,18 @@ export default class QuizViewerMainPage extends Component {
       }, 510));
     }
   }
+  /*
+   Sets a review state for the quiz in which the user is only able to see quiz
+   and then prepare for submit.
+  */
   isReviewMode() {
     const newState = !this.state.reviewState;
     this.setState({ reviewState: newState });
   }
+  /*
+  In case the quiz already has a saved session stored in the backend,
+  this method loads it in to the local object that is prepared for the new submit.
+  */
   loadSession() {
     const quest = [];
     this.state.quizInfo.questions.map((element, index) => {
@@ -129,6 +144,10 @@ export default class QuizViewerMainPage extends Component {
     const q = { questions: quest };
     this.setState({ answers: q });
   }
+  /*
+    Method that saves the current session by making a post request containing
+    the current solution
+  */
   saveSession() {
     this.setState({ savedSession: true });
     axios({
@@ -168,6 +187,13 @@ export default class QuizViewerMainPage extends Component {
       this.props.reloadSideBar();
     });
   }
+  /*
+    Method that is collecting the input from it's child components.
+    @param id {Number}
+    @param answers {array} [array of answers that needs to be collected]
+    @param type {String} [type of the question that is being collected]
+    @param index {Number} [index of the question being collected from]
+  */
   collectAnswers(id, answers, type, index) {
     this.setState({ savedSession: false });
     const tempAnswers = this.state.answers;
@@ -209,12 +235,20 @@ export default class QuizViewerMainPage extends Component {
     tempAnswers.questions = tempQuestions;
     this.setState({ answers: tempAnswers });
   }
+  /*
+    Decides to render a message explaining the user that the quizz has negative marking or not
+  */
   isNegativeMarking() {
     if (this.state.quizInfo.negative_marking === true) {
       return 'This quiz contains negative marking';
     }
     return '';
   }
+  /*
+  Method that renders the submit panel containing different buttons
+  according to the state in which the user is in ( ex: normal state: save, finnih,
+  review state: back);
+  */
   renderSubmitPanel() {
     if (this.state.reviewState && !this.state.resultsState) {
       return (
@@ -253,6 +287,12 @@ export default class QuizViewerMainPage extends Component {
     }
     return ('');
   }
+  /*
+   Method that renders the questions on the screen based on the array retrieved from the backend,
+   and based on their type.
+   @param question {Object} [question object as retrieved from the backend]
+   @param index {Number} [index of the question]
+  */
   renderQuestions(question, index) {
     let sessionAns = null;
     if (this.state.session.metadata !== null && this.state.session.metadata[question.id] !== null) {
@@ -368,6 +408,9 @@ export default class QuizViewerMainPage extends Component {
     }
     return ('');
   }
+  /*
+    Render method.
+  */
   render() {
     if (this.state.error) {
       return (<h1>ERROR</h1>);
