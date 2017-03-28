@@ -3,21 +3,36 @@ import { Navbar, Nav, Button } from 'react-bootstrap';
 import { SideBarQuizzes, SideBarClasses } from './index';
 import { STUDENT, TEACHER } from '../../constants';
 
+/*
+  Sidebar wrapper component
+*/
 export default class SideBarWrapper extends Component {
+  /*
+    Default constructor
+  */
   constructor() {
     super();
     this.state = {
       sideContent: '',
     };
   }
+  /*
+  When mounting the component the sideContent is populated with the content received from the parent
+  through the props
+  */
   componentWillMount() {
     this.setState({ sideContent: this.props.sideBarContent });
   }
-
+  /*
+  When updating the data, new content is received through props, and the sideContent is updated
+  @nextProps props
+  */
   componentWillReceiveProps(nextProps) {
     this.setState({ sideContent: nextProps.sideBarContent });
   }
-
+  /*
+  Render sidebar content function based on the user type, rendering here his child components.
+  */
   renderSideBarContent() {
     let sideBarContent = (<Nav />);
     if (this.props.type === 'SideBarQuizzes') {
@@ -75,7 +90,9 @@ export default class SideBarWrapper extends Component {
 
     return sideBarContent;
   }
-
+  /*
+  Main render method
+  */
   render() {
     return (
       <div className="sideBarWrapper">

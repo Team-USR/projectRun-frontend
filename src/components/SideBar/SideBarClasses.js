@@ -2,7 +2,13 @@ import React, { PropTypes, Component } from 'react';
 import { Nav, NavItem, Button } from 'react-bootstrap';
 import { TEACHER, STUDENT } from '../../constants';
 
+/*
+ Sidebar main component.
+*/
 export default class SideBarClasses extends Component {
+  /*
+   Main constructor
+  */
   constructor() {
     super();
     this.filterItems = this.filterItems.bind(this);
@@ -10,12 +16,23 @@ export default class SideBarClasses extends Component {
       content: {},
     };
   }
+  /*
+    Mounting the component and setting the content of the sidebar retrieved from props
+  */
   componentWillMount() {
     this.setState({ content: this.props.content });
   }
+  /*
+   Updating the sidebar content state when new props are recieved
+   @param nextProps
+  */
   componentWillReceiveProps(nextProps) {
     this.setState({ content: nextProps.content });
   }
+  /*
+   Search function for the classes from the sidebar. Filters the classes by their names;
+   @param event
+  */
   filterItems(event) {
     let found = false;
     let filteredContent = this.props.content.filter((item) => {
@@ -34,6 +51,9 @@ export default class SideBarClasses extends Component {
     }
     this.setState({ content: filteredContent });
   }
+  /*
+    Renders the search bar according to the userType ( Student, Teacher )
+  */
   renderSearchBar() {
     let myStyle;
     if (this.props.userType === STUDENT) {
@@ -56,7 +76,9 @@ export default class SideBarClasses extends Component {
       </NavItem>
     );
   }
-
+  /*
+  Rendering the serach button according to the user type
+  */
   renderSearchButton() {
     if (this.props.userType === STUDENT) {
       return (
@@ -72,7 +94,9 @@ export default class SideBarClasses extends Component {
     }
     return (null);
   }
-
+  /*
+  Main render function
+  */
   render() {
     let createClassButton = (null);
     if (this.props.userType === TEACHER) {
