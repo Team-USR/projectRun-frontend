@@ -1,0 +1,38 @@
+.helpPageWrapper{
+  h1,h2,h3,h4{
+    font-weight:600;
+  }
+  margin-bottom:50px;
+  .section_container{
+    img{width:600px;}
+    .small{
+        width:250px;
+    }
+    .section_body{
+      margin-left:30px;
+      h2{
+        font-weight: 600;
+      }
+      ul{
+        li{
+          h4{
+            display: inline-block;
+            font-weight: 600;
+          }
+          p{
+            display:inline;
+          }
+        }
+      }
+      .myquizzes_container{
+        margin-left:30px;
+      }
+      .myclasses_container{
+        margin-left:30px;
+      }
+      .mysettings_container{
+        margin-left:30px;
+      }
+    }
+  }
+}
