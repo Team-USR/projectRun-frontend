@@ -1,6 +1,9 @@
 import React, { PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 
+/*
+  Component that contains a delete button
+*/
 export default function ButtonWrapper(props) {
   return (
     <div className="delete_button">

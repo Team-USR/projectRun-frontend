@@ -7,6 +7,9 @@ import { formatDataForStudentQuizPie,
 
 let margin = 600;
 let panel = 'default';
+/*
+  Component that renders the main panel when entering the My Quizzes page
+*/
 export default class DefaultQuizzesPanel extends Component {
 
   constructor() {
@@ -15,7 +18,9 @@ export default class DefaultQuizzesPanel extends Component {
       type: null,
     };
   }
-
+  /*
+  Renders a list with all the quizzes and separates them into different categories
+  */
   renderAllQuizzes() {
     const result = [];
     const content = this.props.quizzes;
@@ -144,6 +149,9 @@ export default class DefaultQuizzesPanel extends Component {
     }
     return result;
   }
+  /*
+    Main render method
+  */
   render() {
     let data = [];
     if (this.props.userT === STUDENT) {
