@@ -122,7 +122,7 @@ export default class ClassSearchPanel extends React.Component {
   }
   renderError() {
     if (this.state.moveToPendingError === true) {
-      return (<h4 style={{ color: 'red' }}>This class has been already selected</h4>);
+      return (<h4 style={{ color: '#d10c0f' }}>This class has been already selected</h4>);
     }
     if (timeout !== null) {
       clearTimeout(timeout);

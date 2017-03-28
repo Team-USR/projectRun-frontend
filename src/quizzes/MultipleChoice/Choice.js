@@ -47,7 +47,7 @@ class Choice extends Component {
     const { value, choiceText, inReview } = this.props;
     return (
       <div className="singleMultipleChoice">
-        <label htmlFor="0">
+        <label htmlFor={this.props.id}>
           {this.renderLabel(value, choiceText, inReview)}
           <span className="choiceName">
             {choiceText}
@@ -59,6 +59,7 @@ class Choice extends Component {
   }
 }
 Choice.propTypes = {
+  id: PropTypes.number.isRequired,
   callbackParent: PropTypes.func.isRequired,
   value: PropTypes.number.isRequired,
   choiceText: PropTypes.string.isRequired,
