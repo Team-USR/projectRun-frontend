@@ -19,7 +19,7 @@ export default class MatchQuiz extends Component {
     return shuffledArray;
   }
 
-  /*
+  /**
   * This is the Main Constructor for MatchQuiz Class
   * @param {Object} props object of properties
   */
@@ -81,7 +81,7 @@ export default class MatchQuiz extends Component {
     this.findRightElement = this.findRightElement.bind(this);
   }
 
-  /*
+  /**
   * This function is called before 'render()'
   * It checks if the component receives the sessionAnswers prop
   * in order to store the saved answers from the preious Match quiz session
@@ -103,7 +103,7 @@ export default class MatchQuiz extends Component {
     }
   }
 
-  /*
+  /**
   * This function is called after 'render()'
   * It is used when the component has the props 'sessionAnswers'
   * in order to set the Answers array from MatchElement.js
@@ -126,7 +126,7 @@ export default class MatchQuiz extends Component {
     }
   }
 
-  /*
+  /**
   * Currently not used
   * This function ca be used to check the validity of the Match answers
   * This functionality has been transfered to the Backend Side to implement negative marking
@@ -147,7 +147,7 @@ export default class MatchQuiz extends Component {
     return percentage;
   }
 
-  /*
+  /**
   * Function used as a helper to find the text of a right element
   * by its id. It returns -1 if not found or the entire object
   * @param {Integer} id  The id of the needed element.
@@ -163,7 +163,7 @@ export default class MatchQuiz extends Component {
     return -1;
   }
 
-  /*
+  /**
   * This function renders each item from the LEFT hand side column in a Match Quiz
   * @param {Object, Integer} obj, index The object of the Left Element and its index.
   * @return {Object} leftElement  The MatchLeftElement Component
@@ -191,7 +191,7 @@ export default class MatchQuiz extends Component {
     return leftElement;
   }
 
-  /*
+  /**
   * This function renders each item from the RIGHT hand side column in a Match Quiz
   * It uses the Shuffled Left and Right Arrays to displey the dropdowns on the Right
   * @param {Object, Integer} obj, index The object of the Right Element and its index.
@@ -232,7 +232,7 @@ export default class MatchQuiz extends Component {
     return rightElement;
   }
 
-  /*
+  /**
   * This is the main render function which is in charge of displaying
   * the Match Quiz Component. It calls the renderLeftElement() and
   * renderRightElement() functions to render the columns

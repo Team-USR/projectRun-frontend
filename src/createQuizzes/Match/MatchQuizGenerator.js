@@ -3,6 +3,11 @@ import { Button, Col } from 'react-bootstrap';
 import { MatchQuizItem } from './index';
 
 export default class MatchQuizGenerator extends Component {
+
+  /**
+  * This is the Main Constructor for MatchQuizGenerator Class
+  * @param {Object} props object of properties
+  */
   constructor(props) {
     super(props);
     this.state = {
@@ -31,6 +36,12 @@ export default class MatchQuizGenerator extends Component {
     this.deleteMatchElement = this.deleteMatchElement.bind(this);
   }
 
+  /**
+  * This function is called before 'render()'
+  * It checks if the component receives the content prop
+  * in order to display the stored data of Match available for editing
+  * It also updetes its parent calling the function 'updateParent()'
+  */
   componentWillMount() {
     const defaultText = 'Choose an option';
     if (this.props.content) {
@@ -56,7 +67,11 @@ export default class MatchQuizGenerator extends Component {
     }
   }
 
-  /* Function called everytime when user types in Quiz Title Input */
+  /**
+  * Function called everytime when user types in Quiz Title Input
+  * It stores the value of the input
+  * @param {Event} e The event triggerd when the Question Inputs is changed
+  */
   handleQuestionInputChange(e) {
     const target = e.target;
     const value = target.value;
@@ -71,7 +86,11 @@ export default class MatchQuizGenerator extends Component {
     this.props.updateParent(this.state.createItems, questionAndDefault, this.props.index);
   }
 
-  /* Function called everytime when user types in DEFAULT VALUE textarea */
+  /**
+  * Function called everytime when user types in DEFAULT VALUE textarea
+  * It stores the value of the text area
+  * @param {Event} e The event triggerd on key press
+  */
   handleDefaultValueTextareaChange(e) {
     const target = e.target;
     const name = target.name;
@@ -90,8 +109,11 @@ export default class MatchQuizGenerator extends Component {
     this.props.updateParent(this.state.createItems, questionAndDefault, this.props.index);
   }
 
-  /* Function called everytime when user types
+  /**
+  * Function called everytime when user types
   * in a LEFT or RIGHT element textarea
+  * It stores the value of the text area in state
+  * @param {Event, Integer} e, index The event triggerd on key press and index
   */
   handleItemTextareaChange(e, index) {
     const target = e.target;
@@ -120,7 +142,10 @@ export default class MatchQuizGenerator extends Component {
     this.setState({ createItems: newCreateItemsArray });
   }
 
-  /* Function called everytime when user clicks *Add Match Element* Button */
+  /**
+  * Function called everytime when user clicks *Add Match Element* Button
+  * It displays a new match item a the bottom of the list
+  */
   addMatchElement() {
     const templateItemObj = { left_choice: '', right_choice: '' };
     const newCreateItemsArray = this.state.createItems;
@@ -134,6 +159,11 @@ export default class MatchQuizGenerator extends Component {
     this.setState({ createItems: newCreateItemsArray });
   }
 
+  /**
+  * Function called everytime when user clicks *Delete Match Element* Button
+  * It erases the item from the list and updates the state
+  * @param {Integer} index The index of item to be deleted.
+  */
   deleteMatchElement(index) {
     const newCreateItemsArray = this.state.createItems;
     newCreateItemsArray.splice(index, 1);
@@ -146,6 +176,13 @@ export default class MatchQuizGenerator extends Component {
     this.setState({ createItems: newCreateItemsArray });
   }
 
+
+  /**
+  * Function used for displaying a Match - Left Right pair of items
+  * It contains the main Item Component wich takes
+  * the content and functions as properties
+  * @return {Object} renderedComponents  The MatchQuizItem Component
+  */
   renderMatchItems() {
     const renderedComponents = [];
     this.state.createItems.map((obj, index) => {
@@ -172,18 +209,13 @@ export default class MatchQuizGenerator extends Component {
     return renderedComponents;
   }
 
+  /**
+  * This is the main render function which is in charge of displaying
+  * the Match Quiz GEnerator Component. It calls the renderMatchItems()
+  * function to render the each pair of elements as a row item
+  * @return {Object} createMatchQuiz  The Match Quiz Generator Component
+  */
   render() {
-    // Testing Pupropses
-    /*
-    const result = {
-      question: this.state.matchQuizQuestion,
-      type: 'match',
-      defaultValue: this.state.defaultSelectValue,
-      pairs_attribute: this.state.createItems,
-    };
-    console.log('RENDER', result);
-    */
-
     const createMatchQuiz = (
       <div className="matchQuizGenerator">
         <div className="createMatchQuizTitle">

@@ -5,7 +5,7 @@ let answers = [];
 let leftElements = [];
 let rightElements = [];
 
-/*
+/**
 * Function used for displaying the elements from the left Column
 * @param {Object} props  The properties from its parent
 * @return {Object} A Component containing an left Item Text
@@ -20,7 +20,7 @@ export default function MatchLeftElement(props) {
   );
 }
 
-/*
+/**
 * This function is called when the user selects an option from dropdown
 * It updates the 'answer' array with the selected options and updates
 * also the answers from its parent state
@@ -42,7 +42,7 @@ function onChange(e, props) {
   props.onChange(answers);
 }
 
-/*
+/**
 * Function used in order to set the 'answers' array from a previos session
 * @param {Array} answerSession The array of the answers.
 */
@@ -50,7 +50,7 @@ export function setAnswersArray(answerSession) {
   answers = answerSession;
 }
 
-/*
+/**
 * Function used for displaying the elements from the right Column
 * It builds a 'select' component with a list of options to store user answers
 * @param {Object} props The object of the Right Element properties.
