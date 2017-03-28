@@ -172,6 +172,9 @@ export default class QuizEditorMainPage extends Component {
     @param index {Number} [index of the question that needs to be removed]
   */
   removeQuiz(index) {
+    const thisError = this.state.hasErrors;
+    thisError[index + 1] = false;
+    this.setState({ hasErrors: thisError });
     displayIndex = 0;
     const remQuestions = this.state.questions;
     remQuestions[index] = null;
