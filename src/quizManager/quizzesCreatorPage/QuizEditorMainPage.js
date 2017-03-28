@@ -11,8 +11,7 @@ import { CrossQuizGenerator } from '../../createQuizzes/Cross';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner, ModalError } from '../../components/utils';
-import { checkMix, checkMultiple, checkCloze } from '../../helpers/Validators';
-
+import { checkMatch, checkMix, checkMultiple, checkCloze, checkCross } from '../../helpers/Validators';
 
 const styles = {
   loading: {
@@ -221,8 +220,7 @@ export default class QuizEditorMainPage extends Component {
     this.checkCorectnessTitle(questions);
     const thisObject = this.state.errors;
     if (element.type === 'match') {
-      // TODO: check for errors method(element)
-      //  errorMessage = this.checkMatch(element); --returns string describing error
+      errorMessage = checkMatch(element);
     } else if (element.type === 'multiple_choice' || element.type === 'single_choice') {
       errorMessage += checkMultiple(element);
     } else if (element.type === 'mix') {
@@ -230,8 +228,7 @@ export default class QuizEditorMainPage extends Component {
     } else if (element.type === 'cloze') {
       errorMessage = checkCloze(element);
     } else if (element.type === 'cross') {
-        // TODO: check for errors
-        //  errorMessage = this.checkCross(element); --returns string describing error
+      errorMessage = checkCross(element);
     }
     if (errorMessage !== '') {
       const thisError = this.state.hasErrors;
@@ -276,7 +273,7 @@ export default class QuizEditorMainPage extends Component {
       this.openModal({
         header: 'Oops! You\'ve missed something!',
         body: 'The quiz contains some blank spaces and cannot be submitted. Please check the fields!',
-        buttons: ['close'],
+        buttons: ['ok'],
       });
     }
   }
@@ -422,6 +419,7 @@ export default class QuizEditorMainPage extends Component {
       hints_attributes: hintsAttributes,
     };
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
   /*

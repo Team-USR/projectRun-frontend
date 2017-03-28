@@ -23,7 +23,7 @@ export default class ModalError extends Component {
       buttonsWrapper.push((
         <Button
           key={'clear_button'}
-          className="red_button"
+          className="clearButton"
           onClick={() => this.props.confirmClearBoard()}
         >
           Clear Board
@@ -68,6 +68,17 @@ export default class ModalError extends Component {
           onClick={() => this.props.confirmDeleteQuiz(quizId)}
         >
           Delete Quiz
+        </Button>
+      ));
+    }
+    if (buttons.indexOf('ok') !== -1) {
+      buttonsWrapper.push((
+        <Button
+          key={'ok_button'}
+          className="okButton"
+          onClick={() => this.props.close()}
+        >
+          OK
         </Button>
       ));
     }

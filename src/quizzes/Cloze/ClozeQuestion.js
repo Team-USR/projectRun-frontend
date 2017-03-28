@@ -49,7 +49,7 @@ export default class ClozeQuestion extends React.Component {
 
   renderView() {
     let correctGapsCopy = [];
-    if (this.props.resultsState) {
+    if (this.props.resultsState && Object.keys(this.props.correctAnswer).length > 0) {
       correctGapsCopy = this.props.correctAnswer.correct_gaps.slice();
     }
 

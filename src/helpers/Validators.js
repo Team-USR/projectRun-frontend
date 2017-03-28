@@ -55,3 +55,71 @@ export function checkCloze(element) {
   }
   return '';
 }
+
+export function checkMatch(element) {
+  let errorMessage = '';
+
+  if (element) {
+    // Check Question field
+    if (!element.question || (element.question && element.question.length === 0)) {
+      errorMessage += 'Question is empty. \n';
+    }
+
+    // Check Left and Right Elements fields
+    if (!element.pairs_attributes ||
+      (element.pairs_attributes && element.pairs_attributes.length === 0)) {
+      errorMessage += 'A valid Match should have at least one left-right element! \n';
+    } else if (element.pairs_attributes.length > 0) {
+      let fieldsCompleted = true;
+      element.pairs_attributes.map((obj) => {
+        if (obj.left_choice.length === 0 || obj.right_choice.length === 0) {
+          fieldsCompleted = false;
+        }
+        return obj;
+      });
+
+      if (!fieldsCompleted) {
+        errorMessage += 'Left and Right values are not valid! \n';
+      }
+    }
+
+    // Check Default Value field
+    if (!element.match_default_attributes || (element.match_default_attributes
+      && element.match_default_attributes.default_text === '')) {
+      errorMessage += 'Default Option field cannot be empty! \n';
+    }
+  }
+  return errorMessage;
+}
+
+export function checkCross(element) {
+  // console.log('Valid', element);
+  let errorMessage = '';
+
+  if (element !== undefined) {
+    // Check Question field
+    if (!element.question || (element.question && element.question.length === 0)) {
+      errorMessage += 'Don\'t forget to complete the question field! \n';
+    }
+
+    if (element.hints_attributes !== undefined) {
+      if (element.hints_attributes.length !== 0) {
+        let fieldsCompleted = true;
+        element.hints_attributes.map((obj) => {
+          if (obj.hint === '') {
+            fieldsCompleted = false;
+          }
+          return obj;
+        });
+
+        if (!fieldsCompleted) {
+          errorMessage += 'Please complete the Hint for each word! \n';
+        }
+      } else {
+        errorMessage += 'A valid Cross should contain at least 2 words and its Hints. \n';
+      }
+    }
+  }
+
+  return errorMessage;
+}
