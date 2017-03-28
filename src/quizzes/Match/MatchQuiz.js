@@ -4,8 +4,8 @@ import { MatchLeftElement, MatchRightElement, setAnswersArray } from './index';
 
 export default class MatchQuiz extends Component {
 
-  /** TODO: Move it somewhere else
- * Shuffles array in place. ES6 version
+  /**
+ * This function shuffles array in place ES6 version
  * @param {Array} toBeShuffled  The array containing the items.
  * @return {Array} shuffledArray  The array with shuffled elements.
  */
@@ -19,6 +19,10 @@ export default class MatchQuiz extends Component {
     return shuffledArray;
   }
 
+  /*
+  * This is the Main Constructor for MatchQuiz Class
+  * @param {Object} props object of properties
+  */
   constructor(props) {
     super(props);
     this.state = {
@@ -77,6 +81,12 @@ export default class MatchQuiz extends Component {
     this.findRightElement = this.findRightElement.bind(this);
   }
 
+  /*
+  * This function is called before 'render()'
+  * It checks if the component receives the sessionAnswers prop
+  * in order to store the saved answers from the preious Match quiz session
+  * It also updetes its parent calling the function 'callbackParent()'
+  */
   componentWillMount() {
     if (this.props.sessionAnswers) {
       const newSessionAnswersObj = {};
@@ -93,7 +103,12 @@ export default class MatchQuiz extends Component {
     }
   }
 
-
+  /*
+  * This function is called after 'render()'
+  * It is used when the component has the props 'sessionAnswers'
+  * in order to set the Answers array from MatchElement.js
+  * to the received user answres from the last Session
+  */
   componentDidMount() {
     if (this.props.sessionAnswers) {
       const answerSession = [];
@@ -107,11 +122,17 @@ export default class MatchQuiz extends Component {
         }
       }
 
-      // console.log(answerSession);
       setAnswersArray(answerSession);
     }
   }
 
+  /*
+  * Currently not used
+  * This function ca be used to check the validity of the Match answers
+  * This functionality has been transfered to the Backend Side to implement negative marking
+  * @param {Array} answers  The array of answers.
+  * @return {Float} percentage  The result as a percentage.
+  */
   checkAnswers(answers) {
     let correct = 0;
     for (let i = 0; i < answers.length; i += 1) {
@@ -126,7 +147,12 @@ export default class MatchQuiz extends Component {
     return percentage;
   }
 
-
+  /*
+  * Function used as a helper to find the text of a right element
+  * by its id. It returns -1 if not found or the entire object
+  * @param {Integer} id  The id of the needed element.
+  * @return {Object} right[id] The found object or -1.
+  */
   findRightElement(id) {
     const right = this.state.matchQuizQuestions.rightElements;
     for (let i = 0; i < right.length; i += 1) {
@@ -137,6 +163,11 @@ export default class MatchQuiz extends Component {
     return -1;
   }
 
+  /*
+  * This function renders each item from the LEFT hand side column in a Match Quiz
+  * @param {Object, Integer} obj, index The object of the Left Element and its index.
+  * @return {Object} leftElement  The MatchLeftElement Component
+  */
   renderLeftElement(obj, index) {
     if (this.props.sessionAnswers) {
       if (this.state.sessionAnswers[obj.id]) {
@@ -160,6 +191,12 @@ export default class MatchQuiz extends Component {
     return leftElement;
   }
 
+  /*
+  * This function renders each item from the RIGHT hand side column in a Match Quiz
+  * It uses the Shuffled Left and Right Arrays to displey the dropdowns on the Right
+  * @param {Object, Integer} obj, index The object of the Right Element and its index.
+  * @return {Object} rightElement  The MatchRightElement Component
+  */
   renderRightElement(obj, index) {
     const defaultOption = this.state.matchQuizQuestions.defaultValue;
     let defAnswer = defaultOption;
@@ -195,6 +232,12 @@ export default class MatchQuiz extends Component {
     return rightElement;
   }
 
+  /*
+  * This is the main render function which is in charge of displaying
+  * the Match Quiz Component. It calls the renderLeftElement() and
+  * renderRightElement() functions to render the columns
+  * @return {Object} matchQuiz  The Match Quiz Component
+  */
   render() {
     const leftElements = this.leftColumnShuffled;
     const rightElements = this.rightColumnShuffled;

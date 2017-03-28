@@ -5,9 +5,12 @@ let answers = [];
 let leftElements = [];
 let rightElements = [];
 
-/* Function used for displaying the elements from the left Column */
+/*
+* Function used for displaying the elements from the left Column
+* @param {Object} props  The properties from its parent
+* @return {Object} A Component containing an left Item Text
+*/
 export default function MatchLeftElement(props) {
-  // console.log(props.index);
   return (
     <div className="matchLeftElementWrapper">
       <Col md={12} className="matchLeftElement">
@@ -17,8 +20,11 @@ export default function MatchLeftElement(props) {
   );
 }
 
-/* This function is called when the user slect an option from dropdown
-*  It updates the 'answer' array with the selected options
+/*
+* This function is called when the user selects an option from dropdown
+* It updates the 'answer' array with the selected options and updates
+* also the answers from its parent state
+* @param {Event, Object} e, props  The Click event and the Properties
 */
 function onChange(e, props) {
   const target = e.nativeEvent.target;
@@ -36,12 +42,20 @@ function onChange(e, props) {
   props.onChange(answers);
 }
 
-/* Function used in order to set the 'answers' array from a previos session*/
+/*
+* Function used in order to set the 'answers' array from a previos session
+* @param {Array} answerSession The array of the answers.
+*/
 export function setAnswersArray(answerSession) {
   answers = answerSession;
 }
 
-/* Function used for displaying the elements from the right Column */
+/*
+* Function used for displaying the elements from the right Column
+* It builds a 'select' component with a list of options to store user answers
+* @param {Object} props The object of the Right Element properties.
+* @return {Object} rightElement  The MatchRightElement Component
+*/
 export function MatchRightElement(props) {
   leftElements = props.leftElements;
   rightElements = props.rightElements;
