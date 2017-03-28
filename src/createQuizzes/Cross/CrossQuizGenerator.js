@@ -257,12 +257,11 @@ export default class CrossQuizGenerator extends Component {
     this.generateWords(this.state.boardValues, i, j);
 
     // Update hintsAttributes Object
-    this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
-
+    const hintsAttributes =
+      this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
     const questionTitle = this.state.crossQuizQuestion;
     const metaAtributes = { width: this.state.boardWidth, height: this.state.boardHeight };
     const rowsAttributes = newBoard;
-    const hintsAttributes = this.state.hintsAttributes;
     const questionId = this.props.index;
 
     // Send Match Data to MainQuizGenerator
@@ -329,17 +328,28 @@ export default class CrossQuizGenerator extends Component {
       const width = matrix[0].row.length;
       const height = matrix.length;
 
+      this.boardWidth = width;
+      this.boardHeight = height;
+      this.closeModal();
+
       this.setState({
         boardWidth: width,
         boardHeight: height,
         displayWidth: width,
         displayHeight: height,
         boardValues: matrix,
+        hintsAttributes: [],
       });
 
-      this.boardWidth = width;
-      this.boardHeight = height;
-      this.closeModal();
+      const questionTitle = this.state.crossQuizQuestion;
+      const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
+      const rowsAttributes = matrix;
+      const hintsAttributes = [];
+      const questionId = this.props.index;
+
+      // Send Match Data to MainQuizGenerator
+      this.props.updateParent(
+        questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
     }
   }
 
@@ -353,8 +363,11 @@ export default class CrossQuizGenerator extends Component {
 
   confirmClearBoard() {
     const newBoard = this.state.boardValues;
-    for (let i = 0; i < this.boardHeight; i += 1) {
-      const row = '*'.repeat(this.boardWidth);
+    const currentWidth = this.state.boardWidth;
+    const currentHeight = this.state.boardHeight;
+
+    for (let i = 0; i < currentHeight; i += 1) {
+      const row = '*'.repeat(currentWidth);
       newBoard[i] = { row };
     }
 
@@ -365,6 +378,17 @@ export default class CrossQuizGenerator extends Component {
       downWords: [],
     });
 
+    const questionTitle = this.state.crossQuizQuestion;
+    const metaAtributes = { width: currentWidth, height: currentHeight };
+    const rowsAttributes = newBoard;
+    const hintsAttributes = [];
+    const questionId = this.props.index;
+
+    // Send Match Data to MainQuizGenerator
+    this.props.updateParent(
+      questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
+
+
     this.closeModal();
   }
 
@@ -374,6 +398,48 @@ export default class CrossQuizGenerator extends Component {
       body: 'Are you sure that you want to clear the board? This is an irreversible action which will affect the stored words!',
       buttons: ['close', 'clear'],
     });
+  }
+
+  checkIfCropped(newBoard, newBoardWidth, newBoardHeight) {
+    let maxRow = 0;
+    let maxCol = 0;
+
+    const boardWidth = this.state.boardWidth;
+    const boardHeight = this.state.boardHeight;
+
+    // Check if Words are Cropped on Row;
+    for (let i = 0; i < boardHeight; i += 1) {
+      if (newBoard[i] && newBoard[i].row) {
+        const copyRow = newBoard[i].row;
+        for (let j = 0; j < boardWidth; j += 1) {
+          for (let k = 0; k < copyRow.length; k += 1) {
+            if (copyRow[k] !== '*' && maxRow < k) {
+              maxRow = k;
+            }
+          }
+        }
+      }
+    }
+
+    for (let j = 0; j < boardWidth; j += 1) {
+      for (let i = 0; i < boardHeight; i += 1) {
+        if (newBoard[i] && newBoard[i].row) {
+          const copyRow = newBoard[i].row;
+          if (copyRow[j] && copyRow[j] !== '*' && maxCol < i) {
+            maxCol = i;
+          }
+        }
+      }
+    }
+
+    maxRow += 1;
+    maxCol += 1;
+
+    if (maxRow > newBoardWidth || maxCol > newBoardHeight) {
+      return false;
+    }
+
+    return true;
   }
 
   handleResizeBoard() {
@@ -395,39 +461,49 @@ export default class CrossQuizGenerator extends Component {
       });
     } else {
       const newBoard = this.state.boardValues;
-      for (let i = 0; i < this.boardHeight; i += 1) {
-        let row = '';
-        if (newBoard[i] && newBoard[i].row) {
-          if (newBoard[i].row.length >= this.boardWidth) {
-            row = newBoard[i].row.substring(0, this.boardWidth);
+      const isPossible = this.checkIfCropped(newBoard, this.boardWidth, this.boardHeight);
+
+      if (isPossible) {
+        for (let i = 0; i < this.boardHeight; i += 1) {
+          let row = '';
+          if (newBoard[i] && newBoard[i].row) {
+            if (newBoard[i].row.length >= this.boardWidth) {
+              row = newBoard[i].row.substring(0, this.boardWidth);
+            } else {
+              // Build the new empty Board Row
+              row = newBoard[i].row + '*'.repeat(this.boardWidth - newBoard[i].row.length);
+            }
           } else {
-            row = newBoard[i].row + '*'.repeat(this.boardWidth - newBoard[i].row.length);
+            row = '*'.repeat(this.boardWidth);
           }
-        } else {
-          row = '*'.repeat(this.boardWidth);
+          newBoard[i] = { row };
         }
-        newBoard[i] = { row };
+
+        this.setState({
+          showBoard: true,
+          boardValues: newBoard,
+          boardWidth: this.boardWidth,
+          boardHeight: this.boardHeight,
+        });
+
+        // Update hintsAttributes Object
+        const hintsAttributes =
+          this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
+        const questionTitle = this.state.crossQuizQuestion;
+        const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
+        const rowsAttributes = newBoard;
+        const questionId = this.props.index;
+
+        // Send Match Data to MainQuizGenerator
+        this.props.updateParent(
+          questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
+      } else {
+        this.openModal({
+          header: 'Oops! You will crop your words!',
+          body: 'The new limits will crop your currently existing words from board! Choose other limits or modify the words.',
+          buttons: ['close'],
+        });
       }
-
-      this.setState({
-        showBoard: true,
-        boardValues: newBoard,
-        boardWidth: this.boardWidth,
-        boardHeight: this.boardHeight,
-      });
-
-      // Update hintsAttributes Object
-      this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
-
-      const questionTitle = this.state.crossQuizQuestion;
-      const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
-      const rowsAttributes = newBoard;
-      const hintsAttributes = this.state.hintsAttributes;
-      const questionId = this.props.index;
-
-      // Send Match Data to MainQuizGenerator
-      this.props.updateParent(
-        questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
     }
   }
 
