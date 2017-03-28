@@ -23,7 +23,7 @@ export default class ModalError extends Component {
       buttonsWrapper.push((
         <Button
           key={'clear_button'}
-          className="clearButton"
+          className="clearButton red_button"
           onClick={() => this.props.confirmClearBoard()}
         >
           Clear Board

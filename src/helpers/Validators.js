@@ -57,8 +57,6 @@ export function checkCloze(element) {
 }
 
 export function checkMatch(element) {
-  console.log('Valid', element);
-
   let errorMessage = '';
 
   if (element) {
@@ -91,5 +89,37 @@ export function checkMatch(element) {
       errorMessage += 'Default Option field cannot be empty! \n';
     }
   }
+  return errorMessage;
+}
+
+export function checkCross(element) {
+  // console.log('Valid', element);
+  let errorMessage = '';
+
+  if (element !== undefined) {
+    // Check Question field
+    if (!element.question || (element.question && element.question.length === 0)) {
+      errorMessage += 'Don\'t forget to complete the question field! \n';
+    }
+
+    if (element.hints_attributes !== undefined) {
+      if (element.hints_attributes.length !== 0) {
+        let fieldsCompleted = true;
+        element.hints_attributes.map((obj) => {
+          if (obj.hint === '') {
+            fieldsCompleted = false;
+          }
+          return obj;
+        });
+
+        if (!fieldsCompleted) {
+          errorMessage += 'Please complete the Hint for each word! \n';
+        }
+      } else {
+        errorMessage += 'A valid Cross should contain at least 2 words and its Hints. \n';
+      }
+    }
+  }
+
   return errorMessage;
 }

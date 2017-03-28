@@ -11,7 +11,7 @@ import { CrossQuizGenerator } from '../../createQuizzes/Cross';
 import { ButtonWrapper } from './index';
 import { API_URL } from '../../constants';
 import { BrandSpinner, ModalError } from '../../components/utils';
-import { checkMatch, checkMix, checkMultiple, checkCloze } from '../../helpers/Validators';
+import { checkMatch, checkMix, checkMultiple, checkCloze, checkCross } from '../../helpers/Validators';
 
 const styles = {
   loading: {
@@ -76,10 +76,6 @@ export default class QuizCreatorMainPage extends Component {
     this.setState({ submitedQuestions: inputQ });
   }
 
-  // checkMix(element) {
-  //   return "da";
-  // }
-
   checkCorectnessTitle(generatedQuiz) {
     if (generatedQuiz.quiz.title === '') {
       const thisObject = this.state.errors;
@@ -112,8 +108,7 @@ export default class QuizCreatorMainPage extends Component {
     } else if (element.type === 'cloze') {
       errorMessage = checkCloze(element);
     } else if (element.type === 'cross') {
-        // TODO: check for errors
-        //  errorMessage = this.checkCross(element); --returns string describing error
+      errorMessage = checkCross(element);
     }
     if (errorMessage !== '') {
       const thisError = this.state.hasErrors;
@@ -225,6 +220,7 @@ export default class QuizCreatorMainPage extends Component {
     };
 
     inputQ.quiz.questions_attributes[questionID] = newQuestion;
+    this.checkCorectness(inputQ.quiz.questions_attributes[questionID], questionID);
     this.setState({ submitedQuestions: inputQ });
   }
 

@@ -257,12 +257,11 @@ export default class CrossQuizGenerator extends Component {
     this.generateWords(this.state.boardValues, i, j);
 
     // Update hintsAttributes Object
-    this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
-
+    const hintsAttributes =
+      this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
     const questionTitle = this.state.crossQuizQuestion;
     const metaAtributes = { width: this.state.boardWidth, height: this.state.boardHeight };
     const rowsAttributes = newBoard;
-    const hintsAttributes = this.state.hintsAttributes;
     const questionId = this.props.index;
 
     // Send Match Data to MainQuizGenerator
@@ -329,17 +328,28 @@ export default class CrossQuizGenerator extends Component {
       const width = matrix[0].row.length;
       const height = matrix.length;
 
+      this.boardWidth = width;
+      this.boardHeight = height;
+      this.closeModal();
+
       this.setState({
         boardWidth: width,
         boardHeight: height,
         displayWidth: width,
         displayHeight: height,
         boardValues: matrix,
+        hintsAttributes: [],
       });
 
-      this.boardWidth = width;
-      this.boardHeight = height;
-      this.closeModal();
+      const questionTitle = this.state.crossQuizQuestion;
+      const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
+      const rowsAttributes = matrix;
+      const hintsAttributes = [];
+      const questionId = this.props.index;
+
+      // Send Match Data to MainQuizGenerator
+      this.props.updateParent(
+        questionTitle, metaAtributes, rowsAttributes, hintsAttributes, questionId);
     }
   }
 
@@ -417,12 +427,11 @@ export default class CrossQuizGenerator extends Component {
       });
 
       // Update hintsAttributes Object
-      this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
-
+      const hintsAttributes =
+        this.updateHintsAttributes(this.state.acrossWords, this.state.downWords);
       const questionTitle = this.state.crossQuizQuestion;
       const metaAtributes = { width: this.boardWidth, height: this.boardHeight };
       const rowsAttributes = newBoard;
-      const hintsAttributes = this.state.hintsAttributes;
       const questionId = this.props.index;
 
       // Send Match Data to MainQuizGenerator
